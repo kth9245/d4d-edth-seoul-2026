@@ -1,6 +1,8 @@
 """FastAPI app: WebSocket frame stream + static UI for the demo."""
 
 import asyncio
+import contextlib
+import logging
 import os
 from pathlib import Path
 
@@ -10,6 +12,7 @@ from fastapi.staticfiles import StaticFiles
 from modules.gateway.pipeline import Engine
 from modules.sim import load_scenario
 
+log = logging.getLogger("kdth.gateway")
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SCENARIO = str(ROOT / "demo/scenarios/seoul_mixed.yaml")
 
@@ -40,10 +43,18 @@ def create_app(scenario_path: str, realtime: bool = True, ui_dist: str | None = 
             while not closed.is_set():
                 if engine.done:
                     engine = Engine(scenario)
-                await websocket.send_text(engine.step().model_dump_json())
+                try:
+                    payload = engine.step().model_dump_json()
+                except Exception:
+                    log.exception("pipeline error in engine.step(); closing /ws")
+                    with contextlib.suppress(RuntimeError):
+                        await websocket.close(code=1011, reason="pipeline error: see server log")
+                    return
+                try:
+                    await websocket.send_text(payload)
+                except (WebSocketDisconnect, RuntimeError):
+                    break  # client went away
                 await asyncio.sleep(scenario.step_ms / 1000 if realtime else 0)
-        except (WebSocketDisconnect, RuntimeError):
-            pass
         finally:
             watcher.cancel()
 

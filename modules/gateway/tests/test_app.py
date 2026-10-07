@@ -48,3 +48,19 @@ def test_serves_ui_dist(tmp_path):
     (tmp_path / "index.html").write_text("<html>ui</html>")
     client = TestClient(create_app(SCENARIO, realtime=False, ui_dist=str(tmp_path)))
     assert "ui" in client.get("/").text
+
+
+def test_pipeline_error_closes_socket_with_1011_and_server_survives(monkeypatch):
+    import pytest
+    from starlette.websockets import WebSocketDisconnect
+
+    def boom(self):
+        raise NotImplementedError("skeleton action")
+
+    monkeypatch.setattr(Engine, "step", boom)
+    client = TestClient(create_app(SCENARIO, realtime=False))
+    with client.websocket_connect("/ws") as ws:
+        with pytest.raises(WebSocketDisconnect) as exc:
+            ws.receive_text()
+    assert exc.value.code == 1011
+    assert client.get("/health").json() == {"ok": True}
