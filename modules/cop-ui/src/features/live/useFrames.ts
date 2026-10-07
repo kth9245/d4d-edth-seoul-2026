@@ -12,7 +12,13 @@ export function useFrames(url: string): { frame: Frame | null; connected: boolea
     const connect = () => {
       ws = new WebSocket(url);
       ws.onopen = () => setConnected(true);
-      ws.onmessage = (e) => setFrame(JSON.parse(e.data) as Frame);
+      ws.onmessage = (e) => {
+        try {
+          setFrame(JSON.parse(e.data) as Frame);
+        } catch {
+          // 깨진 메시지는 무시한다.
+        }
+      };
       ws.onclose = () => {
         setConnected(false);
         if (!stopped) timer = window.setTimeout(connect, 1000);

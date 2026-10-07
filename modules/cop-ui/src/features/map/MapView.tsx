@@ -17,6 +17,7 @@ export function MapView({ frame, center, tilesAvailable = false }:
   { frame: Frame | null; center: [number, number]; tilesAvailable?: boolean }) {
   const el = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
+  const latest = useRef<Frame | null>(frame);
 
   useEffect(() => {
     if (!el.current) return;
@@ -27,12 +28,14 @@ export function MapView({ frame, center, tilesAvailable = false }:
         "circle-color": CLASS_COLOR,
         "circle-radius": ["+", 5, ["*", 10, ["get", "threat"]]],
         "circle-stroke-color": "#fff", "circle-stroke-width": 1 } });
+      if (latest.current) (m.getSource("tracks") as GeoJSONSource).setData(toGeoJSON(latest.current));
     });
     map.current = m;
     return () => m.remove();
   }, [center, tilesAvailable]);
 
   useEffect(() => {
+    latest.current = frame;
     const src = map.current?.getSource("tracks") as GeoJSONSource | undefined;
     if (src && frame) src.setData(toGeoJSON(frame));
   }, [frame]);

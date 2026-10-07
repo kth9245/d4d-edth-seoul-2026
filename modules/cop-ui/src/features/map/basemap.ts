@@ -5,11 +5,16 @@ const TILES_PATH = "/tiles/seoul.pmtiles";
 const BG: LayerSpecification = { id: "bg", type: "background", paint: { "background-color": "#0b1320" } };
 
 export async function tilesExist(): Promise<boolean> {
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 1500);
   try {
-    const r = await fetch(TILES_PATH, { method: "HEAD" });
-    return r.ok;
+    const r = await fetch(TILES_PATH, { method: "HEAD", signal: ctl.signal });
+    const type = r.headers.get("content-type") ?? "";
+    return r.ok && !type.includes("text/html");
   } catch {
     return false;
+  } finally {
+    clearTimeout(timer);
   }
 }
 
