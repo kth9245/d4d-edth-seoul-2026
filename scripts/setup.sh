@@ -4,6 +4,9 @@ set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 mod="${1:?사용법: scripts/setup.sh <모듈> [--worktree <모듈2>]}"
 [ -d "modules/$mod" ] || [ "$mod" = "infra" ] || [ "$mod" = "contracts" ] || { echo "모듈 없음: $mod"; exit 1; }
+if [ $# -gt 3 ] || { [ $# -gt 1 ] && [ "${2:-}" != "--worktree" ]; }; then
+  echo "사용법: scripts/setup.sh <모듈> [--worktree <모듈2>]"; exit 1
+fi
 
 uv sync
 (cd modules/cop-ui && npm ci --silent)
@@ -15,10 +18,16 @@ else git switch -q -c "$mod/work" origin/main; fi
 
 if [ "${2:-}" = "--worktree" ]; then
   wt="${3:?--worktree 다음에 모듈 이름}"
+  [ -d "modules/$wt" ] || [ "$wt" = "infra" ] || [ "$wt" = "contracts" ] || { echo "모듈 없음: $wt"; exit 1; }
   dir="../$(basename "$PWD")-$wt"
-  git worktree add -q -b "$wt/work" "$dir" origin/main
-  ln -s "$PWD/.venv" "$dir/.venv"
-  echo "worktree: $dir (브랜치 $wt/work)"
+  if [ -d "$dir" ]; then
+    echo "worktree 이미 있음: $dir (건너뜀)"
+  else
+    if git show-ref --quiet "refs/heads/$wt/work"; then git worktree add -q "$dir" "$wt/work"
+    else git worktree add -q -b "$wt/work" "$dir" origin/main; fi
+    echo "worktree: $dir (브랜치 $wt/work)"
+  fi
+  ln -sfn "$PWD/.venv" "$dir/.venv"
 fi
 
 .venv/bin/python scripts/sync_docs.py

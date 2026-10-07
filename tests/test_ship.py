@@ -68,3 +68,42 @@ def test_ship_fails_on_broken_module_test(tmp_path):
     r = subprocess.run(["bash", "scripts/ship.sh"], cwd=work, capture_output=True, text=True)
     assert r.returncode == 1
     assert "test_broken" in r.stdout + r.stderr
+
+
+def run_ship(work: Path):
+    return subprocess.run(["bash", "scripts/ship.sh"], cwd=work, capture_output=True, text=True)
+
+
+def test_gitignore_ignores_venv_symlink(tmp_path):
+    repo = tmp_path / "r"
+    repo.mkdir()
+    git(repo, "init", "-q", "-b", "main")
+    shutil.copy(ROOT / ".gitignore", repo / ".gitignore")
+    (repo / ".venv").symlink_to(tmp_path)
+    r = subprocess.run(["git", "check-ignore", "-q", ".venv"], cwd=repo)
+    assert r.returncode == 0
+
+
+def test_ship_rebases_over_teammate_push(tmp_path):
+    remote, work = make_clone(tmp_path)
+    mate = tmp_path / "mate"
+    git(tmp_path, "clone", "-q", str(remote), str(mate))
+    (mate / "knowledge/inbox/mate.md").write_text("m\n")
+    git(mate, "add", "-A")
+    git(mate, "commit", "-q", "-m", "mate note")
+    git(mate, "push", "-q", "origin", "main")
+    (work / "knowledge/inbox/mine.md").write_text("x\n")
+    git(work, "add", "-A")
+    git(work, "commit", "-q", "-m", "mine note")
+    r = run_ship(work)
+    assert r.returncode == 0, r.stdout + r.stderr
+    log = git(work, "log", "--oneline", "origin/main")
+    assert "mine note" in log and "mate note" in log
+
+
+def test_ship_reports_rebase_in_progress(tmp_path):
+    _, work = make_clone(tmp_path)
+    git_dir = Path(git(work, "rev-parse", "--git-path", "rebase-merge").strip())
+    (work / git_dir).mkdir(parents=True, exist_ok=True)
+    r = run_ship(work)
+    assert r.returncode == 1 and "rebase 진행 중" in r.stdout + r.stderr
