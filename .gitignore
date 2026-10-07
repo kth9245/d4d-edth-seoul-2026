@@ -5,9 +5,9 @@ __pycache__/
 .ruff_cache/
 .env
 .env.*
+!.env.example
 node_modules/
 modules/cop-ui/dist/
-modules/cop-ui/public/tiles/*.pmtiles
 .tools/
 tasks/BOARD.md
 knowledge/INDEX.md
