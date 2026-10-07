@@ -64,7 +64,7 @@ d4d-edth-seoul-2026/
 │   ├── assess/            # Track 분류(드론/풍선/조류)와 위협도
 │   ├── respond/           # 대응 옵션 추천 (교전규칙·부수피해 고려)
 │   ├── gateway/           # 파이프라인 실행 + WebSocket 송출
-│   ├── cop-ui/            # 지도 관제 화면 (TypeScript)
+│   ├── cop-ui/            # 지도 관제 화면 (TypeScript). public/tiles/seoul.pmtiles(29MB)는 저장소에 커밋
 │   └── edge/              # (선택, 필요 시 생성) SC1 온디바이스 AI / SC2 NUCODE 보드 코드
 │
 ├── shared/                # 최소 공통 코드: 좌표 계산, 시계. 비대해지지 않게 유지
@@ -81,8 +81,8 @@ d4d-edth-seoul-2026/
 │   └── log/NNNN-*.md      # 결정 기록 (ADR 형식)
 │
 ├── demo/
-│   ├── scenarios/*.yaml   # 발표용 시나리오
-│   ├── BUILT_HERE.md      # 해커톤 중 새로 만든 부분 (심사 요구사항)
+│   ├── scenarios/*.yaml   # 발표용 시나리오 (모든 브랜치에서 수정 가능)
+│   ├── BUILT_HERE.md      # 해커톤 중 새로 만든 부분 (심사 요구사항, 모든 브랜치에서 수정 가능)
 │   └── RUNBOOK.md         # 5분 시연 순서, 실패 시 대체 절차
 │
 ├── tasks/
@@ -97,6 +97,7 @@ d4d-edth-seoul-2026/
 ├── scripts/
 │   ├── setup.sh           # 대회 당일 1회: 의존성 설치, git hook 연결, 브랜치·worktree 생성
 │   ├── new_action.py      # SPEC 행 + 액션 파일 + 실패하는 테스트 생성
+│   ├── new_module.py      # 새 모듈 골격(AGENTS.md, SPEC.md, actions/, tests/) 생성. /new-module
 │   ├── sync_docs.py       # BOARD·지식 INDEX·결정 INDEX·AGENTS.md 정책 구간 자동 생성
 │   ├── gen_contracts.py   # models.py → schema/*.json + cop-ui TS 타입
 │   ├── decide.py          # 결정 제안 생성 / 사람이 확정(accept)
@@ -104,7 +105,7 @@ d4d-edth-seoul-2026/
 │   ├── ship.sh            # main 최신 반영 + 검사 + push
 │   ├── dev.sh             # 개발용 전체 실행
 │   └── demo.sh            # 시연용 전체 실행 (오프라인)
-└── pyproject.toml         # ruff, pytest 설정
+└── pyproject.toml         # ruff, pytest 설정 (uv.lock과 함께 모든 브랜치에서 수정 가능: uv add)
 ```
 
 ### 3.1 문제별 모듈 교체
@@ -238,9 +239,10 @@ supersedes: null
 ### 8.1 소유 규칙 (브랜치 이름 기준)
 | 브랜치 접두어 | 수정 가능 경로 |
 |---|---|
-| `<모듈>/…` (예: `tracking/kalman`) | `modules/<모듈>/**`, `knowledge/**`, `decisions/log/**`(새 제안 문서만) |
+| `<모듈>/…` (예: `tracking/kalman`) | `modules/<모듈>/**`(디렉터리가 아직 없어도 허용: `new_module.py`로 새 모듈 생성), `knowledge/**`, `decisions/log/**`(새 제안 문서만) |
 | `contracts/…` | `contracts/**`, `modules/cop-ui/src/contracts.gen.ts` |
-| `infra/…` | 루트 `AGENTS.md`, `tests/`, `scripts/`, `tools/`, `.claude/`, `.codex/`, `.githooks/`, `shared/`, `demo/`, `docs/` |
+| `infra/…` | 루트 `AGENTS.md`·`README.md`·`.gitignore`, `modules/__init__.py`, `tests/`, `scripts/`, `tools/`, `.claude/`, `.codex/`, `.agents/`, `.githooks/`, `shared/`, `demo/`, `docs/` |
+| 어느 브랜치든 (ALWAYS) | `knowledge/**`, `decisions/log/**`(제안만), `demo/BUILT_HERE.md`, `demo/scenarios/*`, `pyproject.toml`, `uv.lock` |
 | 그 외 (예: `main`) | 모듈 수정 차단, "브랜치를 `<모듈>/<주제>`로 만들라"고 안내 |
 
 어느 브랜치에서도 AI는 `status: 확정` 결정 문서와 `POLICY.md`를 수정할 수 없다.
@@ -248,7 +250,8 @@ supersedes: null
 ### 8.2 1단계: AI가 파일을 수정할 때 (`tools/guard/check_edit.py`)
 - Claude Code: `.claude/settings.json`의 PreToolUse(`Edit|Write`)와 PostToolUse에서 호출. 입력의 `tool_input.file_path` 사용.
 - Codex: `.codex/hooks.json`의 PreToolUse(`^apply_patch$`)에서 호출. 입력 `tool_input.command`의 patch 본문에서 `*** Add File:` / `*** Update File:` / `*** Delete File:` 줄로 경로 추출. 팀원마다 Codex `/hooks`에서 1회 신뢰 승인.
-- 차단은 exit code 2 + stderr에 이유와 해결 방법.
+- Bash 경로: Claude `PreToolUse` 매처 `Bash`, Codex `^(Bash|shell)$`(pre만). `tool_input.command`가 `decide.py accept`이거나 `decisions/POLICY.md`에 리다이렉션·`sed -i`·`tee`로 쓰면 차단하고 사람에게 요청하라고 안내. 그 외 명령은 통과.
+- 차단은 exit code 2 + stderr에 이유와 해결 방법. 예상 못 한 예외는 통과시키되 `$(git rev-parse --git-dir)/guard-errors.log`에 한 줄 기록.
 
 | 검사 | 시점 | 결과 |
 |---|---|---|
@@ -256,6 +259,7 @@ supersedes: null
 | 새 액션 파일의 SPEC 등록 여부 | 수정 전 | 차단, `new_action.py` 안내 |
 | 보호 파일(`.env`, 자동 생성 파일, 확정 결정, POLICY.md) | 수정 전 | 차단 |
 | 파일 길이(액션 80줄, 그 외 200줄) | 수정 후 | AI에게 쪼개라는 피드백 |
+| Bash로 결정 확정·POLICY.md 쓰기 | 실행 전 | 차단, 사람에게 요청 안내 |
 
 목표 실행 시간 0.1초 이하.
 
@@ -264,6 +268,8 @@ supersedes: null
 2. `tools/check_imports.py`(AST 기반, 의존성 없음): 모듈은 다른 모듈의 루트 공개 API(`from modules.<m> import ...`)와 `shared`, `contracts`만 import. `modules.<다른모듈>.<하위>` import 금지, `knowledge` import 금지, `shared`·`contracts`는 `modules`를 import하지 않음. import-linter에는 '루트 공개 API만 허용' 규칙이 없어서 전용 스크립트로 대체.
 3. SPEC 동기화: 모든 액션 파일이 SPEC.md에 있고, 각 액션에 테스트 파일이 있다.
 4. 파일 길이.
+   2~4번은 스테이징된 파일(과 그 파일이 속한 모듈)만 검사해 남의 미완성 파일로 내 커밋이 막히지 않게 한다. `check.sh --all`과 ship은 전체 검사.
+   추가로 스테이징 diff에 비밀값 패턴(`AKIA…`, `sk-…`, 개인 키 헤더)이 있으면 차단.
 5. `sync_docs.py` 실행. 정책 구간이 바뀐 루트 AGENTS.md만 커밋에 자동 포함하고, BOARD·INDEX는 로컬 파일만 갱신한다(8.6). 차단하지 않음.
 6. `contracts/`가 바뀐 경우에만 `gen_contracts.py`.
 
@@ -271,7 +277,7 @@ supersedes: null
 
 ### 8.4 3단계: push (`scripts/ship.sh`)
 1. `git fetch` 후 현재 브랜치를 `origin/main` 위로 rebase.
-2. 변경된 모듈의 pytest.
+2. 변경된 모듈의 pytest. `tests/`·`tools/`·`scripts/`·`contracts/`·`shared/`가 바뀌면 전체(`tests modules`). `KDTH_FREEZE=1`이면 테스트 실패는 경고로 계속, smoke test만 차단.
 3. 데모 smoke test(`scripts/smoke.py`): 화면 없이 기본 시나리오를 시뮬레이션 시간 10초만큼 빠르게 실행해, 예외 없이 모든 프레임이 계약 형식을 만족하는지 확인.
 4. `git push origin HEAD:main` 후 작업 브랜치 유지.
 
@@ -338,7 +344,7 @@ supersedes: null
 
 ## 11. 로컬 시연
 - `scripts/demo.sh` 한 줄로 백엔드·화면·시나리오 실행. 대회 전에 시연 노트북에서 시험.
-- 오프라인 동작: 수도권 범위 지도 타일을 대회 전에 받아 저장소에 동봉(PMTiles 파일 1개).
+- 오프라인 동작: 수도권 범위 지도 타일을 대회 전에 받아 저장소에 동봉(PMTiles 파일 1개, `modules/cop-ui/public/tiles/seoul.pmtiles`를 커밋. 갱신은 `scripts/fetch_tiles.sh`). 파일이 없으면 `demo.sh`가 큰 경고를 출력하고 계속 실행.
 - 정상 동작 화면 백업 영상 녹화.
 - 리허설 때 HDMI 송출 해상도에서 지도·경보 가독성 확인.
 

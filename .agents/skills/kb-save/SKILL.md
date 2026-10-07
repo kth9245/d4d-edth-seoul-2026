@@ -9,4 +9,4 @@ description: Turn research findings into knowledge cards. Use after researching 
    then sections `## 결론`, `## 근거`, `## 코드에 적용하는 법`, `## 관련 카드` (`[[id]]`). Max 40 lines.
 3. No source URL → `confidence: 추정`. Never invent sources.
 4. Move processed inbox files to `knowledge/inbox/done/`.
-5. Run `python scripts/sync_docs.py` to refresh the index.
+5. Run `uv run python scripts/sync_docs.py` to refresh the index.

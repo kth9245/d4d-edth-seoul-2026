@@ -3,13 +3,32 @@
     "PreToolUse": [
       {
         "matcher": "^apply_patch$",
-        "hooks": [{"type": "command", "command": "python3 \"$(git rev-parse --show-toplevel)/tools/guard/check_edit.py\" pre"}]
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/tools/guard/check_edit.py\" pre"
+          }
+        ]
+      },
+      {
+        "matcher": "^(Bash|shell)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/tools/guard/check_edit.py\" pre"
+          }
+        ]
       }
     ],
     "PostToolUse": [
       {
         "matcher": "^apply_patch$",
-        "hooks": [{"type": "command", "command": "python3 \"$(git rev-parse --show-toplevel)/tools/guard/check_edit.py\" post"}]
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/tools/guard/check_edit.py\" post"
+          }
+        ]
       }
     ]
   }

@@ -1,6 +1,6 @@
 """Create SPEC row + action file + failing test in one step.
 
-Usage: python scripts/new_action.py <module> <verb_noun> "<description>"
+Usage: uv run python scripts/new_action.py <module> <verb_noun> "<description>"
        [--inputs ..] [--outputs ..] [--done ..] [--owner ..]
 """
 
@@ -24,7 +24,7 @@ def {name}(*args, **kwargs):
     raise NotImplementedError
 '''
 
-TEST_TMPL = '''import pytest
+TEST_TMPL = """import pytest
 
 from modules.{module}.actions.{name} import {name}
 
@@ -32,7 +32,7 @@ from modules.{module}.actions.{name} import {name}
 def test_{name}():
     pytest.fail("{id}: replace with a real test for {name}")
     {name}()
-'''
+"""
 
 
 def fail(msg: str) -> None:

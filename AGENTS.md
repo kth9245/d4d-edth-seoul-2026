@@ -27,8 +27,10 @@ Korean Defense Tech Hackathon 2026 (D4D × EDTH SEOUL) 팀 저장소. 24시간 �
 - `shared/` 최소 공통 코드(좌표). `knowledge/` 조사 지식. `decisions/` 사람의 결정. `demo/` 시연.
 
 ## 액션 규칙 (1 액션 = 1 파일 = 1 테스트)
-- 새 동작은 **반드시** `/new-action` 또는 `python scripts/new_action.py <m> <verb_noun> "<설명>"`으로 시작한다.
+- 새 동작은 **반드시** `/new-action` 또는 `uv run python scripts/new_action.py <m> <verb_noun> "<설명>"`으로 시작한다.
   SPEC.md에 없는 액션 파일은 guard가 막는다.
+- 모듈 자체가 아직 없으면(edge, identify, planning 등) 먼저 `/new-module` 또는
+  `uv run python scripts/new_module.py <이름> <PREFIX>`로 만든다. 브랜치는 `<이름>/<주제>`.
 - 액션 파일: 공개 함수 1개, 이름 = 파일 이름, 80줄 이하, 입력·출력 타입 명시.
 - 다른 파일(.py/.ts/.tsx)은 200줄 이하. 넘으면 쪼갠다.
 - `pipeline.py`는 액션을 순서대로 부르기만 한다(로직 금지).
@@ -49,6 +51,8 @@ Korean Defense Tech Hackathon 2026 (D4D × EDTH SEOUL) 팀 저장소. 24시간 �
 | tracking, assess, respond | 팀원 3 |
 | cop-ui | 팀원 4 |
 
+항상 수정 가능(어느 브랜치에서든): `demo/BUILT_HERE.md`, `demo/scenarios/*`, `pyproject.toml`, `uv.lock`.
+
 남의 영역을 고쳐야 하면 고치지 말고 담당자에게 요청할 내용을 정리해 사람에게 보여준다.
 
 ## 명령
@@ -58,9 +62,14 @@ Korean Defense Tech Hackathon 2026 (D4D × EDTH SEOUL) 팀 저장소. 24시간 �
 - 반영: `scripts/ship.sh` (/ship) — 최신 main 반영 + 변경 모듈 테스트 + 데모 smoke test + push
 - 지식 정리: /kb-save · 결정 제안: /decide
 
+## 의존성 추가
+- 셸에서 `uv add <패키지>`(pyproject.toml·uv.lock은 어느 브랜치에서든 수정 가능). 직접 편집 금지.
+- rebase 중 `uv.lock` 충돌이 나면 `uv lock`을 실행하고 `git add uv.lock && git rebase --continue`.
+
 ## 지식과 결정
 - 조사 결과는 답변으로만 끝내지 말고 `knowledge/inbox/`에 원문을 넣고 /kb-save로 카드를 만든다. 출처 없는 내용은 `confidence: 추정`.
 - 사람이 결정을 말하면 /decide로 `제안` 문서를 만들고 확정을 요청한다. 너는 `확정`으로 바꿀 수 없다.
+- `decide.py accept`는 사람만 실행한다. AI가 Bash로 실행하거나 `decisions/POLICY.md`를 고치면 guard가 막는다.
 
 ## 하지 말 것
 - CLAUDE.md / CLAUDE.local.md 생성 (Claude가 이 파일을 무시하게 됨)

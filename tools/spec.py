@@ -5,8 +5,7 @@ from dataclasses import astuple, dataclass
 from pathlib import Path
 
 SPEC_HEADER = (
-    "| id | 액션 | 입력 | 출력 | 완료 기준 | 담당 | 상태 |\n"
-    "|---|---|---|---|---|---|---|\n"
+    "| id | 액션 | 입력 | 출력 | 완료 기준 | 담당 | 상태 |\n|---|---|---|---|---|---|---|\n"
 )
 PREFIX_RE = re.compile(r"<!--\s*prefix:\s*([A-Z]+)\s*-->")
 

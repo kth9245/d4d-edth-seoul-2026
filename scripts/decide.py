@@ -1,7 +1,7 @@
 """Decision records. AI runs `new` (proposal). Only humans run `accept`.
 
-Usage: python scripts/decide.py new "<title>" [--modules a,b]
-       python scripts/decide.py accept NNNN --by <name>
+Usage: uv run python scripts/decide.py new "<title>" [--modules a,b]
+       uv run python scripts/decide.py accept NNNN --by <name>
 """
 
 import argparse
@@ -40,9 +40,13 @@ def cmd_new(log: Path, title: str, modules: str) -> None:
     nid = f"{max(nums, default=0) + 1:04d}"
     mods = ", ".join(m.strip() for m in modules.split(",") if m.strip())
     path = log / f"{nid}-{slugify(title)}.md"
-    path.write_text(TEMPLATE.format(id=nid, title=title, date=date.today().isoformat(),
-                                    modules=mods), encoding="utf-8")
-    print(f"제안 생성: {path}  (확정은 사람이 `python scripts/decide.py accept {nid} --by 이름`)")
+    path.write_text(
+        TEMPLATE.format(id=nid, title=title, date=date.today().isoformat(), modules=mods),
+        encoding="utf-8",
+    )
+    print(
+        f"제안 생성: {path}  (확정은 사람이 `uv run python scripts/decide.py accept {nid} --by 이름`)"
+    )
 
 
 def cmd_accept(log: Path, nid: str, by: str) -> None:
