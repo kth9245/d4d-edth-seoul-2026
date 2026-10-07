@@ -1,0 +1,73 @@
+# d4d-edth-seoul-2026 — 에이전트 공통 규칙
+
+Korean Defense Tech Hackathon 2026 (D4D × EDTH SEOUL) 팀 저장소. 24시간 안에 **로컬에서 작동하는 데모**를 만든다(NO SLIDES).
+설계: `docs/superpowers/specs/2026-10-07-hackathon-repo-structure-design.md`. 문제: `docs/problem.md`.
+
+## 작업 시작 전에 반드시 읽을 것
+1. `decisions/INDEX.md` — 사람이 확정한 결정. **반드시 따른다.**
+2. `knowledge/INDEX.md` — 이미 조사한 지식. 관련 카드만 연다. 같은 조사를 반복하지 않는다.
+3. 작업할 모듈의 `modules/<m>/AGENTS.md`와 `modules/<m>/SPEC.md`.
+
+## 우선순위
+확정 결정·정책 > SPEC.md > 지식 카드 > 너의 판단.
+확정 결정과 다르게 해야 한다고 판단되면 **멈추고 사람에게 묻는다.**
+
+## 정책 (decisions/POLICY.md 자동 복사본 — 여기서 수정하지 말 것)
+<!-- POLICY:BEGIN -->
+1. 시연은 인터넷 없이 동작한다. 지도 타일은 로컬 파일을 쓰고, 시연 경로에서 외부 API를 호출하지 않는다.
+2. 공개 데이터·가상(synthetic) 데이터만 쓴다. 비밀·수출통제 정보, 실제 개인 식별·표적화 금지.
+3. 좌표는 WGS84 위경도(도), 고도는 m, 시간은 UTC epoch 밀리초(`t_ms`).
+4. API 키·비밀값은 커밋하지 않는다(`.env`는 gitignore).
+5. 해커톤 중 새로 만든 부분은 `demo/BUILT_HERE.md`에 기록한다.
+<!-- POLICY:END -->
+
+## 구조
+- `contracts/models.py` 모듈 간 데이터 형식(pydantic). 예시: `contracts/examples/*.json`. 리드만 수정.
+- `modules/<m>/` 파이프라인 모듈: sim → sensing → tracking → assess → respond → gateway → cop-ui.
+- `shared/` 최소 공통 코드(좌표). `knowledge/` 조사 지식. `decisions/` 사람의 결정. `demo/` 시연.
+
+## 액션 규칙 (1 액션 = 1 파일 = 1 테스트)
+- 새 동작은 **반드시** `/new-action` 또는 `python scripts/new_action.py <m> <verb_noun> "<설명>"`으로 시작한다.
+  SPEC.md에 없는 액션 파일은 guard가 막는다.
+- 액션 파일: 공개 함수 1개, 이름 = 파일 이름, 80줄 이하, 입력·출력 타입 명시.
+- 다른 파일(.py/.ts/.tsx)은 200줄 이하. 넘으면 쪼갠다.
+- `pipeline.py`는 액션을 순서대로 부르기만 한다(로직 금지).
+- 다른 모듈은 `from modules.<m> import <공개 API>`로만 쓴다. 내부(`modules.<m>.actions...`) import 금지.
+- 테스트 먼저: 생성된 실패 테스트를 실제 동작 테스트로 바꾸고, 통과시킨다.
+
+## 소유 (브랜치 이름 = 수정 가능 범위)
+| 브랜치 | 수정 가능 | 담당 |
+|---|---|---|
+| `<모듈>/<주제>` | `modules/<모듈>/**`, `knowledge/**`, `decisions/log/**`(제안만) | 아래 표 |
+| `contracts/<주제>` | `contracts/**` | 리드 |
+| `infra/<주제>` | AGENTS.md, scripts, tools, 설정, shared, demo, docs | 리드 |
+
+| 모듈 | 담당 |
+|---|---|
+| contracts, gateway, demo, infra | 리드 |
+| sim, sensing, edge | 팀원 2 |
+| tracking, assess, respond | 팀원 3 |
+| cop-ui | 팀원 4 |
+
+남의 영역을 고쳐야 하면 고치지 말고 담당자에게 요청할 내용을 정리해 사람에게 보여준다.
+
+## 명령
+- 설치·브랜치: `scripts/setup.sh <모듈>`
+- 개발 실행: `scripts/dev.sh` / 시연 실행: `scripts/demo.sh`
+- 모듈 테스트: `uv run pytest modules/<m>`
+- 반영: `scripts/ship.sh` (/ship) — 최신 main 반영 + 변경 모듈 테스트 + 데모 smoke test + push
+- 지식 정리: /kb-save · 결정 제안: /decide
+
+## 지식과 결정
+- 조사 결과는 답변으로만 끝내지 말고 `knowledge/inbox/`에 원문을 넣고 /kb-save로 카드를 만든다. 출처 없는 내용은 `confidence: 추정`.
+- 사람이 결정을 말하면 /decide로 `제안` 문서를 만들고 확정을 요청한다. 너는 `확정`으로 바꿀 수 없다.
+
+## 하지 말 것
+- CLAUDE.md / CLAUDE.local.md 생성 (Claude가 이 파일을 무시하게 됨)
+- 자동 생성 파일 수정: `tasks/BOARD.md`, `knowledge/INDEX.md`, `decisions/INDEX.md`, `contracts/schema/`, `contracts.gen.ts`
+- 비공개·수출통제 데이터, 실제 개인 식별 정보 사용
+- 시연 경로에서 외부 네트워크 호출
+
+## 시간이 급할 때
+- `git commit --no-verify` 허용(ship의 smoke test는 유지).
+- 일요일 06:00 이후 `KDTH_FREEZE=1`: 구조 검사는 경고만, smoke test만 차단.
