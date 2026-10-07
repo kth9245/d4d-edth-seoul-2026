@@ -1,0 +1,11 @@
+# 서울시청 주변 보호 지점(origin)으로 접근하는 드론 2, 풍선 1, 새 떼 1. 가상 데이터.
+name: seoul_mixed
+start_ms: 1760061600000
+duration_s: 120
+step_ms: 500
+origin: {lat: 37.5665, lon: 126.978}
+objects:
+  - {id: drone-a, kind: drone, start_east_m: -1500, start_north_m: 600, alt_m: 120, vel_east_mps: 14, vel_north_mps: -5}
+  - {id: drone-b, kind: drone, start_east_m: 1200, start_north_m: 1400, alt_m: 80, vel_east_mps: -9, vel_north_mps: -12, appear_s: 20}
+  - {id: balloon-1, kind: balloon, start_east_m: -400, start_north_m: -1800, alt_m: 900, vel_east_mps: 1.5, vel_north_mps: 2.5}
+  - {id: birds-1, kind: bird, start_east_m: 600, start_north_m: -300, alt_m: 40, vel_east_mps: -7, vel_north_mps: 6, appear_s: 10}
