@@ -39,38 +39,54 @@ def _spec_problems(mod: Path) -> list[str]:
     return out
 
 
-def _length_problems(root: Path) -> list[str]:
-    out = []
+def _code_files(root: Path, paths: list[str] | None):
+    if paths is not None:
+        yield from (
+            root / r for r in paths if r.split("/")[0] in CODE_DIRS and (root / r).is_file()
+        )
+        return
     for d in CODE_DIRS:
-        for p in (root / d).rglob("*"):
-            if p.suffix not in (".py", ".ts", ".tsx") or p.name in GENERATED:
-                continue
-            if SKIP_DIRS & set(p.relative_to(root).parts):
-                continue
-            rel = p.relative_to(root).as_posix()
-            limit = (
-                80
-                if p.parent.name == "actions" and rel.startswith("modules/") and p.suffix == ".py"
-                else 200
-            )
-            n = len(p.read_text(encoding="utf-8").splitlines())
-            if n > limit:
-                out.append(f"{rel}: {n}줄 (기준 {limit}줄). 쪼개세요.")
+        yield from (root / d).rglob("*")
+
+
+def _length_problems(root: Path, paths: list[str] | None = None) -> list[str]:
+    out = []
+    for p in _code_files(root, paths):
+        if p.suffix not in (".py", ".ts", ".tsx") or p.name in GENERATED:
+            continue
+        if SKIP_DIRS & set(p.relative_to(root).parts):
+            continue
+        rel = p.relative_to(root).as_posix()
+        limit = (
+            80
+            if p.parent.name == "actions" and rel.startswith("modules/") and p.suffix == ".py"
+            else 200
+        )
+        n = len(p.read_text(encoding="utf-8").splitlines())
+        if n > limit:
+            out.append(f"{rel}: {n}줄 (기준 {limit}줄). 쪼개세요.")
     return out
 
 
-def problems(root: Path) -> list[str]:
+def problems(root: Path, paths: list[str] | None = None) -> list[str]:
     out = []
+    touched = (
+        None
+        if paths is None
+        else {r.split("/")[1] for r in paths if r.startswith("modules/") and r.count("/") >= 2}
+    )
     for mod in sorted((root / "modules").glob("*/")):
-        if (mod / "__init__.py").exists():
+        if (mod / "__init__.py").exists() and (touched is None or mod.name in touched):
             out += _spec_problems(mod)
-    return out + _length_problems(root)
+    return out + _length_problems(root, paths)
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=str(Path(__file__).resolve().parent.parent))
-    found = problems(Path(ap.parse_args().root))
+    ap.add_argument("paths", nargs="*", help="check only modules/files touched by these paths")
+    a = ap.parse_args()
+    found = problems(Path(a.root), a.paths or None)
     if not found:
         return
     freeze = os.environ.get("KDTH_FREEZE") == "1"

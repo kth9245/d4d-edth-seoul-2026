@@ -1,3 +1,4 @@
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -19,6 +20,7 @@ def make_clone(tmp_path: Path) -> tuple[Path, Path]:
     shutil.copytree(
         ROOT,
         work,
+        symlinks=True,
         ignore=shutil.ignore_patterns(
             ".git", "node_modules", "dist", ".venv", "*.pmtiles", ".tools", "__pycache__"
         ),
@@ -107,3 +109,26 @@ def test_ship_reports_rebase_in_progress(tmp_path):
     (work / git_dir).mkdir(parents=True, exist_ok=True)
     r = run_ship(work)
     assert r.returncode == 1 and "rebase 진행 중" in r.stdout + r.stderr
+
+
+def test_ship_runs_tests_when_only_tests_dir_changed(tmp_path):
+    _, work = make_clone(tmp_path)
+    (work / "tests/test_zz_broken.py").write_text("def test_zz_broken():\n    assert False\n")
+    git(work, "add", "-A")
+    git(work, "commit", "-qm", "only tests")
+    r = run_ship(work)
+    assert r.returncode == 1 and "test_zz_broken" in r.stdout + r.stderr
+
+
+def test_ship_freeze_downgrades_test_failure_to_warning(tmp_path):
+    remote, work = make_clone(tmp_path)
+    t = work / "modules/tracking/tests/test_delete_stale_tracks.py"
+    t.write_text(t.read_text() + "\n\ndef test_broken():\n    assert False\n")
+    git(work, "commit", "-qam", "break")
+    env = {**os.environ, "KDTH_FREEZE": "1"}
+    r = subprocess.run(
+        ["bash", "scripts/ship.sh"], cwd=work, capture_output=True, text=True, env=env
+    )
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert "경고" in r.stdout + r.stderr
+    assert "break" in git(work, "log", "--oneline", "origin/main", "-1")

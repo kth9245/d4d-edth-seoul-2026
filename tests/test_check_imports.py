@@ -36,3 +36,11 @@ def test_knowledge_import_blocked_and_shared_cannot_import_modules(tmp_path):
 def test_relative_imports_inside_module_ok(tmp_path):
     write(tmp_path, "modules/sim/pipeline.py", "from .actions.a import a\n")
     assert problems(tmp_path) == []
+
+
+def test_scoped_paths_only_check_given_files(tmp_path):
+    write(tmp_path, "modules/gateway/pipeline.py", "from modules.tracking.actions.a import a\n")
+    write(tmp_path, "modules/assess/ok.py", "x = 1\n")
+    assert problems(tmp_path, ["modules/assess/ok.py"]) == []
+    assert len(problems(tmp_path, ["modules/gateway/pipeline.py"])) == 1
+    assert len(problems(tmp_path)) == 1

@@ -60,3 +60,19 @@ def test_ts_module_without_init_is_length_checked_only(tmp_path):
     (tmp_path / "modules" / "cop-ui" / "node_modules" / "z" / "big.ts").write_text("x\n" * 999)
     out = problems(tmp_path)
     assert len(out) == 1 and "App.tsx" in out[0]
+
+
+def test_scoped_spec_and_length_checks_only_touched(tmp_path):
+    m = mod(tmp_path, "")
+    (m / "actions" / "smooth_tracks.py").write_text("x = 1\n")
+    other = tmp_path / "modules" / "assess"
+    (other / "actions").mkdir(parents=True)
+    (other / "__init__.py").write_text("")
+    (other / "actions" / "rogue_thing.py").write_text("x = 1\n" * 81)
+    (other / "pipeline.py").write_text("x = 1\n" * 201)
+    out = problems(tmp_path, ["modules/tracking/actions/smooth_tracks.py"])
+    assert out and all("tracking" in p for p in out)
+    out = problems(tmp_path, ["modules/assess/pipeline.py"])
+    assert any("pipeline.py" in p and "200" in p for p in out)
+    assert not any("81줄" in p for p in out)
+    assert any("81줄" in p for p in problems(tmp_path))

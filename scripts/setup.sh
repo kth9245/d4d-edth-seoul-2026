@@ -3,22 +3,25 @@
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 mod="${1:?사용법: scripts/setup.sh <모듈> [--worktree <모듈2>]}"
-[ -d "modules/$mod" ] || [ "$mod" = "infra" ] || [ "$mod" = "contracts" ] || { echo "모듈 없음: $mod"; exit 1; }
+if [ ! -d "modules/$mod" ] && [ "$mod" != "infra" ] && [ "$mod" != "contracts" ]; then
+  echo "[setup] modules/$mod 가 아직 없습니다. 브랜치 $mod/work 를 만든 뒤 새 모듈을 만드세요:"
+  echo "        uv run python scripts/new_module.py $mod <PREFIX>   (예: edge EDG)"
+fi
 if [ $# -gt 3 ] || { [ $# -gt 1 ] && [ "${2:-}" != "--worktree" ]; }; then
   echo "사용법: scripts/setup.sh <모듈> [--worktree <모듈2>]"; exit 1
 fi
 
-uv sync
-(cd modules/cop-ui && npm ci --silent)
 git config core.hooksPath .githooks
 chmod +x scripts/*.sh .githooks/*
 git fetch -q origin
 if git show-ref --quiet "refs/heads/$mod/work"; then git switch -q "$mod/work"
 else git switch -q -c "$mod/work" origin/main; fi
 
+uv sync
+(cd modules/cop-ui && npm ci --silent) || echo "[setup] 경고: npm ci 실패 — UI 작업 전에 'cd modules/cop-ui && npm ci' 재실행"
+
 if [ "${2:-}" = "--worktree" ]; then
   wt="${3:?--worktree 다음에 모듈 이름}"
-  [ -d "modules/$wt" ] || [ "$wt" = "infra" ] || [ "$wt" = "contracts" ] || { echo "모듈 없음: $wt"; exit 1; }
   dir="../$(basename "$PWD")-$wt"
   if [ -d "$dir" ]; then
     echo "worktree 이미 있음: $dir (건너뜀)"
