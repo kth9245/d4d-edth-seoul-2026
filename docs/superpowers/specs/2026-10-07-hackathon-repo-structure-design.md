@@ -35,7 +35,7 @@
 | 백엔드·엔진 | Python 3.11+, FastAPI, pydantic v2, uv(패키지 관리) | 수치·AI 라이브러리 활용 |
 | 화면 | React + Vite + TypeScript, MapLibre GL | 지도 타일은 오프라인 파일로 동봉 |
 | 모듈 연결 | gateway가 파이프라인을 실행하고 WebSocket으로 화면에 송출 | |
-| 검사 도구 | ruff, import-linter, pytest / eslint(max-lines) | |
+| 검사 도구 | ruff, pytest, `tools/check_imports.py`(모듈 경계), eslint(max-lines) | |
 
 팀원이 다른 스택을 고르면 `modules/*/` 내부와 lint 도구만 바뀐다. 규칙 문서, 계약, SPEC, 지식·결정 저장소, 차단 스크립트의 구조는 그대로 유지한다.
 
@@ -64,9 +64,9 @@ d4d-edth-seoul-2026/
 │   ├── assess/            # Track 분류(드론/풍선/조류)와 위협도
 │   ├── respond/           # 대응 옵션 추천 (교전규칙·부수피해 고려)
 │   ├── gateway/           # 파이프라인 실행 + WebSocket 송출
-│   └── cop-ui/            # 지도 관제 화면 (TypeScript)
+│   ├── cop-ui/            # 지도 관제 화면 (TypeScript)
+│   └── edge/              # (선택, 필요 시 생성) SC1 온디바이스 AI / SC2 NUCODE 보드 코드
 │
-├── edge/                  # (선택) SC1 온디바이스 AI / SC2 NUCODE 보드 코드
 ├── shared/                # 최소 공통 코드: 좌표 계산, 시계. 비대해지지 않게 유지
 │
 ├── knowledge/             # AI가 조사·정리한 지식 (참고용, 틀릴 수 있음)
@@ -89,8 +89,9 @@ d4d-edth-seoul-2026/
 │   └── BOARD.md           # 자동 생성 작업판 (모든 모듈 SPEC.md에서 생성)
 │
 ├── tools/guard/           # Claude·Codex 공용 차단 스크립트
-├── .claude/               # settings.json(hook 등록), skills/
-├── .codex/                # hooks.json(같은 guard 호출), skill
+├── .agents/skills/        # skill 원본 (Codex가 읽음)
+├── .claude/               # settings.json(hook 등록), skills → ../.agents/skills symlink
+├── .codex/                # hooks.json(같은 guard 호출)
 ├── .githooks/pre-commit   # 커밋 검사 (도구 무관)
 │
 ├── scripts/
@@ -103,7 +104,7 @@ d4d-edth-seoul-2026/
 │   ├── ship.sh            # main 최신 반영 + 검사 + push
 │   ├── dev.sh             # 개발용 전체 실행
 │   └── demo.sh            # 시연용 전체 실행 (오프라인)
-└── pyproject.toml         # ruff, import-linter, pytest 설정
+└── pyproject.toml         # ruff, pytest 설정
 ```
 
 ### 3.1 문제별 모듈 교체
@@ -125,6 +126,7 @@ modules/tracking/
 ├── SPEC.md          # 액션 표. 여기 없는 액션 파일은 만들 수 없음
 ├── __init__.py      # 공개 API. 다른 모듈은 이것만 import
 ├── pipeline.py      # 액션을 순서대로 호출만 함 (로직 없음)
+├── types.py         # (선택) 모듈 내부에서만 쓰는 타입
 ├── actions/<verb_noun>.py
 └── tests/test_<verb_noun>.py
 ```
@@ -238,7 +240,7 @@ supersedes: null
 |---|---|
 | `<모듈>/…` (예: `tracking/kalman`) | `modules/<모듈>/**`, `knowledge/**`, `decisions/log/**`(새 제안 문서만) |
 | `contracts/…` | `contracts/**`, `modules/cop-ui/src/contracts.gen.ts` |
-| `infra/…` | 루트 `AGENTS.md`, `scripts/`, `tools/`, `.claude/`, `.codex/`, `.githooks/`, `shared/`, `demo/`, `docs/` |
+| `infra/…` | 루트 `AGENTS.md`, `tests/`, `scripts/`, `tools/`, `.claude/`, `.codex/`, `.githooks/`, `shared/`, `demo/`, `docs/` |
 | 그 외 (예: `main`) | 모듈 수정 차단, "브랜치를 `<모듈>/<주제>`로 만들라"고 안내 |
 
 어느 브랜치에서도 AI는 `status: 확정` 결정 문서와 `POLICY.md`를 수정할 수 없다.
@@ -259,7 +261,7 @@ supersedes: null
 
 ### 8.3 2단계: 커밋 (`.githooks/pre-commit` → `scripts/check.sh`)
 1. `ruff check --fix` + `ruff format` 후 결과를 커밋에 자동 포함. 자동 수정 불가 오류만 차단.
-2. import-linter: 모듈은 다른 모듈의 공개 API(`modules.<m>`)와 `shared`, `contracts`만 import. `knowledge.spikes` import 금지.
+2. `tools/check_imports.py`(AST 기반, 의존성 없음): 모듈은 다른 모듈의 루트 공개 API(`from modules.<m> import ...`)와 `shared`, `contracts`만 import. `modules.<다른모듈>.<하위>` import 금지, `knowledge` import 금지, `shared`·`contracts`는 `modules`를 import하지 않음. import-linter에는 '루트 공개 API만 허용' 규칙이 없어서 전용 스크립트로 대체.
 3. SPEC 동기화: 모든 액션 파일이 SPEC.md에 있고, 각 액션에 테스트 파일이 있다.
 4. 파일 길이.
 5. `sync_docs.py` 실행. 정책 구간이 바뀐 루트 AGENTS.md만 커밋에 자동 포함하고, BOARD·INDEX는 로컬 파일만 갱신한다(8.6). 차단하지 않음.
@@ -270,7 +272,7 @@ supersedes: null
 ### 8.4 3단계: push (`scripts/ship.sh`)
 1. `git fetch` 후 현재 브랜치를 `origin/main` 위로 rebase.
 2. 변경된 모듈의 pytest.
-3. 데모 smoke test: 화면 없이 기본 시나리오를 10초 실행해 예외 없이 끝나는지 확인.
+3. 데모 smoke test(`scripts/smoke.py`): 화면 없이 기본 시나리오를 시뮬레이션 시간 10초만큼 빠르게 실행해, 예외 없이 모든 프레임이 계약 형식을 만족하는지 확인.
 4. `git push origin HEAD:main` 후 작업 브랜치 유지.
 
 실패 시 실패한 테스트와 이유만 짧게 출력한다. 목표 20초 이하. 전체 테스트는 `scripts/check.sh --all`로 필요할 때만.
@@ -291,7 +293,7 @@ supersedes: null
 | 루트 AGENTS.md | 읽음 (CLAUDE.md가 없을 때, v2.1.277 이상) | 읽음 |
 | 모듈 AGENTS.md | 그 폴더 파일을 열 때 자동 로드 | 실행 위치까지만 로드 → **모듈 폴더에서 실행** (`cd modules/tracking && codex`) |
 | 규칙 강제 | `.claude/settings.json` hook → guard | `.codex/hooks.json` hook → 같은 guard |
-| 반복 명령 | `.claude/skills/` | Codex skill 폴더 |
+| 반복 명령 | `.claude/skills/` (`.agents/skills/`를 가리키는 symlink) | `.agents/skills/` (원본) |
 
 - CLAUDE.md, CLAUDE.local.md를 만들지 않는다. 하나라도 있으면 Claude가 AGENTS.md를 무시한다. 개인 설정은 `~/.claude/CLAUDE.md`에 둔다.
 - 루트 AGENTS.md에 "모듈 작업 전 그 모듈의 AGENTS.md와 SPEC.md를 먼저 읽는다"를 명시한다(Codex를 루트에서 실행한 경우 대비).
