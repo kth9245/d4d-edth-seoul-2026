@@ -154,3 +154,60 @@ def test_cli_exit_codes(tmp_path):
     res = subprocess.run([sys.executable, str(ROOT / "tools/guard/check_edit.py"), "pre"],
                          input="not json", capture_output=True, text=True)
     assert res.returncode == 0
+
+
+def test_edit_replacing_status_with_confirmed_blocked(tmp_path):
+    r = repo(tmp_path)
+    d = r / "decisions/log/0002.md"
+    d.write_text("---\nstatus: 제안\n---\n", encoding="utf-8")
+    p = claude(d, tool="Edit")
+    p["tool_input"].update(old_string="제안", new_string="확정")
+    assert g.check_pre(p, r, "tracking/x", False)
+    p["tool_input"].update(new_string="보류")
+    assert g.check_pre(p, r, "tracking/x", False) is None
+
+
+def test_quoted_confirmed_status_blocked(tmp_path):
+    r = repo(tmp_path)
+    p = claude(r / "decisions/log/0004.md", '---\nstatus: "확정"\n---\n')
+    assert g.check_pre(p, r, "tracking/x", False)
+
+
+def test_post_flags_confirmed_decision(tmp_path):
+    r = repo(tmp_path)
+    d = r / "decisions/log/0005.md"
+    d.write_text("---\nstatus: 확정\n---\n", encoding="utf-8")
+    assert g.check_post(claude(d, tool="Edit"), r, False)
+    assert g.check_post(claude(d, tool="Edit"), r, True)
+    d.write_text("---\nstatus: 제안\n---\n", encoding="utf-8")
+    assert g.check_post(claude(d, tool="Edit"), r, False) is None
+
+
+def test_branch_during_rebase_in_worktree(tmp_path):
+    env = {"GIT_AUTHOR_NAME": "a", "GIT_AUTHOR_EMAIL": "a@a", "GIT_COMMITTER_NAME": "a",
+           "GIT_COMMITTER_EMAIL": "a@a", "PATH": "/usr/bin:/bin"}
+    main = tmp_path / "main"
+    subprocess.run(["git", "init", "-q", "-b", "main", str(main)], check=True)
+    subprocess.run(["git", "-C", str(main), "commit", "-q", "--allow-empty", "-m", "x"], check=True, env=env)
+    wt = tmp_path / "wt"
+    subprocess.run(["git", "-C", str(main), "worktree", "add", "-q", "--detach", str(wt)], check=True)
+    gd = subprocess.run(["git", "-C", str(wt), "rev-parse", "--absolute-git-dir"], capture_output=True,
+                        text=True, check=True).stdout.strip()
+    (Path(gd) / "rebase-merge").mkdir()
+    (Path(gd) / "rebase-merge" / "head-name").write_text("refs/heads/tracking/kalman\n")
+    assert g.current_branch(wt) == "tracking/kalman"
+
+
+def test_cli_fails_open_on_malformed_payload(tmp_path):
+    for bad in ("[]", '{"cwd": 5}', '"x"'):
+        res = subprocess.run([sys.executable, str(ROOT / "tools/guard/check_edit.py"), "pre"],
+                             input=bad, capture_output=True, text=True)
+        assert res.returncode == 0, bad
+
+
+def test_codex_move_into_actions_requires_spec(tmp_path):
+    r = repo(tmp_path)
+    patch = ("*** Begin Patch\n*** Update File: pipeline.py\n*** Move to: actions/smooth_tracks.py\n"
+             "@@\n+b\n*** End Patch\n")
+    msg = g.check_pre(codex(r / "modules/tracking", patch), r, "tracking/x", False)
+    assert msg and "smooth_tracks" in msg

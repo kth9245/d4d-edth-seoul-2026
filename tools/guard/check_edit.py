@@ -24,7 +24,7 @@ INFRA = ["AGENTS.md", "README.md", "pyproject.toml", "uv.lock", ".gitignore", "t
          "docs/*"]
 CONTRACTS = ["contracts/*", "modules/cop-ui/src/contracts.gen.ts"]
 PATCH_RE = re.compile(r"^\*\*\* (Add|Update|Delete) File: (.+)$|^\*\*\* Move to: (.+)$", re.M)
-CONFIRMED_RE = re.compile(r"^\+?status:\s*확정", re.M)
+CONFIRMED_RE = re.compile(r"^\+?status:\s*[\"']?확정", re.M)
 
 
 @dataclass
@@ -52,13 +52,15 @@ def extract_edits(payload: dict) -> list[Edit]:
     for block in blocks:
         for m in PATCH_RE.finditer(block):
             rel = m.group(2) or m.group(3)
-            edits.append(Edit((cwd / rel.strip()).resolve(), block, m.group(1) == "Add"))
+            edits.append(Edit((cwd / rel.strip()).resolve(), block, m.group(1) == "Add" or bool(m.group(3))))
     return edits
 
 
 def current_branch(root: Path) -> str:
-    for d in ("rebase-merge", "rebase-apply"):
-        head = root / ".git" / d / "head-name"
+    g = subprocess.run(["git", "-C", str(root), "rev-parse", "--git-path", "rebase-merge/head-name",
+                        "--git-path", "rebase-apply/head-name"], capture_output=True, text=True)
+    for line in g.stdout.splitlines():
+        head = root / line
         if head.exists():
             return head.read_text().strip().removeprefix("refs/heads/")
     r = subprocess.run(["git", "-C", str(root), "branch", "--show-current"],
@@ -84,6 +86,18 @@ def _block_reason(rel: str, branch: str) -> str:
             f"이 파일은 {need} 브랜치 담당입니다. 다른 사람 영역이면 담당자에게 요청하세요.")
 
 
+def _after_edit(payload: dict, e: Edit) -> str:
+    """Text of an existing file after Claude Edit/MultiEdit replacements (best effort)."""
+    ti = payload.get("tool_input") or {}
+    if not e.path.exists() or "content" in ti:
+        return ""
+    text = e.path.read_text(encoding="utf-8")
+    for p in ti.get("edits") or [ti]:
+        if p.get("old_string"):
+            text = text.replace(p["old_string"], p.get("new_string", ""), 1)
+    return text
+
+
 def check_pre(payload: dict, root: Path, branch: str, freeze: bool) -> str | None:
     modules = {p.name for p in (root / "modules").iterdir() if p.is_dir()} \
         if (root / "modules").is_dir() else set()
@@ -97,7 +111,7 @@ def check_pre(payload: dict, root: Path, branch: str, freeze: bool) -> str | Non
         if rel.startswith("decisions/log/"):
             if e.path.exists() and CONFIRMED_RE.search(e.path.read_text(encoding="utf-8")):
                 return f"[guard] `{rel}`은 확정된 결정입니다. 바꾸려면 사람에게 요청하세요."
-            if CONFIRMED_RE.search(e.new_text):
+            if CONFIRMED_RE.search(e.new_text) or CONFIRMED_RE.search(_after_edit(payload, e)):
                 return "[guard] AI는 결정을 `확정`으로 쓸 수 없습니다. `제안`으로 두고 사람에게 확정을 요청하세요."
         if not allowed(rel, branch, modules):
             return _block_reason(rel, branch)
@@ -110,9 +124,15 @@ def check_pre(payload: dict, root: Path, branch: str, freeze: bool) -> str | Non
 
 
 def check_post(payload: dict, root: Path, freeze: bool) -> str | None:
+    edits = extract_edits(payload)
+    for e in edits:
+        if "decisions/log/" in e.path.as_posix() and e.path.exists() and e.path.suffix == ".md" \
+                and CONFIRMED_RE.search(e.path.read_text(encoding="utf-8")):
+            return (f"[guard] `{e.path.name}`이 `확정` 상태가 되었습니다. AI는 결정을 확정할 수 없습니다. "
+                    "`status: 제안`으로 되돌리고 사람에게 확정을 요청하세요.")
     if freeze:
         return None
-    for e in extract_edits(payload):
+    for e in edits:
         if not e.path.exists() or e.path.suffix not in (".py", ".ts", ".tsx"):
             continue
         rel = e.path.relative_to(root.resolve()).as_posix() if e.path.is_relative_to(root.resolve()) else ""
@@ -124,20 +144,25 @@ def check_post(payload: dict, root: Path, freeze: bool) -> str | None:
     return None
 
 
-def main() -> None:
-    mode = sys.argv[1] if len(sys.argv) > 1 else "pre"
-    try:
-        payload = json.loads(sys.stdin.read())
-    except ValueError:
-        sys.exit(0)
+def _run(mode: str, raw: bytes) -> str | None:
+    payload = json.loads(raw.decode("utf-8"))
     cwd = payload.get("cwd") or os.getcwd()
     r = subprocess.run(["git", "-C", cwd, "rev-parse", "--show-toplevel"], capture_output=True, text=True)
     if r.returncode != 0:
-        sys.exit(0)
+        return None
     root = Path(r.stdout.strip())
     freeze = os.environ.get("KDTH_FREEZE") == "1"
-    msg = check_pre(payload, root, current_branch(root), freeze) if mode == "pre" \
-        else check_post(payload, root, freeze)
+    if mode == "pre":
+        return check_pre(payload, root, current_branch(root), freeze)
+    return check_post(payload, root, freeze)
+
+
+def main() -> None:
+    mode = sys.argv[1] if len(sys.argv) > 1 else "pre"
+    try:
+        msg = _run(mode, sys.stdin.buffer.read())
+    except Exception:  # fail open on malformed payloads / unexpected errors
+        sys.exit(0)
     if msg:
         print(msg, file=sys.stderr)
         sys.exit(2)
