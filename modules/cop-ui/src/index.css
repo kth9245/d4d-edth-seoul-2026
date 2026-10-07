@@ -1,0 +1,9 @@
+html, body, #root { margin: 0; height: 100%; background: #0b1320; color: #e6e6e6; font-family: system-ui, sans-serif; }
+.layout { display: grid; grid-template-columns: 1fr 360px; height: 100%; }
+.map { width: 100%; height: 100%; }
+aside { overflow-y: auto; padding: 12px; border-left: 1px solid #22304a; }
+.status { font-weight: 700; margin-bottom: 8px; }
+.status.ok { color: #52c41a; } .status.down { color: #ff4d4f; }
+.alert { padding: 8px; margin-bottom: 6px; border-radius: 6px; background: #14213a; }
+.alert.soft_kill { border-left: 4px solid #faad14; } .alert.hard_kill { border-left: 4px solid #ff4d4f; }
+.reason { font-size: 12px; opacity: 0.8; }
