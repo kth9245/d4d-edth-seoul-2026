@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+root="$(git rev-parse --show-toplevel)"
+py="$root/.venv/bin/python"; [ -x "$py" ] || py=python3
+"$py" "$root/scripts/sync_docs.py" >/dev/null 2>&1 || true

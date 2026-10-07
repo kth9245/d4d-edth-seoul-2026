@@ -22,7 +22,7 @@ extend-exclude = ["knowledge/spikes", "modules/cop-ui"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
-ignore = ["E501"]
+ignore = ["E501", "UP042"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "modules"]
