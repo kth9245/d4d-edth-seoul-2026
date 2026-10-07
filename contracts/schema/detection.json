@@ -1,0 +1,55 @@
+{
+  "$defs": {
+    "SensorType": {
+      "enum": [
+        "rf",
+        "eoir",
+        "radar"
+      ],
+      "title": "SensorType",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "sensor": {
+      "$ref": "#/$defs/SensorType"
+    },
+    "t_ms": {
+      "title": "T Ms",
+      "type": "integer"
+    },
+    "lat": {
+      "title": "Lat",
+      "type": "number"
+    },
+    "lon": {
+      "title": "Lon",
+      "type": "number"
+    },
+    "alt_m": {
+      "title": "Alt M",
+      "type": "number"
+    },
+    "strength": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Strength",
+      "type": "number"
+    }
+  },
+  "required": [
+    "id",
+    "sensor",
+    "t_ms",
+    "lat",
+    "lon",
+    "alt_m",
+    "strength"
+  ],
+  "title": "Detection",
+  "type": "object"
+}

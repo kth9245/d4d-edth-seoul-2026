@@ -1,0 +1,41 @@
+{
+  "$defs": {
+    "ObjectClass": {
+      "enum": [
+        "drone",
+        "balloon",
+        "bird",
+        "unknown"
+      ],
+      "title": "ObjectClass",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "track_id": {
+      "title": "Track Id",
+      "type": "string"
+    },
+    "object_class": {
+      "$ref": "#/$defs/ObjectClass"
+    },
+    "threat": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Threat",
+      "type": "number"
+    },
+    "reason": {
+      "title": "Reason",
+      "type": "string"
+    }
+  },
+  "required": [
+    "track_id",
+    "object_class",
+    "threat",
+    "reason"
+  ],
+  "title": "Assessment",
+  "type": "object"
+}

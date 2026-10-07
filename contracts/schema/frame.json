@@ -1,0 +1,162 @@
+{
+  "$defs": {
+    "Assessment": {
+      "properties": {
+        "track_id": {
+          "title": "Track Id",
+          "type": "string"
+        },
+        "object_class": {
+          "$ref": "#/$defs/ObjectClass"
+        },
+        "threat": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Threat",
+          "type": "number"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "track_id",
+        "object_class",
+        "threat",
+        "reason"
+      ],
+      "title": "Assessment",
+      "type": "object"
+    },
+    "ObjectClass": {
+      "enum": [
+        "drone",
+        "balloon",
+        "bird",
+        "unknown"
+      ],
+      "title": "ObjectClass",
+      "type": "string"
+    },
+    "Response": {
+      "properties": {
+        "track_id": {
+          "title": "Track Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/ResponseKind"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "track_id",
+        "kind",
+        "reason"
+      ],
+      "title": "Response",
+      "type": "object"
+    },
+    "ResponseKind": {
+      "enum": [
+        "observe",
+        "soft_kill",
+        "hard_kill"
+      ],
+      "title": "ResponseKind",
+      "type": "string"
+    },
+    "Track": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "t_ms": {
+          "title": "T Ms",
+          "type": "integer"
+        },
+        "lat": {
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "title": "Lon",
+          "type": "number"
+        },
+        "alt_m": {
+          "title": "Alt M",
+          "type": "number"
+        },
+        "vel_east_mps": {
+          "default": 0.0,
+          "title": "Vel East Mps",
+          "type": "number"
+        },
+        "vel_north_mps": {
+          "default": 0.0,
+          "title": "Vel North Mps",
+          "type": "number"
+        },
+        "hits": {
+          "default": 1,
+          "title": "Hits",
+          "type": "integer"
+        },
+        "last_seen_ms": {
+          "title": "Last Seen Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "t_ms",
+        "lat",
+        "lon",
+        "alt_m",
+        "last_seen_ms"
+      ],
+      "title": "Track",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "t_ms": {
+      "title": "T Ms",
+      "type": "integer"
+    },
+    "tracks": {
+      "items": {
+        "$ref": "#/$defs/Track"
+      },
+      "title": "Tracks",
+      "type": "array"
+    },
+    "assessments": {
+      "items": {
+        "$ref": "#/$defs/Assessment"
+      },
+      "title": "Assessments",
+      "type": "array"
+    },
+    "responses": {
+      "items": {
+        "$ref": "#/$defs/Response"
+      },
+      "title": "Responses",
+      "type": "array"
+    }
+  },
+  "required": [
+    "t_ms",
+    "tracks",
+    "assessments",
+    "responses"
+  ],
+  "title": "Frame",
+  "type": "object"
+}

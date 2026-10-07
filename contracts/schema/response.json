@@ -1,0 +1,33 @@
+{
+  "$defs": {
+    "ResponseKind": {
+      "enum": [
+        "observe",
+        "soft_kill",
+        "hard_kill"
+      ],
+      "title": "ResponseKind",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "track_id": {
+      "title": "Track Id",
+      "type": "string"
+    },
+    "kind": {
+      "$ref": "#/$defs/ResponseKind"
+    },
+    "reason": {
+      "title": "Reason",
+      "type": "string"
+    }
+  },
+  "required": [
+    "track_id",
+    "kind",
+    "reason"
+  ],
+  "title": "Response",
+  "type": "object"
+}

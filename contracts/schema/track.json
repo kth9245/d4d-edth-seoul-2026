@@ -1,0 +1,53 @@
+{
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "t_ms": {
+      "title": "T Ms",
+      "type": "integer"
+    },
+    "lat": {
+      "title": "Lat",
+      "type": "number"
+    },
+    "lon": {
+      "title": "Lon",
+      "type": "number"
+    },
+    "alt_m": {
+      "title": "Alt M",
+      "type": "number"
+    },
+    "vel_east_mps": {
+      "default": 0.0,
+      "title": "Vel East Mps",
+      "type": "number"
+    },
+    "vel_north_mps": {
+      "default": 0.0,
+      "title": "Vel North Mps",
+      "type": "number"
+    },
+    "hits": {
+      "default": 1,
+      "title": "Hits",
+      "type": "integer"
+    },
+    "last_seen_ms": {
+      "title": "Last Seen Ms",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "id",
+    "t_ms",
+    "lat",
+    "lon",
+    "alt_m",
+    "last_seen_ms"
+  ],
+  "title": "Track",
+  "type": "object"
+}
