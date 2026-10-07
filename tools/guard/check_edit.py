@@ -1,0 +1,147 @@
+"""Edit guard for Claude Code (Edit/Write) and Codex (apply_patch). Stdlib only.
+
+Usage (hook): python3 tools/guard/check_edit.py pre|post   < hook JSON on stdin
+Exit 0 = allow, exit 2 = block (reason on stderr, shown to the AI).
+"""
+
+import json
+import os
+import re
+import subprocess
+import sys
+from dataclasses import dataclass
+from fnmatch import fnmatch
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from tools.spec import spec_actions  # noqa: E402
+
+PROTECTED = [".env", ".env.*", "decisions/POLICY.md", "tasks/BOARD.md", "knowledge/INDEX.md",
+             "decisions/INDEX.md", "contracts/schema/*", "modules/cop-ui/src/contracts.gen.ts"]
+ALWAYS = ["knowledge/*", "decisions/log/*"]
+INFRA = ["AGENTS.md", "README.md", "pyproject.toml", "uv.lock", ".gitignore", "tests/*", "scripts/*",
+         "tools/*", ".claude/*", ".codex/*", ".agents/*", ".githooks/*", "shared/*", "demo/*",
+         "docs/*"]
+CONTRACTS = ["contracts/*", "modules/cop-ui/src/contracts.gen.ts"]
+PATCH_RE = re.compile(r"^\*\*\* (Add|Update|Delete) File: (.+)$|^\*\*\* Move to: (.+)$", re.M)
+CONFIRMED_RE = re.compile(r"^\+?status:\s*확정", re.M)
+
+
+@dataclass
+class Edit:
+    path: Path
+    new_text: str
+    is_new: bool
+
+
+def extract_edits(payload: dict) -> list[Edit]:
+    ti = payload.get("tool_input") or {}
+    cwd = Path(payload.get("cwd") or os.getcwd())
+    fp = ti.get("file_path") or ti.get("notebook_path")
+    if fp:
+        p = (cwd / fp).resolve()
+        text = ti.get("content") or ti.get("new_string") or ""
+        text += "".join(e.get("new_string", "") for e in ti.get("edits") or [])
+        return [Edit(p, text, not p.exists())]
+    cmd = ti.get("command")
+    if isinstance(cmd, list):
+        cmd = "\n".join(cmd)
+    if not isinstance(cmd, str) or "*** Begin Patch" not in cmd:
+        return []
+    edits, blocks = [], re.split(r"(?=^\*\*\* (?:Add|Update|Delete) File: )", cmd, flags=re.M)
+    for block in blocks:
+        for m in PATCH_RE.finditer(block):
+            rel = m.group(2) or m.group(3)
+            edits.append(Edit((cwd / rel.strip()).resolve(), block, m.group(1) == "Add"))
+    return edits
+
+
+def current_branch(root: Path) -> str:
+    for d in ("rebase-merge", "rebase-apply"):
+        head = root / ".git" / d / "head-name"
+        if head.exists():
+            return head.read_text().strip().removeprefix("refs/heads/")
+    r = subprocess.run(["git", "-C", str(root), "branch", "--show-current"],
+                       capture_output=True, text=True)
+    return r.stdout.strip()
+
+
+def allowed(rel: str, branch: str, modules: set[str]) -> bool:
+    if any(fnmatch(rel, pat) for pat in ALWAYS):
+        return True
+    prefix = branch.split("/", 1)[0] if "/" in branch else ""
+    if prefix == "infra":
+        return any(fnmatch(rel, pat) for pat in INFRA)
+    if prefix == "contracts":
+        return any(fnmatch(rel, pat) for pat in CONTRACTS)
+    return prefix in modules and rel.startswith(f"modules/{prefix}/")
+
+
+def _block_reason(rel: str, branch: str) -> str:
+    owner = rel.split("/")[1] if rel.startswith("modules/") and rel.count("/") >= 2 else None
+    need = f"`{owner}/<주제>`" if owner else "`infra/<주제>` 또는 `contracts/<주제>`"
+    return (f"[guard] 현재 브랜치 `{branch or '(없음)'}`에서는 `{rel}`을 수정할 수 없습니다. "
+            f"이 파일은 {need} 브랜치 담당입니다. 다른 사람 영역이면 담당자에게 요청하세요.")
+
+
+def check_pre(payload: dict, root: Path, branch: str, freeze: bool) -> str | None:
+    modules = {p.name for p in (root / "modules").iterdir() if p.is_dir()} \
+        if (root / "modules").is_dir() else set()
+    for e in extract_edits(payload):
+        try:
+            rel = e.path.relative_to(root.resolve()).as_posix()
+        except ValueError:
+            continue
+        if any(fnmatch(rel, pat) for pat in PROTECTED):
+            return f"[guard] `{rel}`은 보호 파일입니다(자동 생성·정책·비밀값). 직접 수정하지 마세요."
+        if rel.startswith("decisions/log/"):
+            if e.path.exists() and CONFIRMED_RE.search(e.path.read_text(encoding="utf-8")):
+                return f"[guard] `{rel}`은 확정된 결정입니다. 바꾸려면 사람에게 요청하세요."
+            if CONFIRMED_RE.search(e.new_text):
+                return "[guard] AI는 결정을 `확정`으로 쓸 수 없습니다. `제안`으로 두고 사람에게 확정을 요청하세요."
+        if not allowed(rel, branch, modules):
+            return _block_reason(rel, branch)
+        m = re.fullmatch(r"modules/([^/]+)/actions/([a-z0-9_]+)\.py", rel)
+        if m and e.is_new and not freeze and m.group(2) != "__init__":
+            if m.group(2) not in spec_actions(root / "modules" / m.group(1) / "SPEC.md"):
+                return (f"[guard] 액션 `{m.group(2)}`이 modules/{m.group(1)}/SPEC.md에 없습니다. "
+                        f"`python scripts/new_action.py {m.group(1)} {m.group(2)} \"설명\"`으로 만드세요.")
+    return None
+
+
+def check_post(payload: dict, root: Path, freeze: bool) -> str | None:
+    if freeze:
+        return None
+    for e in extract_edits(payload):
+        if not e.path.exists() or e.path.suffix not in (".py", ".ts", ".tsx"):
+            continue
+        rel = e.path.relative_to(root.resolve()).as_posix() if e.path.is_relative_to(root.resolve()) else ""
+        limit = 80 if re.fullmatch(r"modules/[^/]+/actions/[^/]+\.py", rel) else 200
+        n = len(e.path.read_text(encoding="utf-8").splitlines())
+        if rel and n > limit and "knowledge/spikes/" not in rel:
+            return (f"[guard] `{rel}`이 {n}줄로 기준 {limit}줄을 넘었습니다. "
+                    "역할별로 액션(새 SPEC 행)이나 파일을 쪼개세요.")
+    return None
+
+
+def main() -> None:
+    mode = sys.argv[1] if len(sys.argv) > 1 else "pre"
+    try:
+        payload = json.loads(sys.stdin.read())
+    except ValueError:
+        sys.exit(0)
+    cwd = payload.get("cwd") or os.getcwd()
+    r = subprocess.run(["git", "-C", cwd, "rev-parse", "--show-toplevel"], capture_output=True, text=True)
+    if r.returncode != 0:
+        sys.exit(0)
+    root = Path(r.stdout.strip())
+    freeze = os.environ.get("KDTH_FREEZE") == "1"
+    msg = check_pre(payload, root, current_branch(root), freeze) if mode == "pre" \
+        else check_post(payload, root, freeze)
+    if msg:
+        print(msg, file=sys.stderr)
+        sys.exit(2)
+
+
+if __name__ == "__main__":
+    main()
