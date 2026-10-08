@@ -17,7 +17,7 @@ def test_module_agents_md_limit():
 
 def test_policy_synced_into_agents():
     agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
-    assert "인터넷 없이" in agents
+    assert "가상(synthetic)" in agents
 
 
 def test_problem_doc_lists_t1_problems():

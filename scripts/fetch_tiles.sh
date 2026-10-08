@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Download Seoul metro basemap tiles once (needs internet). Demo then runs offline.
+# Download Seoul metro basemap tiles once. The map then loads from a local file (fast, no tile server).
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 OUT=modules/cop-ui/public/tiles/seoul.pmtiles

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Demo run (offline): build UI, serve UI + /ws from one process on :8000.
+# Demo run: build UI, serve UI + /ws from one process on :8000.
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 if ! (cd modules/cop-ui && npm run build --silent); then

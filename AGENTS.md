@@ -60,6 +60,7 @@ Korean Defense Tech Hackathon 2026 (D4D × EDTH SEOUL) 팀 저장소. 24시간 �
 - 개발 실행: `scripts/dev.sh` / 시연 실행: `scripts/demo.sh`
 - 모듈 테스트: `uv run pytest modules/<m>`
 - 반영: `scripts/ship.sh` (/ship) — 최신 main 반영 + 변경 모듈 테스트 + 데모 smoke test + push
+- 원격 브랜치는 만들지 않는다. 작업 브랜치는 로컬에만 두고, 끝나면 main에 병합해 main만 push한다(ship.sh가 이 순서: rebase → 검사 → origin main에 push → 로컬 main 맞춤). PR과 원격 브랜치 push는 쓰지 않는다.
 - 지식 정리: /kb-save · 결정 제안: /decide
 
 ## 의존성 추가
@@ -75,7 +76,6 @@ Korean Defense Tech Hackathon 2026 (D4D × EDTH SEOUL) 팀 저장소. 24시간 �
 - CLAUDE.md / CLAUDE.local.md 생성 (Claude가 이 파일을 무시하게 됨)
 - 자동 생성 파일 수정: `tasks/BOARD.md`, `knowledge/INDEX.md`, `decisions/INDEX.md`, `contracts/schema/`, `contracts.gen.ts`
 - 비공개·수출통제 데이터, 실제 개인 식별 정보 사용
-- 시연 경로에서 외부 네트워크 호출
 
 ## 시간이 급할 때
 - `git commit --no-verify` 허용(ship의 smoke test는 유지).

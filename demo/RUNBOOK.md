@@ -2,7 +2,7 @@
 
 ## 사전 점검 (심사 30분 전)
 1. 시연 노트북 전원·HDMI 연결, 화면 해상도 확인
-2. 와이파이 끈 상태에서 `scripts/demo.sh` 실행 → 브라우저 http://localhost:8000
+2. `scripts/demo.sh` 실행 (AI API를 쓰면 `.env`의 키와 네트워크 연결 확인) → 브라우저 http://localhost:8000
 3. 지도 배경·표적·경보가 보이는지 확인
 4. 백업 영상 파일 위치 확인: `demo/backup.mp4`
 

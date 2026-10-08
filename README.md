@@ -15,6 +15,6 @@ Korean Defense Tech Hackathon 2026 (D4D × EDTH SEOUL) 팀 저장소.
 | `git commit` | 2초 검사 후 커밋 |
 | `scripts/ship.sh` | main 반영 + 테스트 + smoke test + push |
 | `scripts/dev.sh` | 개발 실행 (http://localhost:5173) |
-| `scripts/demo.sh` | 시연 실행 (http://localhost:8000, 오프라인) |
+| `scripts/demo.sh` | 시연 실행 (http://localhost:8000) |
 
 규칙 전체: `AGENTS.md`. 설계: `docs/superpowers/specs/`.

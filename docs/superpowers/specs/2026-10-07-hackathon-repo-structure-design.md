@@ -33,7 +33,7 @@
 | 영역 | 기본값 | 비고 |
 |---|---|---|
 | 백엔드·엔진 | Python 3.11+, FastAPI, pydantic v2, uv(패키지 관리) | 수치·AI 라이브러리 활용 |
-| 화면 | React + Vite + TypeScript, MapLibre GL | 지도 타일은 오프라인 파일로 동봉 |
+| 화면 | React + Vite + TypeScript, MapLibre GL | 지도 타일은 로컬 파일로 동봉 |
 | 모듈 연결 | gateway가 파이프라인을 실행하고 WebSocket으로 화면에 송출 | |
 | 검사 도구 | ruff, pytest, `tools/check_imports.py`(모듈 경계), eslint(max-lines) | |
 
@@ -104,7 +104,7 @@ d4d-edth-seoul-2026/
 │   ├── check.sh           # 커밋 검사 (--all: 전체 테스트)
 │   ├── ship.sh            # main 최신 반영 + 검사 + push
 │   ├── dev.sh             # 개발용 전체 실행
-│   └── demo.sh            # 시연용 전체 실행 (오프라인)
+│   └── demo.sh            # 시연용 전체 실행
 └── pyproject.toml         # ruff, pytest 설정 (uv.lock과 함께 모든 브랜치에서 수정 가능: uv add)
 ```
 
@@ -207,7 +207,7 @@ author: 이름
 참고: ADR(Architecture Decision Record, Michael Nygard).
 
 - `POLICY.md`: 개발 내내 적용되는 규칙. 초기 정책:
-  1. 시연은 인터넷 없이 동작한다. 지도 타일은 저장소에 동봉하고 시연 중 외부 API를 호출하지 않는다.
+  1. (2026-10-08 변경) 인터넷 제약 없음. 시연 중 외부 AI API(Claude, GPT 등) 사용 가능. 키는 `.env`에 두고 커밋하지 않는다.
   2. 공개·가상 데이터만 사용한다.
   3. 좌표 WGS84, 고도 m, 시간 UTC epoch 밀리초.
   4. API 키·비밀값은 커밋하지 않는다(`.env`, gitignore).
@@ -344,7 +344,7 @@ supersedes: null
 
 ## 11. 로컬 시연
 - `scripts/demo.sh` 한 줄로 백엔드·화면·시나리오 실행. 대회 전에 시연 노트북에서 시험.
-- 오프라인 동작: 수도권 범위 지도 타일을 대회 전에 받아 저장소에 동봉(PMTiles 파일 1개, `modules/cop-ui/public/tiles/seoul.pmtiles`를 커밋. 갱신은 `scripts/fetch_tiles.sh`). 파일이 없으면 `demo.sh`가 큰 경고를 출력하고 계속 실행.
+- 로컬 지도 타일(행사장 네트워크 속도와 무관하게 지도 표시): 수도권 범위 지도 타일을 대회 전에 받아 저장소에 동봉(PMTiles 파일 1개, `modules/cop-ui/public/tiles/seoul.pmtiles`를 커밋. 갱신은 `scripts/fetch_tiles.sh`). 파일이 없으면 `demo.sh`가 큰 경고를 출력하고 계속 실행.
 - 정상 동작 화면 백업 영상 녹화.
 - 리허설 때 HDMI 송출 해상도에서 지도·경보 가독성 확인.
 
@@ -356,7 +356,7 @@ supersedes: null
 - scripts 전부(setup, new_action, sync_docs, decide, check, ship, dev, demo)
 - skill 4종(new-action, kb-save, decide, ship)
 - walking skeleton 예시 1개(가짜 로직으로 sim → tracking → gateway → cop-ui 연결)
-- 오프라인 지도 타일, decisions/POLICY.md 초기 정책
+- 로컬 지도 타일, decisions/POLICY.md 초기 정책
 
 ## 13. 참고 자료
 - EU JRC C-UAS Sensor Data Fusion (SeDaFuV): https://code.europa.eu/groups/jrc-cuas-sensor-data-fusion
