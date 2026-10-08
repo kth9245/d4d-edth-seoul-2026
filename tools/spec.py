@@ -45,9 +45,26 @@ def next_id(prefix: str, rows: list[SpecRow]) -> str:
     return f"{prefix}-{max(nums, default=0) + 1:02d}"
 
 
+def _line(row: SpecRow) -> str:
+    cells = [str(c).replace("|", "/").replace("\n", " ") for c in astuple(row)]
+    return "| " + " | ".join(cells) + " |\n"
+
+
 def append_row(spec_path: Path, row: SpecRow) -> None:
     text = spec_path.read_text(encoding="utf-8")
     if not text.endswith("\n"):
         text += "\n"
-    cells = [str(c).replace("|", "/").replace("\n", " ") for c in astuple(row)]
-    spec_path.write_text(text + "| " + " | ".join(cells) + " |\n", encoding="utf-8")
+    spec_path.write_text(text + _line(row), encoding="utf-8")
+
+
+def replace_row(spec_path: Path, row: SpecRow) -> None:
+    """Rewrite the one table line whose id matches row.id (owner/status takeover)."""
+    lines = spec_path.read_text(encoding="utf-8").splitlines(keepends=True)
+    for i, line in enumerate(lines):
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if line.startswith("|") and len(cells) == 7 and cells[0] == row.id:
+            lines[i] = _line(row)
+            break
+    else:
+        raise KeyError(row.id)
+    spec_path.write_text("".join(lines), encoding="utf-8")

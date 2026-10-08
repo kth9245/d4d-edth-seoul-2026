@@ -1,6 +1,8 @@
 <!-- prefix: ASM -->
 # assess SPEC
 
+T1-3용, 휴면(결정 0007·docs/research/09 3.9). 파이프라인에서만 뺀다.
+
 | id | 액션 | 입력 | 출력 | 완료 기준 | 담당 | 상태 |
 |---|---|---|---|---|---|---|
 | ASM-01 | classify_track | Track | ObjectClass | 속도·고도 규칙으로 drone/balloon/bird/unknown | 리드 | 완료 |

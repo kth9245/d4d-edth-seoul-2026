@@ -76,3 +76,15 @@ def test_scoped_spec_and_length_checks_only_touched(tmp_path):
     assert any("pipeline.py" in p and "200" in p for p in out)
     assert not any("81줄" in p for p in out)
     assert any("81줄" in p for p in problems(tmp_path))
+
+
+def test_duplicate_id_is_reported(tmp_path):
+    m = mod(
+        tmp_path,
+        "| TRK-01 | a_b | . | . | . | . | 완료 |\n| TRK-01 | c_d | . | . | . | . | 완료 |\n",
+    )
+    for n in ("a_b", "c_d"):
+        (m / "actions" / f"{n}.py").write_text("x = 1\n")
+        (m / "tests" / f"test_{n}.py").write_text("x = 1\n")
+    out = problems(tmp_path)
+    assert len(out) == 1 and "TRK-01" in out[0] and "두 번" in out[0]

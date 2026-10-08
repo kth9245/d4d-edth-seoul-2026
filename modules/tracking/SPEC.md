@@ -1,6 +1,8 @@
 <!-- prefix: TRK -->
 # tracking SPEC
 
+T1-3용, 휴면(결정 0007·docs/research/09 3.9). 파이프라인에서만 뺀다.
+
 | id | 액션 | 입력 | 출력 | 완료 기준 | 담당 | 상태 |
 |---|---|---|---|---|---|---|
 | TRK-01 | predict_tracks | list[Track], t_ms | list[Track] | 등속 모델로 t_ms 위치 예측 | 리드 | 완료 |

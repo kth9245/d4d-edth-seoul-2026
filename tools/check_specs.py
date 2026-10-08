@@ -21,6 +21,12 @@ def _spec_problems(mod: Path) -> list[str]:
         else []
     )
     registered = {r.action: r for r in rows}
+    ids = [r.id for r in rows]
+    for dup in sorted({i for i in ids if ids.count(i) > 1}):
+        out.append(
+            f"modules/{mod.name}/SPEC.md: id {dup}가 두 번 있습니다 (동시 new_action 뒤 rebase). "
+            "한쪽 번호를 올리세요."
+        )
     files = {p.stem for p in (mod / "actions").glob("*.py") if p.stem != "__init__"}
     for name in sorted(files - registered.keys()):
         out.append(
