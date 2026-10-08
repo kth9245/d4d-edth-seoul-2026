@@ -249,11 +249,13 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 
 ## 6. 사람별 영역(방향만, 액션은 사이클 시작 때)
 
+팀(결정 0007): 리드 kth9245, 팀원 황승주·최동호. 파트 2·3을 누가 맡는지는 다음 세션의 devil-advocate 검토(11절) 뒤 정한다.
+
 | 파트 | 담당 | 모듈 | 첫 사이클에서 끝낼 것 |
 |---|---|---|---|
-| 1 | 리드 | contracts, gateway, cop-ui map/live, demo | contracts 확정(10/9 밤), gateway 틱 루프와 WS, 백령도 타일, 시나리오 데이터 |
-| 2 | 팀원 2 | sim, sensing, runtime, safety | sim 이동·배터리, safety 규칙 3, runtime 한 줄 진행과 report→decision |
-| 3 | 팀원 3 | play, cop-ui editor/setup | 플레이 형식 로드·검사, 템플릿 2개, 편집기 카드 열 |
+| 1 | 리드 kth9245 | contracts, gateway, cop-ui map/live, demo | contracts 확정(10/9 밤), gateway 틱 루프와 WS, 백령도 타일, 시나리오 데이터 |
+| 2 | 황승주 또는 최동호 | sim, sensing, runtime, safety | sim 이동·배터리, safety 규칙 3, runtime step 진행과 report→decision (통합 1 액션 11개) |
+| 3 | 황승주 또는 최동호 | play, cop-ui editor/setup | 플레이 형식 로드·검사, 템플릿 2개, 편집기 카드 열 (통합 1 액션 2개, 나머지 00:00까지) |
 
 도움 가능(순수 함수): play 검사 4종, safety 규칙 3개, Metrics 집계, 펼치기 표. 막히면 5분 안에 "막힘: 모듈, 함수, 증상"을 채팅에.
 
@@ -316,3 +318,26 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 더 싼 대안(반대자 제안): step을 "행동 하나 + 탈출 조건 목록"으로 단순화해 줄 해석기를 없애는 것. 10/8 실행안 PDF의 step 형식(`do` + `on`)과 같다. **결정 0006으로 처음부터 이 형태를 쓴다.** 편집기 카드와 AI 초안 어휘는 step 단위(ActionKind 9개 + ConditionKind)로 맞췄다. 스파이크를 단순형으로 바꿔 다시 돌려 같은 사건 대본이 끝까지 도는 것을 확인했다.
 
 같은 검토에서 사람이 답한 것(결정 0006): 스파이크 코드를 대회에서 쓰고 사전 준비분으로 밝힌다. 수동 기준선은 한 실행에서 센다. 타일은 EOX Sentinel-2 z8~14.
+
+---
+
+## 11. 다음 세션 devil-advocate 주장 블록(역할 분담과 저장소 구조)
+
+결정 0007 뒤 사람이 지정한 검토 대상: "이 역할 분담의 당위성과 이거에 맞게 레포 구조가 잘 짜여져 있는지". 반대자에게 줄 것은 이 블록과 파일 경로뿐이다.
+
+```
+CLAIM: 6절의 3파트 분담(리드: contracts·gateway·지도·demo / 파트 2: sim·sensing·runtime·safety /
+  파트 3: play·편집기)과 지금 저장소 구조(모듈별 디렉터리, 1 액션 = 1 파일 = 80줄, SPEC.md 등록,
+  공개 API만 import, 로컬 브랜치 → main 직접 push)는 황승주·최동호가 서로 기다리지 않고
+  10/10 12:00~18:00에 통합 1 경로를 만들게 한다.
+EVIDENCE FOR: (1) 모듈 경계가 데이터 형식(contracts)으로만 이어져 파트 2·3이 같은 파일을 만지지 않는다.
+  (2) 통합 1 액션 수를 세어 파트 2는 11개, 파트 3은 2개로 양이 비대칭이지만 파트 3에는 편집기(React)가
+  뒤따른다. (3) 스파이크가 파트 2 액션 11개의 원본을 제공한다. (4) guard·SPEC·new_action이 구조를 강제한다.
+COST IF WRONG: 한 사람이 병목이 되거나 두 사람이 같은 파일에서 충돌해 통합 1이 늦는다. 18:00을 놓치면
+  통합 2(00:00)와 3분 시연이 연쇄로 밀린다.
+LOAD-BEARING ASSUMPTION: 파트 2의 11개 액션(엔진 전부)을 한 사람이 6시간에 옮기고, 그동안 파트 3은
+  play 2개 액션 뒤 React 편집기를 혼자 시작할 수 있다. 두 사람의 Python·React 경험은 아직 문서에 없다.
+```
+
+반대자가 보면 좋은 것: AGENTS.md 소유 표, 이 문서 3·4·6절, `modules/*/SPEC.md`, `tools/guard/check_edit.py`(브랜치 제한은 2026-10-09 제거됨), `scripts/ship.sh`(rebase → 검사 → main push), `knowledge/spikes/rolecall_engine_proto/`.
+미리 알아 둘 약점: 리드가 contracts·gateway·지도·시나리오·타일·통합을 전부 쥐고 있어 리드가 병목일 가능성이 파트 2보다 클 수 있다. 세 사람이 main에 직접 push하므로 rebase 충돌이 잦으면 ship.sh가 막는다.

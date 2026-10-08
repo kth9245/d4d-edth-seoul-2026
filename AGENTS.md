@@ -44,12 +44,12 @@ Korean Defense Tech Hackathon 2026 (D4D × EDTH SEOUL) 팀 저장소. 24시간 �
 | `contracts/<주제>` | `contracts/**` | 리드 |
 | `infra/<주제>` | AGENTS.md, scripts, tools, 설정, shared, demo, docs | 리드 |
 
-| 모듈 | 담당 |
+| 모듈 | 담당 (결정 0007: 리드 kth9245, 팀원 황승주·최동호. 파트 2·3의 사람은 다음 세션 검토 뒤 배정) |
 |---|---|
-| contracts, gateway, demo, infra | 리드 |
-| sim, sensing, edge | 팀원 2 |
-| tracking, assess, respond | 팀원 3 |
-| cop-ui | 팀원 4 |
+| contracts, gateway, demo, infra, cop-ui map/live | 리드 kth9245 |
+| sim, sensing, runtime, safety | 파트 2 (황승주 또는 최동호) |
+| play, cop-ui editor/setup | 파트 3 (황승주 또는 최동호) |
+| tracking, assess, respond | 휴면(T1-3용). 손대지 않음 |
 
 항상 수정 가능(어느 브랜치에서든): `demo/BUILT_HERE.md`, `demo/scenarios/*`, `pyproject.toml`, `uv.lock`.
 
