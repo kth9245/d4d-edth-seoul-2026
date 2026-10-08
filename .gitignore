@@ -12,3 +12,6 @@ modules/cop-ui/dist/
 tasks/BOARD.md
 knowledge/INDEX.md
 decisions/INDEX.md
+
+# runtime logs (decision 0010)
+logs/

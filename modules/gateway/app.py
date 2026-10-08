@@ -2,7 +2,6 @@
 
 import asyncio
 import contextlib
-import logging
 import os
 from pathlib import Path
 
@@ -11,14 +10,17 @@ from fastapi.staticfiles import StaticFiles
 
 from modules.gateway.pipeline import Engine
 from modules.sim import load_scenario
+from shared.log import get_logger, setup_logging
 
-log = logging.getLogger("kdth.gateway")
+log = get_logger("gateway")
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SCENARIO = str(ROOT / "demo/scenarios/seoul_mixed.yaml")
 
 
 def create_app(scenario_path: str, realtime: bool = True, ui_dist: str | None = None) -> FastAPI:
+    setup_logging("gateway")  # decision 0010: always log (stderr + logs/gateway.log)
     scenario = load_scenario(scenario_path)
+    log.info("scenario %s loaded", scenario_path)
     app = FastAPI(title="kdth gateway")
 
     @app.get("/health")

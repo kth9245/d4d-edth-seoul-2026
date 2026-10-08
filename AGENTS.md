@@ -32,6 +32,7 @@ Korean Defense Tech Hackathon 2026 (D4D × EDTH SEOUL) 팀 저장소. 24시간 �
 - SPEC.md에 `예정` 행이 이미 있으면 같은 명령을 그대로 돌린다: 담당이 내 git 이름으로 바뀌고 파일·실패 테스트가 생긴다.
   리드가 미리 적을 때는 `--planned`(행만, 파일 없음). 남이 `진행중`인 행을 가져갈 때는 `--take`(담당 칸만 바뀜). 둘 다 채팅에 번호를 적는다.
 - 액션 하나가 끝날 때마다 ship한다. 끝나지 않은 액션(실패 테스트)을 ship하지 않는다 — 같은 모듈 사람 전원의 ship이 막힌다. 남의 실패 테스트를 skip으로 바꿔 ship하지 않는다.
+- 로깅은 항상 켠다(결정 0010): 실행 경계(gateway app, 틱 루프, REST 핸들러, 스크립트)는 `from shared.log import setup_logging, get_logger`로 stderr와 `logs/<이름>.log`에 남긴다. 틱마다 명령·차단·보고 수와 Frame.log 줄을 DEBUG로, 예외는 traceback과 함께 ERROR로. 순수 함수 액션 안에는 로깅을 넣지 않는다.
 - 통합 1(10/10 18:00) 전에는 sim·gateway의 레거시 공개 API(`load_scenario`·`simulate`·`Engine`)를 지우거나 서명을 바꾸지 않는다. smoke가 깨져 전원 ship이 막힌다. 새 동작은 새 이름으로 추가한다.
 - 모듈 자체가 아직 없으면(edge, identify, planning 등) 먼저 `/new-module` 또는
   `uv run python scripts/new_module.py <이름> <PREFIX>`로 만든다. 브랜치는 `<이름>/<주제>`.

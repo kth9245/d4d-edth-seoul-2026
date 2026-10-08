@@ -273,7 +273,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | Part1-4 | 시나리오 JSON + 템플릿 2개 | 스파이크 engine_proto.py 하단 데이터 → `demo/scenarios/baengnyeong_night.json`, `demo/plays/coast_guard.json`·`fast_boat.json` | `Scenario.model_validate`·`Play.model_validate` 통과, 사건 1(표적 출현)이 스파이크에서 보고 카드까지 감. 사건 2·3·6의 시각·경로 튜닝은 Part2-19 | Part1-1 | 밤 |
 | Part1-5 | AI 초안 프롬프트·캐시 2개 | 어휘(ActionKind 9·ConditionKind 6)+Play 스키마+시연 문장 2개 → `demo/plays/cache/<sha>.json` ×2 | 캐시 JSON이 `Play.model_validate` 통과 | Part1-4 | 2(밤에서 뺌: 통합 1에 안 쓰이고 Part3-9·3-13만 쓴다. 통합 1 뒤 인터넷 되는 곳에서) |
 | ~~Part1-6~~ | → **Part2-17**로 이동(틱 루프는 엔진 쪽 사람이 쓴다, 12절 공격 2) | | | | |
-| Part1-7 | gateway REST + WS | `/plays`, `/operation`, `/run/live?speed=`, `/run/reset`, `/decisions`, `/direct` → app.py. **`tick(state, inputs) -> (state, Frame)` 서명에만 의존**: Part2-17이 안 왔으면 예시 Frame을 돌려주는 스텁 tick으로 만든다. 모듈 import 시점에 시나리오를 읽는 지금 `app.py` 끝의 `app = create_app(...)`은 없앤다(`uvicorn --factory`) | `test_app.py`로 `/run/live` 뒤 WS Frame 수신, `/decisions`가 TickInputs에 들어감 | Part1-1 | 1 |
+| Part1-7 | gateway REST + WS | `/plays`, `/operation`, `/run/live?speed=`, `/run/reset`, `/decisions`, `/direct` → app.py. **`tick(state, inputs) -> (state, Frame)` 서명에만 의존**: Part2-17이 안 왔으면 예시 Frame을 돌려주는 스텁 tick으로 만든다. 모듈 import 시점에 시나리오를 읽는 지금 `app.py` 끝의 `app = create_app(...)`은 없앤다(`uvicorn --factory`) | `test_app.py`로 `/run/live` 뒤 WS Frame 수신, `/decisions`가 TickInputs에 들어감. 핸들러마다 입력 요약을 INFO, 예외를 ERROR로(`shared/log`, 결정 0010) | Part1-1 | 1 |
 | ~~Part1-8~~ | → **Part2-18**로 이동(틱 결과를 Frame으로 묶는 일은 틱 루프 옆에 있어야 한다) | | | | |
 | Part1-9 | 지도: 위성 raster + 기체·표적·구역 | Frame → MapLibre 레이어 (basemap.ts raster source, toGeoJSON 재작성) | 백령도 위에 기체 5·구역 폴리곤이 보임(`contracts/examples/frame.json`으로 먼저) | Part1-2, Part1-1(TS) | 1 |
 | Part1-10 | 상황판 카드 열 + 결정 버튼 | Frame.reports/blocks/injections → 카드, 선택지 버튼 → `POST /decisions` | 버튼 한 번에 세 기체가 지도에서 움직임(통합 1 마지막 단계) | Part1-7, Part1-9 | 1 |
@@ -303,7 +303,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | Part2-14 | runtime `apply_injection` | states, Injection(approved), plays → states | proposed대로 배정, resume (play, step) 보관 | Part2-11 | 2 |
 | Part2-15 | runtime `apply_direct` | states, DirectControl, t_ms → (states, Command) | operator_direct 명령 생성, 도착 시 resume 복귀 | Part2-10 | 2 |
 | Part2-16 | runtime `apply_emergency` | states, Play.emergency → states | battery_below면 지정 step으로, 끝나면 resume | Part2-10 | 2 |
-| Part2-17 (구 Part1-6) | gateway `engine.py` 틱 루프 | Scenario, TickInputs → `tick(state: EngineState, inputs) -> (state, Frame)`; 순서는 3.7. `EngineState` dataclass(이 파일에, 계약 아님): t_ms, scenario, specs: dict[id, VehicleSpec], states, targets, reports, assignments, blocks, injections, metrics, rng. `TickOutcome` dataclass(2-13 입력)도 여기 | 스파이크 `run()`의 while 본문을 옮긴 것. **아직 없는 액션은 `contracts/examples/*.json`을 돌려주는 스텁 함수로 대체**해 12:00 당일 첫 커밋에서 Frame이 나오게 한다(스텁 목록을 파일 머리 주석에). 사건 1 → 보고 → 결정 → 전이가 스텁 없이 도는 것이 완료 | Part1-1, Part2-20 | 1 |
+| Part2-17 (구 Part1-6) | gateway `engine.py` 틱 루프 | Scenario, TickInputs → `tick(state: EngineState, inputs) -> (state, Frame)`; 순서는 3.7. `EngineState` dataclass(이 파일에, 계약 아님): t_ms, scenario, specs: dict[id, VehicleSpec], states, targets, reports, assignments, blocks, injections, metrics, rng. `TickOutcome` dataclass(2-13 입력)도 여기 | 스파이크 `run()`의 while 본문을 옮긴 것. **아직 없는 액션은 `contracts/examples/*.json`을 돌려주는 스텁 함수로 대체**해 12:00 당일 첫 커밋에서 Frame이 나오게 한다(스텁 목록을 파일 머리 주석에). 사건 1 → 보고 → 결정 → 전이가 스텁 없이 도는 것이 완료. 틱마다 `get_logger("gateway.engine")`로 명령·차단·보고 수와 Frame.log 줄을 DEBUG로 남긴다(결정 0010) | Part1-1, Part2-20 | 1 |
 | Part2-18 (구 Part1-8) | gateway `build_frame` 재작성 | EngineState, 이번 틱 log → Frame | 예시 JSON과 같은 모양, 직렬화 테스트 | Part1-1 | 1 |
 | Part2-19 | 시나리오 튜닝 | `baengnyeong_night.json`, 템플릿 2개 → 사건 2·3·6의 시각·경로·예비 드론 경로 길이 조정 | 틱 루프로 돌려 사건 1·2·3·6이 3분 대본 순서로 남, 예비 드론 경로가 귀환 배터리 안 | Part2-17, Part2-4·2-9·2-11 | 2 |
 | Part2-20 | sim `load_scenario_json` | 경로 → Scenario(2절 모델) | JSON 읽어 `Scenario.model_validate`, 잘못된 값은 ValueError에 위치. 레거시 `load_scenario`는 건드리지 않는다(3.5) | Part1-1 | 1 |
@@ -443,6 +443,6 @@ LOAD-BEARING ASSUMPTION: 파트 2의 11개 액션(엔진 전부)을 한 사람�
 
 반대자의 P(MISTAKE) 60% → 변경 뒤 내 추정 40%. 남은 위험은 리드의 밤 작업이 실제로 끝나는가(검사로 확인 불가, 10/9 밤에 1-1을 1시간 하고 pytest·smoke가 도는지로 판단)와 두 사람의 Python·React 경험(결정 0009에서 정함).
 
-**미결(사람이 정할 것):** (1) 원격 브랜치 없음 정책을 유지하면 "반쯤 된 일은 가져갈 수 없다"가 규칙이 된다. 액션이 80줄이라 다시 시작하는 비용이 30분 안이면 유지해도 된다. (2) ~~Part 2A·2B를 누가 맡는가~~ → 결정 0009: React·Python 경험 차이 없음, 무작위로 2A 최동호·2B 황승주. 편집기는 리드가 읽기 전용 카드로.
+**미결(사람이 정할 것):** (1) ~~원격 브랜치 없음 정책 유지 여부~~ → 결정 0010: 유지. 항상 rebase 뒤 main에 push, push 단위는 완성된 액션 하나. 디버깅용 로깅은 항상(`shared/log`). (2) ~~Part 2A·2B를 누가 맡는가~~ → 결정 0009: React·Python 경험 차이 없음, 무작위로 2A 최동호·2B 황승주. 편집기는 리드가 읽기 전용 카드로.
 
 검사 결과를 재현하는 스크립트는 이 세션의 임시 디렉터리에만 있고 저장소에 넣지 않았다(검사 3·4는 `tests/test_ship.py`의 `make_clone`을 그대로 쓴다).
