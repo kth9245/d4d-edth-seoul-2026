@@ -1,3 +1,4 @@
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -68,6 +69,55 @@ def test_bash_blocks_confirmation_and_policy_writes(tmp_path, cmd):
     r = repo(tmp_path)
     msg = g.check_pre(bash(cmd), r, "tracking/x", False)
     assert msg and "사람" in msg
+
+
+def test_ask_mode_lets_accept_through_to_human_prompt(tmp_path):
+    r = repo(tmp_path)
+    cmd = "uv run python scripts/decide.py accept 0001 --by me"
+    assert g.check_pre(bash(cmd), r, "tracking/x", False, ask_accept=True) is None
+
+
+@pytest.mark.parametrize(
+    "cmd",
+    [
+        "echo hi >> decisions/POLICY.md",
+        "uv run python scripts/decide.py accept 1 && echo x >> decisions/POLICY.md",
+    ],
+)
+def test_ask_mode_still_blocks_policy_writes(tmp_path, cmd):
+    r = repo(tmp_path)
+    assert g.check_pre(bash(cmd), r, "tracking/x", False, ask_accept=True)
+
+
+def _hook(tmp_path, cmd: str, *flags: str):
+    subprocess.run(["git", "init", "-q", "-b", "main", str(tmp_path)], check=True)
+    payload = json.dumps(
+        {"tool_name": "Bash", "cwd": str(tmp_path), "tool_input": {"command": cmd}}
+    )
+    return subprocess.run(
+        [sys.executable, str(ROOT / "tools/guard/check_edit.py"), "pre", *flags],
+        input=payload,
+        capture_output=True,
+        text=True,
+        cwd=tmp_path,
+    )
+
+
+def test_hook_asks_human_for_accept_with_flag(tmp_path):
+    res = _hook(tmp_path, "uv run python scripts/decide.py accept 0001 --by me", "--ask-accept")
+    assert res.returncode == 0
+    out = json.loads(res.stdout)["hookSpecificOutput"]
+    assert out["permissionDecision"] == "ask" and out["hookEventName"] == "PreToolUse"
+
+
+def test_hook_blocks_accept_without_flag(tmp_path):
+    res = _hook(tmp_path, "uv run python scripts/decide.py accept 0001 --by me")
+    assert res.returncode == 2 and "사람" in res.stderr
+
+
+def test_hook_ask_flag_does_not_prompt_normal_commands(tmp_path):
+    res = _hook(tmp_path, "ls", "--ask-accept")
+    assert res.returncode == 0 and res.stdout == ""
 
 
 @pytest.mark.parametrize(

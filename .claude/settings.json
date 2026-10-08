@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/tools/guard/check_edit.py\" pre"
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/tools/guard/check_edit.py\" pre --ask-accept"
           }
         ]
       }

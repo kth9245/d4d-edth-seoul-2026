@@ -1,7 +1,9 @@
 """Edit guard for Claude Code (Edit/Write) and Codex (apply_patch). Stdlib only.
 
-Usage (hook): python3 tools/guard/check_edit.py pre|post   < hook JSON on stdin
+Usage (hook): python3 tools/guard/check_edit.py pre|post [--ask-accept]   < hook JSON on stdin
 Exit 0 = allow, exit 2 = block (reason on stderr, shown to the AI).
+--ask-accept (Claude Code only): `decide.py accept` asks the human via a permission
+prompt instead of being blocked.
 """
 
 import json
@@ -14,7 +16,7 @@ from fnmatch import fnmatch
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from tools.guard.bash_rules import check_bash  # noqa: E402
+from tools.guard.bash_rules import ASK_REASON, check_bash, is_accept  # noqa: E402
 from tools.guard.edits import (  # noqa: E402,F401
     ALWAYS,
     CONFIRMED_RE,
@@ -50,8 +52,10 @@ def _after_edit(payload: dict, e: Edit) -> str:
     return text
 
 
-def check_pre(payload: dict, root: Path, branch: str, freeze: bool) -> str | None:
-    blocked = check_bash(payload)
+def check_pre(
+    payload: dict, root: Path, branch: str, freeze: bool, ask_accept: bool = False
+) -> str | None:
+    blocked = check_bash(payload, allow_accept=ask_accept)
     if blocked:
         return blocked
     modules = (
@@ -118,7 +122,7 @@ def check_post(payload: dict, root: Path, freeze: bool) -> str | None:
     return None
 
 
-def _run(mode: str, raw: bytes) -> str | None:
+def _run(mode: str, raw: bytes, ask_accept: bool = False) -> str | None:
     payload = json.loads(raw.decode("utf-8"))
     cwd = payload.get("cwd") or os.getcwd()
     r = subprocess.run(
@@ -129,8 +133,25 @@ def _run(mode: str, raw: bytes) -> str | None:
     root = Path(r.stdout.strip())
     freeze = os.environ.get("KDTH_FREEZE") == "1"
     if mode == "pre":
-        return check_pre(payload, root, current_branch(root), freeze)
+        msg = check_pre(payload, root, current_branch(root), freeze, ask_accept)
+        if msg is None and ask_accept and is_accept(payload):
+            return ASK
+        return msg
     return check_post(payload, root, freeze)
+
+
+ASK = "<ask>"
+
+
+def _ask_output() -> dict:
+    """Claude Code PreToolUse output that shows the human a permission prompt."""
+    return {
+        "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "ask",
+            "permissionDecisionReason": ASK_REASON,
+        }
+    }
 
 
 def _log_error(exc: Exception) -> None:
@@ -150,9 +171,12 @@ def _log_error(exc: Exception) -> None:
 def main() -> None:
     mode = sys.argv[1] if len(sys.argv) > 1 else "pre"
     try:
-        msg = _run(mode, sys.stdin.buffer.read())
+        msg = _run(mode, sys.stdin.buffer.read(), "--ask-accept" in sys.argv[2:])
     except Exception as exc:  # fail open on malformed payloads / unexpected errors
         _log_error(exc)
+        sys.exit(0)
+    if msg is ASK:
+        print(json.dumps(_ask_output(), ensure_ascii=False))
         sys.exit(0)
     if msg:
         print(msg, file=sys.stderr)

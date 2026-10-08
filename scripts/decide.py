@@ -1,4 +1,5 @@
-"""Decision records. AI runs `new` (proposal). Only humans run `accept`.
+"""Decision records. AI runs `new` (proposal). `accept` needs a human: the person runs it,
+or Claude Code runs it after the person approves the guard prompt.
 
 Usage: uv run python scripts/decide.py new "<title>" [--modules a,b]
        uv run python scripts/decide.py accept NNNN --by <name>
