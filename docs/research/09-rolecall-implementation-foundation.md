@@ -22,7 +22,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 
 - **엔진 하나.** `engine.tick(state, inputs) -> (state, frame)`는 순수 함수. 실행 경로는 `/run/live` 하나이고 `speed`(배속)만 다르다. 1배속은 0.2초마다 틱 하나, 15배속은 0.2초마다 틱 15개를 돌리고 마지막 Frame만 보낸다. "미리 보기"는 같은 경로를 배속으로 돌리는 것이다(엔진이 결정적이므로 같은 seed면 같은 결과). 끝까지 돌려 Frame 목록을 돌려주는 경로는 없다(35분 작전 = Frame 10,500개 ≈ 35MB, 스파이크로 확인).
 - **명령의 한 방향 흐름.** runtime이 `Command`를 만들고, safety만 `PassedCommand`를 만들며, sim은 `PassedCommand`만 받는다. 막힌 명령은 `Block`으로 frame에 실린다.
-- **명령은 한 번, 수행은 계속.** runtime은 줄에 *들어갈 때* 한 번만 `Command`를 낸다. safety를 통과한 `PassedCommand`는 `VehicleState.active`에 보관되고, sim은 새 명령이 없는 틱에도 `active`를 계속 수행한다(순찰 경로 순회, 선회, 거리 유지). 이 필드가 없으면 기체가 첫 틱 뒤 멈춘다(검토에서 재현: 드론이 기지에서 3m 가고 35분 동안 정지). 명령을 틱마다 다시 내면 `commands_sent`·`manual_baseline_actions`가 초당 5씩 늘어 지표가 무너지므로 금지.
+- **명령은 한 번, 수행은 계속.** runtime은 step에 *들어갈 때* 한 번만 `Command`를 낸다(결정 0006 단순형: step = 행동 하나 + 탈출 조건 목록). safety를 통과한 `PassedCommand`는 `VehicleState.active`에 보관되고, sim은 새 명령이 없는 틱에도 `active`를 계속 수행한다(순찰 경로 순회, 선회, 거리 유지). 이 필드가 없으면 기체가 첫 틱 뒤 멈춘다(검토에서 재현: 드론이 기지에서 3m 가고 35분 동안 정지). 명령을 틱마다 다시 내면 `commands_sent`·`manual_baseline_actions`가 초당 5씩 늘어 지표가 무너지므로 금지.
 - **상태는 데이터.** 기체별 "지금 어느 플레이·step·줄에 있는가, 무슨 명령을 수행 중인가, 어느 보고의 결정을 기다리는가"를 `VehicleState`에 넣는다. 클래스 상속·콜백 없음. 액션 파일 하나가 틱의 한 단계를 맡는다.
 - **파일 저장.** Play·Operation·Scenario는 JSON 파일(`demo/scenarios/`, `demo/plays/`). DB 없음.
 
@@ -38,7 +38,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 |---|---|---|
 | `Domain` | air, sea, ground | 기체 영역 |
 | `VehicleStatus` | ready, active, returning, maintenance, lost | lost = 통신 두절 |
-| `ActionKind` | move_to, patrol_route, search_area, return_home, watch_target, watch_point, approach_target, relay_comms, if_cond, loop, wait, send_signal, wait_signal, report, require_approval | 15개. AI 초안 어휘이기도 함 |
+| `ActionKind` | move_to, patrol_route, search_area, return_home, watch_target, watch_point, approach_target, relay_comms, hold | 9개. step의 행동 하나. 분기·보고·승인은 step의 `on`·`report`로 표현(결정 0006 단순형). AI 초안 어휘이기도 함 |
 | `ConditionKind` | target_found, arrived, time_elapsed, battery_below, operator_choice, signal_received | 6개 |
 | `CommandKind` | move, orbit, keep_distance, hold, follow_route, zigzag, return_home, relay | 8개. 기체로 나가는 명령 |
 | `CommandSource` | play_step, operator_decision, operator_direct, injected_plan, emergency | 출처(하한선 규칙 1) |
@@ -55,22 +55,24 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 - `GeoPoint` — lat: float, lon: float, alt_m: float = 0
 - `Polygon` — points: list[GeoPoint] (3개 이상, 닫지 않음)
 - `VehicleSpec` — id, name, domain: Domain, speed_mps: float, endurance_min: float, sensor_range_m: float, capabilities: list[ActionKind], home: GeoPoint
-- `VehicleState` — id, t_ms, pos: GeoPoint, heading_deg: float, battery_pct: float, status: VehicleStatus, role_id: str|None, play_id: str|None, step_id: str|None, line_idx: int = 0, waypoint_idx: int = 0 (-1 = 현재 명령의 목적지 도착), **active: PassedCommand|None** (sim이 계속 수행하는 현재 명령), **pending_report_id: str|None** (보고 줄에서 멈춰 Decision을 기다리는 중이면 그 Report id. 이 값이 있으면 runtime은 어떤 줄도 진행하지 않는다. 없으면 보고 줄이 틱마다 다시 실행돼 카드가 수천 장 생긴다 — 검토에서 재현), emergency: EmergencyKind|None, **resume_play_id: str|None**, resume_step_id: str|None (복귀 지점은 플레이·step 쌍. 주입 뒤 직접 조종이 오면 step id만으로는 어느 플레이인지 모른다)
+- `VehicleState` — id, t_ms, pos: GeoPoint, heading_deg: float, battery_pct: float, status: VehicleStatus, role_id: str|None, play_id: str|None, step_id: str|None, **entered_step: bool = False** (이 step의 `do`를 이미 명령으로 냈는가. 거짓이면 다음 틱에 명령·보고를 한 번 내고 참으로 바꾼다), waypoint_idx: int = 0 (-1 = 현재 명령의 목적지 도착), **active: PassedCommand|None** (sim이 계속 수행하는 현재 명령), **pending_report_id: str|None** (선택지 있는 보고에서 멈춰 Decision을 기다리는 중이면 그 Report id. 이 값이 있으면 runtime은 전이하지 않는다. 없으면 보고가 틱마다 다시 생겨 카드가 수천 장 쌓인다 — 검토에서 재현), emergency: EmergencyKind|None, **resume_play_id: str|None**, resume_step_id: str|None (복귀 지점은 플레이·step 쌍. 주입 뒤 직접 조종이 오면 step id만으로는 어느 플레이인지 모른다)
 
 **작전·플레이**
 - `Operation` — id, name, purpose, area: Polygon(표시용 작전 지역), zone: Polygon(작전 구역, 하한선 규칙 2, 상황판에서 수정 불가), vehicle_ids: list[str], started_ms: int|None
 - `Role` — id, name, domains: list[Domain], required: list[ActionKind] (이 액션을 못 하는 기체는 검사에서 거부), vehicles: list[str] (주 기체 → 예비 순서. 결정 0005: 배정은 계획 담당이 고정)
 - `Condition` — kind: ConditionKind, params: dict[str, float|str]
-- `Line` — kind: ActionKind, params: dict[str, Any] (move_to의 target은 GeoPoint dict, patrol_route의 route는 GeoPoint dict 목록, watch_target의 target_id·distance_m. 검토 전 타입 `float|str|list`로는 목적지가 들어가지 않아 첫 액션부터 ValidationError), cond: Condition|None = None, then_step: str|None = None (if_cond·wait_signal·report 분기 대상)
+- `Action` — kind: ActionKind, params: dict[str, Any] (move_to의 target은 GeoPoint dict, patrol_route의 route는 GeoPoint dict 목록, watch_target의 target_id·distance_m. 타입을 `float|str|list`로 두면 목적지가 들어가지 않아 첫 액션부터 ValidationError)
+- `Exit` — cond: Condition, go_step: str (조건이 참이 되면 옮겨 갈 step)
 - `Choice` — id, label, step_by_role: dict[str, str] (역할 id → 시작할 step id. 결정 한 번이 여러 역할을 움직이는 자리)
-- `Step` — id, role_id, name, lines: list[Line], choices: list[Choice] = [] (lines에 report/require_approval이 있을 때), next_step: str|None, ui: dict = {} (편집기 좌표, 엔진은 읽지 않음)
+- `ReportSpec` — text: str, choices: list[Choice] = [] (choices가 있으면 결정을 기다리는 승인 지점, 없으면 알림만)
+- `Step` — id, role_id, name, **do: Action** (이 step의 행동 하나), **on: list[Exit] = []** (탈출 조건, 앞에서부터 첫 참인 것), **report: ReportSpec|None = None** (step에 들어갈 때 카드 한 장), ui: dict = {} (편집기 좌표, 엔진은 읽지 않음). 결정 0006: step 안에 줄 목록을 두지 않는다. 10/8 실행안 PDF의 `do`/`on`/`report`와 같은 꼴
 - `EmergencyRules` — battery_low_pct: float = 30, link_lost_step: str|None, battery_low_step: str|None, operator_call_step: str|None
 - `Play` — id, name, roles: list[Role], steps: list[Step], emergency: EmergencyRules, entry: dict[str, str] (역할 id → 첫 step id), origin: "human"|"ai_draft", approved: bool = False, template: bool = False
-- `ValidationIssue` — code: str, step_id: str|None, line_idx: int|None, message: str
+- `ValidationIssue` — code: str, step_id: str|None, message: str
 - `PlayCheck` — ok: bool, issues: list[ValidationIssue], est_return_battery: dict[str, float] (역할 id → 예상 귀환 배터리 %)
 
 **명령과 하한선**
-- `Provenance` — source: CommandSource, play_id: str|None, step_id: str|None, line_idx: int|None, decision_id: str|None, injection_id: str|None, operator_id: str|None, issued_ms: int
+- `Provenance` — source: CommandSource, play_id: str|None, step_id: str|None, decision_id: str|None, injection_id: str|None, operator_id: str|None, issued_ms: int
 - `Command` — id, vehicle_id, kind: CommandKind, params: dict (target: GeoPoint | route: list[GeoPoint] | target_id | distance_m 등), provenance: Provenance|None
 - `PassedCommand` — command: Command, checks: list[str] (통과한 규칙 이름 3개), passed_ms: int. **safety 모듈의 `check_command`만 만든다.** 다른 곳에서 생성하는 테스트를 두어 막는다(파이썬이라 타입으로 강제되지 않음, 테스트와 리뷰로 지킴)
 - `Block` — command_id, vehicle_id, reason: BlockReason, detail: str, alternative: Command|None, t_ms
@@ -120,29 +122,29 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 ### 3.2 play (팀원 3, 새 모듈)
 - 목표: 플레이 파일을 읽고·검사하고·기체 명령으로 펼치고·AI 초안을 만든다.
 - 방향:
-  - 저장 전 검사 4종: 로직 오류(끊긴 next_step, 닿을 수 없는 step, 끝나지 않는 loop, 송신 없는 wait_signal), 보고·승인 지점 누락(target_found 뒤에 report 없이 approach_target로 가는 경로), 귀환 배터리(각 역할의 경로 길이와 VehicleSpec 평균으로 추정), 작전 구역 밖 경로점.
-  - 펼치기 표: `(ActionKind, Domain) -> CommandKind | None`. 표는 JSON 하나(`modules/play/expand_table.json`). None이면 그 기체는 그 역할 후보에서 빠진다.
+  - 저장 전 검사 4종(step 단위): 로직 오류(`Exit.go_step`·`Choice.step_by_role`·`entry`가 없는 step을 가리킴, entry에서 닿을 수 없는 step), 보고·승인 지점 누락(target_found 탈출 뒤 choices 있는 report 없이 approach_target step에 닿는 경로), 귀환 배터리(각 역할의 경로 길이와 VehicleSpec 평균으로 추정), 작전 구역 밖 경로점.
+  - 펼치기 표: `(ActionKind, Domain) -> CommandKind | None`. 표는 JSON 하나(`modules/play/expand_table.json`). None이면 그 기체는 그 역할 후보에서 빠진다. hold는 모든 영역에서 hold.
   - AI 초안: 문장 + 어휘(ActionKind·ConditionKind) + Play JSON 스키마를 LLM에 주고 구조화 출력만 받는다. 스키마 밖이면 버리고 한 번 재요청. `origin="ai_draft", approved=False`로 돌려준다. 응답은 `demo/plays/cache/<sha256(prompt)>.json`에 저장하고, 캐시가 있으면 호출하지 않는다. API 키는 `.env`.
   - 템플릿 2개를 손으로 쓴다: 해안 경계(**역할 4**: AIR 순찰(vehicles [드론1, 드론3])·SEA 확인·GROUND 상륙 감시·AIR 예비 순찰(vehicles [드론2], 결정 전에는 wait 줄에서 대기)), 고속 보트 추적(역할 1: AIR 추적). 역할 3개로는 사건 2의 "예비 드론이 빈 구역 순찰"이 나오지 않는다(검토에서 확인: 결정은 `Choice.step_by_role`로 역할을 움직이므로 넷째 역할이 있어야 넷째 기체가 움직인다).
-- 공개 API: `load_play(path) -> Play`, `check_play(play, op: Operation, specs) -> PlayCheck`, `expand_line(line, domain) -> CommandKind|None`, `draft_play(text, op) -> Play`, `list_templates() -> list[Play]`
+- 공개 API: `load_play(path) -> Play`, `check_play(play, op: Operation, specs) -> PlayCheck`, `expand_action(action, domain) -> CommandKind|None`, `draft_play(text, op) -> Play`, `list_templates() -> list[Play]`
 - 완료 기준: 템플릿 2개가 `check_play` 통과. 보고 지점을 뺀 플레이는 실패. AI 초안이 캐시로 재현. 전부 순수 함수, 예시 JSON으로 테스트.
 - 하지 않는 것: 서명, 버전 관리, 플레이 간 참조.
 
 ### 3.3 runtime (팀원 2, 새 모듈)
-- 목표: 틱마다 기체별 현재 (플레이, step, 줄)을 한 줄 진행해 `Command`를 만들고, 보고·결정·이어받기·주입·직접 조종·비상을 처리하며 지표를 센다.
-- 방향:
-  - 상태 기계는 `VehicleState`의 play_id/step_id/line_idx다. 한 틱에 한 줄. 줄의 cond가 거짓이면 그 줄에 머문다. **줄에 들어갈 때 `Command`를 한 번 내고 다음 줄로 넘어간다.** 수행은 sim이 `VehicleState.active`로 계속한다(1절). 순찰 step의 전형: `[patrol_route(route), if_cond(target_found) → 보고 step]` — 첫 틱에 follow_route 명령 1개, 그 뒤 매 틱 if_cond 줄에서 조건만 본다.
-  - 액션 15개 중 시연에 필요한 것부터: move_to, patrol_route, watch_target, approach_target, report, require_approval, return_home, if_cond(target_found·arrived·battery_below), wait(cond=operator_choice, 결정 전 대기용). 나머지(search_area, relay_comms, loop, send_signal, wait_signal, watch_point)는 빼는 순서 뒤쪽.
-  - 보고 → 결정: `report` 줄은 `Report`를 만들고 `pending_report_id`를 적는다. 그 값이 있는 동안 어떤 줄도 진행하지 않는다. `Decision`이 오면 `pending_report_id`를 지우고 `Choice.step_by_role`대로 각 역할의 기체를 해당 step의 line_idx 0으로 옮긴다(주인공 장면).
+- 목표: 틱마다 기체별 현재 (플레이, step)을 진행해 `Command`를 만들고, 보고·결정·이어받기·주입·직접 조종·비상을 처리하며 지표를 센다.
+- 방향(결정 0006 단순형):
+  - 상태 기계는 `VehicleState`의 play_id/step_id/entered_step이다. **step에 들어간 첫 틱에 `do`를 `Command` 하나로 내고(있으면 `report` 카드도 한 장), 그 뒤 매 틱 `on`을 앞에서부터 평가해 첫 참인 `Exit.go_step`으로 옮긴다.** 줄 해석기·line_idx·if_cond가 없다. 수행은 sim이 `VehicleState.active`로 계속한다(1절). 순찰 step의 전형: `do=patrol_route(route), on=[target_found → 보고 step]`.
+  - 행동 9개 중 시연에 필요한 것부터: patrol_route, watch_target, approach_target, move_to, return_home, hold(대기 step). 조건은 target_found·arrived·battery_below. 나머지 행동(search_area, relay_comms, watch_point)과 조건(time_elapsed, signal_received)은 빼는 순서 뒤쪽.
+  - 보고 → 결정: `report`에 choices가 있으면 `pending_report_id`를 적고 그 값이 있는 동안 전이하지 않는다(`do`는 보통 hold 또는 watch_target). `Decision`이 오면 `pending_report_id`를 지우고 `Choice.step_by_role`대로 각 역할의 기체를 해당 step으로 옮기며 `entered_step=False`로 둔다(주인공 장면). choices 없는 report는 알림 카드만 만들고 멈추지 않는다(사건 3의 "알림만").
   - 배정(결정 0005, 고정): `Role.vehicles` 순서에서 status가 ready·active이고 **다른 역할에 배정돼 있지 않은** 첫 기체. 점수 계산 없음.
-  - 이어받기: 기체가 returning·lost·maintenance가 되면(또는 귀환 step에 들어가면) `Role.vehicles`의 다음 예비 기체가 이탈한 기체의 step을 line_idx 0부터 시작한다. 예비가 없으면 `role_gap` 보고 카드와 `role_gap_ms` 누적. **영역 제한은 두지 않는다.** `Role.vehicles`에 다른 영역 기체를 적으면 그대로 이어받고, 명령은 그 기체의 영역으로 펼쳐진다(`expand_line(line, domain)`). runtime 코드는 영역을 보지 않으므로 비용이 없다.
+  - 이어받기: 기체가 returning·lost·maintenance가 되면(또는 귀환 step에 들어가면) `Role.vehicles`의 다음 예비 기체가 이탈한 기체의 step을 `entered_step=False`로 시작한다. 예비가 없으면 `role_gap` 보고 카드와 `role_gap_ms` 누적. **영역 제한은 두지 않는다.** `Role.vehicles`에 다른 영역 기체를 적으면 그대로 이어받고, 명령은 그 기체의 영역으로 펼쳐진다(`expand_line(line, domain)`). runtime 코드는 영역을 보지 않으므로 비용이 없다.
   - 주입: `Injection`은 pending으로 들어오고 승인될 때까지 명령을 만들지 않는다(출처 없음). 승인되면 proposed대로 배정하고 원래 (play, step)은 resume_play_id/resume_step_id에 보관.
   - 직접 조종: `DirectControl`은 `Command(kind=move, provenance.source=operator_direct)`. 도착하면 resume (play, step)으로 복귀. 차단된 명령의 대안 지점은 화면이 `/direct`로 다시 보낸다(별도 엔드포인트 없음, 운용자 조작 1회로 센다).
   - 비상: battery_below(EmergencyRules.battery_low_pct)·link_lost·operator_call → 지정 step으로, 끝나면 resume.
   - 수동 기준선: 같은 실행에서 `manual_baseline_actions`를 2.3 정의대로 센다. 두 번 돌리지 않는다.
 - 공개 API: `step_vehicles(state, plays, targets, t_ms) -> (state, list[Command], list[Report])`, `assign_roles(play, states) -> list[Assignment]`(배정과 이어받기 같은 함수), `apply_decision(state, play, decision) -> state`, `apply_injection(...)`, `update_metrics(metrics, frame_parts) -> Metrics`
-- 완료 기준: 통합 1 슬라이스(4절). 결정 한 번에 역할 4개가 함께 step을 바꾸는 테스트. 역할 공백 시간이 세어지는 테스트. 보고 줄이 한 번만 카드를 만드는 테스트.
-- 뼈대: `knowledge/spikes/rolecall_engine_proto/step_vehicle.py`(58줄)가 한 줄 진행 액션의 출발점. 80줄 안에 if_cond·report·펼치기까지 들어간다(확인).
+- 완료 기준: 통합 1 슬라이스(4절). 결정 한 번에 역할 4개가 함께 step을 바꾸는 테스트. 역할 공백 시간이 세어지는 테스트. step 진입 때 명령·카드가 한 번만 나오는 테스트.
+- 뼈대: `knowledge/spikes/rolecall_engine_proto/step_vehicle.py`가 단순형 step 진행 액션의 출발점(80줄 안, 결정 0006 반영 뒤 재실행 확인).
 - 하지 않는 것: 경로 계획(직선만), 충돌 회피.
 
 ### 3.4 safety (팀원 2, 새 모듈)
@@ -180,7 +182,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 ### 3.8 cop-ui (map·live·replay 리드, editor·setup 팀원 3)
 - 목표: 화면 2개. 편집기(설정 포함)와 상황판.
 - 방향:
-  - 편집기: React Flow를 쓰지 않는다. 역할별 세로 열에 step 카드, 카드 안 줄 목록, 연결은 드롭다운(next_step·then_step·choice). 상단에 AI 초안 입력 칸. 저장 버튼이 `/plays/check` 결과를 카드 옆에 표시. 작전 설정(이름·작전 구역 그리기·기체 선택)은 편집기 왼쪽 패널.
+  - 편집기: React Flow를 쓰지 않는다. 역할별 세로 열에 step 카드. 카드 하나 = 행동 드롭다운 1개 + 탈출 조건 목록(조건·갈 step 드롭다운) + 보고 칸(문구·선택지). 줄 목록 UI 없음(결정 0006). 상단에 AI 초안 입력 칸. 저장 버튼이 `/plays/check` 결과를 카드 옆에 표시. 작전 설정(이름·작전 구역 그리기·기체 선택)은 편집기 왼쪽 패널.
   - 상황판: MapLibre + 백령도 위성 타일(로컬 캐시, 결정 0004·0001), 기체·표적·작전 구역·경로, 오른쪽에 카드 열(보고·역할 공백·승인 대기·차단), 카드의 선택지 버튼이 `/decisions`. 직접 조종은 기체 클릭 후 지도 클릭. 차단 카드의 "대안 지점으로" 버튼은 `/direct`를 대안 좌표로 다시 보낸다. 아래에 지표 패널: 운용자 조작 수 대 수동 기준 명령 수 나란히(한 실행의 Metrics). 발표용 배속과 "다음 사건으로".
   - 타일: EOX Sentinel-2 cloudless(CC BY-NC-SA 4.0, 출처 표기) z8~14, `scripts/fetch_tiles_baengnyeong.sh`로 199장 1.2MB(실행 확인, 23초). 10m 해상도라 군사시설이 식별되지 않아 정책 2번에도 맞다. Esri World Imagery는 z16까지 선명하지만 오프라인 캐시가 약관상 제한되고 시설이 보이므로 쓰지 않는다. MapLibre raster source `tiles: ["/tiles/baengnyeong/{z}/{x}/{y}.jpg"]`, maxzoom 14(그 위는 확대 표시). 타일 없으면 현재처럼 배경색만.
   - 미리 보기(시뮬레이션 화면)는 별도 화면이 아니라 상황판을 배속으로 돌리는 것.
@@ -199,7 +201,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 ## 4. 통합 슬라이스(검사 가능한 끝에서 끝 경로)
 
 **통합 1 (10/10 18:00)** — 편집기 없이.
-손으로 쓴 플레이 JSON → `check_play` 통과 → `/run/live` → 드론이 순찰 → 표적 출현(사건 1) → `target_found` → `report` 줄 → Report 카드가 WS Frame에 실림 → `/decisions`로 선택 → 역할 4개의 기체가 각자 step으로 이동 → `check_command`가 전부 통과 → 지도에 네 기체가 움직임. Metrics에 operator_actions=1이 찍힘.
+손으로 쓴 플레이 JSON → `check_play` 통과 → `/run/live` → 드론이 순찰 → 표적 출현(사건 1) → `target_found` 탈출 → 보고 step 진입 → Report 카드가 WS Frame에 실림 → `/decisions`로 선택 → 역할 4개의 기체가 각자 step으로 이동 → `check_command`가 전부 통과 → 지도에 네 기체가 움직임. Metrics에 operator_actions=1이 찍힘.
 
 통합 1에 필요한 액션 수(검토에서 셈): 팀원 2 — sim 2(advance·apply_events), sensing 1(observe), safety 3(check_command·point_in_polygon·return_feasible), runtime 5(step_vehicles·assign_roles·apply_decision·apply_injection은 뒤로·update_metrics) = **11개, 12:00~18:00 6시간에 시간당 약 2개**. 스파이크 코드를 옮기면 가능하고, 백지에서 쓰면 안 된다. 팀원 3 — play 2(load_play·check_links)만 18:00 전, 나머지 검사 3개·expand_line·list_templates는 00:00까지. 리드 — contracts(밤), gateway engine.py·app.py 재작성, build_frame 1개, 시나리오 JSON, 타일.
 
@@ -260,7 +262,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 ## 7. 빼는 순서(늦어질 때, 앞에서부터)
 
 1. 작전 설정 패널(기체 선택은 시나리오 파일 고정값으로)
-2. 액션 뒤쪽 6종(search_area, relay_comms, loop, send_signal, wait_signal, watch_point)
+2. 행동 뒤쪽 3종(search_area, relay_comms, watch_point)과 조건 2종(time_elapsed, signal_received)
 3. 비상 규칙 link_lost·operator_call(battery_low만 남김)
 4. 주입(사건 4). 승인 대기 카드만 남기고 승인 뒤 배정 전이는 뺀다
 5. AI 초안 라이브 호출(캐시 응답만, 입력 칸은 유지)
@@ -311,4 +313,6 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 
 반대자의 P(MISTAKE) 70% → 수정 뒤 내 추정 40%. 남은 위험은 9절.
 
-더 싼 대안(반대자 제안, 채택 안 함): step을 "이동 명령 하나 + 탈출 조건 목록"으로 단순화해 줄 해석기를 없애는 것. 10/8 실행안 PDF의 step 형식(`do` + `on`)과 같다. 채택하지 않은 이유: 결정 0003의 편집기 카드("줄 추가·연결")와 AI 초안 어휘(ActionKind 15개)가 줄 단위를 전제한다. 대신 "줄에 들어갈 때 명령 한 번"으로 같은 효과(명령 수가 틱 수와 무관)를 얻는다. 10/10 15:00에 runtime이 안 돌면 이 대안으로 내려간다.
+더 싼 대안(반대자 제안): step을 "행동 하나 + 탈출 조건 목록"으로 단순화해 줄 해석기를 없애는 것. 10/8 실행안 PDF의 step 형식(`do` + `on`)과 같다. **결정 0006으로 처음부터 이 형태를 쓴다.** 편집기 카드와 AI 초안 어휘는 step 단위(ActionKind 9개 + ConditionKind)로 맞췄다. 스파이크를 단순형으로 바꿔 다시 돌려 같은 사건 대본이 끝까지 도는 것을 확인했다.
+
+같은 검토에서 사람이 답한 것(결정 0006): 스파이크 코드를 대회에서 쓰고 사전 준비분으로 밝힌다. 수동 기준선은 한 실행에서 센다. 타일은 EOX Sentinel-2 z8~14.

@@ -36,7 +36,9 @@ def advance(states, specs, passed, dt_ms, targets):
             out.append(new); continue
         cmd = pc.command; step_m = spec.speed_mps * dt_ms / 1000
         upd = {"active": pc} if ACTIVE_FIELD else {}
-        if cmd.kind in (CommandKind.move, CommandKind.return_home):
+        if cmd.kind == CommandKind.hold:
+            pass
+        elif cmd.kind in (CommandKind.move, CommandKind.return_home):
             tgt = spec.home if cmd.kind == CommandKind.return_home else GeoPoint(**cmd.params["target"])
             pos = move_toward(st.pos, tgt, step_m); upd["pos"] = pos
             if dist_m(pos, tgt) < 1: upd["waypoint_idx"] = -1  # arrived
@@ -140,16 +142,18 @@ play = Play(id="coast", name="해안 경계", approved=True, entry={"air": "A_pa
          Role(id="ground", name="상륙 감시", domains=["ground"], required=["move_to"], vehicles=["ugv"]),
          Role(id="air2", name="공중 예비", domains=["air"], required=["patrol_route"], vehicles=["d2"])],
   steps=[
-    Step(id="A_patrol", role_id="air", name="순찰", lines=[Line(kind="patrol_route", params={"route": routeA}), Line(kind="if_cond", cond=Condition(kind="target_found"), then_step="A_report")]),
-    Step(id="A_report", role_id="air", name="보고", lines=[Line(kind="report", params={"text": "미식별 선박"})], choices=[ch]),
-    Step(id="A_watch", role_id="air", name="감시", lines=[Line(kind="watch_target", params={"target_id": "boat1", "distance_m": 150}), Line(kind="if_cond", cond=Condition(kind="battery_below", params={"pct": 30}), then_step="A_return")]),
-    Step(id="A_return", role_id="air", name="귀환", lines=[Line(kind="return_home")]),
-    Step(id="S_wait", role_id="sea", name="대기", lines=[Line(kind="wait", cond=Condition(kind="operator_choice"))]),
-    Step(id="S_approach", role_id="sea", name="근접", lines=[Line(kind="approach_target", params={"target_id": "boat1", "distance_m": 200})]),
-    Step(id="G_wait", role_id="ground", name="대기", lines=[Line(kind="wait", cond=Condition(kind="operator_choice"))]),
-    Step(id="G_landing", role_id="ground", name="상륙지점", lines=[Line(kind="move_to", params={"target": gp(37.975, 124.70).model_dump()})]),
-    Step(id="A2_wait", role_id="air2", name="대기", lines=[Line(kind="wait", cond=Condition(kind="operator_choice"))]),
-    Step(id="A2_patrolA", role_id="air2", name="구역A 순찰", lines=[Line(kind="patrol_route", params={"route": routeB})]),
+    Step(id="A_patrol", role_id="air", name="순찰", do=Action(kind="patrol_route", params={"route": routeA}),
+         on=[Exit(cond=Condition(kind="target_found"), go_step="A_report")]),
+    Step(id="A_report", role_id="air", name="보고", do=Action(kind="hold"), report=ReportSpec(text="미식별 선박", choices=[ch])),
+    Step(id="A_watch", role_id="air", name="감시", do=Action(kind="watch_target", params={"target_id": "boat1", "distance_m": 150}),
+         on=[Exit(cond=Condition(kind="battery_below", params={"pct": 30}), go_step="A_return")]),
+    Step(id="A_return", role_id="air", name="귀환", do=Action(kind="return_home")),
+    Step(id="S_wait", role_id="sea", name="대기", do=Action(kind="hold")),
+    Step(id="S_approach", role_id="sea", name="근접", do=Action(kind="approach_target", params={"target_id": "boat1", "distance_m": 200})),
+    Step(id="G_wait", role_id="ground", name="대기", do=Action(kind="hold")),
+    Step(id="G_landing", role_id="ground", name="상륙지점", do=Action(kind="move_to", params={"target": gp(37.975, 124.70).model_dump()})),
+    Step(id="A2_wait", role_id="air2", name="대기", do=Action(kind="hold")),
+    Step(id="A2_patrolA", role_id="air2", name="구역A 순찰", do=Action(kind="patrol_route", params={"route": routeB})),
   ])
 events = [ScenarioEvent(t_ms=11*60000, kind="spawn_target", params={"id": "boat1", "kind": "boat", "pos": gp(37.985, 124.70).model_dump(), "ve": 0, "vn": -1.0}),
           ScenarioEvent(t_ms=19*60000, kind="vehicle_battery_set", params={"id": "d1", "pct": 21})]
@@ -177,7 +181,7 @@ def run(tick_ms=200, minutes=35):
             rep.resolved_ms = t; metrics.operator_actions += 1; metrics.decisions += 1
             for a in assign_roles(play, states):
                 tgt_step = ch.step_by_role.get(a.role_id)
-                if tgt_step: states = [s.model_copy(update={"step_id": tgt_step, "line_idx": 0, "waypoint_idx": 0, "pending_report_id": None}) if s.id == a.vehicle_id else s for s in states]
+                if tgt_step: states = [s.model_copy(update={"step_id": tgt_step, "entered_step": False, "waypoint_idx": 0, "pending_report_id": None}) if s.id == a.vehicle_id else s for s in states]
             log.append(f"[계산] t={t//60000}m 결정 '근접 확인' → 역할 {len(assigns)}개 step 전이"); pending_decision_at = None
         cmds, direct = [], direct_script.pop(t, None)
         if direct:
@@ -198,7 +202,7 @@ def run(tick_ms=200, minutes=35):
                 nxt = next((v for v in r.vehicles if v != cur.vehicle_id and by[v].status in (VehicleStatus.ready, VehicleStatus.active)), None)
                 if nxt and not handover_done:
                     handover_done = True
-                    states = [s.model_copy(update={"role_id": r.id, "step_id": by[cur.vehicle_id].step_id if by[cur.vehicle_id].step_id != "A_return" else "A_watch", "line_idx": 0}) if s.id == nxt else s for s in states]
+                    states = [s.model_copy(update={"role_id": r.id, "step_id": by[cur.vehicle_id].step_id if by[cur.vehicle_id].step_id != "A_return" else "A_watch", "entered_step": False}) if s.id == nxt else s for s in states]
                     assigns = [Assignment(role_id=r.id, vehicle_id=nxt, since_ms=t, reason="예비 1번 투입") if a.role_id == r.id else a for a in assigns]
                     gap_start = t; log.append(f"[계산] t={t//60000}m 이어받기 {cur.vehicle_id}→{nxt}")
         passed = []
@@ -219,7 +223,7 @@ def run(tick_ms=200, minutes=35):
         metrics.open_reports_max = max(metrics.open_reports_max, sum(1 for r in reports if r.resolved_ms is None))
         if t % 60000 == 0 and t <= 20*60000:
             d1 = next(s for s in states if s.id == "d1"); tgd = min((dist_m(d1.pos, tg.pos) for tg in targets), default=-1)
-            trace.append(f"  t={t//60000:2d}m d1 step={d1.step_id} line={d1.line_idx} wp={d1.waypoint_idx} dist_home={dist_m(d1.pos, specs['d1'].home):.0f} dist_tgt={tgd:.0f} bat={d1.battery_pct:.0f}")
+            trace.append(f"  t={t//60000:2d}m d1 step={d1.step_id} in={int(d1.entered_step)} wp={d1.waypoint_idx} dist_home={dist_m(d1.pos, specs['d1'].home):.0f} dist_tgt={tgd:.0f} bat={d1.battery_pct:.0f}")
         fr = Frame(t_ms=t, mode="role", vehicles=states, targets=targets, reports=reports, assignments=assigns, blocks=blocks, injections=[], metrics=metrics, log=log[-3:])
         fr.model_dump_json(); frames += 1
     el = time.perf_counter() - t0

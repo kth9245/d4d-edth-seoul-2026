@@ -7,11 +7,10 @@ class Domain(str, Enum):
     air = "air"; sea = "sea"; ground = "ground"
 class VehicleStatus(str, Enum):
     ready = "ready"; active = "active"; returning = "returning"; maintenance = "maintenance"; lost = "lost"
-class ActionKind(str, Enum):
+class ActionKind(str, Enum):  # step의 행동 하나. 분기·보고는 step의 on/report 필드 (결정 0006 단순형)
     move_to="move_to"; patrol_route="patrol_route"; search_area="search_area"; return_home="return_home"
     watch_target="watch_target"; watch_point="watch_point"; approach_target="approach_target"; relay_comms="relay_comms"
-    if_cond="if_cond"; loop="loop"; wait="wait"; send_signal="send_signal"; wait_signal="wait_signal"
-    report="report"; require_approval="require_approval"
+    hold="hold"
 class ConditionKind(str, Enum):
     target_found="target_found"; arrived="arrived"; time_elapsed="time_elapsed"; battery_below="battery_below"
     operator_choice="operator_choice"; signal_received="signal_received"
@@ -43,7 +42,7 @@ class VehicleSpec(BaseModel):
 class VehicleState(BaseModel):
     id: str; t_ms: int; pos: GeoPoint; heading_deg: float; battery_pct: float; status: VehicleStatus
     role_id: str | None = None; play_id: str | None = None; step_id: str | None = None
-    line_idx: int = 0; waypoint_idx: int = 0; emergency: EmergencyKind | None = None; resume_step_id: str | None = None
+    entered_step: bool = False; waypoint_idx: int = 0; emergency: EmergencyKind | None = None; resume_step_id: str | None = None
     active: PassedCommand | None = None  # PROTO ADDITION under test
     pending_report_id: str | None = None  # PROTO ADDITION: vehicle waits for a Decision
 class Operation(BaseModel):
@@ -52,23 +51,27 @@ class Role(BaseModel):
     id: str; name: str; domains: list[Domain]; required: list[ActionKind]; vehicles: list[str]
 class Condition(BaseModel):
     kind: ConditionKind; params: dict[str, float | str] = {}
-class Line(BaseModel):
-    kind: ActionKind; params: dict[str, Any] = {}; cond: Condition | None = None; then_step: str | None = None
+class Action(BaseModel):
+    kind: ActionKind; params: dict[str, Any] = {}
+class Exit(BaseModel):
+    cond: Condition; go_step: str
 class Choice(BaseModel):
     id: str; label: str; step_by_role: dict[str, str]
+class ReportSpec(BaseModel):
+    text: str; choices: list[Choice] = []  # choices가 있으면 결정을 기다린다(승인 지점)
 class Step(BaseModel):
-    id: str; role_id: str; name: str; lines: list[Line]; choices: list[Choice] = []; next_step: str | None = None; ui: dict = {}
+    id: str; role_id: str; name: str; do: Action; on: list[Exit] = []; report: ReportSpec | None = None; ui: dict = {}
 class EmergencyRules(BaseModel):
     battery_low_pct: float = 30; link_lost_step: str | None = None; battery_low_step: str | None = None; operator_call_step: str | None = None
 class Play(BaseModel):
     id: str; name: str; roles: list[Role]; steps: list[Step]; emergency: EmergencyRules = EmergencyRules()
     entry: dict[str, str]; origin: Literal["human", "ai_draft"] = "human"; approved: bool = False; template: bool = False
 class ValidationIssue(BaseModel):
-    code: str; step_id: str | None = None; line_idx: int | None = None; message: str
+    code: str; step_id: str | None = None; message: str
 class PlayCheck(BaseModel):
     ok: bool; issues: list[ValidationIssue]; est_return_battery: dict[str, float]
 class Provenance(BaseModel):
-    source: CommandSource; play_id: str | None = None; step_id: str | None = None; line_idx: int | None = None
+    source: CommandSource; play_id: str | None = None; step_id: str | None = None
     decision_id: str | None = None; injection_id: str | None = None; operator_id: str | None = None; issued_ms: int
 class Command(BaseModel):
     id: str; vehicle_id: str; kind: CommandKind; params: dict = {}; provenance: Provenance | None = None
