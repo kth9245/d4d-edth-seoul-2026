@@ -257,8 +257,8 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 
 | 사람 | 항목 | 추정 | 왜 이렇게 |
 |---|---|---|---|
-| **Part 2A** (sim·sensing·틱 루프) | Part2-20 → 2-17(틱 루프, 먼저) → 2-1~2-6 → 2-18 | 5.2h | 스파이크 `run()`·`advance`·`apply_events`·`observe`가 한 파일에 있어 한 사람이 옮기는 게 빠르다. 틱 루프를 먼저 만들면 B와 리드가 스텁으로 돌려 볼 수 있다 |
-| **Part 2B** (safety·runtime·play 순수 함수) | Part2-7·2-8 → 2-9 → 3-7 → 2-10 → 2-11 → 2-12 → 2-13 → 3-1 → 3-2 | 5.7h | `step_vehicle`이 `expand_action`(3-7)을 부르므로 같은 사람이 둘 다 갖는다. play 검사·편집기(3-3~3-14)는 18:00 뒤 이 사람이 이어서 한다 |
+| **Part 2A = 최동호**(결정 0009, 무작위) (sim·sensing·틱 루프) | Part2-20 → 2-17(틱 루프, 먼저) → 2-1~2-6 → 2-18 | 5.2h | 스파이크 `run()`·`advance`·`apply_events`·`observe`가 한 파일에 있어 한 사람이 옮기는 게 빠르다. 틱 루프를 먼저 만들면 B와 리드가 스텁으로 돌려 볼 수 있다 |
+| **Part 2B = 황승주**(결정 0009, 무작위) (safety·runtime·play 순수 함수) | Part2-7·2-8 → 2-9 → 3-7 → 2-10 → 2-11 → 2-12 → 2-13 → 3-1 → 3-2 | 5.7h | `step_vehicle`이 `expand_action`(3-7)을 부르므로 같은 사람이 둘 다 갖는다. play 검사·템플릿·AI 초안(3-3~3-9)은 18:00 뒤 이 사람이 이어서 한다. 편집기 화면(3-10~3-14)은 리드(결정 0009: React 경험자 없음, 읽기 전용 카드) |
 | **리드** | Part1-9 → 1-7(틱 서명에 대고, 스텁) → 1-10 → 1-14 | 5.5h | 밤 작업(1-1~1-4)에 이어 낮에는 화면·REST·통합만. 12:00 형식 검토와 막힘 응답이 이 위에 얹힌다 |
 
 세 사람 다 여유가 거의 없다. 밀리면 7절 순서가 아니라 **통합 1 안에서 먼저 뺄 것**: Part2-3(orbit·keep_distance는 사건 1 결정 뒤 "근접 확인"에만 필요 → hold로 대체), Part2-13(지표는 통합 2로), Part1-9의 위성 raster(배경색만).
@@ -323,13 +323,13 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | Part3-7 | play `expand_action` + 표 | Action, Domain → CommandKind\|None; `expand_table.json` | 9×3 표 전부 테스트, None이면 후보 제외. **표 초안(행 = ActionKind, 열 = air/sea/ground):** move_to → move/move/move · patrol_route → follow_route ×3 · search_area → zigzag/zigzag/None · return_home → return_home ×3 · watch_target → orbit/keep_distance/None · watch_point → orbit/hold/hold · approach_target → keep_distance/keep_distance/None · relay_comms → relay ×3 · hold → hold ×3. 템플릿 검사에서 None에 걸리면 표를 고치고 커밋에 적는다 | Part1-1 | 1 |
 | Part3-8 | play `list_templates` | — → list[Play] | `demo/plays/*.json` 중 template=True | Part1-4 | 2 |
 | Part3-9 | play `draft_play` | 문장, Operation → Play(origin=ai_draft) | 캐시 hit면 호출 없음, miss면 1회 호출·스키마 밖이면 재요청 1회, 실패 시 템플릿 반환 | Part1-5 | 2 |
-| Part3-10 | 편집기: 카드 열(읽기 전용) | Play → 역할별 세로 열, 카드 = 행동 + 조건 목록 + 보고 | 템플릿 2개가 화면에 그려짐 | Part1-1(TS), Part3-1 | 2 |
-| Part3-11 | 편집기: 저장 → 검사 결과 표시 | 저장 버튼 → `POST /plays/check` → 카드 옆 오류 표시 | 보고 지점 없는 플레이에서 오류 카드가 보임 | Part3-10, Part1-7 | 2 |
-| Part3-12 | 편집기: 카드 편집 | 행동·조건·갈 step·보고 드롭다운, 카드 추가 | "보고 카드 끼워 넣기" 뒤 저장 통과 | Part3-11 | 2(빼는 순서 6) |
-| Part3-13 | 편집기: AI 초안 입력 칸 | 문장 → `POST /plays/draft` → 카드 열에 표시(approved=False 표시) | 캐시 문장으로 카드가 뜸 | Part3-9, Part3-10 | 2 |
-| Part3-14 | 작전 설정 패널 | Operation JSON → 이름·구역·기체 목록 표시(편집은 빼는 순서 1) | 시나리오의 작전이 패널에 보임 | Part1-4 | 2(빼는 순서 1) |
+| Part3-10 (리드) | 편집기: 카드 열(읽기 전용) | Play → 역할별 세로 열, 카드 = 행동 + 조건 목록 + 보고 | 템플릿 2개가 화면에 그려짐 | Part1-1(TS), Part3-1 | 2 |
+| Part3-11 (리드) | 편집기: 저장 → 검사 결과 표시 | 저장 버튼 → `POST /plays/check` → 카드 옆 오류 표시 | 보고 지점 없는 플레이에서 오류 카드가 보임 | Part3-10, Part1-7 | 2 |
+| Part3-12 (리드) | 편집기: 카드 편집 | 행동·조건·갈 step·보고 드롭다운, 카드 추가 | "보고 카드 끼워 넣기" 뒤 저장 통과 | Part3-11 | 2(빼는 순서 6) |
+| Part3-13 (리드) | 편집기: AI 초안 입력 칸 | 문장 → `POST /plays/draft` → 카드 열에 표시(approved=False 표시) | 캐시 문장으로 카드가 뜸 | Part3-9, Part3-10 | 2 |
+| Part3-14 (리드) | 작전 설정 패널 | Operation JSON → 이름·구역·기체 목록 표시(편집은 빼는 순서 1) | 시나리오의 작전이 패널에 보임 | Part1-4 | 2(빼는 순서 1) |
 
-통합 1까지 3개(Part3-1, 3-2, 3-7)이며 통합 1 구간에는 Part 2B가 맡는다(6절 머리 표). 18:00 뒤 Part 2B 사람이 3-3~3-6과 3-10부터 이어서 한다. 편집기는 9절대로 읽기 전용 카드 + "보고 카드 끼워 넣기" 버튼이 기본값이다.
+통합 1까지 3개(Part3-1, 3-2, 3-7)이며 황승주(Part 2B)가 맡는다(6절 머리 표). 18:00 뒤 황승주는 3-3~3-9(검사·템플릿·AI 초안), 리드는 3-10~3-14(편집기 화면)를 한다. 결정 0009: React 경험자가 없어 편집기는 9절대로 읽기 전용 카드 + "보고 카드 끼워 넣기" 버튼(3-12는 그 버튼 하나)으로 고정한다.
 
 도움 규칙(12절 검토 뒤):
 - 막히면 5분 안에 "막힘: 번호, 함수, 증상"을 채팅에.
@@ -443,6 +443,6 @@ LOAD-BEARING ASSUMPTION: 파트 2의 11개 액션(엔진 전부)을 한 사람�
 
 반대자의 P(MISTAKE) 60% → 변경 뒤 내 추정 40%. 남은 위험은 리드의 밤 작업이 실제로 끝나는가(검사로 확인 불가, 10/9 밤에 1-1을 1시간 하고 pytest·smoke가 도는지로 판단)와 두 사람의 Python·React 경험(결정 0009에서 정함).
 
-**미결(사람이 정할 것):** (1) 원격 브랜치 없음 정책을 유지하면 "반쯤 된 일은 가져갈 수 없다"가 규칙이 된다. 액션이 80줄이라 다시 시작하는 비용이 30분 안이면 유지해도 된다. (2) Part 2A·2B를 황승주·최동호 중 누가 맡는가 — 2B(runtime·play, 그리고 18:00 뒤 React 편집기)가 더 어렵고 React로 이어진다.
+**미결(사람이 정할 것):** (1) 원격 브랜치 없음 정책을 유지하면 "반쯤 된 일은 가져갈 수 없다"가 규칙이 된다. 액션이 80줄이라 다시 시작하는 비용이 30분 안이면 유지해도 된다. (2) ~~Part 2A·2B를 누가 맡는가~~ → 결정 0009: React·Python 경험 차이 없음, 무작위로 2A 최동호·2B 황승주. 편집기는 리드가 읽기 전용 카드로.
 
 검사 결과를 재현하는 스크립트는 이 세션의 임시 디렉터리에만 있고 저장소에 넣지 않았다(검사 3·4는 `tests/test_ship.py`의 `make_clone`을 그대로 쓴다).
