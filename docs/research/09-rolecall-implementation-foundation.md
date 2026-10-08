@@ -290,9 +290,9 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | Part2-1 | sim `move_straight` | VehicleState, VehicleSpec, PassedCommand(move·return_home·hold), dt_ms → VehicleState | 1틱에 speed×dt만큼 이동, 도착 시 waypoint_idx=-1, return_home 도착 시 maintenance, 배터리 선형 감소 | Part1-1 | 1 |
 | Part2-2 | sim `follow_route` | VehicleState, Spec, PassedCommand(follow_route), dt_ms → VehicleState | 경로점 순회, 끝나면 처음으로 | Part1-1 | 1 |
 | Part2-3 | sim `orbit_or_keep` | VehicleState, Spec, PassedCommand(orbit·keep_distance), Target, dt_ms → VehicleState | orbit 반지름 유지, keep_distance 거리 유지 | Part1-1 | 1 |
-| Part2-4 | sim `advance` | states, specs, passed, dt_ms, targets → states | 이번 틱 PassedCommand로 `active` 갱신, 없으면 `active` 계속 수행. 명령 없는 틱 테스트 | Part2-1~3 | 1 |
+| Part2-4 | sim `advance_vehicles`(공개 API 이름 `advance`) | states, specs, passed, dt_ms, targets → states | 이번 틱 PassedCommand로 `active` 갱신, 없으면 `active` 계속 수행. 명령 없는 틱 테스트 | Part2-1~3 | 1 |
 | Part2-5 | sim `apply_events` | Scenario.events, states, targets, t_ms, dt_ms → (states, targets). params 키는 2.2 `ScenarioEvent`에 적힌 대로(Part1-4의 JSON과 같은 키) | spawn_target·vehicle_battery_set·target_move·split_target·vehicle_link_lost 각 1테스트. 스파이크에는 앞 둘만 있다 | Part1-1 | 1 |
-| Part2-6 | sensing `observe` | states, specs, targets, t_ms → targets | 범위 안이면 seen_by에 추가·last_seen 갱신, 밖이면 제거 | Part1-1 | 1 |
+| Part2-6 | sensing `observe_targets`(공개 API 이름 `observe`) | states, specs, targets, t_ms → targets | 범위 안이면 seen_by에 추가·last_seen 갱신, 밖이면 제거 | Part1-1 | 1 |
 | Part2-7 | safety `point_in_polygon` | GeoPoint, Polygon → bool | 안·밖·경계 테스트 | Part1-1 | 1 |
 | Part2-8 | safety `return_feasible` | VehicleState, Spec, 목적지 → (bool, 대안 GeoPoint\|None) | 왕복 시간 > 가용 80%면 False와 최대 거리 지점. 대안 = 현재 위치→목적지 선분을 200등분해 목적지 쪽에서부터 되돌아오며 "그 점까지 + 그 점에서 home까지"가 가용 80% 안에 드는 첫 점(스파이크의 구역 대안과 같은 방식. 스파이크에는 배터리 대안이 없다) | Part1-1 | 1 |
 | Part2-9 | safety `check_command` | Command, state, spec, Operation, plays, injections → PassedCommand \| Block | 규칙 1→2→3, 규칙마다 통과·차단·대안 테스트, grep 테스트(PassedCommand 생성은 여기뿐) | Part2-7, Part2-8 | 1 |
@@ -359,7 +359,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 1. **Part1-1** contracts 패키지(약 1.5시간). 스파이크 models09.py → `contracts/models/` 6파일, LegacyFrame 개명과 gateway·smoke·cop-ui 참조 수정, check.sh 31행, 예시 JSON 29개·TS. `pytest`·`smoke.py` 통과.
 2. **Part1-2** 타일 199장 커밋(스크립트 실행 확인 끝, 약관 확인 끝).
 3. ~~AGENTS.md 담당 표 수정~~ — 2026-10-09 완료(결정 0007).
-4. **Part1-3** play·runtime·safety 뼈대 + SPEC.md에 Part2·Part3 액션 행을 `new_action.py --planned`로 `예정` 상태로 미리 적기(결정 0008). 파일은 만들지 않는다(6절 Part1-3 완료 기준). gateway SPEC에도 Part2-17·2-18 행, sim SPEC에 Part2-20 행.
+4. ~~**Part1-3**~~ 2026-10-09 완료(main). 모듈 3개와 `예정` 행 26개(sim 6, sensing 1, safety 3, runtime 7, play 9). 액션 이름 규칙(`동사_명사`) 때문에 `advance`→`advance_vehicles`, `observe`→`observe_targets`로 적었고 공개 API 이름은 그대로.
 5. **Part1-4** 시나리오 JSON + 템플릿 2개. 모델 검증 통과와 사건 1이 보고 카드까지 가는 것까지만. 나머지 사건의 튜닝은 Part2-19(낮, Part 2A).
 6. ~~Part1-5~~ 통합 1 뒤로 미룸(12절 공격 1: 밤 작업 합계가 6시간을 넘는다).
 
