@@ -280,7 +280,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 1. **contracts 패키지**(리드, 약 1.5시간): `knowledge/spikes/rolecall_engine_proto/models09.py`를 `contracts/models/` 6개 파일로 나눠 넣고(3.1), 레거시 모델을 `legacy.py`·`LegacyFrame`으로 옮기고 gateway·smoke·cop-ui 참조를 고친다. `check.sh` 31행 수정. 예시 JSON 29개·TS 생성. `pytest`·`smoke.py` 통과 확인.
 2. **타일**: `scripts/fetch_tiles_baengnyeong.sh 14`를 실행해 `modules/cop-ui/public/tiles/baengnyeong/`에 199장을 넣고 커밋(1.2MB). 약관 확인 끝(EOX CC BY-NC-SA, ATTRIBUTION.txt 생성됨). `basemap.ts`에 raster source 추가는 10/10 리드 첫 사이클.
 3. `modules/cop-ui/AGENTS.md`(담당 팀원 4 → 리드 map/live·팀원 3 editor, "외부 네트워크 금지" → "로컬 타일 우선, 온라인 허용(결정 0001)"). 루트 AGENTS.md 모듈 담당 표에 play·runtime·safety 추가.
-4. `new_module.py`로 play(PLY)·runtime(RT)·safety(SFT) 뼈대 생성. 각 SPEC.md에 4절의 통합 1 액션 이름을 미리 행으로 적어 두면 10/10 아침에 `new_action.py`만 돌리면 된다.
+4. `new_module.py`로 play(PLY)·runtime(RT)·safety(SFT) 뼈대 생성. 각 SPEC.md에 4절의 통합 1 액션을 **입력·출력·완료 기준·앞선 액션(의존)까지** 행으로 미리 적는다(결정 0008: 남이 가져가 끝낼 수 있어야 한다). 10/10 아침에는 `new_action.py`만 돌린다.
 5. **시나리오 JSON**(리드): `demo/scenarios/baengnyeong_night.json`을 스파이크의 `engine_proto.py` 하단 데이터(작전 구역·기체 5·플레이 역할 4·사건)에서 옮기고, 사건 시각·위치를 스파이크로 돌려 보고 시각이 3분 대본에 맞게 조정. 템플릿 플레이 2개도 같은 파일에서.
 6. AI 초안 프롬프트와 캐시 2개 생성(인터넷 되는 곳에서). 08 5.4 사건 3 문구를 "예비 드론 3이 이어받음, 닿을 때까지 역할 공백"으로 고친다(이 커밋에서 반영).
 
@@ -327,9 +327,11 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 
 ```
 CLAIM: 6절의 3파트 분담(리드: contracts·gateway·지도·demo / 파트 2: sim·sensing·runtime·safety /
-  파트 3: play·편집기)과 지금 저장소 구조(모듈별 디렉터리, 1 액션 = 1 파일 = 80줄, SPEC.md 등록,
-  공개 API만 import, 로컬 브랜치 → main 직접 push)는 황승주·최동호가 서로 기다리지 않고
-  10/10 12:00~18:00에 통합 1 경로를 만들게 한다.
+  파트 3: play·편집기)과 지금 저장소 구조(모듈별 디렉터리, 1 액션 = 1 파일 = 80줄, SPEC.md 행에
+  입력·출력·완료 기준·담당, 공개 API만 import, 로컬 브랜치 → main 직접 push)는 (a) 황승주·최동호가
+  서로 기다리지 않고 10/10 12:00~18:00에 통합 1 경로를 만들게 하고, (b) 결정 0008의 두 요구 —
+  한 파트 안의 일을 액션 단위로 병렬 진행할 수 있고, 다른 사람의 액션을 그 사람 없이 가져가 끝낼 수
+  있다 — 를 만족한다.
 EVIDENCE FOR: (1) 모듈 경계가 데이터 형식(contracts)으로만 이어져 파트 2·3이 같은 파일을 만지지 않는다.
   (2) 통합 1 액션 수를 세어 파트 2는 11개, 파트 3은 2개로 양이 비대칭이지만 파트 3에는 편집기(React)가
   뒤따른다. (3) 스파이크가 파트 2 액션 11개의 원본을 제공한다. (4) guard·SPEC·new_action이 구조를 강제한다.
@@ -338,6 +340,8 @@ COST IF WRONG: 한 사람이 병목이 되거나 두 사람이 같은 파일에�
 LOAD-BEARING ASSUMPTION: 파트 2의 11개 액션(엔진 전부)을 한 사람이 6시간에 옮기고, 그동안 파트 3은
   play 2개 액션 뒤 React 편집기를 혼자 시작할 수 있다. 두 사람의 Python·React 경험은 아직 문서에 없다.
 ```
+
+(b)의 근거로 댈 것: 통합 1 액션 목록(4절: 파트 2 11개, 파트 3 2개 + 검사 3개·펼치기·템플릿), 6절 "도움 가능(순수 함수)" 목록, SPEC.md 행 형식, 10/9 밤 할 일 4번(새 모듈 SPEC에 액션 행을 입력·출력·완료 기준까지 미리 적기). (b)가 약한 곳: 액션 행의 담당 칸은 `new_action.py`를 돌린 사람의 git 이름으로 채워지므로 "남이 가져가는" 절차가 없다. 11개 액션 사이의 의존 순서(advance는 PassedCommand가, step_vehicles는 Target.seen_by가 있어야 테스트됨)가 적혀 있지 않아 병렬 순서를 사람이 다시 짜야 한다.
 
 반대자가 보면 좋은 것: AGENTS.md 소유 표, 이 문서 3·4·6절, `modules/*/SPEC.md`, `tools/guard/check_edit.py`(브랜치 제한은 2026-10-09 제거됨), `scripts/ship.sh`(rebase → 검사 → main push), `knowledge/spikes/rolecall_engine_proto/`.
 미리 알아 둘 약점: 리드가 contracts·gateway·지도·시나리오·타일·통합을 전부 쥐고 있어 리드가 병목일 가능성이 파트 2보다 클 수 있다. 세 사람이 main에 직접 push하므로 rebase 충돌이 잦으면 ship.sh가 막는다.
