@@ -57,7 +57,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 
 **작전·플레이**
 - `Operation` — id, name, purpose, area: Polygon(표시용 작전 지역), zone: Polygon(작전 구역, 하한선 규칙 2, 상황판에서 수정 불가), vehicle_ids: list[str], started_ms: int|None
-- `Role` — id, name, domains: list[Domain], required: list[ActionKind] (이 액션을 못 하는 기체는 후보에서 제외)
+- `Role` — id, name, domains: list[Domain], required: list[ActionKind] (이 액션을 못 하는 기체는 검사에서 거부), vehicles: list[str] (주 기체 → 예비 순서. 결정 0005: 배정은 계획 담당이 고정)
 - `Condition` — kind: ConditionKind, params: dict[str, float|str]
 - `Line` — kind: ActionKind, params: dict[str, float|str|list], cond: Condition|None = None, then_step: str|None = None (if_cond·wait_signal·report 분기 대상)
 - `Choice` — id, label, step_by_role: dict[str, str] (역할 id → 시작할 step id. 결정 한 번이 여러 역할을 움직이는 자리)
@@ -77,7 +77,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 - `Target` — id, kind: TargetKind, pos: GeoPoint, vel_east_mps: float, vel_north_mps: float, first_seen_ms, last_seen_ms, seen_by: list[str]
 - `Report` — id, t_ms, kind: ReportKind, vehicle_id: str|None, target_id: str|None, role_id: str|None, text: str, choices: list[Choice] = [], resolved_ms: int|None, decision_id: str|None
 - `Decision` — id, t_ms, report_id, choice_id, operator_id = "op1"
-- `Assignment` — role_id, vehicle_id, since_ms, reason: str (거리·배터리 점수 설명 한 줄)
+- `Assignment` — role_id, vehicle_id, since_ms, reason: str ("계획 담당 지정" 또는 "예비 n번 투입")
 - `Injection` — id, play_id, anchor: dict (target_id 또는 zone Polygon), proposed: list[Assignment], status: "pending"|"approved"|"rejected", t_ms
 - `DirectControl` — vehicle_id, target: GeoPoint, t_ms (운용자 직접 조종 입력)
 
@@ -128,8 +128,8 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
   - 상태 기계는 `VehicleState`의 play_id/step_id/line_idx다. 한 틱에 한 줄. 줄의 cond가 거짓이면 그 줄에 머문다.
   - 액션 15개 중 시연에 필요한 것부터: move_to, patrol_route, watch_target, approach_target, report, require_approval, return_home, if_cond(target_found·arrived·battery_below). 나머지(search_area, relay_comms, loop, wait, send_signal, wait_signal, watch_point)는 빼는 순서 뒤쪽.
   - 보고 → 결정: `report` 줄은 `Report`를 만들고 그 기체는 멈춘다. `Decision`이 오면 `Choice.step_by_role`대로 각 역할의 기체를 해당 step으로 옮긴다(주인공 장면).
-  - 배정: 역할마다 후보(domains ∩ capabilities 충족) 중 거리·배터리 점수 최고. `Assignment.reason`에 한 줄 설명.
-  - 이어받기: 기체가 returning·lost·maintenance가 되면 같은 역할 후보 중 다시 배정. 없으면 `role_gap` 보고 카드와 `role_gap_ms` 누적. 영역을 넘는 이어받기는 하지 않는다.
+  - 배정(결정 0005, 고정): `Role.vehicles` 순서에서 status가 ready·active인 첫 기체. 점수 계산 없음.
+  - 이어받기: 기체가 returning·lost·maintenance가 되면 `Role.vehicles`의 다음 예비 기체. 예비가 없으면 `role_gap` 보고 카드와 `role_gap_ms` 누적. 영역을 넘는 이어받기는 하지 않는다.
   - 주입: `Injection`은 pending으로 들어오고 승인될 때까지 명령을 만들지 않는다(출처 없음). 승인되면 proposed대로 배정하고 원래 step은 resume_step_id에 보관.
   - 직접 조종: `DirectControl`은 `Command(kind=move, provenance.source=operator_direct)`. 도착하면 resume_step_id로 복귀.
   - 비상: battery_below(EmergencyRules.battery_low_pct)·link_lost·operator_call → 지정 step으로, 끝나면 resume.
@@ -205,18 +205,18 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 
 | 층 | 내용 | 시연에서 | 왜 |
 |---|---|---|---|
-| **대본(입력)** | 사건 5개의 시각·위치(표적 출현·분리, 드론 1 배터리 강제 설정), 기체 제원 5개, 작전 구역 폴리곤, 템플릿 플레이 2개 | `Scenario` JSON 파일. 화면 기록 줄에 `[대본]` 표시 | 공개·가상 데이터 정책. 환경은 우리가 정하는 것이 맞다 |
-| **계산(엔진)** | 기체 이동·배터리, 센서 범위 탐지, step 진행, 보고 카드 생성, 배정과 이어받기, 역할 공백, 주입 승인 대기, 직접 조종, 하한선 규칙 3개와 대안 지점, 지표 전부(두 모드) | 틱마다 실제로 계산. 같은 seed면 같은 결과 | 이것이 "계산·측정·보장"이다. 여기에 고정값을 넣는 순간 SUPPORTY와 같아진다 |
+| **대본(입력)** | 사건 5개의 시각·위치(표적 출현·분리, 드론 1 배터리 강제 설정), 기체 제원 5개, 작전 구역 폴리곤, 템플릿 플레이 2개, **역할별 기체 배정과 예비 순서(결정 0005)** | `Scenario` JSON 파일. 화면 기록 줄에 `[대본]` 표시 | 공개·가상 데이터 정책. 환경은 우리가 정하는 것이 맞다 |
+| **계산(엔진)** | 기체 이동·배터리, 센서 범위 탐지, step 진행, 보고 카드 생성, 이어받기(예비 순서대로), 역할 공백, 주입 승인 대기, 직접 조종, 하한선 규칙 3개와 대안 지점, 지표 전부(두 모드) | 틱마다 실제로 계산. 같은 seed면 같은 결과 | 이것이 "계산·측정·보장"이다. 여기에 고정값을 넣는 순간 SUPPORTY와 같아진다 |
 | **캐시(외부 응답)** | AI 초안의 LLM 응답 2개, 백령도 위성 타일 | 파일에서 읽음. 캐시 미스면 라이브 호출, 실패하면 템플릿으로 대체하고 화면에 표시 | 결정 0001의 "끊겨도 이어감" |
 
 **하지 않는 것(연출 금지 목록).** 아래가 하나라도 들어가면 심사 질의에서 무너진다.
 - 보고 카드를 시각으로 띄우기(예: T+11분에 카드 생성). 카드는 `target_found` 조건이 센서 범위 계산으로 참이 될 때만 생긴다. 대본은 표적을 그 시각에 그 위치에 놓을 뿐이다.
-- 배정을 시나리오 파일에 적어 두기. 배정은 거리·배터리 점수로 계산하고 `Assignment.reason`에 근거를 쓴다. 빼는 순서 4번(고정 배정)으로 내려갈 때만 예외이고, 그때는 발표에서 "배정은 고정"이라고 말한다.
+- (배정은 결정 0005로 대본 층. 질의에서 물으면 "해커톤이라 배정은 고정으로 하고 진행했다"고 그대로 답한다. 이어받기와 역할 공백은 계산 층.)
 - 지표를 손으로 적기. 두 모드의 숫자는 같은 seed로 돌린 Metrics에서만 나온다.
 - 차단 카드를 직접 조종 입력에 붙여 두기. 차단은 safety가 실제로 규칙을 평가한 결과여야 한다. 시연 대본은 운용자가 어디를 찍을지만 정한다.
 - 사건 2의 "결정 한 번에 세 기체 이동"을 기체별 이동 명령 3개로 미리 적어 두기. 이동은 `Choice.step_by_role`과 runtime의 step 전이에서 나와야 한다.
 
-**발표에서 말할 문장.** "사건의 시각과 위치는 우리가 정한 대본입니다. 그 뒤의 탐지·보고·배정·차단·숫자는 전부 엔진이 틱마다 계산한 것이고, 같은 시드로 다시 돌리면 같은 결과가 나옵니다. AI 초안 응답과 지도 타일은 행사장 인터넷 때문에 미리 받아 둔 캐시입니다."
+**발표에서 말할 문장.** "사건의 시각과 위치, 역할별 기체 배정은 작전 전에 정한 대본입니다. 그 뒤의 탐지·보고·이어받기·차단·숫자는 전부 엔진이 틱마다 계산한 것이고, 같은 시드로 다시 돌리면 같은 결과가 나옵니다. AI 초안 응답과 지도 타일은 행사장 인터넷 때문에 미리 받아 둔 캐시입니다."
 
 **개발 중 스텁(시연의 대본과 다름).** 통합 1(18:00)에서 늦은 파트는 예시 JSON으로 대체한다. 편집기가 늦으면 플레이는 손으로 쓴 JSON, runtime이 늦으면 gateway가 예시 Frame을 그대로 보낸다. 스텁은 `contracts/examples/`의 파일만 쓰고, 통합 2(00:00) 전에 전부 걷어낸다. 통합 2 뒤에 남아 있는 스텁은 "계산" 층을 "대본" 층으로 떨어뜨리는 것이므로 `BUILT_HERE.md`에 적고 발표에서 말한다.
 
@@ -242,7 +242,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | 2 | 팀원 2 | sim, sensing, runtime, safety | sim 이동·배터리, safety 규칙 3, runtime 한 줄 진행과 report→decision |
 | 3 | 팀원 3 | play, cop-ui editor/setup | 플레이 형식 로드·검사, 템플릿 2개, 편집기 카드 열 |
 
-도움 가능(순수 함수): play 검사 4종, safety 규칙 3개, runtime 배정 점수, Metrics 집계, 펼치기 표. 막히면 5분 안에 "막힘: 모듈, 함수, 증상"을 채팅에.
+도움 가능(순수 함수): play 검사 4종, safety 규칙 3개, Metrics 집계, 펼치기 표. 막히면 5분 안에 "막힘: 모듈, 함수, 증상"을 채팅에.
 
 ---
 
@@ -251,10 +251,10 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 1. 작전 설정 패널(기체 선택은 시나리오 파일 고정값으로)
 2. 액션 뒤쪽 7종(search_area, relay_comms, loop, wait, send_signal, wait_signal, watch_point)
 3. 비상 규칙 link_lost·operator_call(battery_low만 남김)
-4. 배정 점수(고정 배정 + reason 문장)
-5. 미리 보기 재생(라이브만)
-6. AI 초안 라이브 호출(캐시 응답만, 입력 칸은 유지)
-7. 편집기 카드 편집(읽기 전용 카드 + 저장 검사만)
+4. 미리 보기 재생(라이브만)
+5. AI 초안 라이브 호출(캐시 응답만, 입력 칸은 유지)
+6. 편집기 카드 편집(읽기 전용 카드 + 저장 검사만)
+(배정 점수는 결정 0005로 처음부터 없음)
 
 끝까지 남기는 것: 결정 한 번에 세 역할 이동, 보고 카드, 이어받기와 역할 공백 카드, 주입 승인 대기, 구역 밖·배터리 차단, 지표 두 모드 나란히.
 
