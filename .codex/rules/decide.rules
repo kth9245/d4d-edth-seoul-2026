@@ -1,0 +1,17 @@
+# Decision confirmation needs a human: Codex asks the person before each run.
+# The guard hook (tools/guard) lets only these simple forms through; anything else is blocked.
+
+prefix_rule(
+    pattern = ["uv", "run", "python", "scripts/decide.py", "accept"],
+    decision = "prompt",
+    justification = "결정 확정은 사람이 승인해야 합니다. 이 결정을 확정하기로 했다면 승인하세요.",
+    match = [["uv", "run", "python", "scripts/decide.py", "accept", "0001", "--by", "me"]],
+    not_match = [["uv", "run", "python", "scripts/decide.py", "new", "t"]],
+)
+
+prefix_rule(
+    pattern = [["python", "python3"], "scripts/decide.py", "accept"],
+    decision = "prompt",
+    justification = "결정 확정은 사람이 승인해야 합니다. 이 결정을 확정하기로 했다면 승인하세요.",
+    match = [["python3", "scripts/decide.py", "accept", "0001", "--by", "me"]],
+)

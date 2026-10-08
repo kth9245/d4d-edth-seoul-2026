@@ -74,7 +74,7 @@ def test_bash_blocks_confirmation_and_policy_writes(tmp_path, cmd):
 def test_ask_mode_lets_accept_through_to_human_prompt(tmp_path):
     r = repo(tmp_path)
     cmd = "uv run python scripts/decide.py accept 0001 --by me"
-    assert g.check_pre(bash(cmd), r, "tracking/x", False, ask_accept=True) is None
+    assert g.check_pre(bash(cmd), r, "tracking/x", False, accept_mode="ask") is None
 
 
 @pytest.mark.parametrize(
@@ -86,7 +86,7 @@ def test_ask_mode_lets_accept_through_to_human_prompt(tmp_path):
 )
 def test_ask_mode_still_blocks_policy_writes(tmp_path, cmd):
     r = repo(tmp_path)
-    assert g.check_pre(bash(cmd), r, "tracking/x", False, ask_accept=True)
+    assert g.check_pre(bash(cmd), r, "tracking/x", False, accept_mode="ask")
 
 
 def _hook(tmp_path, cmd: str, *flags: str):
@@ -113,6 +113,47 @@ def test_hook_asks_human_for_accept_with_flag(tmp_path):
 def test_hook_blocks_accept_without_flag(tmp_path):
     res = _hook(tmp_path, "uv run python scripts/decide.py accept 0001 --by me")
     assert res.returncode == 2 and "사람" in res.stderr
+
+
+@pytest.mark.parametrize(
+    "cmd",
+    [
+        "uv run python scripts/decide.py accept 0001 --by me",
+        "python3 scripts/decide.py accept 0002",
+        ["bash", "-lc", "uv run python scripts/decide.py accept 0003 --by me"],
+        "bash -lc 'uv run python scripts/decide.py accept 0004'",
+    ],
+)
+def test_defer_mode_passes_simple_accept_to_codex_rules(tmp_path, cmd):
+    r = repo(tmp_path)
+    assert g.check_pre(bash(cmd), r, "tracking/x", False, accept_mode="defer") is None
+
+
+@pytest.mark.parametrize(
+    "cmd",
+    [
+        "cd x && uv run python scripts/decide.py accept 0001",
+        "uv run python scripts/decide.py accept 0001; rm -rf x",
+        "uv run python scripts/decide.py accept $(cat id)",
+        "echo hi >> decisions/POLICY.md",
+    ],
+)
+def test_defer_mode_blocks_compound_accept_and_policy_writes(tmp_path, cmd):
+    r = repo(tmp_path)
+    assert g.check_pre(bash(cmd), r, "tracking/x", False, accept_mode="defer")
+
+
+def test_hook_defer_flag_exits_zero_for_simple_accept(tmp_path):
+    res = _hook(tmp_path, "uv run python scripts/decide.py accept 0001 --by me", "--defer-accept")
+    assert res.returncode == 0 and res.stdout == ""
+
+
+def test_codex_rules_prompt_for_accept():
+    text = (ROOT / ".codex/rules/decide.rules").read_text(encoding="utf-8")
+    assert '"scripts/decide.py", "accept"]' in text and 'decision = "prompt"' in text
+    hooks = json.loads((ROOT / ".codex/hooks.json").read_text(encoding="utf-8"))
+    cmds = [h["command"] for e in hooks["hooks"]["PreToolUse"] for h in e["hooks"]]
+    assert any("--defer-accept" in c for c in cmds)
 
 
 def test_hook_ask_flag_does_not_prompt_normal_commands(tmp_path):

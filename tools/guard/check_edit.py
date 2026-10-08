@@ -1,9 +1,9 @@
 """Edit guard for Claude Code (Edit/Write) and Codex (apply_patch). Stdlib only.
 
-Usage (hook): python3 tools/guard/check_edit.py pre|post [--ask-accept]   < hook JSON on stdin
+Usage (hook): python3 tools/guard/check_edit.py pre|post [--ask-accept|--defer-accept] < hook JSON
 Exit 0 = allow, exit 2 = block (reason on stderr, shown to the AI).
---ask-accept (Claude Code only): `decide.py accept` asks the human via a permission
-prompt instead of being blocked.
+--ask-accept (Claude Code): `decide.py accept` shows the human a permission prompt.
+--defer-accept (Codex): simple `decide.py accept` passes; .codex/rules makes Codex prompt.
 """
 
 import json
@@ -53,9 +53,9 @@ def _after_edit(payload: dict, e: Edit) -> str:
 
 
 def check_pre(
-    payload: dict, root: Path, branch: str, freeze: bool, ask_accept: bool = False
+    payload: dict, root: Path, branch: str, freeze: bool, accept_mode: str = "block"
 ) -> str | None:
-    blocked = check_bash(payload, allow_accept=ask_accept)
+    blocked = check_bash(payload, accept_mode)
     if blocked:
         return blocked
     modules = (
@@ -122,7 +122,7 @@ def check_post(payload: dict, root: Path, freeze: bool) -> str | None:
     return None
 
 
-def _run(mode: str, raw: bytes, ask_accept: bool = False) -> str | None:
+def _run(mode: str, raw: bytes, accept_mode: str = "block") -> str | None:
     payload = json.loads(raw.decode("utf-8"))
     cwd = payload.get("cwd") or os.getcwd()
     r = subprocess.run(
@@ -133,8 +133,8 @@ def _run(mode: str, raw: bytes, ask_accept: bool = False) -> str | None:
     root = Path(r.stdout.strip())
     freeze = os.environ.get("KDTH_FREEZE") == "1"
     if mode == "pre":
-        msg = check_pre(payload, root, current_branch(root), freeze, ask_accept)
-        if msg is None and ask_accept and is_accept(payload):
+        msg = check_pre(payload, root, current_branch(root), freeze, accept_mode)
+        if msg is None and accept_mode == "ask" and is_accept(payload):
             return ASK
         return msg
     return check_post(payload, root, freeze)
@@ -171,7 +171,11 @@ def _log_error(exc: Exception) -> None:
 def main() -> None:
     mode = sys.argv[1] if len(sys.argv) > 1 else "pre"
     try:
-        msg = _run(mode, sys.stdin.buffer.read(), "--ask-accept" in sys.argv[2:])
+        flags = sys.argv[2:]
+        accept_mode = (
+            "ask" if "--ask-accept" in flags else "defer" if "--defer-accept" in flags else "block"
+        )
+        msg = _run(mode, sys.stdin.buffer.read(), accept_mode)
     except Exception as exc:  # fail open on malformed payloads / unexpected errors
         _log_error(exc)
         sys.exit(0)

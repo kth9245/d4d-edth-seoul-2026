@@ -69,7 +69,7 @@ Korean Defense Tech Hackathon 2026 (D4D × EDTH SEOUL) 팀 저장소. 24시간 �
 ## 지식과 결정
 - 조사 결과는 답변으로만 끝내지 말고 `knowledge/inbox/`에 원문을 넣고 /kb-save로 카드를 만든다. 출처 없는 내용은 `confidence: 추정`.
 - 사람이 결정을 말하면 /decide로 `제안` 문서를 만들고 확정을 요청한다. 너는 `확정`으로 바꿀 수 없다.
-- `decide.py accept`는 사람이 승인해야 실행된다. 사람이 그 결정을 확정하라고 말했을 때만, Claude Code에서 AI가 실행하면 guard가 승인 창을 띄운다. Codex에서는 막히므로 사람에게 `!`로 직접 실행을 요청한다. AI가 `decisions/POLICY.md`를 고치거나 결정 파일에 직접 `확정`을 쓰면 guard가 막는다.
+- `decide.py accept`는 사람이 승인해야 실행된다. 사람이 그 결정을 확정하라고 말했을 때만 AI가 단독 명령으로 실행하고, Claude Code는 guard hook이, Codex는 `.codex/rules/decide.rules`가 승인 창을 띄운다. AI가 `decisions/POLICY.md`를 고치거나 결정 파일에 직접 `확정`을 쓰면 guard가 막는다.
 
 ## 하지 말 것
 - CLAUDE.md / CLAUDE.local.md 생성 (Claude가 이 파일을 무시하게 됨)
