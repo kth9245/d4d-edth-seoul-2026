@@ -79,9 +79,9 @@ Korean Defense Tech Hackathon 2026 (D4D × EDTH SEOUL) 팀 저장소. 24시간 �
 - `decide.py accept`는 사람이 승인해야 실행된다. 사람이 그 결정을 확정하라고 말했을 때만 AI가 단독 명령으로 실행하고, Claude Code는 guard hook이, Codex는 `.codex/rules/decide.rules`가 승인 창을 띄운다. AI가 `decisions/POLICY.md`를 고치거나 결정 파일에 직접 `확정`을 쓰면 guard가 막는다.
 
 ## 에이전트 스킬 (리드 지시 2026-10-09)
-개발·디버깅은 **superpowers** 스킬, 결정은 **devil-advocate** 스킬을 따른다. 둘 다 저장소가 아니라 각자의 Claude Code에 설치하는 플러그인이다. 없으면 먼저 설치한다:
+팀 전원 **Claude Code**를 쓴다(리드 지시). 개발·디버깅은 **superpowers** 스킬, 결정은 **devil-advocate** 스킬을 따른다. 둘 다 저장소가 아니라 각자의 Claude Code에 설치하는 플러그인이므로, 첫 세션에서 먼저 설치한다:
 `/plugin marketplace add anthropics/claude-plugins-official` → `/plugin install superpowers@claude-plugins-official`,
-`/plugin marketplace add hadicancatak-coder/devils-advocate` → `/plugin install devil-advocate@devil-advocate`. (Codex에는 없다. 그 경우 아래 순서를 손으로 지킨다.)
+`/plugin marketplace add hadicancatak-coder/devils-advocate` → `/plugin install devil-advocate@devil-advocate`.
 - 새 액션을 만들 때: `superpowers:brainstorming`(무엇을 만드는지 SPEC 행과 맞추기) → `superpowers:test-driven-development`(생성된 실패 테스트를 진짜 테스트로 → 구현 → 통과) → `superpowers:verification-before-completion`(ship 전에 `uv run pytest modules/<m>`·`scripts/smoke.py` 결과를 눈으로 확인).
 - 막히거나 테스트가 깨질 때: `superpowers:systematic-debugging`(재현 → 원인 가설 → 로그 확인 → 수정). 추측으로 고치지 않는다. 로그는 `logs/<이름>.log`(결정 0010).
 - 설계·분담·형식처럼 되돌리기 비싼 결정 전에: `/devil-advocate:devil-advocate`로 주장 블록(CLAIM·EVIDENCE·COST·ASSUMPTION)을 공격시키고, CONCEDE한 것만 반영한다(09 문서 10·12절이 그 예). 사람이 답한 것은 `/decide`로 기록한다.
