@@ -149,6 +149,9 @@
 
 ## 6. 시스템 구조
 
+> **2026-10-09**: 6절·7절은 `docs/research/09-rolecall-implementation-foundation.md`로 대체됐다(결정 0003·0004 반영, 데이터 형식 확정 수준). 아래는 옛 내용이며 참고용으로만 남긴다.
+
+
 ### 6.1 큰 그림
 화면(cop-ui, React) ↔ gateway(FastAPI, REST + WebSocket) ↔ 엔진. 시뮬레이션과 실행은 **같은 엔진**을 쓴다. 시뮬레이션은 기다림 없이 끝까지 돌린 결과를 재생, 실행은 0.2초 틱으로 실시간.
 
