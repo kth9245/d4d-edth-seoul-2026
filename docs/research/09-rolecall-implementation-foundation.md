@@ -203,7 +203,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 **통합 1 (10/10 18:00)** — 편집기 없이.
 손으로 쓴 플레이 JSON → `check_play` 통과 → `/run/live` → 드론이 순찰 → 표적 출현(사건 1) → `target_found` 탈출 → 보고 step 진입 → Report 카드가 WS Frame에 실림 → `/decisions`로 선택 → 역할 4개의 기체가 각자 step으로 이동 → `check_command`가 전부 통과 → 지도에 네 기체가 움직임. Metrics에 operator_actions=1이 찍힘.
 
-통합 1에 필요한 액션 수(검토에서 셈): 팀원 2 — sim 2(advance·apply_events), sensing 1(observe), safety 3(check_command·point_in_polygon·return_feasible), runtime 5(step_vehicles·assign_roles·apply_decision·apply_injection은 뒤로·update_metrics) = **11개, 12:00~18:00 6시간에 시간당 약 2개**. 스파이크 코드를 옮기면 가능하고, 백지에서 쓰면 안 된다. 팀원 3 — play 2(load_play·check_links)만 18:00 전, 나머지 검사 3개·expand_line·list_templates는 00:00까지. 리드 — contracts(밤), gateway engine.py·app.py 재작성, build_frame 1개, 시나리오 JSON, 타일.
+통합 1에 필요한 항목(6절 번호): Part1-6~1-10·1-14, Part2-1~2-13(13개), Part3-1·3-2·3-7(3개). Part 2가 12:00~18:00에 시간당 약 2개로 가장 빡빡하며, 스파이크 코드를 옮기는 전제에서만 가능하다.
 
 **통합 2 (10/11 00:00)** — 화면 조작만으로.
 편집기에서 AI 초안 입력 → 검사 실패 카드(보고 지점 없음) → 카드 추가 → 저장 통과 → 상황판에서 실행 → 사건 1·2·3(귀환·이어받기·역할 공백 카드)·4(주입 승인 대기 → 승인)·6(구역 밖 차단·배터리 차단) → 지표 패널에 두 모드 나란히 → 3분 안에 리허설 1회.
@@ -247,17 +247,77 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 
 ---
 
-## 6. 사람별 영역(방향만, 액션은 사이클 시작 때)
+## 6. 사람별 계획(번호표: Part<파트>-<번호>)
 
 팀(결정 0007): 리드 kth9245, 팀원 황승주·최동호. 파트 2·3을 누가 맡는지는 다음 세션의 devil-advocate 검토(11절) 뒤 정한다.
+결정 0008: 항목마다 입력·출력·완료 기준·앞선 항목을 적어, 같은 파트 안에서 병렬로 하거나 다른 사람이 가져가 끝낼 수 있게 한다. "앞선 항목"이 없거나 끝난 항목은 누구든 바로 시작할 수 있다. 액션 항목은 `new_action.py`로 만들며 SPEC.md 행의 `담당` 칸에 실제로 가져간 사람이 적힌다.
+통합 열: 1 = 10/10 18:00 통합 1에 필요, 2 = 10/11 00:00 통합 2, 밤 = 10/9 밤, 뒤 = 동결 뒤.
 
-| 파트 | 담당 | 모듈 | 첫 사이클에서 끝낼 것 |
-|---|---|---|---|
-| 1 | 리드 kth9245 | contracts, gateway, cop-ui map/live, demo | contracts 확정(10/9 밤), gateway 틱 루프와 WS, 백령도 타일, 시나리오 데이터 |
-| 2 | 황승주 또는 최동호 | sim, sensing, runtime, safety | sim 이동·배터리, safety 규칙 3, runtime step 진행과 report→decision (통합 1 액션 11개) |
-| 3 | 황승주 또는 최동호 | play, cop-ui editor/setup | 플레이 형식 로드·검사, 템플릿 2개, 편집기 카드 열 (통합 1 액션 2개, 나머지 00:00까지) |
+### Part 1 — 리드 kth9245 (contracts, gateway, cop-ui map/live, demo)
 
-도움 가능(순수 함수): play 검사 4종, safety 규칙 3개, Metrics 집계, 펼치기 표. 막히면 5분 안에 "막힘: 모듈, 함수, 증상"을 채팅에.
+| 번호 | 항목 | 입력 → 출력 | 완료 기준 | 앞선 항목 | 통합 |
+|---|---|---|---|---|---|
+| Part1-1 | contracts 패키지 | 2절 + 스파이크 models09.py → `contracts/models/` 6파일, LegacyFrame 개명, check.sh 31행, 예시 JSON 29개, TS | `pytest`·`smoke.py`·`gen_contracts.py` 통과 | 없음 | 밤 |
+| Part1-2 | 백령도 타일 커밋 | `fetch_tiles_baengnyeong.sh 14` → `public/tiles/baengnyeong/` 199장 | 파일 199개 + ATTRIBUTION.txt 커밋 | 없음 | 밤 |
+| Part1-3 | play·runtime·safety 뼈대 + SPEC 행 | `new_module.py` ×3 → 디렉터리, SPEC.md에 Part2·Part3 액션 행(입력·출력·완료 기준·앞선 항목) | 세 SPEC.md에 통합 1 액션 행이 전부 있음 | Part1-1 | 밤 |
+| Part1-4 | 시나리오 JSON + 템플릿 2개 | 스파이크 engine_proto.py 하단 데이터 → `demo/scenarios/baengnyeong_night.json`, `demo/plays/coast_guard.json`·`fast_boat.json` | `Scenario.model_validate` 통과, 스파이크로 돌려 사건 1·2·3·6이 3분 대본 순서로 남 | Part1-1 | 밤 |
+| Part1-5 | AI 초안 프롬프트·캐시 2개 | 어휘(ActionKind 9·ConditionKind 6)+Play 스키마+시연 문장 2개 → `demo/plays/cache/<sha>.json` ×2 | 캐시 JSON이 `Play.model_validate` 통과 | Part1-4 | 밤 |
+| Part1-6 | gateway `engine.py` 틱 루프 | Scenario, TickInputs → `tick(state, inputs) -> (state, Frame)`; 순서는 3.7 | 액션이 없는 단계는 예시 JSON 스텁으로 돌아 Frame이 나옴 | Part1-1 | 1 |
+| Part1-7 | gateway REST + WS | `/plays`, `/operation`, `/run/live?speed=`, `/run/reset`, `/decisions`, `/direct` → app.py | `test_app.py`로 `/run/live` 뒤 WS Frame 수신, `/decisions`가 TickInputs에 들어감 | Part1-6 | 1 |
+| Part1-8 | `build_frame` 액션 재작성 | 틱 결과들 → Frame | 예시 JSON으로 테스트 | Part1-1 | 1 |
+| Part1-9 | 지도: 위성 raster + 기체·표적·구역 | Frame → MapLibre 레이어 (basemap.ts raster source, toGeoJSON 재작성) | 백령도 위에 기체 5·구역 폴리곤이 보임 | Part1-2, Part1-1(TS) | 1 |
+| Part1-10 | 상황판 카드 열 + 결정 버튼 | Frame.reports/blocks/injections → 카드, 선택지 버튼 → `POST /decisions` | 버튼 한 번에 세 기체가 지도에서 움직임(통합 1 마지막 단계) | Part1-7, Part1-9 | 1 |
+| Part1-11 | 직접 조종 + 차단 카드 대안 버튼 | 기체 클릭→지도 클릭 → `POST /direct`; Block.alternative → `/direct` 재전송 | 사건 6이 화면 조작만으로 남 | Part1-10, Part2-15 | 2 |
+| Part1-12 | 주입 승인 카드 | Frame.injections → 승인/거부 버튼 → `/injections/{id}/approve|reject` | 사건 4가 화면 조작만으로 남 | Part1-10, Part2-14 | 2 |
+| Part1-13 | 지표 패널 + 배속 + 다음 사건 | Frame.metrics → 운용자 조작 수 대 수동 기준 명령 수, `/run/live?speed=`, `/run/jump` | 3분 안에 사건 5개 재생 | Part1-10 | 2 |
+| Part1-14 | smoke 전환 + 통합 주관 | `smoke.py`를 백령도 시나리오로; 18:00·00:00 통합 슬라이스 확인 | 4절 두 슬라이스 통과 | Part1-6, Part2-13 | 1·2 |
+| Part1-15 | 3분 대본·BUILT_HERE·제출 설명 | — | 리허설 1회, 사전 준비분(스파이크·contracts) 명시 | 동결 | 뒤 |
+
+### Part 2 — 엔진 (sim, sensing, safety, runtime). 원본: `knowledge/spikes/rolecall_engine_proto/`
+
+| 번호 | 항목(액션) | 입력 → 출력 | 완료 기준 | 앞선 항목 | 통합 |
+|---|---|---|---|---|---|
+| Part2-1 | sim `move_straight` | VehicleState, VehicleSpec, PassedCommand(move·return_home·hold), dt_ms → VehicleState | 1틱에 speed×dt만큼 이동, 도착 시 waypoint_idx=-1, return_home 도착 시 maintenance, 배터리 선형 감소 | Part1-1 | 1 |
+| Part2-2 | sim `follow_route` | VehicleState, Spec, PassedCommand(follow_route), dt_ms → VehicleState | 경로점 순회, 끝나면 처음으로 | Part1-1 | 1 |
+| Part2-3 | sim `orbit_or_keep` | VehicleState, Spec, PassedCommand(orbit·keep_distance), Target, dt_ms → VehicleState | orbit 반지름 유지, keep_distance 거리 유지 | Part1-1 | 1 |
+| Part2-4 | sim `advance` | states, specs, passed, dt_ms, targets → states | 이번 틱 PassedCommand로 `active` 갱신, 없으면 `active` 계속 수행. 명령 없는 틱 테스트 | Part2-1~3 | 1 |
+| Part2-5 | sim `apply_events` | Scenario.events, states, targets, t_ms, dt_ms → (states, targets) | spawn_target·vehicle_battery_set·target_move·split_target·vehicle_link_lost 각 1테스트 | Part1-1 | 1 |
+| Part2-6 | sensing `observe` | states, specs, targets, t_ms → targets | 범위 안이면 seen_by에 추가·last_seen 갱신, 밖이면 제거 | Part1-1 | 1 |
+| Part2-7 | safety `point_in_polygon` | GeoPoint, Polygon → bool | 안·밖·경계 테스트 | Part1-1 | 1 |
+| Part2-8 | safety `return_feasible` | VehicleState, Spec, 목적지 → (bool, 대안 GeoPoint\|None) | 왕복 시간 > 가용 80%면 False와 최대 거리 지점 | Part1-1 | 1 |
+| Part2-9 | safety `check_command` | Command, state, spec, Operation, plays, injections → PassedCommand \| Block | 규칙 1→2→3, 규칙마다 통과·차단·대안 테스트, grep 테스트(PassedCommand 생성은 여기뿐) | Part2-7, Part2-8 | 1 |
+| Part2-10 | runtime `step_vehicle` | VehicleState, Play, targets, t_ms → (state, Command\|None, Report\|None) | step 진입 때 명령·카드 한 번, `on` 첫 참으로 전이, pending_report_id면 정지. 스파이크 step_vehicle.py 그대로 | Part1-1 | 1 |
+| Part2-11 | runtime `assign_roles` | Play, states, assignments, t_ms → assignments(+이어받기) | Role.vehicles 순서, 다른 역할에 없는 ready·active 첫 기체; 이탈 시 다음 예비, 없으면 role_gap | Part1-1 | 1 |
+| Part2-12 | runtime `apply_decision` | states, Play, Decision, reports → (states, reports) | pending_report_id 지우고 step_by_role대로 전이, resolved_ms 기록. 역할 4개 동시 전이 테스트 | Part1-1 | 1 |
+| Part2-13 | runtime `update_metrics` | Metrics, 이번 틱의 cmds·blocks·reports·assignments·inputs → Metrics | 2.3 정의 5개 각 1테스트. role_gap은 후임이 목적에 닿을 때까지 | Part1-1 | 1 |
+| Part2-14 | runtime `apply_injection` | states, Injection(approved), plays → states | proposed대로 배정, resume (play, step) 보관 | Part2-11 | 2 |
+| Part2-15 | runtime `apply_direct` | states, DirectControl, t_ms → (states, Command) | operator_direct 명령 생성, 도착 시 resume 복귀 | Part2-10 | 2 |
+| Part2-16 | runtime `apply_emergency` | states, Play.emergency → states | battery_below면 지정 step으로, 끝나면 resume | Part2-10 | 2 |
+
+통합 1까지 13개(Part2-1~13). 스파이크 함수를 액션 파일로 옮기고 테스트를 붙이는 일이다. 12:00~18:00 6시간이면 시간당 약 2개. 둘이 나누면 2-1~2-6(sim·sensing)과 2-7~2-13(safety·runtime)으로 갈라진다.
+
+### Part 3 — 플레이와 편집기 (play, cop-ui editor/setup)
+
+| 번호 | 항목(액션/화면) | 입력 → 출력 | 완료 기준 | 앞선 항목 | 통합 |
+|---|---|---|---|---|---|
+| Part3-1 | play `load_play` | 경로 → Play | 템플릿 2개 로드, 잘못된 파일은 ValueError에 위치 | Part1-1 | 1 |
+| Part3-2 | play `check_links` | Play → list[ValidationIssue] | 없는 step을 가리키는 go_step·step_by_role·entry, entry에서 닿을 수 없는 step | Part1-1 | 1 |
+| Part3-3 | play `check_report_points` | Play → list[ValidationIssue] | target_found 탈출 뒤 choices 있는 report 없이 approach_target에 닿으면 오류 | Part1-1 | 2 |
+| Part3-4 | play `check_return_battery` | Play, specs → (list[ValidationIssue], est_return_battery) | 역할별 경로 길이로 추정, 30% 미만이면 오류 | Part1-1, Part2-8(재사용 가능) | 2 |
+| Part3-5 | play `check_zone` | Play, Operation → list[ValidationIssue] | 경로점·목적지가 zone 밖이면 오류 | Part2-7 | 2 |
+| Part3-6 | play `check_play` | Play, Operation, specs → PlayCheck | 3-2~3-5 묶음. 템플릿 2개 통과, 보고 지점 뺀 플레이 실패 | Part3-2~5 | 2 |
+| Part3-7 | play `expand_action` + 표 | Action, Domain → CommandKind\|None; `expand_table.json` | 9×3 표 전부 테스트, None이면 후보 제외 | Part1-1 | 1 |
+| Part3-8 | play `list_templates` | — → list[Play] | `demo/plays/*.json` 중 template=True | Part1-4 | 2 |
+| Part3-9 | play `draft_play` | 문장, Operation → Play(origin=ai_draft) | 캐시 hit면 호출 없음, miss면 1회 호출·스키마 밖이면 재요청 1회, 실패 시 템플릿 반환 | Part1-5 | 2 |
+| Part3-10 | 편집기: 카드 열(읽기 전용) | Play → 역할별 세로 열, 카드 = 행동 + 조건 목록 + 보고 | 템플릿 2개가 화면에 그려짐 | Part1-1(TS), Part3-1 | 2 |
+| Part3-11 | 편집기: 저장 → 검사 결과 표시 | 저장 버튼 → `POST /plays/check` → 카드 옆 오류 표시 | 보고 지점 없는 플레이에서 오류 카드가 보임 | Part3-10, Part1-7 | 2 |
+| Part3-12 | 편집기: 카드 편집 | 행동·조건·갈 step·보고 드롭다운, 카드 추가 | "보고 카드 끼워 넣기" 뒤 저장 통과 | Part3-11 | 2(빼는 순서 6) |
+| Part3-13 | 편집기: AI 초안 입력 칸 | 문장 → `POST /plays/draft` → 카드 열에 표시(approved=False 표시) | 캐시 문장으로 카드가 뜸 | Part3-9, Part3-10 | 2 |
+| Part3-14 | 작전 설정 패널 | Operation JSON → 이름·구역·기체 목록 표시(편집은 빼는 순서 1) | 시나리오의 작전이 패널에 보임 | Part1-4 | 2(빼는 순서 1) |
+
+통합 1까지 3개(Part3-1, 3-2, 3-7). 남는 시간은 3-3~3-6과 3-10부터. Part 2가 밀리면 3-3·3-4·3-5는 순수 함수라 Part 3 담당이 Part2-7·2-8을 가져가도 된다.
+
+도움 규칙: 막히면 5분 안에 "막힘: 번호, 함수, 증상"을 채팅에. 가져갈 때는 SPEC.md 행의 담당을 자기 이름으로 바꾸고 채팅에 번호를 적는다.
 
 ---
 
@@ -275,14 +335,14 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 
 ---
 
-## 8. 대회 전(10/9 밤) 할 일 — 검토 결과로 갱신
+## 8. 대회 전(10/9 밤) 할 일 — 6절 번호로
 
-1. **contracts 패키지**(리드, 약 1.5시간): `knowledge/spikes/rolecall_engine_proto/models09.py`를 `contracts/models/` 6개 파일로 나눠 넣고(3.1), 레거시 모델을 `legacy.py`·`LegacyFrame`으로 옮기고 gateway·smoke·cop-ui 참조를 고친다. `check.sh` 31행 수정. 예시 JSON 29개·TS 생성. `pytest`·`smoke.py` 통과 확인.
-2. **타일**: `scripts/fetch_tiles_baengnyeong.sh 14`를 실행해 `modules/cop-ui/public/tiles/baengnyeong/`에 199장을 넣고 커밋(1.2MB). 약관 확인 끝(EOX CC BY-NC-SA, ATTRIBUTION.txt 생성됨). `basemap.ts`에 raster source 추가는 10/10 리드 첫 사이클.
-3. `modules/cop-ui/AGENTS.md`(담당 팀원 4 → 리드 map/live·팀원 3 editor, "외부 네트워크 금지" → "로컬 타일 우선, 온라인 허용(결정 0001)"). 루트 AGENTS.md 모듈 담당 표에 play·runtime·safety 추가.
-4. `new_module.py`로 play(PLY)·runtime(RT)·safety(SFT) 뼈대 생성. 각 SPEC.md에 4절의 통합 1 액션을 **입력·출력·완료 기준·앞선 액션(의존)까지** 행으로 미리 적는다(결정 0008: 남이 가져가 끝낼 수 있어야 한다). 10/10 아침에는 `new_action.py`만 돌린다.
-5. **시나리오 JSON**(리드): `demo/scenarios/baengnyeong_night.json`을 스파이크의 `engine_proto.py` 하단 데이터(작전 구역·기체 5·플레이 역할 4·사건)에서 옮기고, 사건 시각·위치를 스파이크로 돌려 보고 시각이 3분 대본에 맞게 조정. 템플릿 플레이 2개도 같은 파일에서.
-6. AI 초안 프롬프트와 캐시 2개 생성(인터넷 되는 곳에서). 08 5.4 사건 3 문구를 "예비 드론 3이 이어받음, 닿을 때까지 역할 공백"으로 고친다(이 커밋에서 반영).
+1. **Part1-1** contracts 패키지(약 1.5시간). 스파이크 models09.py → `contracts/models/` 6파일, LegacyFrame 개명과 gateway·smoke·cop-ui 참조 수정, check.sh 31행, 예시 JSON 29개·TS. `pytest`·`smoke.py` 통과.
+2. **Part1-2** 타일 199장 커밋(스크립트 실행 확인 끝, 약관 확인 끝).
+3. ~~AGENTS.md 담당 표 수정~~ — 2026-10-09 완료(결정 0007).
+4. **Part1-3** play·runtime·safety 뼈대 + SPEC.md에 Part2·Part3 액션 행을 입력·출력·완료 기준·앞선 항목까지 미리 적기(결정 0008).
+5. **Part1-4** 시나리오 JSON + 템플릿 2개. 사건 시각·경로를 스파이크로 돌려 보고 시각이 3분 대본에 맞게 조정(예비 드론 경로 길이도 귀환 배터리 안으로).
+6. **Part1-5** AI 초안 프롬프트와 캐시 2개(인터넷 되는 곳에서, API 키는 .env).
 
 ---
 
@@ -341,7 +401,7 @@ LOAD-BEARING ASSUMPTION: 파트 2의 11개 액션(엔진 전부)을 한 사람�
   play 2개 액션 뒤 React 편집기를 혼자 시작할 수 있다. 두 사람의 Python·React 경험은 아직 문서에 없다.
 ```
 
-(b)의 근거로 댈 것: 통합 1 액션 목록(4절: 파트 2 11개, 파트 3 2개 + 검사 3개·펼치기·템플릿), 6절 "도움 가능(순수 함수)" 목록, SPEC.md 행 형식, 10/9 밤 할 일 4번(새 모듈 SPEC에 액션 행을 입력·출력·완료 기준까지 미리 적기). (b)가 약한 곳: 액션 행의 담당 칸은 `new_action.py`를 돌린 사람의 git 이름으로 채워지므로 "남이 가져가는" 절차가 없다. 11개 액션 사이의 의존 순서(advance는 PassedCommand가, step_vehicles는 Target.seen_by가 있어야 테스트됨)가 적혀 있지 않아 병렬 순서를 사람이 다시 짜야 한다.
+(b)의 근거로 댈 것: 6절의 번호 목록(Part1-1~1-15, Part2-1~2-16, Part3-1~3-14. 항목마다 입력·출력·완료 기준·앞선 항목·통합 시점), SPEC.md 행 형식, Part1-3(새 모듈 SPEC에 그 행을 미리 적기), 6절 끝의 가져가기 규칙. (b)가 약한 곳: 번호 목록은 문서에만 있고 SPEC.md에는 Part1-3가 끝나야 들어간다. 담당 칸은 `new_action.py`를 돌린 사람 이름으로 채워져 가져가기는 채팅 약속에 기댄다. Part 2는 13개가 한 사람 몫이라 둘로 가르는 선(2-1~2-6 / 2-7~2-13)을 사람이 정해야 한다. 리드의 Part1-6~1-10이 통합 1의 마지막 단계라 리드가 병목이면 두 팀원이 다 끝내도 18:00을 못 넘긴다.
 
 반대자가 보면 좋은 것: AGENTS.md 소유 표, 이 문서 3·4·6절, `modules/*/SPEC.md`, `tools/guard/check_edit.py`(브랜치 제한은 2026-10-09 제거됨), `scripts/ship.sh`(rebase → 검사 → main push), `knowledge/spikes/rolecall_engine_proto/`.
 미리 알아 둘 약점: 리드가 contracts·gateway·지도·시나리오·타일·통합을 전부 쥐고 있어 리드가 병목일 가능성이 파트 2보다 클 수 있다. 세 사람이 main에 직접 push하므로 rebase 충돌이 잦으면 ship.sh가 막는다.
