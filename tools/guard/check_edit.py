@@ -24,20 +24,10 @@ from tools.guard.edits import (  # noqa: E402,F401
     INFRA,
     PROTECTED,
     Edit,
-    allowed,
     current_branch,
     extract_edits,
 )
 from tools.spec import spec_actions  # noqa: E402
-
-
-def _block_reason(rel: str, branch: str) -> str:
-    owner = rel.split("/")[1] if rel.startswith("modules/") and rel.count("/") >= 2 else None
-    need = f"`{owner}/<주제>`" if owner else "`infra/<주제>` 또는 `contracts/<주제>`"
-    return (
-        f"[guard] 현재 브랜치 `{branch or '(없음)'}`에서는 `{rel}`을 수정할 수 없습니다. "
-        f"이 파일은 {need} 브랜치 담당입니다. 다른 사람 영역이면 담당자에게 요청하세요."
-    )
 
 
 def _after_edit(payload: dict, e: Edit) -> str:
@@ -58,11 +48,6 @@ def check_pre(
     blocked = check_bash(payload, accept_mode)
     if blocked:
         return blocked
-    modules = (
-        {p.name for p in (root / "modules").iterdir() if p.is_dir()}
-        if (root / "modules").is_dir()
-        else set()
-    )
     for e in extract_edits(payload):
         try:
             rel = e.path.relative_to(root.resolve()).as_posix()
@@ -77,8 +62,6 @@ def check_pre(
                 return f"[guard] `{rel}`은 확정된 결정입니다. 바꾸려면 사람에게 요청하세요."
             if CONFIRMED_RE.search(e.new_text) or CONFIRMED_RE.search(_after_edit(payload, e)):
                 return "[guard] AI는 결정을 `확정`으로 쓸 수 없습니다. `제안`으로 두고 사람에게 확정을 요청하세요."
-        if not allowed(rel, branch, modules):
-            return _block_reason(rel, branch)
         m = re.fullmatch(r"modules/([^/]+)/actions/([a-z0-9_]+)\.py", rel)
         if m and e.is_new and not freeze and m.group(2) != "__init__":
             if m.group(2) not in spec_actions(root / "modules" / m.group(1) / "SPEC.md"):

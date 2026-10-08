@@ -36,24 +36,6 @@ def test_always_editable_from_module_branch(tmp_path, rel):
     assert g.check_pre(write(r / rel), r, "tracking/x", False) is None
 
 
-def test_demo_runbook_still_infra_only(tmp_path):
-    r = repo(tmp_path)
-    assert g.check_pre(write(r / "demo/RUNBOOK.md"), r, "tracking/x", False)
-
-
-def test_modules_init_is_infra(tmp_path):
-    r = repo(tmp_path)
-    assert g.check_pre(write(r / "modules/__init__.py"), r, "infra/x", False) is None
-    assert g.check_pre(write(r / "modules/__init__.py"), r, "tracking/x", False)
-
-
-def test_new_module_dir_editable_by_its_prefix(tmp_path):
-    r = repo(tmp_path)
-    assert g.check_pre(write(r / "modules/edge/pipeline.py"), r, "edge/x", False) is None
-    assert g.check_pre(write(r / "modules/edge/pipeline.py"), r, "tracking/x", False)
-    assert g.check_pre(write(r / "modules/edge/pipeline.py"), r, "main", False)
-
-
 @pytest.mark.parametrize(
     "cmd",
     [

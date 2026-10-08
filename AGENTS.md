@@ -37,8 +37,8 @@ Korean Defense Tech Hackathon 2026 (D4D × EDTH SEOUL) 팀 저장소. 24시간 �
 - 다른 모듈은 `from modules.<m> import <공개 API>`로만 쓴다. 내부(`modules.<m>.actions...`) import 금지.
 - 테스트 먼저: 생성된 실패 테스트를 실제 동작 테스트로 바꾸고, 통과시킨다.
 
-## 소유 (브랜치 이름 = 수정 가능 범위)
-| 브랜치 | 수정 가능 | 담당 |
+## 소유 (담당 안내. guard가 브랜치로 막지 않는다 — 2026-10-09 리드 지시로 브랜치별 수정 제한 훅 제거)
+| 브랜치 | 주로 고치는 곳 | 담당 |
 |---|---|---|
 | `<모듈>/<주제>` | `modules/<모듈>/**`, `knowledge/**`, `decisions/log/**`(제안만) | 아래 표 |
 | `contracts/<주제>` | `contracts/**` | 리드 |
@@ -53,7 +53,7 @@ Korean Defense Tech Hackathon 2026 (D4D × EDTH SEOUL) 팀 저장소. 24시간 �
 
 항상 수정 가능(어느 브랜치에서든): `demo/BUILT_HERE.md`, `demo/scenarios/*`, `pyproject.toml`, `uv.lock`.
 
-남의 영역을 고쳐야 하면 고치지 말고 담당자에게 요청할 내용을 정리해 사람에게 보여준다.
+남의 영역을 고쳐야 하면 고칠 수는 있지만, 고친 내용을 담당자에게 알린다(rebase 충돌은 고친 사람이 푼다).
 
 ## 명령
 - 설치·브랜치: `scripts/setup.sh <모듈>`
