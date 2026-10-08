@@ -7,6 +7,7 @@ Korean Defense Tech Hackathon 2026 (D4D × EDTH SEOUL) 팀 저장소. 24시간 �
 1. `decisions/INDEX.md` — 사람이 확정한 결정. **반드시 따른다.**
 2. `knowledge/INDEX.md` — 이미 조사한 지식. 관련 카드만 연다. 같은 조사를 반복하지 않는다.
 3. 작업할 모듈의 `modules/<m>/AGENTS.md`와 `modules/<m>/SPEC.md`.
+4. **자기 할 일**: `docs/research/09-rolecall-implementation-foundation.md` 6절. 머리의 "통합 1 배정" 표(결정 0009: Part 2A 최동호, Part 2B 황승주, 리드 kth9245)에서 자기 줄을 찾고, 그 번호(Part2-7 등)의 행에서 입력·출력·완료 기준·앞선 항목을 읽는다. 같은 액션이 `modules/<m>/SPEC.md`에 `예정` 행으로 있으면 `new_action.py`로 가져가 시작한다(아래 액션 규칙). 왜 이렇게 나눴는지는 같은 문서 12절.
 
 ## 우선순위
 확정 결정·정책 > SPEC.md > 지식 카드 > 너의 판단.
