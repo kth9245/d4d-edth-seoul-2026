@@ -1,0 +1,697 @@
+{
+ "data": {
+  "id": "262177b7-acc1-440b-9618-850b08782e27",
+  "title": "KOREAN DEFENSE TECH HACKTHON | D4D x EDTH",
+  "phase": "apply",
+  "tracks": [
+   "T1 — UAS & CUAS 무인항공체계(UAS) 및 대드론(CUAS)",
+   "T2 — OSINT 공개정보를 활용한 국방·안보 인텔리전스",
+   "T3 — Air Force: Next-Gen Air Power 공군 트랙 · 차세대 항공우주력",
+   "T4 — Tactical Edge: Sensor Fusion & Edge AI 전술 센서융합 + 엣지 AI"
+  ],
+  "trackSubtracks": {
+   "T1 — UAS & CUAS 무인항공체계(UAS) 및 대드론(CUAS)": [
+    "1인 다중 무인기 동시 통제 Multi-UxV Control",
+    "산악·도심 혼재 지형 자율 드론 운용 Terrain-Aware Autonomy",
+    "수도권 영공 소형드론·풍선 침투 대응 Gray-zone C-UAS",
+    "무선침묵 환경 피아식별(IFF) Radio-silent IFF"
+   ],
+   "T2 — OSINT 공개정보를 활용한 국방·안보 인텔리전스": [
+    "멀티소스 OSINT 인텔 코파일럿 Fusion OSINT Copilot",
+    "APAC 정보전·허위조작정보 탐지 Cognitive Warfare & FIMI Detection",
+    "공개 위성영상 기반 전략 거점 변화 탐지 Open Satellite Change Detection",
+    "공개 AIS·SAR 기반 해상 은닉 선박 탐지 Dark Vessel Detection with Open Data",
+    "OSINT 기반 회색지대 도발 전조 조기경보 Gray-zone Early Warning",
+    "공개 항적·위성궤도 기반 공중·우주 상황인식 Open Air & Space Situational Awareness"
+   ],
+   "T3 — Air Force: Next-Gen Air Power 공군 트랙 · 차세대 항공우주력": [
+    "6세대 전투기 탑재 기술 Next-Gen Fighter Technologies",
+    "무인 자율전투기(CCA) Collaborative Combat Aircraft",
+    "비행장 방공·관제·미사일·드론 방어 Airbase Defense  ·  분야 내 자율 제안"
+   ],
+   "T4 — Tactical Edge: Sensor Fusion & Edge AI 전술 센서융합 + 엣지 AI": [
+    "소부대 오프라인 전술 C2 · 공통상황도 Squad-level Edge C2 & COP",
+    "핸즈프리 음성 온디바이스 전술 AI Voice-first Tactical AI",
+    "병사 착용형 센서 네트워크 & 소부대 상태 인식 Soldier-worn Sensor Mesh",
+    "엣지 시맨틱 전송 S-DOT: Semantic Data On Tactical-network",
+    "해상 무인 감시 부표 엣지 AI Edge-AI Maritime Surveillance Buoy",
+    "장비 예측정비 IoT 센서 (Retrofit) Predictive Maintenance Retrofit",
+    "AI 워게임 교관 & 단기복무 숙달 가속 AI War-game Tutor & Readiness Accelerator",
+    "IMU 기반 직관형 드론 조종 인터페이스 IMU-based Intuitive Drone Control"
+   ]
+  },
+  "specialTracks": [
+   "SC1 — CLIKA BYOD Offline AI Challenge",
+   "SC2 — NUCODE Board Challenge"
+  ],
+  "trackContent": {
+   "subtracks": {
+    "T1 — UAS & CUAS 무인항공체계(UAS) 및 대드론(CUAS)": {
+     "1인 다중 무인기 동시 통제 Multi-UxV Control": {
+      "background": "최근 전장에서 드론을 비롯한 UGV, USV 등 다양한 무인 시스템의 운용 비중이 급증하고 있습니다. 그러나 현행 운용 방식은 장비 증가에 비례해 운용 인력 또한 동반 요구되는 선형적 구조 한계를 지니고 있습니다. 이는 인구 절벽 및 병력 감소 직면국(한국 및 APAC)의 장기 전력 운용 측면에서 지속 불가능합니다. 따라서 미래 전장은 단일 운용자가 다수의 무인체계를 통합 감독·제어하는 유무인 복합 체계로의 전환이 필수적입니다.",
+      "challenge": "\"단일 운용자가 공중·지상·해상의 이종(UxV) 무인체계 3대 이상을 동시에 임무 부여, 감시, 통제할 수 있는 체계를 개발하라.\n\n운용자 인지부하(Cognitive Load)를 최소화하면서도 임무 성공률을 유지하거나 향상시킬 수 있는 방안을 제시할 것.\""
+     },
+     "무선침묵 환경 피아식별(IFF) Radio-silent IFF": {
+      "background": "\"유무인 복합체계(MUM-T) 환경에서 아군 드론을 운용함과 동시에 적 드론을 무력화하기 위해서는, 전장의 인간 군인과 AI 기반의 무인 체계(기계)가 통신 노출 없이 상호간에 '무엇이 아군이고 무엇이 적인가'를 실시간으로 정확히 식별할 수 있어야 합니다.\n\n그러나 기존의 IFF 체계는 지속적인 신호 방출로 인해 아군의 위치를 노출시키거나, 중간자(MITM) 및 재전송(Replay) 공격에 취약하여 적 드론이 아군으로 위장할 위험이 존재합니다. 따라서 무선 침묵 상태에서도 인간과 기계가 서로를 은밀하게 알아볼 수 있는 피아식별 기술이 필수적이며, 이는 무인 체계의 자율 운용(Autonomy)과 대드론 대응(Counter-UAS) 영역을 유기적으로 연결하는 핵심 고리입니다.\"",
+      "challenge": "\"전파 방출을 최소화한 채 아군·적 무인기를 식별할 수 있는 암호학적 2-컴포넌트 피아식별 체계를 개발하라.\n\n중간자(MITM)·재전송(replay) 공격에 견딜 수 있는 방향을 제시할 것.\""
+     },
+     "산악·도심 혼재 지형 자율 드론 운용 Terrain-Aware Autonomy": {
+      "background": "\"최근 전장에서 드론은 핵심 전력으로 자리잡았지만, 대부분의 자율비행 알고리즘은 공중 최단거리 이동 중심의 단조로운 지형을 전제로 설계되어 있어, 복합 지형 및 자연 환경(산악, 해안접경 + 4계절 요소 등)을 반영한 고도화가 요구됩니다.\n\n반면 APAC 작전 환경은 산악, 도서, 해안선 및 고밀도 도심이 중첩된 복합 지형의 특성을 보입니다. 이로 인해 작전 시 GPS 음영, 통신 단절, 전자전(EW) 저해 행위, 지형적 차폐물 등의 고위험 변수가 복합적으로 작용하여 단순 선형 경로 비행을 통한 임무 달성이 제한됩니다. 이에 따라 차세대 자율 시스템은 단순 목적지 이동 차원을 넘어, 복잡 지형과 동적 위협을 실시간으로 인지·판단하고 자체 생존성을 극대화할 수 있는 '지형 인지형 자율성(Terrain-Aware Autonomy)' 확보가 시급합니다.\"",
+      "challenge": "산악·도서·도심이 혼재된 APAC 환경에서 드론이 지형을 활용해 이동하고, 통신을 유지하며, 전자전 위협 속에서도 임무를 지속할 수 있는 Terrain-Aware Autonomy 체계를 개발하라."
+     },
+     "수도권 영공 소형드론·풍선 침투 대응 Gray-zone C-UAS": {
+      "background": "최근 소형 무인기 및 침투용 풍선 도발 사례는 수도권 영공이 더 이상 전통적인 항공 위협에만 국한되지 않는 저강도 회색지대(Gray-zone) 도발 공간으로 변모했음을 시사합니다. 특히 LSS(저고도·저속·저신호) 비행체는 기존 광역 레이더 체계로 탐지·식별이 제한되며, 인구 밀집 도심지 특성상 물리적 타격 시 심각한 부수적 피해(Collateral Damage)를 초래할 수 있습니다. 따라서 단순 탐지 성능의 고도화를 넘어, 극히 제한된 골든타임 내에 위협 수준을 정확히 식별·평가하고 최적의 저위험 대응 옵션을 결심할 수 있는 지능형 지휘통제 능력이 요구됩니다.",
+      "challenge": "\"도심 환경에서 소형 드론·풍선 등 저신호 비행체를 탐지, 추적, 식별하고 위협도를 평가하여 대응 결심을 지원하는 Gray-zone Counter-UAS 체계를 개발하라.\n\n(인구 밀집 도심 상공에서 저고도 소형 비행체(드론·풍선)를 탐지→추적→식별→대응 결심까지 지원하는 의사결정 체계)\""
+     }
+    },
+    "T2 — OSINT 공개정보를 활용한 국방·안보 인텔리전스": {
+     "APAC 정보전·허위조작정보 탐지 Cognitive Warfare & FIMI Detection": {
+      "background": "한반도와 APAC은 국가 배후의 해외 정보 조작·간섭(FIMI) 활동이 활발한 지역입니다. 조직적으로 운영되는 계정 네트워크, 생성형 AI로 만든 딥페이크·가짜 기사, 여러 언어로 동시에 확산되는 서사(Narrative)는 여론을 흔들고 동맹 간 신뢰를 약화시키는 인지전(Cognitive Warfare)의 수단이 되고 있습니다. 조작 캠페인은 확산 초기에 잡아내지 못하면 사실상 대응이 어렵기 때문에, 공개 데이터에서 조기에 패턴을 식별하고 근거를 제시하는 능력이 필요합니다.",
+      "challenge": "공개 SNS·뉴스·커뮤니티 데이터를 기반으로 한국·APAC을 겨냥한 조직적 영향력 공작의 서사, 확산 네트워크, 조정된 비진정 행위(CIB)를 조기에 탐지하고, 분석가가 검증할 수 있는 근거와 함께 경보를 제공하는 체계를 개발하라."
+     },
+     "OSINT 기반 회색지대 도발 전조 조기경보 Gray-zone Early Warning": {
+      "background": "최근 아시아·태평양(APAC) 해역에서 발생하는 해상 민병대의 기습 집결, 풍선·소형 드론 침투 등 회색지대(Gray Zone) 도발은 실제 행동이 시작된 이후에는 저지하기가 매우 까다롭습니다. 하지만 이러한 행동들은 현장에서 우발적으로 일어나지 않으며, 출항 전 단계에서 '선원 모집 통지, 특정 항만의 유류 및 보급 물류 급증, 소셜 미디어(SNS)상의 선동적 흔적' 등 명확한 지상·온라인 전조 징후를 동반합니다.",
+      "challenge": "\"해상 위협 세력이 실제 행동(출항 및 집결)을 감행하기 전, 지상과 온라인상에 남기는 다중 출처 비정형 공개 정보(OSINT)를 융합 분석하여 해상 회색지대 도발 징후를 사전에 탐지하고 예측하는 전조 예측 모델을 개발하라.\n\n1. 웹, 소셜 미디어, 지역 포럼 등에서 회색지대 활동(인력 모집, 행동 모의 등)과 관련된 텍스트 및 디지털 흔적을 수집하고 연관성을 추적하는 정보 마이닝 기술 구현\n\n2. 주요 도발 기지(배후 항만)의 물류 이동, 군수 보급품(유류, 부품 등)의 비정상적 조달 징후를 파악하기 위한 이종 오픈소스 데이터 교차 분석\n\n3. 분석된 지상/온라인 전조 데이터와 과거 도발 패턴을 결합하여, 향후 특정 해역 내 위협 전개 가능성과 시점을 정량적 확률로 예측하는 알고리즘 수립\""
+     },
+     "공개 AIS·SAR 기반 해상 은닉 선박 탐지 Dark Vessel Detection with Open Data": {
+      "background": "APAC 해역에서는 선박자동식별장치(AIS)를 고의로 끄거나 신분을 위장한 선박, 해상 민병대 성격의 선단, 불법 환적(Ship-to-Ship)이 반복되고 있습니다. 군 감시 자산만으로는 광대한 해역 전체를 상시 감시할 수 없지만, 공개 AIS 이력과 무료 SAR 위성영상, 선박 등록·어업 정보를 결합하면 '신호는 없는데 선박은 있는' 이상 징후를 민간 기술로도 찾아낼 수 있습니다.",
+      "challenge": "공개 AIS·SAR 위성영상·선박 등록 정보를 융합해 AIS 미표출(Dark) 선박과 위장·이상 행동 선박을 탐지하고, 위험도를 정량화하여 감시 우선순위를 제시하는 OSINT 기반 해상 이상징후 탐지 체계를 개발하라."
+     },
+     "공개 위성영상 기반 전략 거점 변화 탐지 Open Satellite Change Detection": {
+      "background": "과거 국가 정보기관만 다루던 위성영상은 이제 Sentinel-1(SAR)·Sentinel-2(광학) 등 무료 공개 데이터와 상용 위성으로 민간도 접근할 수 있습니다. 비행장·항만·군사시설·인공섬 등 APAC 전략 거점의 활동 변화(항공기·선박 수, 신규 구조물, 활주로 공사 등)는 상대의 의도와 준비 태세를 드러내는 핵심 지표입니다. 그러나 넓은 지역을 사람이 주기적으로 판독하는 것은 불가능하며, 구름·야간 등 기상 조건도 판독을 어렵게 만듭니다.",
+      "challenge": "공개 위성영상을 활용해 지정한 APAC 관심 지역(비행장·항만·도서 거점 등)의 시계열 변화를 자동 탐지하고, 변화의 유형·규모·의미를 요약해 우선순위와 함께 분석가에게 제시하는 변화 탐지 시스템을 개발하라."
+     },
+     "공개 항적·위성궤도 기반 공중·우주 상황인식 Open Air & Space Situational Awareness": {
+      "background": "공중·우주 상황 인식에 필요한 정보는 항공기 공개 항적(ADS-B), 위성궤도(TLE), 기상, 뉴스·OSINT 등 여러 공개 출처에 흩어져 있어 수작업 융합이 어렵습니다. 미국 Project Maven처럼 AI가 다중 소스를 융합해 상황을 요약하고 이상징후를 짚어준다면, 공개 정보만으로도 APAC 공역·궤도의 변화를 빠르게 파악하는 전력 승수가 됩니다.",
+      "challenge": "공개 항적(ADS-B)·위성궤도·기상·뉴스/OSINT를 융합해 특정 APAC 지역의 공중·우주 상황을 파악하고 이상징후(비정상 항적, 위성 근접·기동 등)를 탐지하는 AI 기반 시스템을 개발하라."
+     },
+     "멀티소스 OSINT 인텔 코파일럿 Fusion OSINT Copilot": {
+      "background": "공개 정보(뉴스·SNS·정부 발표·항적·선박·위성영상·논문·특허 등)의 양은 폭발적으로 늘었지만, 분석가가 여러 출처를 수작업으로 오가며 교차검증하는 데 대부분의 시간이 소요되고 있습니다. 특히 APAC은 한국어·중국어·일본어·러시아어 등 다국어 정보가 혼재해 한 명의 분석가가 전체 흐름을 파악하기 어렵습니다. 즉, 데이터가 부족한 것이 아니라 흩어진 공개 정보를 연결해 '검증 가능한 판단'으로 바꾸는 과정에서 병목이 발생합니다. 공개 정보만으로 빠르게 상황을 파악하는 능력은 동맹·민간이 함께 쓸 수 있는 핵심 전력 승수(Force Multiplier)입니다.",
+      "challenge": "\"자연어 질의를 받아 여러 공개 출처 수집·분석 모듈을 오케스트레이션하고 교차검증하여, 반드시 출처(citation)와 신뢰도를 명시한 인텔 리포트와 시각화를 생성하는 OSINT 코파일럿을 개발하라.\n\n(공개 데이터만 사용 · APAC 관심 이슈 1개 이상을 시연 시나리오로 선정)\""
+     }
+    },
+    "T3 — Air Force: Next-Gen Air Power 공군 트랙 · 차세대 항공우주력": {
+     "6세대 전투기 탑재 기술 Next-Gen Fighter Technologies": {
+      "background": "\"하늘을 장악하는 능력은 여전히 전쟁의 승패를 가르는 가장 강력한 힘이며, 20~30년 뒤의 하늘을 장악할 6세대 전투기를 향한 긴 혁신은 이미 진행 중입니다. 이런 기술은 어느 날 갑자기 완성되어 나타나지 않습니다. 현재의 기술을 고민하고, 미래의 가능성을 가늠하며, 핵심 원천 기술부터 만들어 나가는 과정이 필요합니다.\n\n24시간 해커톤에서 6세대 전투기를 만들 수는 없습니다. 하지만 그 안에 들어갈 미래 기술을 상상하고 청사진을 그려볼 수는 있습니다.\"",
+      "challenge": "\"2050년 - 6세대 전투기에 탑재되어야 할 핵심 기술 및 개념을 제시하며, 가능한 범위 내에서 창의적으로 구현, 시현 가능\n\n결과물 형태는 자유입니다. \n\n논문, 기술동향, 시뮬레이션, 개념 설계, 근거에 기반한 분석과 구상 설명. \n\nSW 프로토타입 모두 가능\""
+     },
+     "무인 자율전투기(CCA) Collaborative Combat Aircraft": {
+      "background": "\"CCA(Collaborative Combat Aircraft)는 유인 전투기와 한 팀으로 싸우는 무인 자율전투기로, 미래 공중전력의 핵심 축으로 꼽힙니다. 유인기 조종사 한 명이 여러 대의 무인기와 어떻게 임무를 나누고, 통신이 불안정한 상황에서 무인기가 어디까지 스스로 판단해야 하는지는 아직 답이 정해지지 않은 질문입니다.\n\n완성된 기체가 없어도, CCA를 움직일 알고리즘과 운용 개념은 지금 구상하고 구현해 볼 수 있습니다.\"",
+      "challenge": "\"CCA가 유인 전투기와 함께 임무를 수행하기 위한 알고리즘 또는 운용 개념 등을 창의적으로 구상하고, 가능한 범위에서 구현·시연, 개념 제시하라\n\n결과물 형태는 자유입니다. \n\n논문, 기술동향, 시뮬레이션, 개념 설계, 근거에 기반한 분석과 구상 설명. \n\nSW 프로토타입 모두 가능\""
+     },
+     "비행장 방공·관제·미사일·드론 방어 Airbase Defense  ·  분야 내 자율 제안": {
+      "background": "\"교환비 효율을 극대화한 자폭 드론이 비행장과 핵심 시설을 공격하고 있습니다. 수많은 드론과 미사일을 섞어 방공망을 복잡하게 만들면서, 공격 비용은 낮추고 타격 가능성은 높여 가는 방식입니다.\n\n아무리 뛰어난 항공전력도 비행장이 멈추면 뜰 수 없습니다. 지금 당장 우리의 비행장과 핵심 항공자산을 지켜내고, 복합 공격 속에서도 항공전력을 계속 운용할 수 있게 하는 현실적인 기술이 필요합니다.\"",
+      "challenge": "\"비행장 방공·관제·미사일 방어·드론 방어 분야 안에서 해결할 문제를 스스로 정의하고, 실제로 작동하며 현장에 적용 가능한 솔루션을 개발하라.\n\n개념 제안에 그치지 않고, 작동하는 결과물로 적용 가능성을 보여줄 것.\""
+     }
+    },
+    "T4 — Tactical Edge: Sensor Fusion & Edge AI 전술 센서융합 + 엣지 AI": {
+     "AI 워게임 교관 & 단기복무 숙달 가속 AI War-game Tutor & Readiness Accelerator": {
+      "background": "지휘관·참모의 전술 의사결정 역량과 장병의 장비 숙련도는 반복 훈련으로 길러지지만, 숙련된 교관과 훈련 자원은 제한되어 있습니다. 특히 의무·단기 복무 중심의 한국군은 숙련도가 정점에 이르기 전에 전역하는 구조적 한계가 있습니다. AI가 시나리오를 만들고 피드백을 주는 개인화 훈련 도구, 그리고 교육장·야외에서 오프라인으로 구동되는 교육 단말이 훈련 밀도를 끌어올릴 수 있습니다.",
+      "challenge": "장교·간부의 워게임을 가이드하고 결심에 피드백을 주는 AI 전술 교관, 또는 단기 복무 장병의 전술·장비 숙련도를 빠르게 끌어올리는 개인화 적응형 훈련 시뮬레이터를 개발하라."
+     },
+     "IMU 기반 직관형 드론 조종 인터페이스 IMU-based Intuitive Drone Control": {
+      "background": "드론은 전장의 핵심 전력이 되었지만, 조종은 여전히 어렵습니다. 두 개의 스틱을 양손으로 다루는 기존 조종기는 숙달에 수십 시간의 훈련이 필요하고, 조종하는 동안 병사는 양손과 시선을 모두 빼앗겨 총을 들 수도 주변을 경계할 수도 없습니다. 단기 복무 중심의 병력 구조에서는 숙련 조종사를 충분히 길러내기도 어렵습니다. 누구나 몇 분 만에 익히고, 한 손이나 몸의 움직임만으로 다룰 수 있는 새로운 조종 방식이 필요합니다.",
+      "challenge": "\"IMU 센서와 무선 보드를 활용해, 기존 스틱 조종기를 대체하거나 보완하는 새로운 드론 조종 방법을 개발하라. 손·팔·머리 등 몸의 움직임이나 자세를 조종 명령으로 바꾸는 직관적인 인터페이스를 제시할 것.\n\n처음 써보는 사람이 얼마나 빨리 익히는지(학습 시간)와 조종 정확도를 함께 보여줄 것.\n\n(실제 드론이 없어도 됩니다. 시뮬레이터나 소형 토이 드론으로 시연할 수 있습니다.)\""
+     },
+     "병사 착용형 센서 네트워크 & 소부대 상태 인식 Soldier-worn Sensor Mesh": {
+      "background": "소부대 지휘관은 대원 개개인의 위치·상태·위험 노출을 실시간으로 알기 어렵습니다. 고가 전술 단말이 모든 병사에게 보급되기 전이라도, 저전력 BLE 센서로 생체·환경·움직임 정보를 근거리 망으로 묶으면 부상·탈진·유해 환경 노출을 조기에 파악할 수 있습니다. 동시에 전파 방출은 적 탐지의 표적이 되므로 저방출 설계가 필수입니다.",
+      "challenge": "저전력 무선 보드와 센서로 병사 착용형 노드를 만들고, 근거리 메시 네트워크로 소부대의 상태(심박·체온·움직임·환경)를 수집해 이상을 경보하는 소부대 상태 인식 PMVP를 개발하라. 전파 방출 최소화 전략을 함께 제시할 것."
+     },
+     "소부대 오프라인 전술 C2 · 공통상황도 Squad-level Edge C2 & COP": {
+      "background": "대대급 이상 지휘통제체계는 고도화되고 있지만, 실제 교전이 벌어지는 분대·소대 단위에서는 여전히 무전과 종이 지도, 개인 기억에 의존하는 경우가 많습니다. 통신이 끊기거나 전파 방출을 통제해야 하는 상황에서는 상급 부대의 C2망도 사용할 수 없습니다. 병사가 휴대한 단말끼리 근거리 무선으로 위치·표적·보고를 주고받고, 단말 내부 AI가 상황을 정리해 주는 소부대용 경량 C2가 필요합니다.",
+      "challenge": "상급 망 연결 없이 휴대 단말·저전력 무선 노드만으로 분대·소대의 위치, 발견 표적, 상황 보고를 공유하고, 온디바이스 AI가 이를 요약해 공통상황도(COP)와 자연어 브리핑으로 제공하는 소부대 전술 C2 PMVP를 개발하라."
+     },
+     "엣지 시맨틱 전송 S-DOT: Semantic Data On Tactical-network": {
+      "background": "전장에 드론, 로봇, 고해상도 감시 장비 등의 도입이 늘어나면서 대용량 정보가 급증하고 있지만, 전술 통신망은 대역폭이 제한적이며 재밍(전파방해) 공격에 취약합니다. 이러한 전장 네트워크의 불안정성은 AI 기술 활용의 가장 큰 장애 요인으로 작용하고 있습니다. 따라서 고용량 영상 데이터를 통째로 전송하는 기존 방식에서 벗어나, 데이터 수집 말단(엣지) 또는 중간 분석 노드 등에서 핵심 정보만 추출한 뒤 '의미 기반의 텍스트' 형태로 압축 전송함으로써 통신 생존성을 극대화해야 합니다.",
+      "challenge": "\"드론·카메라 등 엣지 단말에서 영상 원본 대신 AI로 핵심 정보(객체·위치·행동)를 추출해 초소형 텍스트/구조화 메시지로 변환하고, 저대역 무선 링크로 전송·재구성하는 시맨틱 전송 PMVP를 개발하라.\n\n원본 대비 전송량 절감률과 정보 보존율을 함께 측정할 것.\""
+     },
+     "장비 예측정비 IoT 센서 (Retrofit) Predictive Maintenance Retrofit": {
+      "background": "회색지대 도발이나 해상 봉쇄로 보급선이 끊기면 부품 하나가 작전 지속 여부를 좌우합니다. 그러나 현용 장비(발전기·차량·펌프·냉각장치 등) 상당수는 상태 데이터를 수집하는 센서가 없어 고장이 난 뒤에야 정비가 이루어집니다. 기존 장비에 부착하는(Retrofit) 저가 센서로 진동·온도·전류를 수집해 고장을 미리 예측하면, 제한된 부품과 정비 인력을 가장 필요한 곳에 배분할 수 있습니다.",
+      "challenge": "기존 장비에 부착 가능한 저가 무선 센서 노드로 진동·온도 등 상태 데이터를 수집하고, 엣지에서 이상 징후와 잔여수명을 추정해 정비 우선순위를 제시하는 예측정비 PMVP를 개발하라."
+     },
+     "해상 무인 감시 부표 엣지 AI Edge-AI Maritime Surveillance Buoy": {
+      "background": "기존 해상 감시 체계는 육상 기반 대형 레이더나 고가 정찰 자산에 크게 의존해 기상 악화나 전파 거부 환경에서 감시 공백이 자주 발생합니다. 광대한 해역에 저비용으로 배치할 수 있는 부표·무인수상정(USV) 기반 감시가 대안이지만, 상시 전력 공급이 어렵고 파도·수중 소음으로 오경보가 많다는 한계가 있습니다. 장치 스스로 판단하고 꼭 필요할 때만 전송하는 초저전력 엣지 AI가 핵심입니다.",
+      "challenge": "\"부표·USV 등 전력이 제한된 해상 무인 자산을 가정하여, 센서 데이터를 장치 자체에서 판단하고 위협 임계치를 넘을 때만 핵심 정보와 위험도 등급을 전송하는 초저전력 엣지 감시 노드 PMVP를 개발하라.\n\n(수조·모형·공개 음향/영상 데이터 활용 가능)\""
+     },
+     "핸즈프리 음성 온디바이스 전술 AI Voice-first Tactical AI": {
+      "background": "전장의 병사는 키보드를 칠 수 없습니다. 손은 장비를 들고 있고 눈은 전방을 봐야 하기 때문에, 음성은 여전히 가장 자연스러운 소통 수단입니다. 하지만 말로 주고받은 보고와 지시는 기록·요약·검색되지 않고 흘러가 버립니다. 통신이 끊긴 환경에서도 단말 내부의 AI가 음성만으로 교범 질의·상황 보고 요약·명령 정리를 처리할 수 있다면 소부대의 정보 처리 능력이 크게 달라집니다.",
+      "challenge": "\"스마트폰·노트북 마이크나 블루투스 이어셋 등 손쉽게 구할 수 있는 음성 입력만으로, 외부망 없이 온디바이스 AI가 음성 질의응답·상황 보고 자동 요약·표준 보고 양식 변환을 수행하는 핸즈프리 전술 AI 인터페이스를 개발하라.\n\n(무전기는 필요 없습니다. 무전 상황은 녹음 파일·잡음 합성·팀원 간 음성으로 모사할 수 있습니다.)\""
+     }
+    }
+   },
+   "special": {
+    "SC1 — CLIKA BYOD Offline AI Challenge": {
+     "resources": "\"하나의 AI 앱을 어떤 하드웨어, 어떤 OS에서든 재작업 없이 오프라인으로 돌린다!\nHuggingFace의 경량 오픈소스 모델을 가져와 ClikaRT 위에서 바로 배포하는 워크플로우를 통해, 랩탑에서 만든 앱이 코드 수정 없이 그대로 안드로이드 폰이나 Jetson에서 돌아갈 수 있도록 지원하는 CLIKA RT를 활용하여 빠른 시간 동안 네트워크 없이 현장에서 작동하는 AI 앱을 만드는 도전!\n\n제공: CLIKA 플랫폼 - ClikaRT 접근 및 엔지니어 멘토링 지원\"",
+     "requirements": "\"① CLIKA RT를 활용해 앱을 만든 결과물\n② 네트워크 차단 상태에서의 실동작 시연\n③ 코드 저장소\""
+    },
+    "SC2 — NUCODE Board Challenge": {
+     "resources": "\"NUCODE 무선 개발보드로 센서·드론 등 실제 디바이스를 AI/SW와 연결해, 손에 잡히는 국방 프로토타입을 만드는 챌린지.\n\n제공: NUCODE 개발보드(BLE · Wi-Fi, 아두이노 IDE 호환), 온보딩 세션 (세부 사항은 DAY 2 파트너 세션에서 안내)\"",
+     "requirements": "\"① 데모에 NUCODE 보드 1개 이상 실동작\n② 하드웨어 구성도\n③ 코드 저장소\""
+    }
+   }
+  },
+  "awardCategories": [
+   "SC1. CLIKA BYOD ON-DEVICE AI CHALLENGE",
+   "SC2.  NUCODE BOARD CHALLENGE",
+   "SC3. WAY TO OREGON",
+   "T2. OSINT & OPEN-SOURCE INTELLIGENCE FOR APAC [SEMI]",
+   "T2. OSINT & OPEN-SOURCE INTELLIGENCE FOR APAC [WINNER]",
+   "T1. AUTONOMY, UNMANNED SYSTEMS & COUNTER-UAS [WINNER]",
+   "T1. AUTONOMY, UNMANNED SYSTEMS & COUNTER-UAS [SEMI]",
+   "T3. AIR FORCE: NEXT-GEN AIR POWER - 6TH GEN JET [WINNER]",
+   "T3. AIR FORCE: NEXT-GEN AIR POWER - 6TH GEN JET [SEMI]",
+   "T3. AIR FORCE: NEXT-GEN AIR POWER - CCA [WINNER]",
+   "T3. AIR FORCE: NEXT-GEN AIR POWER - CCA [SEMI]",
+   "T3. AIR FORCE: NEXT-GEN AIR POWER - AIR DEFENSE [WINNER]",
+   "T3. AIR FORCE: NEXT-GEN AIR POWER - AIR DEFENSE [SEMI]",
+   "T4. TACTICAL EDGE: SENSOR FUSION & EDGE AI [WINNER]",
+   "T4. TACTICAL EDGE: SENSOR FUSION & EDGE AI [SEMI]"
+  ],
+  "applyDeadline": "2026-10-09T09:00:00Z",
+  "submitDeadline": "2026-10-11T01:00:00Z",
+  "description": "## D4D Korea Hackathon with EDTH\n\n**D4D는 국방과 안보의 문제를 해결합니다.**\n\n아시아 태평양 최대 규모의 디펜스 테크 해커톤이 7월에 이어 **10월 미국, 유럽과 함께** 돌아왔습니다.\n\nD4D 해커톤은 학생, 개발자, 디자이너, 기획자, 창업가, 연구자, 군인과 제대군인까지, 세계의 위협 속에서 언제든 준비될 수 있는 분들과 함께 **국방의 진짜 문제를 해결할 빌더를 초대합니다.**\n\n- 국방을 잘 몰라도 괜찮습니다. **현장의 군 멘토들이 함께합니다.**\n- 기술을 잘 몰라도 괜찮습니다. **AI·소프트웨어·하드웨어 분야의 기술 멘토들이 함께합니다.**\n- 팀이 없어도 괜찮습니다. **행사 현장에서 함께할 팀과 동료를 연결해드립니다.**\n\n![D4D 행사 안내 이미지](https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=1,quality=85,width=560,height=310.9571/uploads/2s/8d6e3afc-fe0c-4bce-b0bb-99e2a3585072.jpeg)\n\n**함께 만들고, 연결되는 24시간!**\\\n**디펜스 빌더 딱 200명만 모십니다.**\n\n---\n\n\n## 심사 방식\n\n### 0단계 — No Slides. No PPT.\n\n아이디어와 프로토타입으로 시작합니다.\n\n### 1단계 — Track Judging\n\n각 트랙별 심사위원이 참가 팀을 평가합니다. **3분 발표 + 2분 질의응답**으로 진행합니다.\n\n| 평가 항목 | 비중 |\n| --- | ---: |\n| 문제 적합성 · Problem Fit | 25% |\n| 군 적용 가능성 · Military Deployability | 30% |\n| 기술 구현 · Technical Execution | 25% |\n| 창의성 · Creativity | 20% |\n\n### 2단계 — Main Stage Finals\n\n각 트랙 상위 팀이 메인 무대에서 최종 피칭을 진행합니다. **발표 시간은 5분**입니다.\n\n| 평가 항목 | 비중 |\n| --- | ---: |\n| 임팩트 및 확장성 · Impact & Scalability | 35% |\n| 글로벌 확장 가능성 · Global Readiness | 25% |\n| 기술 난이도 및 차별성 · Technical Difficulty / Moat | 20% |\n| 창업가·팀 추진력 · Founder & Team Drive | 20% |\n\n---\n\n## 함께하는 파트너\n\n### 한국 기관 파트너\n- [경상대학교 창업중심대학사업단](https://startup.gnu.ac.kr/?utm_source=luma)\n\n### 한국 파트너\n- [F4GE](https://www.f4ge.org/?utm_source=luma)\n- [CLIKA](https://clika.io/?utm_source=luma)\n- [NUCODE](https://nuworks.io/?utm_source=luma)\n- [TIRO](https://tiro.ooo/ko/?utm_source=luma)\n- [Prairie Schooner](https://www.prairieschooner.io/?utm_source=luma)\n- [Morph Systems](https://morphsys.ai/?utm_source=luma)\n\n### 유럽 파트너\n- [EDTH](https://events.eurodefense.tech/?utm_source=luma)\n- [VEKTOR Group](https://vektorgroup.de/en/?utm_source=luma)\n\n### 미국 파트너\n- [Oregon UAS Accelerator](https://oregonuas.org/?gad_source=1&gad_campaignid=23990126281&gbraid=0AAAABB1PTNQ1r1iTQV6-NIBqcwi4bDa55&gclid=CjwKCAjww-3VBhAcEiwAwUUIu8I9vR9B7qObh1UbECnrkjaEBj3Q18K0R0lRKHGbR-gJFf9WI0KSThoCscgQAvD_BwE&utm_source=luma)\n\n※ 참여 기업 및 파트너는 추후 순차적으로 공개됩니다.\n\n---\n\n## DBN · 별도 신청 안내\n\n**10월 9일(금) 18:00–21:30, Defense Builders Night**\n캐주얼 네트워킹 & 세션으로 진행되며, 해커톤과 별도로 신청해야 합니다.\n\n[DBN v4 신청하기 →](https://luma.com/d4d_DBN4)\n\n![DBN 행사 안내](https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=1,quality=85,width=560,height=363.8272/uploads/rl/45f4e005-a2f5-4cd9-b4c6-2918f4258d59.jpg)\n\n행사 전까지 연사 · 트랙 · 문제 · 파트너 등의 안내를 순차적으로 공유드립니다.\n\n[EDTH Apply to join →](https://events.eurodefense.tech/events/korean-defense-tech-hackathon?utm_source=luma)\n\n",
+  "location": "아크 강남 (양재역 3번 출구) · 서울 서초구 양재동 14-14",
+  "startDate": "2026-10-09",
+  "endDate": "2026-10-11",
+  "eventType": "IRL",
+  "coverImageUrl": "https://hlwjyighifwvhqloaixd.supabase.co/storage/v1/object/public/event-covers/covers/1791200850334-b5536de4c865427c.png",
+  "timetable": [
+   {
+    "time": "",
+    "label": "",
+    "en": "",
+    "day": "10월 9일(금) · Defense Builders Night"
+   },
+   {
+    "time": "17:30",
+    "label": "등록 · 체크인",
+    "en": "",
+    "note": "별도 등록자 대상 (LUMA)",
+    "highlight": true
+   },
+   {
+    "time": "18:00",
+    "label": "간단 네트워킹 시간",
+    "en": ""
+   },
+   {
+    "time": "18:30–20:20",
+    "label": "Defense Builders Night Vol.4 · 연사 세션 · 방산 생태계 인사이트",
+    "en": "",
+    "note": "기관·파트너별 연사 세션 · 각 10분",
+    "highlight": true
+   },
+   {
+    "time": "20:20–21:30",
+    "label": "네트워킹 리셉션",
+    "en": "",
+    "note": "케이터링 · 음료 제공"
+   },
+   {
+    "time": "",
+    "label": "",
+    "en": "",
+    "day": "10월 10일(토) · 킥오프 & 24H Hacking"
+   },
+   {
+    "time": "08:30",
+    "label": "등록 · 체크인 · 굿즈 지급",
+    "en": "",
+    "note": "등록 데스크 · 명찰 배부 / 팀빌딩 희망자는 이벤트존으로"
+   },
+   {
+    "time": "10:00",
+    "label": "오프닝 & 안내",
+    "en": "",
+    "place": "메인 스테이지",
+    "note": "24시간 개발 시작",
+    "highlight": true
+   },
+   {
+    "time": "10:10",
+    "label": "Session 1 · 파트너 세션",
+    "en": "",
+    "note": "EDTH · 경상국립대학교 · 대한민국 공군 · VEKTOR Group · F4GE / 각 10분 / 자유롭게 참여",
+    "highlight": true
+   },
+   {
+    "time": "11:00",
+    "label": "AWS DEFENSE · 아마존 클라우드 사용 안내",
+    "en": "",
+    "note": "10분",
+    "highlight": true
+   },
+   {
+    "time": "11:10",
+    "label": "CLIKA · 플랫폼 소개 및 활용 안내",
+    "en": "",
+    "note": "20분",
+    "highlight": true
+   },
+   {
+    "time": "11:30",
+    "label": "NUCODE · 개발 보드 사용 안내",
+    "en": "",
+    "note": "20분",
+    "highlight": true
+   },
+   {
+    "time": "11:50",
+    "label": "StealthMole · OSINT",
+    "en": "",
+    "note": "20분",
+    "highlight": true
+   },
+   {
+    "time": "12:10",
+    "label": "점심 식사",
+    "en": "",
+    "note": "샌드위치 케이터링"
+   },
+   {
+    "time": "13:00",
+    "label": "개발 집중 · 멘토·심사위원 집중 멘토링 1",
+    "en": "",
+    "note": "멘토링은 자유롭게 신청"
+   },
+   {
+    "time": "17:00",
+    "label": "저녁 식사",
+    "en": "",
+    "note": "크라이치즈버거"
+   },
+   {
+    "time": "18:30",
+    "label": "커뮤니티 세션 1 · 패널 토크 — 현대 전장의 글로벌 현 상황 및 개선점",
+    "en": "",
+    "note": "D4D × EDTH × 대한민국 공군 / 자유롭게 참여 · 통역 지원",
+    "highlight": true
+   },
+   {
+    "time": "19:00",
+    "label": "커뮤니티 세션 2 · Fireside Chat — Way to Oregon",
+    "en": "",
+    "note": "D4D · Prairie Schooner · 경상국립대학교 / 자유롭게 참여",
+    "highlight": true
+   },
+   {
+    "time": "19:30",
+    "label": "단체 사진",
+    "en": "",
+    "place": "메인 스테이지",
+    "note": "전원 참여"
+   },
+   {
+    "time": "20:00",
+    "label": "NUCODE 깜짝 이벤트 (예정)",
+    "en": ""
+   },
+   {
+    "time": "22:00",
+    "label": "Night Sprint · Phase 1",
+    "en": "",
+    "note": "세부 내용 현장 공지"
+   },
+   {
+    "time": "",
+    "label": "",
+    "en": "",
+    "day": "10월 11일(일) · 피니시 & 시상"
+   },
+   {
+    "time": "00:00",
+    "label": "Night Sprint · Phase 2",
+    "en": "",
+    "note": "24시간 개발 계속"
+   },
+   {
+    "time": "07:00",
+    "label": "아침 식사",
+    "en": "",
+    "note": "전투식량"
+   },
+   {
+    "time": "09:00",
+    "label": "제출 준비",
+    "en": "",
+    "note": "제출 안내 방송 진행",
+    "highlight": true
+   },
+   {
+    "time": "10:00",
+    "label": "제출 마감",
+    "en": "",
+    "note": "플랫폼 내 제출",
+    "highlight": true
+   },
+   {
+    "time": "10:30–12:30",
+    "label": "현장 심사 · 1차 심사",
+    "en": "",
+    "note": "트랙별 현장 심사 · 팀당 5분",
+    "highlight": true
+   },
+   {
+    "time": "12:30",
+    "label": "점심 식사",
+    "en": "",
+    "note": "바비큐 + 음료 / 1차 심사 종료 후"
+   },
+   {
+    "time": "13:30",
+    "label": "참여자 전체 단체 사진",
+    "en": ""
+   },
+   {
+    "time": "14:00",
+    "label": "1차 심사 결과 발표",
+    "en": "",
+    "place": "메인 스테이지",
+    "note": "발표 대상 준비 안내",
+    "highlight": true
+   },
+   {
+    "time": "14:30",
+    "label": "선별 팀 피칭 · 2차 심사",
+    "en": "",
+    "place": "메인 스테이지",
+    "highlight": true
+   },
+   {
+    "time": "15:30",
+    "label": "시상식",
+    "en": "",
+    "place": "메인 스테이지",
+    "highlight": true
+   },
+   {
+    "time": "16:00",
+    "label": "수상자(폼보드) 및 운영진 등 기념 촬영",
+    "en": "",
+    "note": "모든 세션은 자유롭게 참여할 수 있으며, 세부 시간·연사는 현장 상황에 따라 일부 변경될 수 있습니다. 변경 사항은 LUMA · 디스코드 공지로 안내드립니다."
+   }
+  ],
+  "speakers": [
+   {
+    "name": "도현규",
+    "title": "본부장",
+    "org": "경상국립대학교 창업중심대학사업단",
+    "role": "speaker"
+   },
+   {
+    "name": "최강근",
+    "title": "CEO",
+    "org": "D4D",
+    "role": "speaker"
+   },
+   {
+    "name": "벤자민",
+    "title": "",
+    "org": "EDTH",
+    "role": "speaker"
+   },
+   {
+    "name": "션 권",
+    "title": "CEO",
+    "org": "F4GE",
+    "role": "speaker"
+   },
+   {
+    "name": "홍관선",
+    "title": "Colonel",
+    "org": "대한민국 공군",
+    "role": "speaker"
+   },
+   {
+    "name": "김나율",
+    "title": "CEO",
+    "org": "CLIKA",
+    "role": "speaker"
+   },
+   {
+    "name": "빈센트",
+    "title": "",
+    "org": "VEKTOR Group",
+    "role": "speaker"
+   },
+   {
+    "name": "여울",
+    "title": "CTO",
+    "org": "TIRO",
+    "role": "speaker"
+   },
+   {
+    "name": "김세주",
+    "title": "CEO",
+    "org": "인텔오퍼레이터",
+    "role": "speaker"
+   },
+   {
+    "name": "박정환",
+    "title": "Strategy Director",
+    "org": "Prairie Schooner",
+    "role": "speaker"
+   },
+   {
+    "name": "이한서",
+    "title": "Researcher",
+    "org": "NUCODE",
+    "role": "speaker"
+   },
+   {
+    "name": "A (Confidential)",
+    "title": "T1 자율·무인 · 대드론 심사",
+    "org": "미군",
+    "role": "judge"
+   },
+   {
+    "name": "김기연",
+    "title": "T1 자율·무인 · 대드론 심사",
+    "org": "프레리스쿠너 대표",
+    "role": "judge"
+   },
+   {
+    "name": "신동호",
+    "title": "T1 자율·무인 · 대드론 심사",
+    "org": "한국대드론산업협회 센터장",
+    "role": "judge"
+   },
+   {
+    "name": "B (Confidential)",
+    "title": "T1 자율·무인 · 대드론 2차 심사",
+    "org": "미군",
+    "role": "judge"
+   },
+   {
+    "name": "신동훈",
+    "title": "T1 자율·무인 · 대드론 2차 심사",
+    "org": "한국해양대 교수",
+    "role": "judge"
+   },
+   {
+    "name": "김민건",
+    "title": "OSINT 1차 심사",
+    "org": "SNU, Causality.AI, Founding Engineer",
+    "role": "judge"
+   },
+   {
+    "name": "박윤서",
+    "title": "OSINT 1차 심사",
+    "org": "모프시스템즈 이사",
+    "role": "judge"
+   },
+   {
+    "name": "전은석",
+    "title": "OSINT 1차 심사",
+    "org": "대표",
+    "role": "judge"
+   },
+   {
+    "name": "벤자민",
+    "title": "OSINT 2차 심사",
+    "org": "EDTH",
+    "role": "judge"
+   },
+   {
+    "name": "빈센트",
+    "title": "OSINT 2차 심사",
+    "org": "VEKTOR",
+    "role": "judge"
+   },
+   {
+    "name": "C (Confidential)",
+    "title": "OSINT 2차 심사",
+    "org": "정보기관",
+    "role": "judge"
+   },
+   {
+    "name": "공군 1",
+    "title": "T3 공군 · 차세대 항공우주력 1차 심사",
+    "org": "대한민국 공군",
+    "role": "judge"
+   },
+   {
+    "name": "미군 2 - B",
+    "title": "T3 공군 · 차세대 항공우주력 1차, 2차 심사",
+    "org": "미군",
+    "role": "judge"
+   },
+   {
+    "name": "홍관선",
+    "title": "T3 공군 · 차세대 항공우주력 2차 심사",
+    "org": "대한민국 공군",
+    "role": "judge"
+   },
+   {
+    "name": "미군 2 - B",
+    "title": "T3 공군 · 차세대 항공우주력 1차",
+    "org": "미군 (드론)",
+    "role": "judge"
+   },
+   {
+    "name": "여울",
+    "title": "T4 전술 센서융합 · 엣지 AI 1차 심사",
+    "org": "TIRO CTO",
+    "role": "judge"
+   },
+   {
+    "name": "김나율",
+    "title": "T4 전술 센서융합 · 엣지 AI 2차 심사",
+    "org": "CLIKA",
+    "role": "judge"
+   },
+   {
+    "name": "션 권",
+    "title": "T4 전술 센서융합 · 엣지 AI 2차 심사",
+    "org": "F4GE 대표",
+    "role": "judge"
+   },
+   {
+    "name": "김나율",
+    "title": "SC1 CLIKA BYOD On-device AI",
+    "org": "CLIKA",
+    "role": "judge"
+   },
+   {
+    "name": "클리카 팀",
+    "title": "SC1 CLIKA BYOD On-device AI",
+    "org": "CLIKA",
+    "role": "judge"
+   },
+   {
+    "name": "누코드 팀",
+    "title": "SC2 NUCODE Board Challenge",
+    "org": "NUCODE",
+    "role": "judge"
+   },
+   {
+    "name": "최강근",
+    "title": "SC3 WAY to OREGON",
+    "org": "D4D Founder",
+    "role": "judge"
+   },
+   {
+    "name": "김기연",
+    "title": "SC3 WAY to OREGON",
+    "org": "프래리스쿠너 대표",
+    "role": "judge"
+   }
+  ],
+  "prizes": [
+   {
+    "rank": "Autonomous Combat Award",
+    "label": "Autonomy, Unmanned Systems & Counter-UAS",
+    "amount": "₩1,000,000",
+    "perks": "공중·지상·해상 무인체계 자율성, 대드론(C-UAS), 피아식별. 한국·APAC 지형·회색지대 시나리오 중심."
+   },
+   {
+    "rank": "Intelligence Fusion Award",
+    "label": "OSINT & Defense Intelligence",
+    "amount": "₩1,000,000",
+    "perks": "공개 데이터(뉴스·SNS·위성영상·AIS·ADS-B·위성궤도)만으로 APAC 안보 문제를 푸는 트랙."
+   },
+   {
+    "rank": "Next Generation Award",
+    "label": "Air Force: Next-Gen Air Power",
+    "amount": "₩1,000,000",
+    "perks": "① 6세대 전투기 ② 무인 자율전투기(CCA)  ③ 비행장 방공·관제·미사일·드론 방어 "
+   },
+   {
+    "rank": "Tactical Award",
+    "label": "Tactical Edge: Sensor Fusion & Edge AI",
+    "amount": "₩1,000,000",
+    "perks": "C2·병사·지속지원·해상·훈련 영역의 현장 문제를 온디바이스 AI(CLIKA)와 저전력 무선 디바이스(NUCODE)로 해결.  네트워크 없이, 장병이 직접 사용할 수 있는 제품으로 작동하는 결과물이 목표."
+   },
+   {
+    "rank": "CLIKA BYOD Award",
+    "label": "CLIKA BYOD On-device AI Challenge",
+    "amount": "₩1,000,000",
+    "perks": "참가팀이 직접 가져온 디바이스(BYOD: 노트북·스마트폰·Jetson 등)에 CLIKA RT 활용"
+   },
+   {
+    "rank": "NUCODE Board Award",
+    "label": "NUCODE Board Challenge",
+    "perks": "NUCODE 무선 개발보드로 센서·무전기·드론 등 실제 디바이스를 AI/SW와 연결해 손에 잡히는 국방 프로토타입을 만든다."
+   }
+  ],
+  "venue": {
+   "name": "아크 강남 (양재역 8번 출구에서 210m)",
+   "address": "서울 서초구 강남대로30길 7",
+   "mapUrl": "https://naver.me/5GcSFTID",
+   "imageUrl": "https://hlwjyighifwvhqloaixd.supabase.co/storage/v1/object/public/event-covers/body/1782824900033-a7de7a6b0e660289.png",
+   "notes": "주차 지원은 제공되지 않습니다. 행사장 인근 주차 공간이 제한적이므로 대중교통 및 도보 이동을 권장드립니다."
+  },
+  "faqOverride": [
+   {
+    "question": "참가 자격이 어떻게 되나요?",
+    "answer": "누구나 참가할 수 있습니다. 학생, 직장인, 연구원, 현역 군인 모두 환영합니다. 개인 참가도 가능하며, 팀은 최대 4인까지 구성할 수 있습니다."
+   },
+   {
+    "question": "현역 군인도 참가할 수 있나요?",
+    "answer": "네, 현역 군인도 참가 가능합니다. 다만 부대 보안 규정 및 휴가/외출 일정을 사전에 확인하시고 참가하시기 바랍니다."
+   },
+   {
+    "question": "팀은 몇 명까지 구성할 수 있나요?",
+    "answer": "팀당 최대 4인까지 구성할 수 있으며, 개인 참가도 가능합니다. 행사 현장에서 함께할 팀과 동료를 연결해드립니다. 개발·기획·디자인·도메인 전문성이 결합된 혼합 팀 구성을 권장합니다. 팀장이 참가 신청 후 초대 링크를 발급하면 팀원이 합류할 수 있습니다."
+   },
+   {
+    "question": "팀원을 모집하려면 어떻게 해야 하나요?",
+    "answer": "참가 신청 후 대시보드에서 초대 링크를 생성할 수 있습니다. 해당 링크를 팀원에게 공유하면 팀에 합류할 수 있습니다. 공개 팀 매칭 기능도 제공될 예정입니다."
+   },
+   {
+    "question": "방산 배경이 없어도 참가할 수 있나요?",
+    "answer": "물론입니다. 아이디어와 기술력이 중요하며, 멘토링 세션을 통해 국방 도메인 지식을 보완할 수 있습니다."
+   },
+   {
+    "question": "프로젝트 제출은 언제 할 수 있나요?",
+    "answer": "해커톤 진행 기간(LIVE 단계) 동안만 제출 가능합니다. 제출 마감 전까지 수정할 수 있으며, 팀당 1회 최종 제출이 기록됩니다. 제출 플랫폼 및 방법은 행사 전 별도 안내됩니다. 모든 팀은 마감 시간 전까지 결과물을 제출해야 합니다."
+   },
+   {
+    "question": "제출물에 포함되어야 하는 것은 무엇인가요?",
+    "answer": "프로젝트 제목, 설명, 트랙 선택, GitHub 저장소 링크가 필수입니다. 데모 URL, 시연 영상, 스크린샷은 선택 사항이지만 심사에 도움이 됩니다."
+   },
+   {
+    "question": "수상 시 어떤 혜택이 있나요?",
+    "answer": "수상팀에게는 상금 외에도 협력 기업과의 연계 기회가 주어집니다. 우수 프로젝트는 실증 기회를 검토합니다."
+   },
+   {
+    "question": "오프라인 행사인가요, 온라인인가요?",
+    "answer": "기본적으로 오프라인 행사로 진행됩니다. 이벤트 상세 페이지에서 장소와 일정을 확인할 수 있습니다."
+   },
+   {
+    "question": "행사장에 계속 머물러야 하나요?",
+    "answer": "행사장은 24시간 개방됩니다. 밤샘 참여는 필수가 아니며, 자유롭게 휴식 후 재참여할 수 있습니다."
+   },
+   {
+    "question": "기존 프로젝트를 활용해도 되나요?",
+    "answer": "기존 SW/HW 프로젝트의 활용이 가능합니다. 단, 발표 시 해커톤 기간 동안 새롭게 개발하거나 고도화한 영역을 구분하여 설명해 주시기 바랍니다."
+   },
+   {
+    "question": "하드웨어·드론 사용 시 주의할 점이 있나요?",
+    "answer": "하드웨어, 드론, 전기 장비 사용 시 기본적인 안전 수칙을 준수해 주시기 바랍니다. 안전상 위험이 있다고 판단될 경우 운영진이 중단을 요청할 수 있습니다."
+   }
+  ],
+  "teamCount": 5,
+  "participantCount": 21
+ }
+}
