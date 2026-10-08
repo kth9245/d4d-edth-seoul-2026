@@ -1,8 +1,8 @@
 ---
 id: 0003
 title: ROLECALL 아이디어 수정 방향: 주인공·하한선·부하 증명·AI 초안
-status: 제안            # 제안 / 확정 / 폐기
-decided_by: null        # 확정 시 사람 이름
+status: 확정
+decided_by: kth9245
 date: 2026-10-09
 modules: [play, runtime, safety, cop-ui]
 supersedes: null
