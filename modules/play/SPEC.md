@@ -12,5 +12,4 @@
 | PLY-07 | expand_action | Action, Domain | CommandKind/None | expand_table.json 9×3 전부 테스트(표 초안은 09 6절), None이면 후보 제외 | 황승주 | 예정 |
 | PLY-08 | list_templates | — | list[Play] | demo/plays/*.json 중 template=True | 황승주 | 예정 |
 | PLY-09 | draft_play | 문장, Operation | Play(origin=ai_draft) | 캐시 hit면 호출 없음, miss면 1회 호출·스키마 밖이면 재요청 1회, 실패 시 템플릿 반환 | 황승주 | 예정 |
-| PLY-10 | compile_mavlink | Play, Operation, specs | dict[vehicle_id, (plan_json, script_text)] | 템플릿 2개 × 기체 5대의 QGC .plan(mission.items[].command 정수) 생성, pymavlink 실행 스크립트가 py_compile 통과. step do→MAV_CMD 대응은 결정 0011 | 통합 1 먼저 끝낸 사람 | 예정 |
 | PLY-11 | check_operation | Operation, plays, specs | PlayCheck | 예시 작전 통과, 보고 지점 뺀 작전 실패 | 황승주 | 예정 |

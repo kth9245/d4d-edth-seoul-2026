@@ -269,6 +269,42 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 
 세 사람 다 여유가 거의 없다. 밀리면 7절 순서가 아니라 **통합 1 안에서 먼저 뺄 것**: Part2-3(orbit·keep_distance는 사건 1 결정 뒤 "근접 확인"에만 필요 → hold로 대체), Part2-13(지표는 통합 2로), Part1-9의 위성 raster(배경색만).
 
+### 병렬 묶음 (2026-10-10 0시, 이식 원본 기준)
+
+원본은 `knowledge/spikes/rolecall_engine_proto/port/modules/`(파일 그대로 복사 + 테스트, README 참고). **다른 액션을 import하는 액션은 그 액션이 main에 먼저 올라가 있어야 테스트가 돈다**는 것만이 순서 제약이다. 같은 묶음 안의 항목은 순서 없이 동시에(여러 Claude 세션·worktree로) 해도 된다. 사람을 넘는 의존은 두 개뿐: 최동호 GW-04 `run_checks` ← 황승주 SFT-03 `check_command`, 최동호 `engine.py` ← 모두.
+
+**최동호 (sim·sensing·gateway 틱 루프)**
+
+| 묶음 | 항목 (SPEC) | 조건 |
+|---|---|---|
+| A 바로 동시에 | `engine_state.py`(먼저, 몇 분), SIM-04 load_scenario_json, SIM-05 move_straight, SIM-06 follow_route, SIM-07 orbit_or_keep, SIM-09 apply_events, SNS-02 observe_targets, GW-03 record_injections, GW-05 track_assignments, GW-07 tick_log | 없음. GW-02 init_engine·GW-06 build_frame_v2도 `engine_state.py`만 있으면 여기 |
+| B | SIM-08 advance_vehicles | SIM-05·06·07 뒤 |
+| C | GW-04 run_checks | 황승주 SFT-03 뒤(그 전엔 모든 명령을 통과시키는 스텁) |
+| D 통합 | `engine.py` tick (Part2-17) | 위 전부 + 황승주 runtime. 없는 함수는 `contracts/examples`를 돌려주는 스텁으로 먼저 올려 리드가 화면을 붙이게 한다 |
+| 통합 2 | Part2-19 시나리오 튜닝 | 통합 1 뒤 |
+
+**황승주 (safety·runtime·play)**
+
+| 묶음 | 항목 (SPEC) | 조건 |
+|---|---|---|
+| A 바로 동시에 | SFT-01 point_in_polygon, SFT-02 return_feasible, PLY-07 expand_action, RT-09 switch_play, RT-06 apply_direct, RT-07 apply_emergency, RT-04 update_metrics, PLY-01 load_play, PLY-02 check_links | 없음 |
+| B | SFT-03 check_command (최동호 GW-04가 기다림, 먼저) · RT-08 enter_step · RT-03 apply_decision · RT-05 apply_injection · RT-02 apply_reserves | SFT-03 ← SFT-01·02, RT-08 ← PLY-07, RT-03·05·02 ← RT-09 |
+| C | RT-01 step_vehicle | RT-08 뒤 |
+| 통합 2 | PLY-03·04·05 검사, PLY-06 check_play, PLY-11 check_operation, PLY-08 list_templates, PLY-09 draft_play | PLY-06 ← 03~05, PLY-11 ← 03~05 |
+
+통합 1 경로에 바로 걸리는 순서: SFT-01·02 → SFT-03, PLY-07 → RT-08 → RT-01, RT-09 → RT-03(결정 한 번에 4대 전환).
+
+**리드 kth9245 (화면·서버 창구·시연·mavlink)**
+
+| 묶음 | 항목 | 조건 |
+|---|---|---|
+| A 바로 동시에 | Part1-7 REST+WS(`init_engine`·`tick` 서명에 대고 스텁), Part1-9 지도(`contracts/examples/frame.json`·`frames/`), Part3-10 편집기 카드 열(`demo/plays/*.json`), Part3-14 작전 설정 패널(Operation JSON) | 없음 |
+| B | Part1-10 카드 열 + 결정 버튼 | 1-7·1-9 뒤 |
+| C 동시에 | Part1-11 직접 조종·대안 버튼, Part1-12 전환 승인 카드, Part1-13 지표 패널·배속·다음 사건, Part3-11 저장 → 검사 결과 | 1-10 뒤(화면은 `frames/` 장면으로 먼저). 3-11은 1-7 + 황승주 PLY-06·11 |
+| D | Part3-12 카드 편집, Part3-13 AI 초안 입력 칸 | 3-11 뒤 / 3-10 + 황승주 PLY-09 |
+| 통합 | Part1-14 smoke 전환·통합 주관 | 18:00·00:00 |
+| 통합 2 뒤 | Part1-5 AI 초안 캐시, MAV-01 compile_mavlink(결정 0025), Part1-15 대본·제출 | 1-5는 인터넷 되는 곳, MAV-01 ← 황승주 PLY-07 |
+
 ### Part 1 — 리드 kth9245 (contracts, gateway, cop-ui map/live, demo)
 
 | 번호 | 항목 | 입력 → 출력 | 완료 기준 | 앞선 항목 | 통합 |
@@ -334,7 +370,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | Part3-12 (리드) | 편집기: 카드 편집 | 행동·조건·갈 step·보고 드롭다운, 카드 추가 | "보고 카드 끼워 넣기" 뒤 저장 통과 | Part3-11 | 2(빼는 순서 6) |
 | Part3-13 (리드) | 편집기: AI 초안 입력 칸 | 문장 → `POST /plays/draft` → 카드 열에 표시(approved=False 표시) | 캐시 문장으로 카드가 뜸 | Part3-9, Part3-10 | 2 |
 | Part3-14 (리드) | 작전 설정 패널 | Operation JSON → 이름·구역·기체 목록·기체별 플레이(assign)·예비·전환 버튼 표시(편집은 빼는 순서 1) | 시나리오의 작전이 패널에 보임 | Part1-4 | 2(빼는 순서 1) |
-| Part3-15 | play `compile_mavlink` (결정 0011) | Play, Operation, specs → 기체별 (QGC `.plan` JSON, pymavlink 실행 스크립트 문자열) | 템플릿 2개 × 기체 5대 `.plan` 생성(mission.items[].command가 MAV_CMD 정수), 스크립트 `py_compile` 통과. do→MAV_CMD 대응과 조건→텔레메트리 대응은 결정 0011. SITL 실행은 동결 뒤 추가 | Part3-1, Part3-7 | 2 뒤(동결 전). 통합 1 먼저 끝낸 사람이 가져감 |
+| Part3-15 (리드, 결정 0025) | mavlink `compile_mavlink`(MAV-01, 새 모듈 `modules/mavlink`) | Play, Operation, specs → 기체별 (QGC `.plan` JSON, pymavlink 실행 스크립트 문자열). `op.assign`의 기체마다 그 플레이 하나 | `.plan`의 mission.items[].command가 MAV_CMD 정수, 스크립트 `py_compile` 통과. do→MAV_CMD 대응과 조건→텔레메트리 대응은 결정 0011. SITL 실행은 동결 뒤 추가 | Part3-1, Part3-7 | 2 뒤(동결 전) |
 
 통합 1까지 3개(Part3-1, 3-2, 3-7)이며 황승주(Part 2B)가 맡는다(6절 머리 표). 18:00 뒤 황승주는 3-3~3-9(검사·템플릿·AI 초안), 리드는 3-10~3-14(편집기 화면)를 한다. 결정 0009: React 경험자가 없어 편집기는 9절대로 읽기 전용 카드 + "보고 카드 끼워 넣기" 버튼(3-12는 그 버튼 하나)으로 고정한다.
 

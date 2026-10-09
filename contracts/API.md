@@ -55,7 +55,8 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 **그 밖의 공개 API**
 - sim: `load_scenario_json(path) -> Scenario`. 레거시 `load_scenario`·`simulate`는 통합 1까지 그대로 둔다.
 - safety: `point_in_polygon(p, poly) -> bool`, `return_feasible(state, spec, dest) -> (bool, GeoPoint | None)`
-- play: `load_play(path) -> Play`, `check_play(play, op, specs) -> PlayCheck`(step 연결, `play_by_vehicle`의 플레이 존재), `check_operation(op, plays, specs) -> PlayCheck`(보고·승인 지점, 귀환 배터리, 작전 구역), `expand_action(action, domain) -> CommandKind | None`, `list_templates() -> list[Play]`, `draft_play(text, op) -> Play`, `compile_mavlink(play, op, specs) -> dict[기체 id, (plan dict, script str)]`
+- play: `load_play(path) -> Play`, `check_play(play, op, specs) -> PlayCheck`(step 연결, `play_by_vehicle`의 플레이 존재), `check_operation(op, plays, specs) -> PlayCheck`(보고·승인 지점, 귀환 배터리, 작전 구역), `expand_action(action, domain) -> CommandKind | None`, `list_templates() -> list[Play]`, `draft_play(text, op) -> Play`
+- mavlink(리드, 결정 0025): `compile_mavlink(play, op, specs) -> dict[기체 id, (plan dict, script str)]`. play는 `expand_action`만 공개 API로 쓴다
 - `PassedCommand`는 `safety.check_command`만 만든다.
 
 ## 4. 전환 세 경로 (결정 0015·0016)

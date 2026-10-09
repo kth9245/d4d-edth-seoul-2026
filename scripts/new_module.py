@@ -2,7 +2,7 @@
 
 Usage: uv run python scripts/new_module.py <name> <PREFIX>
 Creates modules/<name>/{__init__.py, AGENTS.md, SPEC.md, actions/, tests/}.
-Then work on a branch named `<name>/<topic>` and add actions with scripts/new_action.py.
+Then add actions with scripts/new_action.py (work in your own worktree, push to main).
 """
 
 import argparse
@@ -19,7 +19,7 @@ AGENTS_TMPL = """# {name} — (한 줄 역할을 적으세요)
 - 입력: (타입, `contracts/models/` 기준) / 출력: (타입)
 - 공개 API(`__init__.py`): (다른 모듈이 import할 함수)
 - 새 동작은 `/new-action`(= `uv run python scripts/new_action.py {name} <verb_noun> "<설명>"`)으로 시작한다.
-- 담당: (이름). 브랜치 `{name}/<주제>`.
+- 담당: (이름). 작업은 자기 worktree에서 main으로(결정 0010·0014).
 """
 
 
@@ -43,7 +43,7 @@ def main() -> None:
     (mod / "SPEC.md").write_text(
         f"<!-- prefix: {a.prefix} -->\n# {a.name} SPEC\n\n" + SPEC_HEADER, encoding="utf-8"
     )
-    print(f"modules/{a.name} 생성. 브랜치 `{a.name}/<주제>`에서 작업하세요.")
+    print(f"modules/{a.name} 생성. 작업은 자기 worktree에서 main으로(결정 0010·0014).")
     print(f'다음: uv run python scripts/new_action.py {a.name} <verb_noun> "<설명>"')
 
 
