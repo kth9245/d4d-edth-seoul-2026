@@ -122,11 +122,16 @@ origin 원격이 없으면(`git remote get-url origin` 실패) `OfflineError`와
 
 | 파일 | 내용 |
 |---|---|
-| `tools/tasks.py` | 순수 함수: `now_kst()`, `normalize_id()`, `replay(lines) -> dict[id, Item]`, `apply(items, op, args, by) -> event`(검사 + `Refused`), `render_now(items, events) -> str`, `render_show(...)` |
-| `tools/gitpush.py` | `push_tasks`, `read_remote_log`, `OfflineError` |
-| `scripts/task.py` | argparse, `by` 확인, 명령 → apply → push_tasks, 출력 |
-| `tests/test_tasks.py` | 순수 함수 테스트 |
-| `tests/test_task_cli.py` | 원격 저장소·복제본 통합 테스트 |
+| `shared/kst.py` | `KST`, `now_kst()` (결정 0012, decide.py·shared/log.py도 씀) |
+| `tools/tasks.py` | 순수 모델: `TEAM`, `Item`, `Refused`, `normalize_id`, `parse_log`, `replay`, `next_id`, `apply` |
+| `tools/tasks_view.py` | 순수 그리기: `render_now`, `render_show`, `render_item` |
+| `tools/gitpush.py` | 저수준 커밋·push: `push_tasks`, `commit_files`, `read_remote_file`, `fetch`, `OfflineError`, `PushFailed` |
+| `tools/ledger.py` | 묶음: `load`, `write`, `start_for_spec`(new_action), `seed` |
+| `scripts/task.py` | argparse, 이름 확인, 출력 |
+| `tests/test_tasks.py`·`test_tasks_view.py` | 순수 함수 테스트 |
+| `tests/test_gitpush.py`·`test_task_cli.py` | 원격 저장소·복제본 통합 테스트(`tests/ledger_fixtures.py`) |
+
+구현 계획: `docs/superpowers/plans/2026-10-09-task-ledger.md`.
 
 ## 8. 테스트
 
