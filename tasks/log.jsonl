@@ -59,3 +59,4 @@
 {"at": "2026-10-09T23:19:09+09:00", "by": "kth9245", "op": "note", "id": "Part2-11", "text": "이름이 apply_reserves로 바뀜(결정 0016·0017). 역할 대신 Operation.reserve. 서명은 contracts/API.md 3절, SPEC RT-02"}
 {"at": "2026-10-09T23:20:22+09:00", "by": "kth9245", "op": "start", "id": "Part1-4", "take": false, "from": null}
 {"at": "2026-10-09T23:20:27+09:00", "by": "kth9245", "op": "decide", "id": "Part1-4", "text": "사건 4 고속 보트 추적 플레이의 표적은 운용자가 고름(target: operator → 승인 뒤 target_select 카드). 리드 답 '운용자가 고름'"}
+{"at": "2026-10-09T23:24:54+09:00", "by": "kth9245", "op": "done", "id": "Part1-4", "take": false}
