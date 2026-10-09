@@ -1,0 +1,26 @@
+{
+  "properties": {
+    "switch_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Switch Id"
+    },
+    "play_by_vehicle": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "default": {},
+      "title": "Play By Vehicle",
+      "type": "object"
+    }
+  },
+  "title": "SwitchIn",
+  "type": "object"
+}

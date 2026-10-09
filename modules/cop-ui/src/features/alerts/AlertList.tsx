@@ -1,8 +1,8 @@
-import type { Frame } from "../../contracts.gen";
+import type { LegacyFrame } from "../../contracts.gen";
 
 const LABEL: Record<string, string> = { observe: "관찰", soft_kill: "소프트킬", hard_kill: "하드킬" };
 
-export function AlertList({ frame }: { frame: Frame | null }) {
+export function AlertList({ frame }: { frame: LegacyFrame | null }) {
   if (!frame) return <div className="alerts">연결 대기 중…</div>;
   const resp = new Map(frame.responses.map((r) => [r.track_id, r]));
   const rows = [...frame.assessments].sort((a, b) => b.threat - a.threat);

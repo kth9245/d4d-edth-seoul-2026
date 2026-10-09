@@ -1,0 +1,10 @@
+{
+ "operator_actions": 1,
+ "manual_baseline_actions": 7,
+ "open_reports_max": 1,
+ "vehicle_gap_ms": 0,
+ "blocked_commands": 0,
+ "decisions": 1,
+ "commands_sent": 6,
+ "mission_success": null
+}

@@ -1,0 +1,90 @@
+{
+  "$defs": {
+    "CommandSource": {
+      "enum": [
+        "play_step",
+        "operator_decision",
+        "operator_direct",
+        "injected_plan",
+        "emergency"
+      ],
+      "title": "CommandSource",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "source": {
+      "$ref": "#/$defs/CommandSource"
+    },
+    "play_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Play Id"
+    },
+    "step_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Step Id"
+    },
+    "decision_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Decision Id"
+    },
+    "injection_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Injection Id"
+    },
+    "operator_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Operator Id"
+    },
+    "issued_ms": {
+      "title": "Issued Ms",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "source",
+    "issued_ms"
+  ],
+  "title": "Provenance",
+  "type": "object"
+}

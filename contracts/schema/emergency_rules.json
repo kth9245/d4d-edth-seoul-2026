@@ -1,0 +1,47 @@
+{
+  "properties": {
+    "battery_low_pct": {
+      "default": 30,
+      "title": "Battery Low Pct",
+      "type": "number"
+    },
+    "link_lost_step": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Link Lost Step"
+    },
+    "battery_low_step": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Battery Low Step"
+    },
+    "operator_call_step": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Operator Call Step"
+    }
+  },
+  "title": "EmergencyRules",
+  "type": "object"
+}

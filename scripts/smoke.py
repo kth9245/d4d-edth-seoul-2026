@@ -7,7 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from contracts.models import Frame  # noqa: E402
+from contracts.models import LegacyFrame  # noqa: E402
 from modules.gateway import Engine  # noqa: E402
 from modules.sim import load_scenario  # noqa: E402
 
@@ -22,7 +22,7 @@ def main() -> None:
         engine = Engine(scenario)
         steps = int(a.seconds * 1000 / scenario.step_ms)
         for _ in range(steps):
-            Frame.model_validate(engine.step().model_dump())
+            LegacyFrame.model_validate(engine.step().model_dump())
     except Exception as e:  # noqa: BLE001 - report any failure briefly
         print(f"smoke FAIL: {type(e).__name__}: {e}", file=sys.stderr)
         sys.exit(1)

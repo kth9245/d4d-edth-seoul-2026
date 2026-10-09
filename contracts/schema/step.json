@@ -1,0 +1,185 @@
+{
+  "$defs": {
+    "Action": {
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/ActionKind"
+        },
+        "params": {
+          "additionalProperties": true,
+          "default": {},
+          "title": "Params",
+          "type": "object"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Action",
+      "type": "object"
+    },
+    "ActionKind": {
+      "enum": [
+        "move_to",
+        "patrol_route",
+        "search_area",
+        "return_home",
+        "watch_target",
+        "watch_point",
+        "approach_target",
+        "relay_comms",
+        "hold"
+      ],
+      "title": "ActionKind",
+      "type": "string"
+    },
+    "Choice": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "play_by_vehicle": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "title": "Play By Vehicle",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "title": "Choice",
+      "type": "object"
+    },
+    "Condition": {
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/ConditionKind"
+        },
+        "params": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "default": {},
+          "title": "Params",
+          "type": "object"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Condition",
+      "type": "object"
+    },
+    "ConditionKind": {
+      "enum": [
+        "target_found",
+        "arrived",
+        "time_elapsed",
+        "battery_below",
+        "operator_choice",
+        "signal_received"
+      ],
+      "title": "ConditionKind",
+      "type": "string"
+    },
+    "Exit": {
+      "properties": {
+        "cond": {
+          "$ref": "#/$defs/Condition"
+        },
+        "go_step": {
+          "title": "Go Step",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cond",
+        "go_step"
+      ],
+      "title": "Exit",
+      "type": "object"
+    },
+    "ReportSpec": {
+      "properties": {
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "choices": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Choice"
+          },
+          "title": "Choices",
+          "type": "array"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "title": "ReportSpec",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "do": {
+      "$ref": "#/$defs/Action"
+    },
+    "on": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Exit"
+      },
+      "title": "On",
+      "type": "array"
+    },
+    "report": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ReportSpec"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "ui": {
+      "additionalProperties": true,
+      "default": {},
+      "title": "Ui",
+      "type": "object"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "do"
+  ],
+  "title": "Step",
+  "type": "object"
+}

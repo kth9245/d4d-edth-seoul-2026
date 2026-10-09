@@ -1,0 +1,6 @@
+{
+ "kind": "battery_below",
+ "params": {
+  "pct": 30.0
+ }
+}

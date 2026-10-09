@@ -1,7 +1,4 @@
-"""Data contracts shared by all modules. Only the lead edits this file (branch contracts/*).
-
-Units: WGS84 degrees, meters, UTC epoch milliseconds (t_ms).
-"""
+"""T1-3 skeleton models (tracking, assess, respond are dormant). The old Frame is LegacyFrame."""
 
 from enum import Enum
 
@@ -62,17 +59,8 @@ class Response(BaseModel):
     reason: str
 
 
-class Frame(BaseModel):
+class LegacyFrame(BaseModel):
     t_ms: int
     tracks: list[Track]
     assessments: list[Assessment]
     responses: list[Response]
-
-
-ALL_MODELS: dict[str, type[BaseModel]] = {
-    "detection": Detection,
-    "track": Track,
-    "assessment": Assessment,
-    "response": Response,
-    "frame": Frame,
-}

@@ -1,0 +1,42 @@
+{
+  "$defs": {
+    "GeoPoint": {
+      "properties": {
+        "lat": {
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "title": "Lon",
+          "type": "number"
+        },
+        "alt_m": {
+          "default": 0,
+          "title": "Alt M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ],
+      "title": "GeoPoint",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "points": {
+      "items": {
+        "$ref": "#/$defs/GeoPoint"
+      },
+      "minItems": 3,
+      "title": "Points",
+      "type": "array"
+    }
+  },
+  "required": [
+    "points"
+  ],
+  "title": "Polygon",
+  "type": "object"
+}

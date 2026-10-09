@@ -1,0 +1,23 @@
+{
+  "properties": {
+    "lat": {
+      "title": "Lat",
+      "type": "number"
+    },
+    "lon": {
+      "title": "Lon",
+      "type": "number"
+    },
+    "alt_m": {
+      "default": 0,
+      "title": "Alt M",
+      "type": "number"
+    }
+  },
+  "required": [
+    "lat",
+    "lon"
+  ],
+  "title": "GeoPoint",
+  "type": "object"
+}

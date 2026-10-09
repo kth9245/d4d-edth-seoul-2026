@@ -1,0 +1,24 @@
+{
+ "id": "d1",
+ "name": "드론1",
+ "domain": "air",
+ "speed_mps": 15.0,
+ "endurance_min": 40.0,
+ "sensor_range_m": 800.0,
+ "capabilities": [
+  "move_to",
+  "patrol_route",
+  "search_area",
+  "return_home",
+  "watch_target",
+  "watch_point",
+  "approach_target",
+  "relay_comms",
+  "hold"
+ ],
+ "home": {
+  "lat": 37.95,
+  "lon": 124.7,
+  "alt_m": 0.0
+ }
+}

@@ -1,0 +1,124 @@
+{
+  "$defs": {
+    "Choice": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "play_by_vehicle": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "title": "Play By Vehicle",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "title": "Choice",
+      "type": "object"
+    },
+    "ReportKind": {
+      "enum": [
+        "target_detected",
+        "target_select",
+        "vehicle_gap",
+        "vehicle_lost",
+        "battery_low",
+        "injection_pending",
+        "command_blocked"
+      ],
+      "title": "ReportKind",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "t_ms": {
+      "title": "T Ms",
+      "type": "integer"
+    },
+    "kind": {
+      "$ref": "#/$defs/ReportKind"
+    },
+    "vehicle_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Vehicle Id"
+    },
+    "target_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Target Id"
+    },
+    "text": {
+      "title": "Text",
+      "type": "string"
+    },
+    "choices": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Choice"
+      },
+      "title": "Choices",
+      "type": "array"
+    },
+    "resolved_ms": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Resolved Ms"
+    },
+    "decision_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Decision Id"
+    }
+  },
+  "required": [
+    "id",
+    "t_ms",
+    "kind",
+    "text"
+  ],
+  "title": "Report",
+  "type": "object"
+}

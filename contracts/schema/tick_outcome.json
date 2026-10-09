@@ -1,0 +1,1113 @@
+{
+  "$defs": {
+    "Action": {
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/ActionKind"
+        },
+        "params": {
+          "additionalProperties": true,
+          "default": {},
+          "title": "Params",
+          "type": "object"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Action",
+      "type": "object"
+    },
+    "ActionKind": {
+      "enum": [
+        "move_to",
+        "patrol_route",
+        "search_area",
+        "return_home",
+        "watch_target",
+        "watch_point",
+        "approach_target",
+        "relay_comms",
+        "hold"
+      ],
+      "title": "ActionKind",
+      "type": "string"
+    },
+    "Assignment": {
+      "properties": {
+        "vehicle_id": {
+          "title": "Vehicle Id",
+          "type": "string"
+        },
+        "play_id": {
+          "title": "Play Id",
+          "type": "string"
+        },
+        "since_ms": {
+          "title": "Since Ms",
+          "type": "integer"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "vehicle_id",
+        "play_id",
+        "since_ms",
+        "reason"
+      ],
+      "title": "Assignment",
+      "type": "object"
+    },
+    "Block": {
+      "properties": {
+        "command_id": {
+          "title": "Command Id",
+          "type": "string"
+        },
+        "vehicle_id": {
+          "title": "Vehicle Id",
+          "type": "string"
+        },
+        "reason": {
+          "$ref": "#/$defs/BlockReason"
+        },
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        },
+        "alternative": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Command"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "t_ms": {
+          "title": "T Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "command_id",
+        "vehicle_id",
+        "reason",
+        "detail",
+        "t_ms"
+      ],
+      "title": "Block",
+      "type": "object"
+    },
+    "BlockReason": {
+      "enum": [
+        "no_provenance",
+        "outside_zone",
+        "battery_insufficient"
+      ],
+      "title": "BlockReason",
+      "type": "string"
+    },
+    "Choice": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "play_by_vehicle": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "title": "Play By Vehicle",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "title": "Choice",
+      "type": "object"
+    },
+    "Command": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "vehicle_id": {
+          "title": "Vehicle Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/CommandKind"
+        },
+        "params": {
+          "additionalProperties": true,
+          "default": {},
+          "title": "Params",
+          "type": "object"
+        },
+        "provenance": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Provenance"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "vehicle_id",
+        "kind"
+      ],
+      "title": "Command",
+      "type": "object"
+    },
+    "CommandKind": {
+      "enum": [
+        "move",
+        "orbit",
+        "keep_distance",
+        "hold",
+        "follow_route",
+        "zigzag",
+        "return_home",
+        "relay"
+      ],
+      "title": "CommandKind",
+      "type": "string"
+    },
+    "CommandSource": {
+      "enum": [
+        "play_step",
+        "operator_decision",
+        "operator_direct",
+        "injected_plan",
+        "emergency"
+      ],
+      "title": "CommandSource",
+      "type": "string"
+    },
+    "Condition": {
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/ConditionKind"
+        },
+        "params": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "default": {},
+          "title": "Params",
+          "type": "object"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Condition",
+      "type": "object"
+    },
+    "ConditionKind": {
+      "enum": [
+        "target_found",
+        "arrived",
+        "time_elapsed",
+        "battery_below",
+        "operator_choice",
+        "signal_received"
+      ],
+      "title": "ConditionKind",
+      "type": "string"
+    },
+    "Decision": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "t_ms": {
+          "title": "T Ms",
+          "type": "integer"
+        },
+        "report_id": {
+          "title": "Report Id",
+          "type": "string"
+        },
+        "choice_id": {
+          "title": "Choice Id",
+          "type": "string"
+        },
+        "operator_id": {
+          "default": "op1",
+          "title": "Operator Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "t_ms",
+        "report_id",
+        "choice_id"
+      ],
+      "title": "Decision",
+      "type": "object"
+    },
+    "DirectControl": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "vehicle_id": {
+          "title": "Vehicle Id",
+          "type": "string"
+        },
+        "target": {
+          "$ref": "#/$defs/GeoPoint"
+        },
+        "t_ms": {
+          "title": "T Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "vehicle_id",
+        "target",
+        "t_ms"
+      ],
+      "title": "DirectControl",
+      "type": "object"
+    },
+    "Domain": {
+      "enum": [
+        "air",
+        "sea",
+        "ground"
+      ],
+      "title": "Domain",
+      "type": "string"
+    },
+    "EmergencyKind": {
+      "enum": [
+        "link_lost",
+        "battery_low",
+        "operator_call"
+      ],
+      "title": "EmergencyKind",
+      "type": "string"
+    },
+    "EmergencyRules": {
+      "properties": {
+        "battery_low_pct": {
+          "default": 30,
+          "title": "Battery Low Pct",
+          "type": "number"
+        },
+        "link_lost_step": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Link Lost Step"
+        },
+        "battery_low_step": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Battery Low Step"
+        },
+        "operator_call_step": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operator Call Step"
+        }
+      },
+      "title": "EmergencyRules",
+      "type": "object"
+    },
+    "Exit": {
+      "properties": {
+        "cond": {
+          "$ref": "#/$defs/Condition"
+        },
+        "go_step": {
+          "title": "Go Step",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cond",
+        "go_step"
+      ],
+      "title": "Exit",
+      "type": "object"
+    },
+    "GeoPoint": {
+      "properties": {
+        "lat": {
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "title": "Lon",
+          "type": "number"
+        },
+        "alt_m": {
+          "default": 0,
+          "title": "Alt M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ],
+      "title": "GeoPoint",
+      "type": "object"
+    },
+    "Injection": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "t_ms": {
+          "title": "T Ms",
+          "type": "integer"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "play_by_vehicle": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Play By Vehicle",
+          "type": "object"
+        },
+        "switch_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Switch Id"
+        },
+        "status": {
+          "default": "pending",
+          "enum": [
+            "pending",
+            "approved",
+            "rejected"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "t_ms",
+        "label",
+        "play_by_vehicle"
+      ],
+      "title": "Injection",
+      "type": "object"
+    },
+    "PassedCommand": {
+      "properties": {
+        "command": {
+          "$ref": "#/$defs/Command"
+        },
+        "checks": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Checks",
+          "type": "array"
+        },
+        "passed_ms": {
+          "title": "Passed Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "command",
+        "checks",
+        "passed_ms"
+      ],
+      "title": "PassedCommand",
+      "type": "object"
+    },
+    "Play": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "domains": {
+          "items": {
+            "$ref": "#/$defs/Domain"
+          },
+          "title": "Domains",
+          "type": "array"
+        },
+        "steps": {
+          "items": {
+            "$ref": "#/$defs/Step"
+          },
+          "title": "Steps",
+          "type": "array"
+        },
+        "entry": {
+          "title": "Entry",
+          "type": "string"
+        },
+        "emergency": {
+          "$ref": "#/$defs/EmergencyRules",
+          "default": {
+            "battery_low_pct": 30.0,
+            "link_lost_step": null,
+            "battery_low_step": null,
+            "operator_call_step": null
+          }
+        },
+        "origin": {
+          "default": "human",
+          "enum": [
+            "human",
+            "ai_draft"
+          ],
+          "title": "Origin",
+          "type": "string"
+        },
+        "approved": {
+          "default": false,
+          "title": "Approved",
+          "type": "boolean"
+        },
+        "template": {
+          "default": false,
+          "title": "Template",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "domains",
+        "steps",
+        "entry"
+      ],
+      "title": "Play",
+      "type": "object"
+    },
+    "Provenance": {
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/CommandSource"
+        },
+        "play_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Play Id"
+        },
+        "step_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Step Id"
+        },
+        "decision_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Decision Id"
+        },
+        "injection_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Injection Id"
+        },
+        "operator_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operator Id"
+        },
+        "issued_ms": {
+          "title": "Issued Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "source",
+        "issued_ms"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "Report": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "t_ms": {
+          "title": "T Ms",
+          "type": "integer"
+        },
+        "kind": {
+          "$ref": "#/$defs/ReportKind"
+        },
+        "vehicle_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Vehicle Id"
+        },
+        "target_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Id"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "choices": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Choice"
+          },
+          "title": "Choices",
+          "type": "array"
+        },
+        "resolved_ms": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resolved Ms"
+        },
+        "decision_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Decision Id"
+        }
+      },
+      "required": [
+        "id",
+        "t_ms",
+        "kind",
+        "text"
+      ],
+      "title": "Report",
+      "type": "object"
+    },
+    "ReportKind": {
+      "enum": [
+        "target_detected",
+        "target_select",
+        "vehicle_gap",
+        "vehicle_lost",
+        "battery_low",
+        "injection_pending",
+        "command_blocked"
+      ],
+      "title": "ReportKind",
+      "type": "string"
+    },
+    "ReportSpec": {
+      "properties": {
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "choices": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Choice"
+          },
+          "title": "Choices",
+          "type": "array"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "title": "ReportSpec",
+      "type": "object"
+    },
+    "Step": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "do": {
+          "$ref": "#/$defs/Action"
+        },
+        "on": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Exit"
+          },
+          "title": "On",
+          "type": "array"
+        },
+        "report": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ReportSpec"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ui": {
+          "additionalProperties": true,
+          "default": {},
+          "title": "Ui",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "do"
+      ],
+      "title": "Step",
+      "type": "object"
+    },
+    "Target": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/TargetKind"
+        },
+        "pos": {
+          "$ref": "#/$defs/GeoPoint"
+        },
+        "vel_east_mps": {
+          "title": "Vel East Mps",
+          "type": "number"
+        },
+        "vel_north_mps": {
+          "title": "Vel North Mps",
+          "type": "number"
+        },
+        "first_seen_ms": {
+          "title": "First Seen Ms",
+          "type": "integer"
+        },
+        "last_seen_ms": {
+          "title": "Last Seen Ms",
+          "type": "integer"
+        },
+        "seen_by": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Seen By",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "pos",
+        "vel_east_mps",
+        "vel_north_mps",
+        "first_seen_ms",
+        "last_seen_ms"
+      ],
+      "title": "Target",
+      "type": "object"
+    },
+    "TargetKind": {
+      "enum": [
+        "boat",
+        "fast_boat",
+        "person",
+        "unknown"
+      ],
+      "title": "TargetKind",
+      "type": "string"
+    },
+    "TickInputs": {
+      "properties": {
+        "decisions": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Decision"
+          },
+          "title": "Decisions",
+          "type": "array"
+        },
+        "direct": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DirectControl"
+          },
+          "title": "Direct",
+          "type": "array"
+        },
+        "injections": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Injection"
+          },
+          "title": "Injections",
+          "type": "array"
+        }
+      },
+      "title": "TickInputs",
+      "type": "object"
+    },
+    "VehicleState": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "t_ms": {
+          "title": "T Ms",
+          "type": "integer"
+        },
+        "pos": {
+          "$ref": "#/$defs/GeoPoint"
+        },
+        "heading_deg": {
+          "title": "Heading Deg",
+          "type": "number"
+        },
+        "battery_pct": {
+          "title": "Battery Pct",
+          "type": "number"
+        },
+        "status": {
+          "$ref": "#/$defs/VehicleStatus"
+        },
+        "play_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Play Id"
+        },
+        "step_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Step Id"
+        },
+        "entered_step": {
+          "default": false,
+          "title": "Entered Step",
+          "type": "boolean"
+        },
+        "waypoint_idx": {
+          "default": 0,
+          "title": "Waypoint Idx",
+          "type": "integer"
+        },
+        "active": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PassedCommand"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "pending_report_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pending Report Id"
+        },
+        "target_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Id"
+        },
+        "emergency": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EmergencyKind"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "resume_play_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resume Play Id"
+        },
+        "resume_step_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resume Step Id"
+        }
+      },
+      "required": [
+        "id",
+        "t_ms",
+        "pos",
+        "heading_deg",
+        "battery_pct",
+        "status"
+      ],
+      "title": "VehicleState",
+      "type": "object"
+    },
+    "VehicleStatus": {
+      "enum": [
+        "ready",
+        "active",
+        "returning",
+        "maintenance",
+        "lost"
+      ],
+      "title": "VehicleStatus",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "inputs": {
+      "$ref": "#/$defs/TickInputs",
+      "default": {
+        "decisions": [],
+        "direct": [],
+        "injections": []
+      }
+    },
+    "commands": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Command"
+      },
+      "title": "Commands",
+      "type": "array"
+    },
+    "passed": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/PassedCommand"
+      },
+      "title": "Passed",
+      "type": "array"
+    },
+    "blocks": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Block"
+      },
+      "title": "Blocks",
+      "type": "array"
+    },
+    "new_reports": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Report"
+      },
+      "title": "New Reports",
+      "type": "array"
+    },
+    "assignments": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Assignment"
+      },
+      "title": "Assignments",
+      "type": "array"
+    },
+    "states": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/VehicleState"
+      },
+      "title": "States",
+      "type": "array"
+    },
+    "targets": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Target"
+      },
+      "title": "Targets",
+      "type": "array"
+    },
+    "plays": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Play"
+      },
+      "default": {},
+      "title": "Plays",
+      "type": "object"
+    }
+  },
+  "title": "TickOutcome",
+  "type": "object"
+}

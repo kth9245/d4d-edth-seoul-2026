@@ -1,0 +1,28 @@
+{
+  "properties": {
+    "vehicle_id": {
+      "title": "Vehicle Id",
+      "type": "string"
+    },
+    "play_id": {
+      "title": "Play Id",
+      "type": "string"
+    },
+    "since_ms": {
+      "title": "Since Ms",
+      "type": "integer"
+    },
+    "reason": {
+      "title": "Reason",
+      "type": "string"
+    }
+  },
+  "required": [
+    "vehicle_id",
+    "play_id",
+    "since_ms",
+    "reason"
+  ],
+  "title": "Assignment",
+  "type": "object"
+}

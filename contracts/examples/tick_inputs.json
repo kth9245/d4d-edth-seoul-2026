@@ -1,0 +1,13 @@
+{
+ "decisions": [
+  {
+   "id": "dec-1",
+   "t_ms": 1791634290000,
+   "report_id": "rep-d1-1791634270000",
+   "choice_id": "approach",
+   "operator_id": "op1"
+  }
+ ],
+ "direct": [],
+ "injections": []
+}

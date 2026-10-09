@@ -1,0 +1,31 @@
+{
+  "properties": {
+    "offset_ms": {
+      "title": "Offset Ms",
+      "type": "integer"
+    },
+    "kind": {
+      "enum": [
+        "spawn_target",
+        "target_move",
+        "vehicle_link_lost",
+        "vehicle_battery_set",
+        "split_target"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "params": {
+      "additionalProperties": true,
+      "title": "Params",
+      "type": "object"
+    }
+  },
+  "required": [
+    "offset_ms",
+    "kind",
+    "params"
+  ],
+  "title": "ScenarioEvent",
+  "type": "object"
+}

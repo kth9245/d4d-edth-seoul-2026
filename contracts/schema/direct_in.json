@@ -1,0 +1,42 @@
+{
+  "$defs": {
+    "GeoPoint": {
+      "properties": {
+        "lat": {
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "title": "Lon",
+          "type": "number"
+        },
+        "alt_m": {
+          "default": 0,
+          "title": "Alt M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ],
+      "title": "GeoPoint",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "vehicle_id": {
+      "title": "Vehicle Id",
+      "type": "string"
+    },
+    "target": {
+      "$ref": "#/$defs/GeoPoint"
+    }
+  },
+  "required": [
+    "vehicle_id",
+    "target"
+  ],
+  "title": "DirectIn",
+  "type": "object"
+}

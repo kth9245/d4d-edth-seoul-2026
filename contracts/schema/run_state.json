@@ -1,0 +1,26 @@
+{
+  "$defs": {
+    "RunStatus": {
+      "enum": [
+        "running",
+        "paused",
+        "ended"
+      ],
+      "title": "RunStatus",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "status": {
+      "$ref": "#/$defs/RunStatus",
+      "default": "paused"
+    },
+    "speed": {
+      "default": 1.0,
+      "title": "Speed",
+      "type": "number"
+    }
+  },
+  "title": "RunState",
+  "type": "object"
+}

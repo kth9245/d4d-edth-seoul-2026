@@ -1,0 +1,18 @@
+{
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "t_ms": {
+      "title": "T Ms",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "id",
+    "t_ms"
+  ],
+  "title": "Accepted",
+  "type": "object"
+}

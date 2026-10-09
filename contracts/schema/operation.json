@@ -1,0 +1,146 @@
+{
+  "$defs": {
+    "GeoPoint": {
+      "properties": {
+        "lat": {
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "title": "Lon",
+          "type": "number"
+        },
+        "alt_m": {
+          "default": 0,
+          "title": "Alt M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ],
+      "title": "GeoPoint",
+      "type": "object"
+    },
+    "Polygon": {
+      "properties": {
+        "points": {
+          "items": {
+            "$ref": "#/$defs/GeoPoint"
+          },
+          "minItems": 3,
+          "title": "Points",
+          "type": "array"
+        }
+      },
+      "required": [
+        "points"
+      ],
+      "title": "Polygon",
+      "type": "object"
+    },
+    "Switch": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "play_by_vehicle": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Play By Vehicle",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "play_by_vehicle"
+      ],
+      "title": "Switch",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "purpose": {
+      "default": "",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "area": {
+      "$ref": "#/$defs/Polygon"
+    },
+    "zone": {
+      "$ref": "#/$defs/Polygon"
+    },
+    "vehicle_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Vehicle Ids",
+      "type": "array"
+    },
+    "started_ms": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Started Ms"
+    },
+    "assign": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "default": {},
+      "title": "Assign",
+      "type": "object"
+    },
+    "reserve": {
+      "additionalProperties": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "default": {},
+      "title": "Reserve",
+      "type": "object"
+    },
+    "switches": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Switch"
+      },
+      "title": "Switches",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "area",
+    "zone",
+    "vehicle_ids"
+  ],
+  "title": "Operation",
+  "type": "object"
+}

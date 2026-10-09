@@ -1,0 +1,351 @@
+{
+  "$defs": {
+    "Command": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "vehicle_id": {
+          "title": "Vehicle Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/CommandKind"
+        },
+        "params": {
+          "additionalProperties": true,
+          "default": {},
+          "title": "Params",
+          "type": "object"
+        },
+        "provenance": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Provenance"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "vehicle_id",
+        "kind"
+      ],
+      "title": "Command",
+      "type": "object"
+    },
+    "CommandKind": {
+      "enum": [
+        "move",
+        "orbit",
+        "keep_distance",
+        "hold",
+        "follow_route",
+        "zigzag",
+        "return_home",
+        "relay"
+      ],
+      "title": "CommandKind",
+      "type": "string"
+    },
+    "CommandSource": {
+      "enum": [
+        "play_step",
+        "operator_decision",
+        "operator_direct",
+        "injected_plan",
+        "emergency"
+      ],
+      "title": "CommandSource",
+      "type": "string"
+    },
+    "EmergencyKind": {
+      "enum": [
+        "link_lost",
+        "battery_low",
+        "operator_call"
+      ],
+      "title": "EmergencyKind",
+      "type": "string"
+    },
+    "GeoPoint": {
+      "properties": {
+        "lat": {
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "title": "Lon",
+          "type": "number"
+        },
+        "alt_m": {
+          "default": 0,
+          "title": "Alt M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ],
+      "title": "GeoPoint",
+      "type": "object"
+    },
+    "PassedCommand": {
+      "properties": {
+        "command": {
+          "$ref": "#/$defs/Command"
+        },
+        "checks": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Checks",
+          "type": "array"
+        },
+        "passed_ms": {
+          "title": "Passed Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "command",
+        "checks",
+        "passed_ms"
+      ],
+      "title": "PassedCommand",
+      "type": "object"
+    },
+    "Provenance": {
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/CommandSource"
+        },
+        "play_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Play Id"
+        },
+        "step_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Step Id"
+        },
+        "decision_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Decision Id"
+        },
+        "injection_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Injection Id"
+        },
+        "operator_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operator Id"
+        },
+        "issued_ms": {
+          "title": "Issued Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "source",
+        "issued_ms"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "VehicleStatus": {
+      "enum": [
+        "ready",
+        "active",
+        "returning",
+        "maintenance",
+        "lost"
+      ],
+      "title": "VehicleStatus",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "t_ms": {
+      "title": "T Ms",
+      "type": "integer"
+    },
+    "pos": {
+      "$ref": "#/$defs/GeoPoint"
+    },
+    "heading_deg": {
+      "title": "Heading Deg",
+      "type": "number"
+    },
+    "battery_pct": {
+      "title": "Battery Pct",
+      "type": "number"
+    },
+    "status": {
+      "$ref": "#/$defs/VehicleStatus"
+    },
+    "play_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Play Id"
+    },
+    "step_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Step Id"
+    },
+    "entered_step": {
+      "default": false,
+      "title": "Entered Step",
+      "type": "boolean"
+    },
+    "waypoint_idx": {
+      "default": 0,
+      "title": "Waypoint Idx",
+      "type": "integer"
+    },
+    "active": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PassedCommand"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "pending_report_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Pending Report Id"
+    },
+    "target_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Target Id"
+    },
+    "emergency": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/EmergencyKind"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "resume_play_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Resume Play Id"
+    },
+    "resume_step_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Resume Step Id"
+    }
+  },
+  "required": [
+    "id",
+    "t_ms",
+    "pos",
+    "heading_deg",
+    "battery_pct",
+    "status"
+  ],
+  "title": "VehicleState",
+  "type": "object"
+}

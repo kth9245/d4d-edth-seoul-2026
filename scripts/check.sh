@@ -28,7 +28,7 @@ elif [ -n "$staged" ]; then
   echo "$staged" | xargs "$PY" tools/check_specs.py
 fi
 
-if git diff --cached --name-only | grep -q '^contracts/models.py$'; then
+if git diff --cached --name-only | grep -q '^contracts/models/'; then
   "$PY" scripts/gen_contracts.py
   git add contracts/schema modules/cop-ui/src/contracts.gen.ts 2>/dev/null || true
 fi

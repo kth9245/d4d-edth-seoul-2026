@@ -1,0 +1,33 @@
+{
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "t_ms": {
+      "title": "T Ms",
+      "type": "integer"
+    },
+    "report_id": {
+      "title": "Report Id",
+      "type": "string"
+    },
+    "choice_id": {
+      "title": "Choice Id",
+      "type": "string"
+    },
+    "operator_id": {
+      "default": "op1",
+      "title": "Operator Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "t_ms",
+    "report_id",
+    "choice_id"
+  ],
+  "title": "Decision",
+  "type": "object"
+}

@@ -1,7 +1,7 @@
 import type { FeatureCollection, Point } from "geojson";
-import type { Frame } from "../../contracts.gen";
+import type { LegacyFrame } from "../../contracts.gen";
 
-export function toGeoJSON(frame: Frame): FeatureCollection<Point> {
+export function toGeoJSON(frame: LegacyFrame): FeatureCollection<Point> {
   const assess = new Map(frame.assessments.map((a) => [a.track_id, a]));
   const resp = new Map(frame.responses.map((r) => [r.track_id, r]));
   return {

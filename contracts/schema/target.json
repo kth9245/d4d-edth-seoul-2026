@@ -1,0 +1,84 @@
+{
+  "$defs": {
+    "GeoPoint": {
+      "properties": {
+        "lat": {
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "title": "Lon",
+          "type": "number"
+        },
+        "alt_m": {
+          "default": 0,
+          "title": "Alt M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ],
+      "title": "GeoPoint",
+      "type": "object"
+    },
+    "TargetKind": {
+      "enum": [
+        "boat",
+        "fast_boat",
+        "person",
+        "unknown"
+      ],
+      "title": "TargetKind",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "kind": {
+      "$ref": "#/$defs/TargetKind"
+    },
+    "pos": {
+      "$ref": "#/$defs/GeoPoint"
+    },
+    "vel_east_mps": {
+      "title": "Vel East Mps",
+      "type": "number"
+    },
+    "vel_north_mps": {
+      "title": "Vel North Mps",
+      "type": "number"
+    },
+    "first_seen_ms": {
+      "title": "First Seen Ms",
+      "type": "integer"
+    },
+    "last_seen_ms": {
+      "title": "Last Seen Ms",
+      "type": "integer"
+    },
+    "seen_by": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Seen By",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "kind",
+    "pos",
+    "vel_east_mps",
+    "vel_north_mps",
+    "first_seen_ms",
+    "last_seen_ms"
+  ],
+  "title": "Target",
+  "type": "object"
+}

@@ -27,3 +27,11 @@ def test_cli_writes_files(tmp_path):
     schema = json.loads((tmp_path / "contracts/schema/frame.json").read_text())
     assert schema["title"] == "Frame"
     assert (tmp_path / "modules/cop-ui/src/contracts.gen.ts").read_text().startswith("// 자동 생성")
+
+
+def test_typescript_dicts_and_literals():
+    ts = gen.to_typescript(ALL_MODELS)
+    assert "  play_by_vehicle?: Record<string, string>;" in ts
+    assert '  origin?: "human" | "ai_draft";' in ts
+    assert "  params?: Record<string, unknown>;" in ts
+    assert "export interface LegacyFrame {" in ts

@@ -1,0 +1,168 @@
+{
+  "$defs": {
+    "Decision": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "t_ms": {
+          "title": "T Ms",
+          "type": "integer"
+        },
+        "report_id": {
+          "title": "Report Id",
+          "type": "string"
+        },
+        "choice_id": {
+          "title": "Choice Id",
+          "type": "string"
+        },
+        "operator_id": {
+          "default": "op1",
+          "title": "Operator Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "t_ms",
+        "report_id",
+        "choice_id"
+      ],
+      "title": "Decision",
+      "type": "object"
+    },
+    "DirectControl": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "vehicle_id": {
+          "title": "Vehicle Id",
+          "type": "string"
+        },
+        "target": {
+          "$ref": "#/$defs/GeoPoint"
+        },
+        "t_ms": {
+          "title": "T Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "vehicle_id",
+        "target",
+        "t_ms"
+      ],
+      "title": "DirectControl",
+      "type": "object"
+    },
+    "GeoPoint": {
+      "properties": {
+        "lat": {
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "title": "Lon",
+          "type": "number"
+        },
+        "alt_m": {
+          "default": 0,
+          "title": "Alt M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ],
+      "title": "GeoPoint",
+      "type": "object"
+    },
+    "Injection": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "t_ms": {
+          "title": "T Ms",
+          "type": "integer"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "play_by_vehicle": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Play By Vehicle",
+          "type": "object"
+        },
+        "switch_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Switch Id"
+        },
+        "status": {
+          "default": "pending",
+          "enum": [
+            "pending",
+            "approved",
+            "rejected"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "t_ms",
+        "label",
+        "play_by_vehicle"
+      ],
+      "title": "Injection",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "decisions": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Decision"
+      },
+      "title": "Decisions",
+      "type": "array"
+    },
+    "direct": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/DirectControl"
+      },
+      "title": "Direct",
+      "type": "array"
+    },
+    "injections": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Injection"
+      },
+      "title": "Injections",
+      "type": "array"
+    }
+  },
+  "title": "TickInputs",
+  "type": "object"
+}

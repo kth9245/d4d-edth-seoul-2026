@@ -1,0 +1,53 @@
+{
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "t_ms": {
+      "title": "T Ms",
+      "type": "integer"
+    },
+    "label": {
+      "title": "Label",
+      "type": "string"
+    },
+    "play_by_vehicle": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Play By Vehicle",
+      "type": "object"
+    },
+    "switch_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Switch Id"
+    },
+    "status": {
+      "default": "pending",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "t_ms",
+    "label",
+    "play_by_vehicle"
+  ],
+  "title": "Injection",
+  "type": "object"
+}

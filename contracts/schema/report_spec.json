@@ -1,0 +1,49 @@
+{
+  "$defs": {
+    "Choice": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "play_by_vehicle": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "title": "Play By Vehicle",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "title": "Choice",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "text": {
+      "title": "Text",
+      "type": "string"
+    },
+    "choices": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Choice"
+      },
+      "title": "Choices",
+      "type": "array"
+    }
+  },
+  "required": [
+    "text"
+  ],
+  "title": "ReportSpec",
+  "type": "object"
+}

@@ -1,4 +1,4 @@
-"""Generate JSON Schema files and TypeScript types from contracts/models.py."""
+"""Generate JSON Schema files and TypeScript types from the contracts/models/ package."""
 
 import argparse
 import json
@@ -16,10 +16,18 @@ SCALARS = {"string": "string", "number": "number", "integer": "number", "boolean
 def _ts_type(prop: dict) -> str:
     if "$ref" in prop:
         return prop["$ref"].split("/")[-1]
+    if "enum" in prop:  # inline Literal
+        return " | ".join(json.dumps(v) for v in prop["enum"])
+    if "const" in prop:
+        return json.dumps(prop["const"])
     if prop.get("type") == "array":
-        return f"{_ts_type(prop['items'])}[]"
+        item = _ts_type(prop["items"])
+        return f"({item})[]" if " | " in item else f"{item}[]"
     if "anyOf" in prop:
         return " | ".join(_ts_type(p) if p.get("type") != "null" else "null" for p in prop["anyOf"])
+    if prop.get("type") == "object":
+        extra = prop.get("additionalProperties", True)
+        return f"Record<string, {_ts_type(extra) if isinstance(extra, dict) else 'unknown'}>"
     return SCALARS.get(prop.get("type"), "unknown")
 
 

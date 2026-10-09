@@ -1,6 +1,6 @@
 """gateway pipeline: run all modules for one time step. No domain logic here."""
 
-from contracts.models import Frame, Track
+from contracts.models import LegacyFrame, Track
 from modules.assess import assess
 from modules.gateway.actions.build_frame import build_frame
 from modules.respond import respond
@@ -20,7 +20,7 @@ class Engine:
     def done(self) -> bool:
         return self.t_ms >= self.end_ms
 
-    def step(self) -> Frame:
+    def step(self) -> LegacyFrame:
         detections = normalize(simulate(self.scenario, self.t_ms, self.seed))
         self.tracks = update(self.tracks, detections, self.t_ms)
         origin = self.scenario.origin

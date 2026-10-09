@@ -1,0 +1,195 @@
+{
+  "$defs": {
+    "BlockReason": {
+      "enum": [
+        "no_provenance",
+        "outside_zone",
+        "battery_insufficient"
+      ],
+      "title": "BlockReason",
+      "type": "string"
+    },
+    "Command": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "vehicle_id": {
+          "title": "Vehicle Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/CommandKind"
+        },
+        "params": {
+          "additionalProperties": true,
+          "default": {},
+          "title": "Params",
+          "type": "object"
+        },
+        "provenance": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Provenance"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "vehicle_id",
+        "kind"
+      ],
+      "title": "Command",
+      "type": "object"
+    },
+    "CommandKind": {
+      "enum": [
+        "move",
+        "orbit",
+        "keep_distance",
+        "hold",
+        "follow_route",
+        "zigzag",
+        "return_home",
+        "relay"
+      ],
+      "title": "CommandKind",
+      "type": "string"
+    },
+    "CommandSource": {
+      "enum": [
+        "play_step",
+        "operator_decision",
+        "operator_direct",
+        "injected_plan",
+        "emergency"
+      ],
+      "title": "CommandSource",
+      "type": "string"
+    },
+    "Provenance": {
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/CommandSource"
+        },
+        "play_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Play Id"
+        },
+        "step_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Step Id"
+        },
+        "decision_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Decision Id"
+        },
+        "injection_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Injection Id"
+        },
+        "operator_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operator Id"
+        },
+        "issued_ms": {
+          "title": "Issued Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "source",
+        "issued_ms"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "command_id": {
+      "title": "Command Id",
+      "type": "string"
+    },
+    "vehicle_id": {
+      "title": "Vehicle Id",
+      "type": "string"
+    },
+    "reason": {
+      "$ref": "#/$defs/BlockReason"
+    },
+    "detail": {
+      "title": "Detail",
+      "type": "string"
+    },
+    "alternative": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Command"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "t_ms": {
+      "title": "T Ms",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "command_id",
+    "vehicle_id",
+    "reason",
+    "detail",
+    "t_ms"
+  ],
+  "title": "Block",
+  "type": "object"
+}

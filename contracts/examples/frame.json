@@ -1,4 +1,231 @@
-{"t_ms": 1760061600000,
- "tracks": [{"id": "T-D-1", "t_ms": 1760061600000, "lat": 37.5665, "lon": 126.978, "alt_m": 120.0, "vel_east_mps": 8.0, "vel_north_mps": -2.0, "hits": 5, "last_seen_ms": 1760061600000}],
- "assessments": [{"track_id": "T-D-1", "object_class": "drone", "threat": 0.82, "reason": "speed 8.2 m/s, 450 m from protected point"}],
- "responses": [{"track_id": "T-D-1", "kind": "soft_kill", "reason": "drone threat 0.82 >= 0.7"}]}
+{
+ "t_ms": 1791634270000,
+ "run": {
+  "status": "running",
+  "speed": 1.0
+ },
+ "vehicles": [
+  {
+   "id": "d1",
+   "t_ms": 1791634270000,
+   "pos": {
+    "lat": 37.98,
+    "lon": 124.695,
+    "alt_m": 0.0
+   },
+   "heading_deg": 0.0,
+   "battery_pct": 72.1,
+   "status": "active",
+   "play_id": "patrol_a",
+   "step_id": "report",
+   "entered_step": true,
+   "waypoint_idx": 0,
+   "active": {
+    "command": {
+     "id": "cmd-d1-1791634270000",
+     "vehicle_id": "d1",
+     "kind": "hold",
+     "params": {},
+     "provenance": {
+      "source": "play_step",
+      "play_id": "patrol_a",
+      "step_id": "report",
+      "decision_id": null,
+      "injection_id": null,
+      "operator_id": null,
+      "issued_ms": 1791634270000
+     }
+    },
+    "checks": [
+     "no_provenance",
+     "outside_zone",
+     "battery_insufficient"
+    ],
+    "passed_ms": 1791634270000
+   },
+   "pending_report_id": "rep-d1-1791634270000",
+   "target_id": null,
+   "emergency": null,
+   "resume_play_id": null,
+   "resume_step_id": null
+  },
+  {
+   "id": "d2",
+   "t_ms": 1791634270000,
+   "pos": {
+    "lat": 37.95,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "heading_deg": 0.0,
+   "battery_pct": 100.0,
+   "status": "ready",
+   "play_id": "standby",
+   "step_id": "wait",
+   "entered_step": true,
+   "waypoint_idx": 0,
+   "active": null,
+   "pending_report_id": null,
+   "target_id": null,
+   "emergency": null,
+   "resume_play_id": null,
+   "resume_step_id": null
+  },
+  {
+   "id": "d3",
+   "t_ms": 1791634270000,
+   "pos": {
+    "lat": 37.95,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "heading_deg": 0.0,
+   "battery_pct": 100.0,
+   "status": "ready",
+   "play_id": "standby",
+   "step_id": "wait",
+   "entered_step": true,
+   "waypoint_idx": 0,
+   "active": null,
+   "pending_report_id": null,
+   "target_id": null,
+   "emergency": null,
+   "resume_play_id": null,
+   "resume_step_id": null
+  },
+  {
+   "id": "usv",
+   "t_ms": 1791634270000,
+   "pos": {
+    "lat": 37.94,
+    "lon": 124.71,
+    "alt_m": 0.0
+   },
+   "heading_deg": 0.0,
+   "battery_pct": 100.0,
+   "status": "ready",
+   "play_id": "standby",
+   "step_id": "wait",
+   "entered_step": true,
+   "waypoint_idx": 0,
+   "active": null,
+   "pending_report_id": null,
+   "target_id": null,
+   "emergency": null,
+   "resume_play_id": null,
+   "resume_step_id": null
+  },
+  {
+   "id": "ugv",
+   "t_ms": 1791634270000,
+   "pos": {
+    "lat": 37.955,
+    "lon": 124.72,
+    "alt_m": 0.0
+   },
+   "heading_deg": 0.0,
+   "battery_pct": 100.0,
+   "status": "ready",
+   "play_id": "standby",
+   "step_id": "wait",
+   "entered_step": true,
+   "waypoint_idx": 0,
+   "active": null,
+   "pending_report_id": null,
+   "target_id": null,
+   "emergency": null,
+   "resume_play_id": null,
+   "resume_step_id": null
+  }
+ ],
+ "targets": [
+  {
+   "id": "boat1",
+   "kind": "boat",
+   "pos": {
+    "lat": 37.98437,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "vel_east_mps": 0.0,
+   "vel_north_mps": -1.0,
+   "first_seen_ms": 1791634270000,
+   "last_seen_ms": 1791634270000,
+   "seen_by": [
+    "d1"
+   ]
+  }
+ ],
+ "reports": [
+  {
+   "id": "rep-d1-1791634270000",
+   "t_ms": 1791634270000,
+   "kind": "target_detected",
+   "vehicle_id": "d1",
+   "target_id": "boat1",
+   "text": "미식별 선박 접근",
+   "choices": [
+    {
+     "id": "approach",
+     "label": "근접 확인",
+     "play_by_vehicle": {
+      "d1": "watch",
+      "usv": "approach",
+      "ugv": "landing",
+      "d2": "patrol_b"
+     }
+    }
+   ],
+   "resolved_ms": null,
+   "decision_id": null
+  }
+ ],
+ "assignments": [
+  {
+   "vehicle_id": "d1",
+   "play_id": "patrol_a",
+   "since_ms": 1791633600000,
+   "reason": "작전 배정"
+  },
+  {
+   "vehicle_id": "d2",
+   "play_id": "standby",
+   "since_ms": 1791633600000,
+   "reason": "작전 배정"
+  },
+  {
+   "vehicle_id": "d3",
+   "play_id": "standby",
+   "since_ms": 1791633600000,
+   "reason": "작전 배정"
+  },
+  {
+   "vehicle_id": "usv",
+   "play_id": "standby",
+   "since_ms": 1791633600000,
+   "reason": "작전 배정"
+  },
+  {
+   "vehicle_id": "ugv",
+   "play_id": "standby",
+   "since_ms": 1791633600000,
+   "reason": "작전 배정"
+  }
+ ],
+ "blocks": [],
+ "injections": [],
+ "metrics": {
+  "operator_actions": 0,
+  "manual_baseline_actions": 3,
+  "open_reports_max": 1,
+  "vehicle_gap_ms": 0,
+  "blocked_commands": 0,
+  "decisions": 0,
+  "commands_sent": 2,
+  "mission_success": null
+ },
+ "log": [
+  "[대본] 21:11 spawn_target boat1",
+  "[계산] 21:11 d1 표적 발견 → 보고 카드"
+ ]
+}

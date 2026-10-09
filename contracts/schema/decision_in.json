@@ -1,0 +1,18 @@
+{
+  "properties": {
+    "report_id": {
+      "title": "Report Id",
+      "type": "string"
+    },
+    "choice_id": {
+      "title": "Choice Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "report_id",
+    "choice_id"
+  ],
+  "title": "DecisionIn",
+  "type": "object"
+}

@@ -1,0 +1,35 @@
+{
+  "$defs": {
+    "ActionKind": {
+      "enum": [
+        "move_to",
+        "patrol_route",
+        "search_area",
+        "return_home",
+        "watch_target",
+        "watch_point",
+        "approach_target",
+        "relay_comms",
+        "hold"
+      ],
+      "title": "ActionKind",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "kind": {
+      "$ref": "#/$defs/ActionKind"
+    },
+    "params": {
+      "additionalProperties": true,
+      "default": {},
+      "title": "Params",
+      "type": "object"
+    }
+  },
+  "required": [
+    "kind"
+  ],
+  "title": "Action",
+  "type": "object"
+}

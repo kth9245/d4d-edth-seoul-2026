@@ -1,0 +1,321 @@
+{
+ "t_ms": 1791634290000,
+ "run": {
+  "status": "running",
+  "speed": 1.0
+ },
+ "vehicles": [
+  {
+   "id": "d1",
+   "t_ms": 1791634290000,
+   "pos": {
+    "lat": 37.9835,
+    "lon": 124.7015,
+    "alt_m": 0.0
+   },
+   "heading_deg": 0.0,
+   "battery_pct": 71.3,
+   "status": "active",
+   "play_id": "watch",
+   "step_id": "watch",
+   "entered_step": true,
+   "waypoint_idx": 0,
+   "active": {
+    "command": {
+     "id": "cmd-d1-1791634290000",
+     "vehicle_id": "d1",
+     "kind": "orbit",
+     "params": {
+      "target_id": "boat1",
+      "distance_m": 150
+     },
+     "provenance": {
+      "source": "play_step",
+      "play_id": "watch",
+      "step_id": "watch",
+      "decision_id": null,
+      "injection_id": null,
+      "operator_id": null,
+      "issued_ms": 1791634290000
+     }
+    },
+    "checks": [
+     "no_provenance",
+     "outside_zone",
+     "battery_insufficient"
+    ],
+    "passed_ms": 1791634290000
+   },
+   "pending_report_id": null,
+   "target_id": "boat1",
+   "emergency": null,
+   "resume_play_id": null,
+   "resume_step_id": null
+  },
+  {
+   "id": "d2",
+   "t_ms": 1791634290000,
+   "pos": {
+    "lat": 37.95,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "heading_deg": 0.0,
+   "battery_pct": 100.0,
+   "status": "active",
+   "play_id": "patrol_b",
+   "step_id": "patrol",
+   "entered_step": true,
+   "waypoint_idx": 0,
+   "active": {
+    "command": {
+     "id": "cmd-d2-1791634290000",
+     "vehicle_id": "d2",
+     "kind": "follow_route",
+     "params": {
+      "route": [
+       {
+        "lat": 37.93,
+        "lon": 124.6,
+        "alt_m": 0
+       },
+       {
+        "lat": 37.93,
+        "lon": 124.8,
+        "alt_m": 0
+       }
+      ]
+     },
+     "provenance": {
+      "source": "play_step",
+      "play_id": "patrol_b",
+      "step_id": "patrol",
+      "decision_id": null,
+      "injection_id": null,
+      "operator_id": null,
+      "issued_ms": 1791634290000
+     }
+    },
+    "checks": [
+     "no_provenance",
+     "outside_zone",
+     "battery_insufficient"
+    ],
+    "passed_ms": 1791634290000
+   },
+   "pending_report_id": null,
+   "target_id": null,
+   "emergency": null,
+   "resume_play_id": null,
+   "resume_step_id": null
+  },
+  {
+   "id": "d3",
+   "t_ms": 1791634290000,
+   "pos": {
+    "lat": 37.95,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "heading_deg": 0.0,
+   "battery_pct": 100.0,
+   "status": "ready",
+   "play_id": "standby",
+   "step_id": "wait",
+   "entered_step": true,
+   "waypoint_idx": 0,
+   "active": null,
+   "pending_report_id": null,
+   "target_id": null,
+   "emergency": null,
+   "resume_play_id": null,
+   "resume_step_id": null
+  },
+  {
+   "id": "usv",
+   "t_ms": 1791634290000,
+   "pos": {
+    "lat": 37.9405,
+    "lon": 124.7098,
+    "alt_m": 0.0
+   },
+   "heading_deg": 0.0,
+   "battery_pct": 98.4,
+   "status": "active",
+   "play_id": "approach",
+   "step_id": "approach",
+   "entered_step": true,
+   "waypoint_idx": 0,
+   "active": {
+    "command": {
+     "id": "cmd-usv-1791634290000",
+     "vehicle_id": "usv",
+     "kind": "keep_distance",
+     "params": {
+      "target_id": "boat1",
+      "distance_m": 200
+     },
+     "provenance": {
+      "source": "play_step",
+      "play_id": "approach",
+      "step_id": "approach",
+      "decision_id": null,
+      "injection_id": null,
+      "operator_id": null,
+      "issued_ms": 1791634290000
+     }
+    },
+    "checks": [
+     "no_provenance",
+     "outside_zone",
+     "battery_insufficient"
+    ],
+    "passed_ms": 1791634290000
+   },
+   "pending_report_id": null,
+   "target_id": "boat1",
+   "emergency": null,
+   "resume_play_id": null,
+   "resume_step_id": null
+  },
+  {
+   "id": "ugv",
+   "t_ms": 1791634290000,
+   "pos": {
+    "lat": 37.9551,
+    "lon": 124.7199,
+    "alt_m": 0.0
+   },
+   "heading_deg": 0.0,
+   "battery_pct": 97.6,
+   "status": "active",
+   "play_id": "landing",
+   "step_id": "move",
+   "entered_step": true,
+   "waypoint_idx": 0,
+   "active": {
+    "command": {
+     "id": "cmd-ugv-1791634290000",
+     "vehicle_id": "ugv",
+     "kind": "move",
+     "params": {
+      "target": {
+       "lat": 37.975,
+       "lon": 124.7,
+       "alt_m": 0
+      }
+     },
+     "provenance": {
+      "source": "play_step",
+      "play_id": "landing",
+      "step_id": "move",
+      "decision_id": null,
+      "injection_id": null,
+      "operator_id": null,
+      "issued_ms": 1791634290000
+     }
+    },
+    "checks": [
+     "no_provenance",
+     "outside_zone",
+     "battery_insufficient"
+    ],
+    "passed_ms": 1791634290000
+   },
+   "pending_report_id": null,
+   "target_id": null,
+   "emergency": null,
+   "resume_play_id": null,
+   "resume_step_id": null
+  }
+ ],
+ "targets": [
+  {
+   "id": "boat1",
+   "kind": "boat",
+   "pos": {
+    "lat": 37.98419,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "vel_east_mps": 0.0,
+   "vel_north_mps": -1.0,
+   "first_seen_ms": 1791634270000,
+   "last_seen_ms": 1791634290000,
+   "seen_by": [
+    "d1"
+   ]
+  }
+ ],
+ "reports": [
+  {
+   "id": "rep-d1-1791634270000",
+   "t_ms": 1791634270000,
+   "kind": "target_detected",
+   "vehicle_id": "d1",
+   "target_id": "boat1",
+   "text": "미식별 선박 접근",
+   "choices": [
+    {
+     "id": "approach",
+     "label": "근접 확인",
+     "play_by_vehicle": {
+      "d1": "watch",
+      "usv": "approach",
+      "ugv": "landing",
+      "d2": "patrol_b"
+     }
+    }
+   ],
+   "resolved_ms": 1791634290000,
+   "decision_id": "dec-1"
+  }
+ ],
+ "assignments": [
+  {
+   "vehicle_id": "d1",
+   "play_id": "watch",
+   "since_ms": 1791634290000,
+   "reason": "결정 dec-1"
+  },
+  {
+   "vehicle_id": "usv",
+   "play_id": "approach",
+   "since_ms": 1791634290000,
+   "reason": "결정 dec-1"
+  },
+  {
+   "vehicle_id": "ugv",
+   "play_id": "landing",
+   "since_ms": 1791634290000,
+   "reason": "결정 dec-1"
+  },
+  {
+   "vehicle_id": "d2",
+   "play_id": "patrol_b",
+   "since_ms": 1791634290000,
+   "reason": "결정 dec-1"
+  },
+  {
+   "vehicle_id": "d3",
+   "play_id": "standby",
+   "since_ms": 1791633600000,
+   "reason": "작전 배정"
+  }
+ ],
+ "blocks": [],
+ "injections": [],
+ "metrics": {
+  "operator_actions": 1,
+  "manual_baseline_actions": 7,
+  "open_reports_max": 1,
+  "vehicle_gap_ms": 0,
+  "blocked_commands": 0,
+  "decisions": 1,
+  "commands_sent": 6,
+  "mission_success": null
+ },
+ "log": [
+  "[계산] 21:11 결정 dec-1 '근접 확인' → 기체 4대 플레이 전환"
+ ]
+}

@@ -1,0 +1,22 @@
+{
+ "id": "rep-d1-1791634270000",
+ "t_ms": 1791634270000,
+ "kind": "target_detected",
+ "vehicle_id": "d1",
+ "target_id": "boat1",
+ "text": "미식별 선박 접근",
+ "choices": [
+  {
+   "id": "approach",
+   "label": "근접 확인",
+   "play_by_vehicle": {
+    "d1": "watch",
+    "usv": "approach",
+    "ugv": "landing",
+    "d2": "patrol_b"
+   }
+  }
+ ],
+ "resolved_ms": null,
+ "decision_id": null
+}

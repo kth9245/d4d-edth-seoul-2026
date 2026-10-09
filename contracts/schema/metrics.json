@@ -1,0 +1,53 @@
+{
+  "properties": {
+    "operator_actions": {
+      "default": 0,
+      "title": "Operator Actions",
+      "type": "integer"
+    },
+    "manual_baseline_actions": {
+      "default": 0,
+      "title": "Manual Baseline Actions",
+      "type": "integer"
+    },
+    "open_reports_max": {
+      "default": 0,
+      "title": "Open Reports Max",
+      "type": "integer"
+    },
+    "vehicle_gap_ms": {
+      "default": 0,
+      "title": "Vehicle Gap Ms",
+      "type": "integer"
+    },
+    "blocked_commands": {
+      "default": 0,
+      "title": "Blocked Commands",
+      "type": "integer"
+    },
+    "decisions": {
+      "default": 0,
+      "title": "Decisions",
+      "type": "integer"
+    },
+    "commands_sent": {
+      "default": 0,
+      "title": "Commands Sent",
+      "type": "integer"
+    },
+    "mission_success": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Mission Success"
+    }
+  },
+  "title": "Metrics",
+  "type": "object"
+}

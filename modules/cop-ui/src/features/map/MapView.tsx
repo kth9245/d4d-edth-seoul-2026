@@ -2,7 +2,7 @@ import { addProtocol, Map as MapLibreMap, type ExpressionSpecification, type Geo
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Protocol } from "pmtiles";
 import { useEffect, useRef } from "react";
-import type { Frame } from "../../contracts.gen";
+import type { LegacyFrame } from "../../contracts.gen";
 import { basemapStyle } from "./basemap";
 import { toGeoJSON } from "./toGeoJSON";
 
@@ -14,10 +14,10 @@ const protocol = new Protocol();
 addProtocol("pmtiles", protocol.tile);
 
 export function MapView({ frame, center, tilesAvailable = false }:
-  { frame: Frame | null; center: [number, number]; tilesAvailable?: boolean }) {
+  { frame: LegacyFrame | null; center: [number, number]; tilesAvailable?: boolean }) {
   const el = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
-  const latest = useRef<Frame | null>(frame);
+  const latest = useRef<LegacyFrame | null>(frame);
 
   useEffect(() => {
     if (!el.current) return;

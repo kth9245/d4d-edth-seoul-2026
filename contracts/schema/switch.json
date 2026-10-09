@@ -1,0 +1,26 @@
+{
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "label": {
+      "title": "Label",
+      "type": "string"
+    },
+    "play_by_vehicle": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Play By Vehicle",
+      "type": "object"
+    }
+  },
+  "required": [
+    "id",
+    "label",
+    "play_by_vehicle"
+  ],
+  "title": "Switch",
+  "type": "object"
+}

@@ -16,7 +16,7 @@ from tools.spec import SPEC_HEADER  # noqa: E402
 AGENTS_TMPL = """# {name} — (한 줄 역할을 적으세요)
 
 - 책임: (이 모듈이 하는 일을 한두 줄로)
-- 입력: (타입, `contracts/models.py` 기준) / 출력: (타입)
+- 입력: (타입, `contracts/models/` 기준) / 출력: (타입)
 - 공개 API(`__init__.py`): (다른 모듈이 import할 함수)
 - 새 동작은 `/new-action`(= `uv run python scripts/new_action.py {name} <verb_noun> "<설명>"`)으로 시작한다.
 - 담당: (이름). 브랜치 `{name}/<주제>`.

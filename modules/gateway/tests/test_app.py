@@ -2,7 +2,7 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 
-from contracts.models import Frame
+from contracts.models import LegacyFrame
 from modules.gateway import Engine, create_app
 from modules.sim import load_scenario
 
@@ -30,16 +30,16 @@ def test_health_and_websocket_frames():
     client = TestClient(create_app(SCENARIO, realtime=False))
     assert client.get("/health").json() == {"ok": True}
     with client.websocket_connect("/ws") as ws:
-        Frame.model_validate(ws.receive_json())
-        Frame.model_validate(ws.receive_json())
+        LegacyFrame.model_validate(ws.receive_json())
+        LegacyFrame.model_validate(ws.receive_json())
 
 
 def test_websocket_reconnect():
     client = TestClient(create_app(SCENARIO, realtime=False))
     with client.websocket_connect("/ws") as ws:
-        first = Frame.model_validate(ws.receive_json())
+        first = LegacyFrame.model_validate(ws.receive_json())
     with client.websocket_connect("/ws") as ws2:
-        again = Frame.model_validate(ws2.receive_json())
+        again = LegacyFrame.model_validate(ws2.receive_json())
     assert again.t_ms == first.t_ms
     assert client.get("/health").status_code == 200
 

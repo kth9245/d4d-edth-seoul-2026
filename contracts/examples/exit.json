@@ -1,0 +1,9 @@
+{
+ "cond": {
+  "kind": "battery_below",
+  "params": {
+   "pct": 30.0
+  }
+ },
+ "go_step": "return"
+}

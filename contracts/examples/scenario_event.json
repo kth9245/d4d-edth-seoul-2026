@@ -1,0 +1,15 @@
+{
+ "offset_ms": 660000,
+ "kind": "spawn_target",
+ "params": {
+  "id": "boat1",
+  "kind": "boat",
+  "pos": {
+   "lat": 37.985,
+   "lon": 124.7,
+   "alt_m": 0
+  },
+  "ve": 0,
+  "vn": -1.0
+ }
+}

@@ -1,0 +1,58 @@
+{
+  "$defs": {
+    "Condition": {
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/ConditionKind"
+        },
+        "params": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "default": {},
+          "title": "Params",
+          "type": "object"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Condition",
+      "type": "object"
+    },
+    "ConditionKind": {
+      "enum": [
+        "target_found",
+        "arrived",
+        "time_elapsed",
+        "battery_below",
+        "operator_choice",
+        "signal_received"
+      ],
+      "title": "ConditionKind",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "cond": {
+      "$ref": "#/$defs/Condition"
+    },
+    "go_step": {
+      "title": "Go Step",
+      "type": "string"
+    }
+  },
+  "required": [
+    "cond",
+    "go_step"
+  ],
+  "title": "Exit",
+  "type": "object"
+}

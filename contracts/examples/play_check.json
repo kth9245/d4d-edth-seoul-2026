@@ -1,0 +1,13 @@
+{
+ "ok": false,
+ "issues": [
+  {
+   "code": "report_missing",
+   "step_id": "approach",
+   "message": "표적 발견 뒤 선택지 있는 보고 없이 접근 step에 닿습니다"
+  }
+ ],
+ "est_return_battery": {
+  "d1": 41.0
+ }
+}

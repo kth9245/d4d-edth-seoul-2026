@@ -1,0 +1,98 @@
+{
+  "$defs": {
+    "ActionKind": {
+      "enum": [
+        "move_to",
+        "patrol_route",
+        "search_area",
+        "return_home",
+        "watch_target",
+        "watch_point",
+        "approach_target",
+        "relay_comms",
+        "hold"
+      ],
+      "title": "ActionKind",
+      "type": "string"
+    },
+    "Domain": {
+      "enum": [
+        "air",
+        "sea",
+        "ground"
+      ],
+      "title": "Domain",
+      "type": "string"
+    },
+    "GeoPoint": {
+      "properties": {
+        "lat": {
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "title": "Lon",
+          "type": "number"
+        },
+        "alt_m": {
+          "default": 0,
+          "title": "Alt M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ],
+      "title": "GeoPoint",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "domain": {
+      "$ref": "#/$defs/Domain"
+    },
+    "speed_mps": {
+      "title": "Speed Mps",
+      "type": "number"
+    },
+    "endurance_min": {
+      "title": "Endurance Min",
+      "type": "number"
+    },
+    "sensor_range_m": {
+      "title": "Sensor Range M",
+      "type": "number"
+    },
+    "capabilities": {
+      "items": {
+        "$ref": "#/$defs/ActionKind"
+      },
+      "title": "Capabilities",
+      "type": "array"
+    },
+    "home": {
+      "$ref": "#/$defs/GeoPoint"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "domain",
+    "speed_mps",
+    "endurance_min",
+    "sensor_range_m",
+    "capabilities",
+    "home"
+  ],
+  "title": "VehicleSpec",
+  "type": "object"
+}

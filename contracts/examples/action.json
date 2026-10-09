@@ -1,0 +1,7 @@
+{
+ "kind": "watch_target",
+ "params": {
+  "target": "nearest",
+  "distance_m": 150
+ }
+}

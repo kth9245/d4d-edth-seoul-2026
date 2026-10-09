@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import type { Frame } from "../../contracts.gen";
+import type { LegacyFrame } from "../../contracts.gen";
 
-export function useFrames(url: string): { frame: Frame | null; connected: boolean } {
-  const [frame, setFrame] = useState<Frame | null>(null);
+export function useFrames(url: string): { frame: LegacyFrame | null; connected: boolean } {
+  const [frame, setFrame] = useState<LegacyFrame | null>(null);
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
@@ -14,7 +14,7 @@ export function useFrames(url: string): { frame: Frame | null; connected: boolea
       ws.onopen = () => setConnected(true);
       ws.onmessage = (e) => {
         try {
-          setFrame(JSON.parse(e.data) as Frame);
+          setFrame(JSON.parse(e.data) as LegacyFrame);
         } catch {
           // 깨진 메시지는 무시한다.
         }

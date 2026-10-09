@@ -1,0 +1,16 @@
+{
+ "id": "boat1",
+ "kind": "boat",
+ "pos": {
+  "lat": 37.98437,
+  "lon": 124.7,
+  "alt_m": 0.0
+ },
+ "vel_east_mps": 0.0,
+ "vel_north_mps": -1.0,
+ "first_seen_ms": 1791634270000,
+ "last_seen_ms": 1791634270000,
+ "seen_by": [
+  "d1"
+ ]
+}

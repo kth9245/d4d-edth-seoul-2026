@@ -1,0 +1,47 @@
+{
+ "id": "d1",
+ "t_ms": 1791634290000,
+ "pos": {
+  "lat": 37.9835,
+  "lon": 124.7015,
+  "alt_m": 0.0
+ },
+ "heading_deg": 0.0,
+ "battery_pct": 71.3,
+ "status": "active",
+ "play_id": "watch",
+ "step_id": "watch",
+ "entered_step": true,
+ "waypoint_idx": 0,
+ "active": {
+  "command": {
+   "id": "cmd-d1-1791634290000",
+   "vehicle_id": "d1",
+   "kind": "orbit",
+   "params": {
+    "target_id": "boat1",
+    "distance_m": 150
+   },
+   "provenance": {
+    "source": "play_step",
+    "play_id": "watch",
+    "step_id": "watch",
+    "decision_id": null,
+    "injection_id": null,
+    "operator_id": null,
+    "issued_ms": 1791634290000
+   }
+  },
+  "checks": [
+   "no_provenance",
+   "outside_zone",
+   "battery_insufficient"
+  ],
+  "passed_ms": 1791634290000
+ },
+ "pending_report_id": null,
+ "target_id": "boat1",
+ "emergency": null,
+ "resume_play_id": null,
+ "resume_step_id": null
+}
