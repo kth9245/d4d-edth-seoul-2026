@@ -16,7 +16,10 @@ from dataclasses import replace
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from tools.gitpush import OfflineError, PushFailed  # noqa: E402
+from tools.ledger import start_for_spec  # noqa: E402
 from tools.spec import SpecRow, append_row, next_id, parse_spec, replace_row  # noqa: E402
+from tools.tasks import Refused  # noqa: E402
 
 NAME_RE = re.compile(r"^[a-z]+(_[a-z0-9]+)+$")
 
@@ -48,6 +51,21 @@ def fail(msg: str) -> None:
 def git_user() -> str:
     r = subprocess.run(["git", "config", "user.name"], capture_output=True, text=True)
     return r.stdout.strip() or "?"
+
+
+def claim_ledger(root: Path, spec_id: str, owner: str, take: bool) -> None:
+    """Start the plan item linked to this SPEC row first, so two people cannot both claim it."""
+    try:
+        item = start_for_spec(root, spec_id, owner, take)
+    except Refused as e:
+        fail(f"할 일 기록이 거부함: {e}")
+    except (OfflineError, PushFailed) as e:
+        print(f"경고: 할 일 기록 못 올림({e}). 나중에 `task.py start <번호>`", file=sys.stderr)
+        return
+    if item:
+        print(f"할 일 기록: {item} 시작")
+    else:
+        print("할 일 기록: 이 SPEC 행과 연결된 번호표 항목 없음 (필요하면 task.py add)")
 
 
 def write_files(mod: Path, module: str, sid: str, name: str, desc: str) -> None:
@@ -94,6 +112,7 @@ def main() -> None:
                 f"이미 있는 액션입니다: {a.module}.{a.action} (담당 {existing.owner}). "
                 "가져가려면 --take"
             )
+        claim_ledger(Path(a.root), existing.id, owner, a.take)
         row = replace(
             existing,
             inputs=a.inputs or existing.inputs,
@@ -125,6 +144,7 @@ def main() -> None:
         f"{sid} 생성: {action_file.relative_to(a.root)}, modules/{a.module}/tests/test_{a.action}.py"
     )
     print("다음: 테스트를 실제 동작으로 고친 뒤 액션을 구현해 통과시키세요.")
+    print("번호표 항목이면 `uv run python scripts/task.py start <번호>`도 실행하세요.")
 
 
 if __name__ == "__main__":
