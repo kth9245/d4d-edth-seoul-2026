@@ -56,11 +56,12 @@
 - **Part2-4** sim `advance_vehicles`(공개 API 이름 `advance`) · SIM-08
 - **Part2-5** sim `apply_events` · SIM-09
 - **Part2-6** sensing `observe_targets`(공개 API 이름 `observe`) · SNS-02
-- **Part2-17** gateway `engine.py` 틱 루프 · 하위 0/4 완료
+- **Part2-17** gateway `engine.py` 틱 루프 · 하위 0/5 완료
 - **Part2-17.1** gateway init_engine · GW-02 (묶음 A, engine_state.py 먼저)
 - **Part2-17.2** gateway record_injections · GW-03 (묶음 A)
 - **Part2-17.3** gateway run_checks · GW-04 (황승주 SFT-03 뒤, 그 전엔 스텁)
 - **Part2-17.4** gateway track_assignments · GW-05 (묶음 A)
+- **Part2-17.5** gateway tick_log · GW-07 (묶음 A)
 - **Part2-18** gateway `build_frame` 재작성
 - **Part2-19** 시나리오 튜닝
 - **Part2-20** sim `load_scenario_json` · SIM-04
