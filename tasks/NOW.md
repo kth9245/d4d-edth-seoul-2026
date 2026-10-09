@@ -2,10 +2,10 @@
 
 # 지금 작업판
 
-마지막 기록 10/9 02:28 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/9 23:13 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- (없음)
+- **Part1-2** 백령도 타일 커밋 — kth9245, 10/9 23:13부터
 
 ## 막힘
 - (없음)
@@ -14,7 +14,6 @@
 
 ### kth9245
 - **Part1-1** contracts 패키지
-- **Part1-2** 백령도 타일 커밋
 - **Part1-4** 시나리오 JSON + 템플릿 2개
 - **Part1-5** AI 초안 프롬프트·캐시 2개
 - **Part1-7** gateway REST + WS

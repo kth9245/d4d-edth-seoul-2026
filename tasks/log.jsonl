@@ -48,3 +48,4 @@
 {"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part3-15", "title": "play `compile_mavlink` (결정 0011)", "parent": null, "assign": null, "slot": "2 뒤", "spec": "PLY-10"}
 {"at": "2026-10-09T02:28:09+09:00", "by": "kth9245", "op": "start", "id": "Part1-3", "take": false, "from": null}
 {"at": "2026-10-09T02:28:09+09:00", "by": "kth9245", "op": "done", "id": "Part1-3", "take": false}
+{"at": "2026-10-09T23:13:54+09:00", "by": "kth9245", "op": "start", "id": "Part1-2", "take": false, "from": null}
