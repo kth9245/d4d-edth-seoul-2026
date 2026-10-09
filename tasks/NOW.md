@@ -2,10 +2,10 @@
 
 # 지금 작업판
 
-마지막 기록 10/9 23:45 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/9 23:56 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- **Part1-16** 스파이크를 두 층 구조로 갱신(contracts 모델·시연 시나리오 사용, API.md 함수 이름, 35분 대본 테스트) — kth9245, 10/9 23:45부터
+- (없음)
 
 ## 막힘
 - (없음)
@@ -69,6 +69,7 @@
 - 10/9 23:14 kth9245 · Part1-1 · 결정 0015·0016·0017·0018 참조(두 층 구조, contracts 세부, API 규약)
 
 ## 완료
+- **Part1-16** 스파이크를 두 층 구조로 갱신(contracts 모델·시연 시나리오 사용, API.md 함수 이름, 35분 대본 테스트) — kth9245, 10/9 23:56
 - **Part1-4** 시나리오 JSON + 템플릿 2개 — kth9245, 10/9 23:24
 - **Part1-1** contracts 패키지 — kth9245, 10/9 23:19 · 하위 1/1 완료
 - **Part1-1.1** contracts/API.md, contracts/README, AGENTS.md 읽을 목록, 09 문서 2·3절 정본 안내와 6절 수정 — kth9245, 10/9 23:18
