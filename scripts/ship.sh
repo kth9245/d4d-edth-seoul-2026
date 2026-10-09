@@ -15,6 +15,8 @@ done
 git diff --quiet && git diff --cached --quiet || fail "커밋 안 된 변경이 있습니다. 먼저 커밋하세요."
 git fetch -q origin || fail "fetch 실패 (네트워크 확인)"
 git rebase -q origin/main || fail "rebase 충돌. 'git status'로 충돌 파일을 확인하고 해결 후 'git rebase --continue', 그다음 다시 ship. 남의 파일이면 담당자에게 문의."
+# Install what uv.lock gained since the last sync (e.g. pytest-xdist, decision 0018); remove nothing.
+if command -v uv >/dev/null; then uv sync -q --frozen --inexact || fail "uv sync 실패 (uv.lock 확인)"; fi
 
 changed=$(git diff --name-only origin/main...HEAD)
 if echo "$changed" | grep -qE '^(tests|tools|scripts|contracts|shared)/'; then

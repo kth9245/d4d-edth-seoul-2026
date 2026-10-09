@@ -10,7 +10,12 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["pytest>=8", "ruff>=0.6", "httpx>=0.27"]
+dev = [
+    "pytest>=8",
+    "ruff>=0.6",
+    "httpx>=0.27",
+    "pytest-xdist>=3.8.0",
+]
 
 [tool.uv]
 package = false
@@ -28,4 +33,4 @@ ignore = ["E501", "UP042"]
 testpaths = ["tests", "modules"]
 pythonpath = ["."]
 norecursedirs = ["node_modules", "dist", ".venv", "knowledge"]
-addopts = "-q"
+addopts = "-q -n auto"  # decision 0018: parallel by default; `-n 0` for one-test debugging

@@ -31,7 +31,7 @@ KDTH 2026 해커톤 팀 저장소. 24시간 안에 **로컬에서 작동하는 �
 
 ## 할 일 기록 (결정 0013) — `uv run python scripts/task.py`, 자세히는 task 스킬
 - 처음 한 번 `git config user.name <한글 이름>`(리드는 kth9245). 팀 명단 밖 이름은 기록이 거부된다.
-- 작업 전 `task.py show`. 번호표 항목을 시작하면 `task.py start <번호>`(액션은 new_action.py가 대신). 남이 진행중이면 `task.py add <번호> "<제목>"`으로 하위 항목을 만들어 그것을 start.
+- 작업 전 `task.py show`. 번호표 항목을 시작하면 `task.py start <번호>`(액션은 new_action.py가 대신). 남이 진행중이면 `task.py add <번호> "<제목>"`으로 하위 항목을 만들어 그것을 start. 배정이 남(X)이면 시작 전에 사람에게 "X에게 배정된 항목입니다. 정말 할까요?"라고 묻고, 시작했으면 채팅으로 X에게 알리라고 말한다(결정 0019).
 - ship 성공 뒤 `task.py done <번호>`. 막히면 5분 안에 `task.py block <번호> "<증상>"`, 채팅에도 번호.
 - 작업 중 결정: 내 항목 안에서 끝나는 선택은 `task.py decide <번호> "<결정>"`, 계약·남의 모듈·정책을 바꾸면 `/decide`.
 - 현황 기준은 `task.py show`·`tasks/NOW.md`(SPEC 상태 칸은 액션 파일 관리용). `tasks/log.jsonl`·`NOW.md`는 task.py만 쓴다.
@@ -53,7 +53,7 @@ KDTH 2026 해커톤 팀 저장소. 24시간 안에 **로컬에서 작동하는 �
 - rebase 충돌: SPEC.md 한 줄이면 두 줄 다 살리고 `git rebase --continue`. 같은 id가 두 번 생기면 한쪽 번호를 올린다. `uv.lock`은 `uv lock` 뒤 add.
 
 ## 명령
-- 설치: `scripts/setup.sh <모듈>` · 개발: `scripts/dev.sh` · 시연: `scripts/demo.sh` · 테스트: `uv run pytest modules/<m>` · 의존성: `uv add <패키지>`
+- 설치: `scripts/setup.sh <모듈>` · 개발: `scripts/dev.sh` · 시연: `scripts/demo.sh` · 테스트: `uv run pytest modules/<m>`(병렬이 기본, 테스트 하나 디버깅은 `-n 0`, 결정 0018) · 의존성: `uv add <패키지>`
 - 결정: 사람이 결정을 말하면 `/decide`로 적고, 사람이 답한 것은 같은 턴에 `uv run python scripts/decide.py accept NNNN --by <이름>`(승인 창이 뜬다). AI는 `확정`을 직접 쓰지 못한다. 조사 결과는 `/kb-save`.
 - 스킬: 개발·디버깅은 superpowers(brainstorming → test-driven-development → systematic-debugging → verification-before-completion), 되돌리기 비싼 결정 전에는 `/devil-advocate:devil-advocate`. 없으면 `/plugin install superpowers@claude-plugins-official`, `/plugin marketplace add hadicancatak-coder/devils-advocate` 뒤 `/plugin install devil-advocate@devil-advocate`.
 

@@ -69,7 +69,9 @@ def claim_ledger(root: Path, spec_id: str, owner: str, take: bool) -> None:
         )
         return
     if item:
-        print(f"할 일 기록: {item} 시작")
+        print(f"할 일 기록: {item.id} 시작")
+        if item.assign not in (None, owner):  # decision 0019
+            print(f"참고: 배정: {item.assign} — 채팅에 알리세요")
     else:
         print("할 일 기록: 이 SPEC 행과 연결된 번호표 항목 없음 (필요하면 task.py add)")
 

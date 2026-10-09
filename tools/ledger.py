@@ -66,7 +66,7 @@ def write(
     return out["ev"], sha, out["items"]
 
 
-def start_for_spec(root: Path, spec_id: str, by: str, take: bool = False) -> str | None:
+def start_for_spec(root: Path, spec_id: str, by: str, take: bool = False) -> Item | None:
     """Start the plan item linked to a SPEC row (new_action.py). None if nothing is linked."""
     if not is_repo_top(root):
         raise OfflineError(f"{root}는 git 저장소 최상위가 아님")
@@ -78,7 +78,7 @@ def start_for_spec(root: Path, spec_id: str, by: str, take: bool = False) -> str
         return None
     if not (it.status == "진행중" and it.owner == by):
         write(root, "start", it.id, by, take=take)
-    return it.id
+    return it
 
 
 def seed(root: Path, text: str) -> int:
