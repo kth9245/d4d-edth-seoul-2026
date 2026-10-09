@@ -65,3 +65,4 @@
 {"at": "2026-10-09T23:56:06+09:00", "by": "kth9245", "op": "done", "id": "Part1-16", "take": false}
 {"at": "2026-10-09T23:56:12+09:00", "by": "kth9245", "op": "note", "id": "Part2-17", "text": "스파이크 engine_proto.py가 두 층 구조로 다시 쓰임(Part1-16): EngineState·init_state·tick이 contracts/API.md 3절 순서 그대로. README의 이식 표 참고"}
 {"at": "2026-10-10T00:04:42+09:00", "by": "kth9245", "op": "add", "id": "Part1-17", "title": "스파이크를 이식 모양으로 재배치(devil-advocate: SPEC 행마다 포맷된 파일, tick 계산 액션화, build_frame 새 이름, geo를 shared로, 모듈 AGENTS.md 정리)", "parent": null, "assign": null, "slot": null, "spec": null}
+{"at": "2026-10-10T00:04:56+09:00", "by": "kth9245", "op": "start", "id": "Part1-17", "take": false, "from": null}
