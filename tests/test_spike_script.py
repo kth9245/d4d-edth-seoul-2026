@@ -85,7 +85,8 @@ def test_port_action_fits_the_action_rules(path):
 
 
 def test_port_is_formatted_and_keeps_module_boundaries():
-    fmt = subprocess.run(["ruff", "format", "--check", "--line-length", "100", str(PORT)],
+    ruff = [sys.executable, "-m", "ruff"]  # ship.sh runs .venv/bin/pytest without the venv on PATH
+    fmt = subprocess.run([*ruff, "format", "--check", "--line-length", "100", str(PORT)],
                          capture_output=True, text=True)  # fmt: skip
     assert fmt.returncode == 0, fmt.stdout
     assert import_problems(PORT) == []
