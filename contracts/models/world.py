@@ -54,7 +54,7 @@ class Operation(BaseModel):
     area: Polygon  # shown on the map
     zone: Polygon  # safety rule 2; not editable from the live board
     vehicle_ids: list[str]
-    started_ms: int | None = None  # epoch ms; required when a scenario is loaded (decision 0014)
+    started_ms: int | None = None  # epoch ms; required when a scenario is loaded (decision 0018)
     assign: dict[str, str] = {}  # vehicle id -> play id at start
     reserve: dict[str, list[str]] = {}  # vehicle id -> reserves in order (decision 0016)
     switches: list[Switch] = []

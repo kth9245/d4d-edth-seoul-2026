@@ -1,4 +1,4 @@
-"""Baengnyeong night coast-watch world for contracts/examples (decisions 0004, 0014-0016).
+"""Baengnyeong night coast-watch world for contracts/examples (decisions 0004, 0015, 0016, 0018).
 
 Values come from the spike (knowledge/spikes/rolecall_engine_proto/engine_proto.py), regrouped into
 one-vehicle plays and one operation. gen_examples.py and the demo scenario build on this module.

@@ -1,5 +1,5 @@
 ---
-id: 0014
+id: 0018
 title: contracts 세부 규칙: 사건 시각은 offset_ms, 작전 시작은 Operation.started_ms 필수, 스파이크 기본값, 다각형 3점 이상, 예시 생성 스크립트, TS 생성기 dict·Literal
 status: 확정
 decided_by: kth9245
@@ -8,6 +8,7 @@ modules: [contracts, sim, runtime, gateway, cop-ui, demo, infra]
 supersedes: null
 ---
 ## 결정
+(번호 변경: 처음 0014로 올렸으나 같은 시각 다른 세션의 결정 0014(worktree·TDD)와 겹쳐 늦게 올라간 이쪽을 0018로 바꿈. 2026-10-09 커밋 메시지의 "decision 0014: contract details"와 "decisions 0014-0017"은 이 결정을 가리킨다.)
 2026-10-09 Part1-1(contracts 패키지) 직전, 09 문서 2절에 답이 없는 부분을 AI가 묻고 사람이 고른 것을 그대로 적는다. 질문은 AskUserQuestion 선택지였다.
 
 - 기본값·검증: 사람 "스파이크 기본값 + 다각형 3점 검사 (Recommended)"

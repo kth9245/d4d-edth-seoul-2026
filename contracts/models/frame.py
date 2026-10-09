@@ -41,7 +41,7 @@ class Frame(BaseModel):
 
 
 class ScenarioEvent(BaseModel):
-    offset_ms: int  # ms after operation.started_ms (decision 0014)
+    offset_ms: int  # ms after operation.started_ms (decision 0018)
     kind: Literal[
         "spawn_target", "target_move", "vehicle_link_lost", "vehicle_battery_set", "split_target"
     ]
