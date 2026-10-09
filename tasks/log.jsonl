@@ -56,3 +56,4 @@
 {"at": "2026-10-09T23:14:14+09:00", "by": "kth9245", "op": "start", "id": "Part1-1.1", "take": false, "from": null}
 {"at": "2026-10-09T23:18:54+09:00", "by": "kth9245", "op": "done", "id": "Part1-1.1", "take": false}
 {"at": "2026-10-09T23:19:03+09:00", "by": "kth9245", "op": "done", "id": "Part1-1", "take": false}
+{"at": "2026-10-09T23:19:09+09:00", "by": "kth9245", "op": "note", "id": "Part2-11", "text": "이름이 apply_reserves로 바뀜(결정 0016·0017). 역할 대신 Operation.reserve. 서명은 contracts/API.md 3절, SPEC RT-02"}
