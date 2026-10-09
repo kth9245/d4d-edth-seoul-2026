@@ -65,6 +65,7 @@
 - **Part3-15** play `compile_mavlink` (결정 0011) · PLY-10
 
 ## 최근 결정
+- 10/9 23:20 kth9245 · Part1-4 · 사건 4 고속 보트 추적 플레이의 표적은 운용자가 고름(target: operator → 승인 뒤 target_select 카드). 리드 답 '운용자가 고름'
 - 10/9 23:14 kth9245 · Part1-1 · 결정 0015·0016·0017·0018 참조(두 층 구조, contracts 세부, API 규약)
 
 ## 완료
