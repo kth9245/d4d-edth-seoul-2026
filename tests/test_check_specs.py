@@ -49,17 +49,16 @@ def test_length_limits(tmp_path):
     (m / "pipeline.py").write_text("x = 1\n" * 201)
     out = problems(tmp_path)
     assert any("big_action.py" in p and "80" in p for p in out)
-    assert any("pipeline.py" in p and "200" in p for p in out)
+    assert not any("pipeline.py" in p for p in out)  # decision 0023: no limit outside actions
 
 
-def test_ts_module_without_init_is_length_checked_only(tmp_path):
+def test_ts_module_without_init_is_not_checked(tmp_path):
     ui = tmp_path / "modules" / "cop-ui" / "src"
     ui.mkdir(parents=True)
     (ui / "App.tsx").write_text("x\n" * 201)
     (tmp_path / "modules" / "cop-ui" / "node_modules" / "z").mkdir(parents=True)
     (tmp_path / "modules" / "cop-ui" / "node_modules" / "z" / "big.ts").write_text("x\n" * 999)
-    out = problems(tmp_path)
-    assert len(out) == 1 and "App.tsx" in out[0]
+    assert problems(tmp_path) == []
 
 
 def test_scoped_spec_and_length_checks_only_touched(tmp_path):
@@ -73,8 +72,7 @@ def test_scoped_spec_and_length_checks_only_touched(tmp_path):
     out = problems(tmp_path, ["modules/tracking/actions/smooth_tracks.py"])
     assert out and all("tracking" in p for p in out)
     out = problems(tmp_path, ["modules/assess/pipeline.py"])
-    assert any("pipeline.py" in p and "200" in p for p in out)
-    assert not any("81줄" in p for p in out)
+    assert not any("pipeline.py" in p for p in out) and not any("81줄" in p for p in out)
     assert any("81줄" in p for p in problems(tmp_path))
 
 

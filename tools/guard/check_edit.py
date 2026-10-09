@@ -87,20 +87,17 @@ def check_post(payload: dict, root: Path, freeze: bool) -> str | None:
             )
     if freeze:
         return None
-    for e in edits:
-        if not e.path.exists() or e.path.suffix not in (".py", ".ts", ".tsx"):
+    for e in edits:  # decision 0023: only action files have a length limit (80)
+        if not e.path.exists() or not e.path.is_relative_to(root.resolve()):
             continue
-        rel = (
-            e.path.relative_to(root.resolve()).as_posix()
-            if e.path.is_relative_to(root.resolve())
-            else ""
-        )
-        limit = 80 if re.fullmatch(r"modules/[^/]+/actions/[^/]+\.py", rel) else 200
+        rel = e.path.relative_to(root.resolve()).as_posix()
+        if not re.fullmatch(r"modules/[^/]+/actions/[^/]+\.py", rel):
+            continue
         n = len(e.path.read_text(encoding="utf-8").splitlines())
-        if rel and n > limit and "knowledge/spikes/" not in rel:
+        if n > 80:
             return (
-                f"[guard] `{rel}`이 {n}줄로 기준 {limit}줄을 넘었습니다. "
-                "역할별로 액션(새 SPEC 행)이나 파일을 쪼개세요."
+                f"[guard] `{rel}`이 {n}줄로 액션 기준 80줄을 넘었습니다. "
+                "처리 단계를 나눠 액션(새 SPEC 행)으로 쪼개세요."
             )
     return None
 

@@ -63,14 +63,11 @@ def _length_problems(root: Path, paths: list[str] | None = None) -> list[str]:
         if SKIP_DIRS & set(p.relative_to(root).parts):
             continue
         rel = p.relative_to(root).as_posix()
-        limit = (
-            80
-            if p.parent.name == "actions" and rel.startswith("modules/") and p.suffix == ".py"
-            else 200
-        )
+        if not (p.parent.name == "actions" and rel.startswith("modules/") and p.suffix == ".py"):
+            continue  # decision 0023: only action files have a length limit
         n = len(p.read_text(encoding="utf-8").splitlines())
-        if n > limit:
-            out.append(f"{rel}: {n}줄 (기준 {limit}줄). 쪼개세요.")
+        if n > 80:
+            out.append(f"{rel}: {n}줄 (액션 기준 80줄). 쪼개세요.")
     return out
 
 

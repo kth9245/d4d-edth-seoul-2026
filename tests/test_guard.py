@@ -123,10 +123,11 @@ def test_post_length_limits(tmp_path):
     assert "80" in g.check_post(claude(a), r, False)
     a.write_text("x = 1\n" * 80)
     assert g.check_post(claude(a), r, False) is None
-    other = r / "modules/tracking/pipeline.py"
-    other.write_text("x = 1\n" * 201)
-    assert "200" in g.check_post(claude(other), r, False)
-    assert g.check_post(claude(other), r, True) is None
+    a.write_text("x = 1\n" * 81)
+    assert g.check_post(claude(a), r, True) is None  # KDTH_FREEZE: warn only
+    other = r / "modules/tracking/pipeline.py"  # decision 0023: no limit outside actions
+    other.write_text("x = 1\n" * 500)
+    assert g.check_post(claude(other), r, False) is None
 
 
 def test_branch_during_rebase(tmp_path):

@@ -37,7 +37,7 @@ KDTH 2026 해커톤 팀 저장소. 24시간 안에 **로컬에서 작동하는 �
 - 현황 기준은 `task.py show`·`tasks/NOW.md`(SPEC 상태 칸은 액션 파일 관리용). `tasks/log.jsonl`·`NOW.md`는 task.py만 쓴다.
 
 ## 액션 규칙 (1 액션 = 1 파일 = 1 테스트)
-- 액션 파일: 공개 함수 1개, 이름 = 파일 이름, 80줄 이하. 다른 .py/.ts/.tsx는 200줄 이하. `pipeline.py`·`engine.py`는 호출 순서만.
+- 액션 파일: 공개 함수 1개, 이름 = 파일 이름, 80줄 이하(그 밖의 파일은 줄 수 제한 없음, 결정 0023). `pipeline.py`·`engine.py`는 호출 순서만.
 - 시작: `uv run python scripts/new_action.py <m> <verb_noun> "<설명>"`. SPEC.md에 `예정` 행이 있으면 같은 명령이 그 행을 가져간다(담당 = 내 git 이름, 파일·실패 테스트 생성). 남이 `진행중`인 행은 `--take`. SPEC.md에 없는 액션 파일은 guard가 막는다.
 - TDD(결정 0014): 모든 코드 변경은 실패하는 테스트를 먼저 쓰고, 실패를 확인하고, 구현해 통과시킨다. 액션은 생성된 실패 테스트를 진짜 테스트로 바꾸는 것부터. 문서·데이터만 바꾸면 예외.
 - 다른 모듈은 `from modules.<m> import <공개 API>`로만. `modules.<m>.actions...` import 금지.
