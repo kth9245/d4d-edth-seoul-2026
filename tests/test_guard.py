@@ -70,6 +70,8 @@ def test_protected_files(tmp_path):
         ".env",
         "decisions/POLICY.md",
         "tasks/BOARD.md",
+        "tasks/log.jsonl",
+        "tasks/NOW.md",
         "knowledge/INDEX.md",
         "modules/cop-ui/src/contracts.gen.ts",
         "contracts/schema/track.json",

@@ -9,3 +9,4 @@ description: Start a new action in a module. Use whenever you are about to add n
 4. Implement the action until `uv run pytest modules/<module>/tests/test_<verb_noun>.py` passes. Keep the file <= 80 lines; if it grows, split into another action.
 5. Wire it into `modules/<module>/pipeline.py` and export from `__init__.py` only if other modules need it.
 6. Set the SPEC.md row status to `완료`.
+7. After `scripts/ship.sh` succeeds: `uv run python scripts/task.py done <번호>` (task skill).

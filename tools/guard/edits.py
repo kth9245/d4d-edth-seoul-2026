@@ -12,6 +12,8 @@ PROTECTED = [
     ".env.*",
     "decisions/POLICY.md",
     "tasks/BOARD.md",
+    "tasks/log.jsonl",
+    "tasks/NOW.md",
     "knowledge/INDEX.md",
     "decisions/INDEX.md",
     "contracts/schema/*",

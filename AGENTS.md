@@ -26,7 +26,14 @@ KDTH 2026 해커톤 팀 저장소. 24시간 안에 **로컬에서 작동하는 �
 | safety, runtime, play | 황승주 (파트 2B) |
 | tracking, assess, respond | 휴면. 손대지 않음 |
 
-남의 영역을 고치면 담당자에게 알린다. 막히면 5분 안에 "막힘: 번호, 함수, 증상"을 채팅에.
+남의 영역을 고치면 담당자에게 알린다.
+
+## 할 일 기록 (결정 0013) — `uv run python scripts/task.py`, 자세히는 task 스킬
+- 처음 한 번 `git config user.name <한글 이름>`(리드는 kth9245). 팀 명단 밖 이름은 기록이 거부된다.
+- 작업 전 `task.py show`. 번호표 항목을 시작하면 `task.py start <번호>`(액션은 new_action.py가 대신). 남이 진행중이면 `task.py add <번호> "<제목>"`으로 하위 항목을 만들어 그것을 start.
+- ship 성공 뒤 `task.py done <번호>`. 막히면 5분 안에 `task.py block <번호> "<증상>"`, 채팅에도 번호.
+- 작업 중 결정: 내 항목 안에서 끝나는 선택은 `task.py decide <번호> "<결정>"`, 계약·남의 모듈·정책을 바꾸면 `/decide`.
+- 현황 기준은 `task.py show`·`tasks/NOW.md`(SPEC 상태 칸은 액션 파일 관리용). `tasks/log.jsonl`·`NOW.md`는 task.py만 쓴다.
 
 ## 액션 규칙 (1 액션 = 1 파일 = 1 테스트)
 - 액션 파일: 공개 함수 1개, 이름 = 파일 이름, 80줄 이하. 다른 .py/.ts/.tsx는 200줄 이하. `pipeline.py`·`engine.py`는 호출 순서만.

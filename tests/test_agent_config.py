@@ -30,7 +30,7 @@ def test_bash_matcher_registered_pre_only():
 def test_skills_shared_via_symlink():
     link = ROOT / ".claude/skills"
     assert link.is_symlink() and link.resolve() == (ROOT / ".agents/skills").resolve()
-    for name in ("new-action", "new-module", "kb-save", "decide", "ship"):
+    for name in ("new-action", "new-module", "kb-save", "decide", "ship", "task"):
         text = (ROOT / ".agents/skills" / name / "SKILL.md").read_text(encoding="utf-8")
         assert text.startswith(f"---\nname: {name}\ndescription: ")
 
