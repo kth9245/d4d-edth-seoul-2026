@@ -289,7 +289,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | Part1-14 | smoke 전환 + 통합 주관 | `smoke.py`를 백령도 시나리오로; 18:00·00:00 통합 슬라이스 확인 | 4절 두 슬라이스 통과 | Part1-7·1-9·1-10, Part2-4·2-5·2-6·2-9~2-13·2-17·2-18·2-20, Part3-1·3-7(통합 1 전부) | 1·2 |
 | Part1-15 | 3분 대본·BUILT_HERE·제출 설명 | — | 리허설 1회, 사전 준비분(스파이크·contracts) 명시 | 동결 | 뒤 |
 
-### Part 2 — 엔진 (sim, sensing, safety, runtime). 원본: `knowledge/spikes/rolecall_engine_proto/`
+### Part 2 — 엔진 (sim, sensing, safety, runtime). 원본: `knowledge/spikes/rolecall_engine_proto/port/modules/` (저장소 `modules/`와 같은 경로·파일 하나 = SPEC 행 하나, 포맷 끝난 상태. 2026-10-10 devil-advocate 검토 뒤 재배치)
 
 | 번호 | 항목(액션) | 입력 → 출력 | 완료 기준 | 앞선 항목 | 통합 |
 |---|---|---|---|---|---|
@@ -309,8 +309,8 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | Part2-14 | runtime `apply_injection` | states, plays, Injection(approved) → states | `play_by_vehicle`대로 새 플레이 entry로 전환. 원래 플레이는 끝, 자동 복귀 없음(결정 0016) | Part2-10 | 2 |
 | Part2-15 | runtime `apply_direct` | states, DirectControl, t_ms → (states, Command) | operator_direct 명령 생성, 도착 시 resume 복귀 | Part2-10 | 2 |
 | Part2-16 | runtime `apply_emergency` | states, plays → states | 기체의 현재 플레이 emergency 규칙에 걸리면 그 플레이의 지정 step으로. 틱에서 `step_vehicle` 바로 앞 | Part2-10 | 2 |
-| Part2-17 (구 Part1-6) | gateway `engine.py` 틱 루프 | Scenario, TickInputs → `tick(state: EngineState, inputs) -> (state, Frame)`; 순서는 contracts/API.md 3절. `EngineState` dataclass(이 파일에, 계약 아님): t_ms, scenario, specs, plays, states, targets, reports, assignments, blocks, injections, metrics, run. 시작 상태도 API.md 3절. `TickOutcome`은 contracts 모델 | 스파이크 `run()`의 while 본문을 옮긴 것. **아직 없는 액션은 `contracts/examples/*.json`(장면은 `frames/`)을 돌려주는 스텁 함수로 대체**해 12:00 당일 첫 커밋에서 Frame이 나오게 한다(스텁 목록을 파일 머리 주석에). 사건 1 → 보고 → 결정 → 전환이 스텁 없이 도는 것이 완료. 틱마다 `get_logger("gateway.engine")`로 명령·차단·보고 수와 Frame.log 줄을 DEBUG로 남긴다(결정 0010) | Part1-1, Part2-20 | 1 |
-| Part2-18 (구 Part1-8) | gateway `build_frame` 재작성 | EngineState, 이번 틱 log → Frame | 예시 JSON과 같은 모양, 직렬화 테스트 | Part1-1 | 1 |
+| Part2-17 (구 Part1-6) | gateway `engine.py` 틱 루프 + GW-02~05·07 | `knowledge/spikes/rolecall_engine_proto/port/modules/gateway/`의 `engine.py`·`engine_state.py`·`actions/`(init_engine, record_injections, run_checks, track_assignments, tick_log)를 그대로 복사하고 SPEC 행마다 테스트. `tick`은 contracts/API.md 3절 호출 순서만 | 아직 없는 액션은 `contracts/examples/*.json`(장면은 `frames/`)을 돌려주는 스텁으로 대체해 12:00 첫 커밋에서 Frame이 나오게 한다. 사건 1 → 보고 → 결정 → 전환이 스텁 없이 도는 것이 완료. 대본 전체 확인: `tests/test_spike_script.py`의 시나리오를 실제 modules에 대고 돌림. 틱마다 `get_logger("gateway.engine")` DEBUG(결정 0010) | Part1-1, Part2-20 | 1 |
+| Part2-18 (구 Part1-8) | gateway `build_frame_v2`(GW-06, 새 이름) | EngineState, 이번 틱 log → Frame. `knowledge/spikes/rolecall_engine_proto/port/modules/gateway/actions/build_frame_v2.py` 복사 | 예시 JSON과 같은 모양, 직렬화 테스트. GW-01 `build_frame`(레거시)은 smoke가 쓰므로 통합 1까지 손대지 않는다 | Part1-1 | 1 |
 | Part2-19 | 시나리오 튜닝 | `baengnyeong_night.json`, 템플릿 2개 → 사건 2·3·6의 시각·경로·예비 드론 경로 길이 조정 | 틱 루프로 돌려 사건 1·2·3·6이 3분 대본 순서로 남, 예비 드론 경로가 귀환 배터리 안 | Part2-17, Part2-4·2-9·2-11 | 2 |
 | Part2-20 | sim `load_scenario_json` | 경로 → Scenario | JSON 읽어 `Scenario.model_validate`, 잘못된 값은 ValueError에 위치. `operation.started_ms`가 비거나 `assign`이 없는 플레이를 가리키면 ValueError(결정 0018). 레거시 `load_scenario`는 건드리지 않는다(3.5) | Part1-1 | 1 |
 

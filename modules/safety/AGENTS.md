@@ -4,6 +4,6 @@
 - 입력: Command·VehicleState·VehicleSpec·Operation·plays·injections / 출력: PassedCommand | Block.
 - 공개 API(`__init__.py`): `check_command`, `point_in_polygon`, `return_feasible`.
 - **`PassedCommand`는 이 모듈의 `check_command`만 만든다.** 다른 곳에서 생성하는 코드가 없음을 grep 테스트로 지킨다.
-- 원본: `knowledge/spikes/rolecall_engine_proto/engine_proto.py`의 point_in_polygon·check_command(배터리 대안은 스파이크에 없음, 09 6절 Part2-8 공식).
+- 원본: `knowledge/spikes/rolecall_engine_proto/port/modules/safety/`를 그대로 복사(SFT-01~03).
 - 새 동작은 `/new-action`(= `uv run python scripts/new_action.py safety <verb_noun> "<설명>"`)으로 시작한다. SPEC.md의 `예정` 행은 같은 명령을 플래그 없이 돌려 가져간다.
-- 담당: 황승주(파트 2B, 결정 0009). 브랜치 `safety/<주제>`.
+- 담당: 황승주(파트 2B, 결정 0009). 작업은 자기 worktree에서 main으로(결정 0010·0014).

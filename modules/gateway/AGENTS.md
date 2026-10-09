@@ -4,5 +4,5 @@
 - 다른 모듈은 공개 API로만 호출한다.
 - 실행: `uv run uvicorn modules.gateway.app:app --port 8000` (환경변수 KDTH_SCENARIO, KDTH_UI_DIST)
 - 연결이 끊겨도 서버는 계속 살아 있어야 한다(연결마다 독립 Engine, 종료 감시 task로 루프 정리).
-- **ROLECALL 전환(2026-10-10):** `docs/research/09` 3.7. 틱 루프 `engine.py`(`tick`, `EngineState`, `TickOutcome`)는 최동호(파트 2A, 결정 0009)가 쓴다(Part2-17·2-18). REST·WS(`app.py` 재작성, Part1-7)는 리드. `app.py` 끝의 모듈 수준 `app = create_app(...)`은 import 때 시나리오를 읽으므로 Part1-7에서 factory 방식으로 바꾼다.
-- 담당: 리드 kth9245(REST·WS), `engine.py`는 최동호. 브랜치 `gateway/<주제>`.
+- **ROLECALL 전환(2026-10-10):** `docs/research/09` 3.7. 틱 루프 `engine.py`(`tick`, 호출 순서만)·`engine_state.py`(`EngineState`)·GW-02~07 액션은 최동호(파트 2A, 결정 0009)가 쓴다(Part2-17·2-18). 원본: `knowledge/spikes/rolecall_engine_proto/port/modules/gateway/`. `TickOutcome`은 contracts에 있다(결정 0017). REST·WS(`app.py` 재작성, Part1-7)는 리드. `app.py` 끝의 모듈 수준 `app = create_app(...)`은 import 때 시나리오를 읽으므로 Part1-7에서 factory 방식으로 바꾼다.
+- 담당: 리드 kth9245(REST·WS), `engine.py`는 최동호. 작업은 자기 worktree에서 main으로(결정 0010·0014).

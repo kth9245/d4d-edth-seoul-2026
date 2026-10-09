@@ -1,36 +1,42 @@
-"""The two-layer spike runs the whole 3-minute script on the demo scenario (decisions 0015-0018)."""
+"""The port tree (knowledge/spikes/rolecall_engine_proto/port/modules/...) is copy-ready and runs the
+whole 3-minute script on the demo scenario (decisions 0015-0024, devil-advocate 2026-10-10)."""
 
-import importlib.util
+import json
+import os
+import re
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
 
 from contracts.models import Frame
+from tools.check_imports import problems as import_problems
 
-SPIKE = Path(__file__).resolve().parent.parent / "knowledge/spikes/rolecall_engine_proto"
+ROOT = Path(__file__).resolve().parent.parent
+SPIKE = ROOT / "knowledge/spikes/rolecall_engine_proto"
+PORT = SPIKE / "port"
+ACTIONS = sorted(p for p in PORT.glob("modules/*/actions/*.py") if p.name != "__init__.py")
 MIN = 60_000
 
 
 @pytest.fixture(scope="module")
-def result():
-    spec = importlib.util.spec_from_file_location("engine_proto", SPIKE / "engine_proto.py")
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod.run(minutes=35)
+def result(tmp_path_factory):
+    out = tmp_path_factory.mktemp("spike") / "frames.json"
+    env = {**os.environ, "PYTHONPATH": f"{PORT}{os.pathsep}{ROOT}"}
+    r = subprocess.run([sys.executable, str(SPIKE / "run_script.py"), "--out", str(out)],
+                       cwd=ROOT, env=env, capture_output=True, text=True)  # fmt: skip
+    assert r.returncode == 0, r.stderr
+    data = json.loads(out.read_text(encoding="utf-8"))
+    return {
+        "start_ms": data["start_ms"],
+        "frames": [Frame.model_validate(f) for f in data["frames"]],
+    }
 
 
 def _at(result, offset_ms):
     frames = result["frames"]
     return next((f for f in frames if f.t_ms - result["start_ms"] >= offset_ms), frames[-1])
-
-
-def _plays(frame):
-    return {v.id: v.play_id for v in frame.vehicles}
-
-
-def test_frames_are_contract_frames(result):
-    f = result["frames"][-1]
-    assert Frame.model_validate(f.model_dump()) == f
 
 
 def test_report_card_comes_from_sensing_after_the_boat_appears(result):
@@ -42,9 +48,9 @@ def test_report_card_comes_from_sensing_after_the_boat_appears(result):
 def test_one_decision_switches_four_vehicles(result):
     rep = next(r for r in result["frames"][-1].reports if r.kind == "target_detected")
     after = _at(result, rep.resolved_ms - result["start_ms"] + 5000)
-    assert {k: _plays(after)[k] for k in ("d1", "usv", "ugv", "d2")} == {
-        "d1": "watch", "usv": "approach", "ugv": "landing", "d2": "patrol_b",
-    }  # fmt: skip
+    plays = {v.id: v.play_id for v in after.vehicles}
+    want = {"d1": "watch", "usv": "approach", "ugv": "landing", "d2": "patrol_b"}
+    assert {k: plays[k] for k in want} == want
 
 
 def test_reserve_takes_over_the_watch_step(result):
@@ -67,3 +73,19 @@ def test_only_the_direct_control_commands_are_blocked(result):
     blocks = result["frames"][-1].blocks
     assert [b.reason for b in blocks] == ["outside_zone", "battery_insufficient"]
     assert blocks[0].alternative is not None
+
+
+@pytest.mark.parametrize("path", ACTIONS, ids=lambda p: p.stem)
+def test_port_action_fits_the_action_rules(path):
+    lines = path.read_text(encoding="utf-8").splitlines()
+    assert len(lines) <= 80, f"{path.name}: {len(lines)} lines"
+    assert re.search(rf"^def {path.stem}\(", "\n".join(lines), re.M), "public function = file name"
+    spec = (ROOT / "modules" / path.parent.parent.name / "SPEC.md").read_text(encoding="utf-8")
+    assert f"| {path.stem} |" in spec, f"no SPEC row for {path.stem}"
+
+
+def test_port_is_formatted_and_keeps_module_boundaries():
+    fmt = subprocess.run(["ruff", "format", "--check", "--line-length", "100", str(PORT)],
+                         capture_output=True, text=True)  # fmt: skip
+    assert fmt.returncode == 0, fmt.stdout
+    assert import_problems(PORT) == []
