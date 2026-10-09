@@ -36,6 +36,14 @@ if echo "$changed" | grep -q '^modules/cop-ui/'; then
   fi
 fi
 out=$("$PY" scripts/smoke.py 2>&1) || { echo "$out"; fail "데모 smoke test 실패"; }
-git push -q origin HEAD:main || fail "push 실패. 누군가 먼저 push했을 수 있습니다. 다시 ship 하세요."
+# A task.py record (tasks/ only, decision 0013) may land while tests run: rebase over it and retry.
+pushed=0
+for _ in 1 2 3; do
+  if git push -q origin HEAD:main 2>/dev/null; then pushed=1; break; fi
+  git fetch -q origin || break
+  [ -n "$(git diff --name-only HEAD...origin/main | grep -v '^tasks/')" ] && break
+  git rebase -q origin/main || fail "rebase 충돌(기록 커밋 위). 'git status' 확인 후 다시 ship."
+done
+[ "$pushed" = 1 ] || fail "push 실패. 누군가 먼저 push했을 수 있습니다. 다시 ship 하세요."
 git fetch -q origin main:main 2>/dev/null || true  # keep local main in sync (no-op when main is checked out)
 echo "[ship] 완료: $(git log --oneline -1)"
