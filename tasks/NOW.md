@@ -27,6 +27,7 @@
 - **Part3-12** 편집기: 카드 편집
 - **Part3-13** 편집기: AI 초안 입력 칸
 - **Part3-14** 작전 설정 패널
+- **Part3-15.1** mavlink compile_mavlink · MAV-01 (리드, 결정 0025, 통합 2 뒤)
 
 ### 황승주
 - **Part2-7** safety `point_in_polygon` · SFT-01
@@ -70,7 +71,7 @@
 - **Part2-20** sim `load_scenario_json` · SIM-04
 
 ### 누구나
-- **Part3-15** play `compile_mavlink` (결정 0011) · PLY-10
+- **Part3-15** play `compile_mavlink` (결정 0011) · 하위 0/1 완료 · PLY-10
 
 ## 최근 결정
 - 10/9 23:20 kth9245 · Part1-4 · 사건 4 고속 보트 추적 플레이의 표적은 운용자가 고름(target: operator → 승인 뒤 target_select 카드). 리드 답 '운용자가 고름'
