@@ -132,3 +132,16 @@ def test_ship_freeze_downgrades_test_failure_to_warning(tmp_path):
     assert r.returncode == 0, r.stdout + r.stderr
     assert "경고" in r.stdout + r.stderr
     assert "break" in git(work, "log", "--oneline", "origin/main", "-1")
+
+
+def test_ship_allows_module_with_spec_only_and_no_tests(tmp_path):
+    _, work = make_clone(tmp_path)
+    spec = work / "modules/play/SPEC.md"
+    spec.write_text(
+        spec.read_text(encoding="utf-8") + "| PLY-99 | do_nothing | - | - | - | t | 예정 |\n",
+        encoding="utf-8",
+    )
+    git(work, "commit", "-qam", "spec only")
+    r = run_ship(work)
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert "테스트가 없습니다" in r.stdout + r.stderr
