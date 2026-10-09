@@ -32,7 +32,8 @@
 - **Part2-7** safety `point_in_polygon` · SFT-01
 - **Part2-8** safety `return_feasible` · SFT-02
 - **Part2-9** safety `check_command` · SFT-03
-- **Part2-10** runtime `step_vehicle` · RT-01
+- **Part2-10** runtime `step_vehicle` · 하위 0/1 완료 · RT-01
+- **Part2-10.1** runtime enter_step · RT-08 (PLY-07 뒤)
 - **Part2-11** runtime `assign_roles` · RT-02
 - **Part2-12** runtime `apply_decision` · RT-03
 - **Part2-13** runtime `update_metrics` · RT-04
