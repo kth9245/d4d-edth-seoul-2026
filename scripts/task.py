@@ -84,6 +84,9 @@ def main() -> None:
         fail(f"기록 못 올림({e}). 네트워크를 확인하고 다시 실행하세요")
     except ValueError as e:
         fail(f"기록 파일 오류: {e}. 리드에게 알리세요")
+    except subprocess.CalledProcessError as e:
+        lines = (e.stderr or "").strip().splitlines()
+        fail(f"git 명령 실패: {lines[-1] if lines else e}")
     title = f" {ev['title']}" if a.cmd == "add" else ""
     print(f"{ev['id']}{title} {VERB[a.cmd]}: {me} {ev['at'][11:16]} KST (main {sha[:7]})")
     assign = items[ev["id"]].assign

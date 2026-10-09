@@ -184,3 +184,20 @@ def test_ship_retries_when_only_task_records_landed_mid_ship(tmp_path):
 def test_ship_stops_when_other_files_landed_mid_ship(tmp_path):
     _, r = _ship_with_mid_push(tmp_path, "knowledge/inbox/mate.md")
     assert r.returncode == 1 and "push 실패" in r.stdout + r.stderr
+
+
+def test_ship_shows_why_a_push_was_rejected_and_does_not_retry_it(tmp_path):
+    remote, work = make_clone(tmp_path)
+    count = tmp_path / "pushes"
+    hook = remote / "hooks" / "pre-receive"
+    hook.write_text(
+        f"#!/bin/sh\necho x >> {count}\necho 'GH001: Large files detected' >&2\nexit 1\n"
+    )
+    hook.chmod(0o755)
+    (work / "knowledge/inbox/mine.md").write_text("x\n")
+    git(work, "add", "knowledge/inbox/mine.md")
+    git(work, "commit", "-q", "-m", "mine note")
+    r = run_ship(work)
+    assert r.returncode == 1
+    assert "GH001" in r.stdout + r.stderr
+    assert count.read_text().count("x") == 1

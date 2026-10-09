@@ -62,6 +62,12 @@ def claim_ledger(root: Path, spec_id: str, owner: str, take: bool) -> None:
     except (OfflineError, PushFailed) as e:
         print(f"경고: 할 일 기록 못 올림({e}). 나중에 `task.py start <번호>`", file=sys.stderr)
         return
+    except (ValueError, subprocess.CalledProcessError) as e:
+        print(
+            f"경고: 할 일 기록 파일 오류({e}). 리드에게 알리세요. 액션은 계속 만듭니다",
+            file=sys.stderr,
+        )
+        return
     if item:
         print(f"할 일 기록: {item} 시작")
     else:

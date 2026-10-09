@@ -44,15 +44,12 @@ def fetch(root: Path) -> bool:
     return r.returncode == 0
 
 
-def read_remote_file(root: Path, path: str) -> str:
-    r = subprocess.run(
-        ["git", "show", f"origin/main:{path}"],
-        cwd=root,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-    )
-    return r.stdout if r.returncode == 0 else ""
+def read_remote_file(root: Path, path: str, rev: str = "origin/main") -> str:
+    """'' only when `path` is absent at `rev`; any other git error raises, so a failed read
+    can never be mistaken for an empty log (the next write would replace the whole board)."""
+    if not _git(root, "ls-tree", "--name-only", rev, "--", path).strip():
+        return ""
+    return _git(root, "show", f"{rev}:{path}")
 
 
 def fetch_age_min(root: Path) -> int | None:
@@ -78,15 +75,24 @@ def changed_paths(root: Path, base: str, sha: str) -> set[str]:
     return set(_git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", base, sha).split())
 
 
+def _landed(root: Path, sha: str, base: str) -> bool:
+    r = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", sha, base], cwd=root, capture_output=True
+    )
+    return r.returncode == 0
+
+
 def push_tasks(root: Path, build: Callable[[str], tuple[str, str, str]], retries: int = 5) -> str:
     """build(old_log) -> (new_log, now_md, message). Called again with the fresh remote log
     after every rejected push, so validation and numbering always see the newest state."""
-    last = ""
+    last, sha = "", ""
     for _ in range(retries):
         if not fetch(root):
             raise OfflineError("origin에 연결할 수 없음")
         base = _git(root, "rev-parse", "origin/main").strip()
-        new_log, now_md, message = build(read_remote_file(root, LOG))
+        if sha and _landed(root, sha, base):  # the server took it although the client saw an error
+            return sha
+        new_log, now_md, message = build(read_remote_file(root, LOG, base))
         sha = commit_files(root, base, {LOG: new_log, NOW: now_md}, message)
         extra = changed_paths(root, base, sha) - ALLOWED
         if extra:

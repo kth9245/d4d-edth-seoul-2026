@@ -139,3 +139,11 @@ def test_corrupt_log_is_reported_not_traceback(tmp_path):
     push_tasks(work, lambda old: (old + "{oops\n", "n\n", "task: break"))
     r = task(work, "show")
     assert r.returncode == 1 and "2번째 줄" in r.stderr and "Traceback" not in r.stderr
+
+
+def test_git_errors_are_reported_not_traceback(tmp_path):
+    remote = tmp_path / "remote.git"
+    sh(tmp_path, "init", "-q", "--bare", "-b", "main", str(remote))
+    work = clone(tmp_path, remote, "work", "최동호")  # empty remote: no origin/main yet
+    r = task(work, "show")
+    assert r.returncode == 1 and "git 명령 실패" in r.stderr and "Traceback" not in r.stderr

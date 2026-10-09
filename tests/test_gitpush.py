@@ -1,13 +1,17 @@
+import subprocess
+
 import pytest
 
 from tests.ledger_fixtures import clone, make_repo, remote_file, sh
 from tools.gitpush import (
+    LOG,
     OfflineError,
     changed_paths,
     commit_files,
     fetch,
     fetch_age_min,
     push_tasks,
+    read_remote_file,
 )
 from tools.tasks import Refused
 
@@ -74,3 +78,33 @@ def test_fetch_age_after_fetch_is_zero(tmp_path):
     _, work = make_repo(tmp_path)
     assert fetch(work)
     assert fetch_age_min(work) == 0
+
+
+def test_push_that_landed_but_reported_failure_is_not_repeated(tmp_path, monkeypatch):
+    remote, work = make_repo(tmp_path)
+    real = subprocess.run
+
+    def lossy(args, **kw):  # the server takes the push, the client sees a dropped connection
+        r = real(args, **kw)
+        if list(args[:2]) == ["git", "push"]:
+            return subprocess.CompletedProcess(args, 1, "", "connection reset")
+        return r
+
+    monkeypatch.setattr(subprocess, "run", lossy)
+    calls = []
+
+    def build(old):
+        calls.append(old)
+        return old + "a\n", "n\n", "task: x"
+
+    push_tasks(work, build)
+    assert calls == [""]
+    assert remote_file(remote, LOG) == "a\n"
+
+
+def test_read_remote_file_raises_on_git_errors_but_not_on_missing_path(tmp_path):
+    _, work = make_repo(tmp_path)
+    assert fetch(work)
+    assert read_remote_file(work, LOG) == ""
+    with pytest.raises(subprocess.CalledProcessError):
+        read_remote_file(work, LOG, "no-such-ref")

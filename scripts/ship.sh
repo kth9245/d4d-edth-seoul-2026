@@ -37,13 +37,15 @@ if echo "$changed" | grep -q '^modules/cop-ui/'; then
 fi
 out=$("$PY" scripts/smoke.py 2>&1) || { echo "$out"; fail "데모 smoke test 실패"; }
 # A task.py record (tasks/ only, decision 0013) may land while tests run: rebase over it and retry.
+# Retry only when origin moved; otherwise show git's own reason (e.g. a rejected large file).
 pushed=0
 for _ in 1 2 3; do
-  if git push -q origin HEAD:main 2>/dev/null; then pushed=1; break; fi
-  git fetch -q origin || break
+  if err=$(git push -q origin HEAD:main 2>&1); then pushed=1; break; fi
+  git fetch -q origin || { err="$err"$'\n'"(fetch도 실패: 네트워크 확인)"; break; }
+  git merge-base --is-ancestor origin/main HEAD && break
   [ -n "$(git diff --name-only HEAD...origin/main | grep -v '^tasks/')" ] && break
   git rebase -q origin/main || fail "rebase 충돌(기록 커밋 위). 'git status' 확인 후 다시 ship."
 done
-[ "$pushed" = 1 ] || fail "push 실패. 누군가 먼저 push했을 수 있습니다. 다시 ship 하세요."
+[ "$pushed" = 1 ] || { echo "$err"; fail "push 실패. 위 git 메시지를 확인하세요. 누군가 먼저 push했다면 다시 ship 하세요."; }
 git fetch -q origin main:main 2>/dev/null || true  # keep local main in sync (no-op when main is checked out)
 echo "[ship] 완료: $(git log --oneline -1)"

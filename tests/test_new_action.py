@@ -212,3 +212,14 @@ def test_claim_skips_ledger_when_root_is_not_repo_top(tmp_path):
     assert r.returncode == 0, r.stderr
     assert "경고: 할 일 기록 못 올림" in r.stderr
     assert len(remote_file(remote, "tasks/log.jsonl").splitlines()) == 1
+
+
+def test_claim_warns_and_continues_when_ledger_log_is_broken(tmp_path):
+    from tools.gitpush import push_tasks
+
+    _, work, root, mod = planned_repo(tmp_path)
+    push_tasks(work, lambda old: (old + "{oops\n", "n\n", "task: break"))
+    r = claim(root, "최동호")
+    assert r.returncode == 0, r.stderr
+    assert "기록 파일 오류" in r.stderr and "Traceback" not in r.stderr
+    assert (mod / "actions" / "predict_tracks.py").exists()
