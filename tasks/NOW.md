@@ -2,7 +2,7 @@
 
 # 지금 작업판
 
-마지막 기록 10/9 23:24 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/9 23:45 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - (없음)
@@ -62,6 +62,7 @@
 - **Part2-20** sim `load_scenario_json` · SIM-04
 
 ### 누구나
+- **Part1-16** 스파이크를 두 층 구조로 갱신(contracts 모델·시연 시나리오 사용, API.md 함수 이름, 35분 대본 테스트)
 - **Part3-15** play `compile_mavlink` (결정 0011) · PLY-10
 
 ## 최근 결정
