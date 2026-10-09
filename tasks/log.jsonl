@@ -70,3 +70,4 @@
 {"at": "2026-10-10T00:22:34+09:00", "by": "kth9245", "op": "note", "id": "Part2-10", "text": "원본이 port/modules/runtime/으로 바뀜: step_vehicle은 enter_step(RT-08 새 행)과 나뉨, switch_play(RT-09)도 새 행. 파일 그대로 복사 + 테스트(README 참고)"}
 {"at": "2026-10-10T00:22:40+09:00", "by": "kth9245", "op": "note", "id": "Part2-18", "text": "build_frame 재작성 대신 새 이름 GW-06 build_frame_v2(레거시 GW-01은 smoke 때문에 통합 1까지 그대로). 원본 port/modules/gateway/actions/build_frame_v2.py"}
 {"at": "2026-10-10T00:31:53+09:00", "by": "kth9245", "op": "add", "id": "Part2-17.1", "title": "gateway init_engine · GW-02 (묶음 A, engine_state.py 먼저)", "parent": "Part2-17", "assign": "최동호", "slot": "1", "spec": null}
+{"at": "2026-10-10T00:31:59+09:00", "by": "kth9245", "op": "add", "id": "Part2-17.2", "title": "gateway record_injections · GW-03 (묶음 A)", "parent": "Part2-17", "assign": "최동호", "slot": "1", "spec": null}
