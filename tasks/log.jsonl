@@ -76,3 +76,4 @@
 {"at": "2026-10-10T00:32:19+09:00", "by": "kth9245", "op": "add", "id": "Part2-17.5", "title": "gateway tick_log · GW-07 (묶음 A)", "parent": "Part2-17", "assign": "최동호", "slot": "1", "spec": null}
 {"at": "2026-10-10T00:32:25+09:00", "by": "kth9245", "op": "add", "id": "Part2-10.1", "title": "runtime enter_step · RT-08 (PLY-07 뒤)", "parent": "Part2-10", "assign": "황승주", "slot": "1", "spec": null}
 {"at": "2026-10-10T00:32:31+09:00", "by": "kth9245", "op": "add", "id": "Part2-12.1", "title": "runtime switch_play · RT-09 (묶음 A, apply_decision·apply_injection·apply_reserves 전에)", "parent": "Part2-12", "assign": "황승주", "slot": "1", "spec": null}
+{"at": "2026-10-10T00:32:37+09:00", "by": "kth9245", "op": "add", "id": "Part3-6.1", "title": "play check_operation · PLY-11 (통합 2, PLY-03~05 뒤)", "parent": "Part3-6", "assign": "황승주", "slot": "2", "spec": null}

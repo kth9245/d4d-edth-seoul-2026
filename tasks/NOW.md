@@ -46,7 +46,8 @@
 - **Part3-3** play `check_report_points` · PLY-03
 - **Part3-4** play `check_return_battery` · PLY-04
 - **Part3-5** play `check_zone` · PLY-05
-- **Part3-6** play `check_play` · PLY-06
+- **Part3-6** play `check_play` · 하위 0/1 완료 · PLY-06
+- **Part3-6.1** play check_operation · PLY-11 (통합 2, PLY-03~05 뒤)
 - **Part3-7** play `expand_action` + 표 · PLY-07
 - **Part3-8** play `list_templates` · PLY-08
 - **Part3-9** play `draft_play` · PLY-09
