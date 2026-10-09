@@ -35,7 +35,8 @@
 - **Part2-10** runtime `step_vehicle` · 하위 0/1 완료 · RT-01
 - **Part2-10.1** runtime enter_step · RT-08 (PLY-07 뒤)
 - **Part2-11** runtime `assign_roles` · RT-02
-- **Part2-12** runtime `apply_decision` · RT-03
+- **Part2-12** runtime `apply_decision` · 하위 0/1 완료 · RT-03
+- **Part2-12.1** runtime switch_play · RT-09 (묶음 A, apply_decision·apply_injection·apply_reserves 전에)
 - **Part2-13** runtime `update_metrics` · RT-04
 - **Part2-14** runtime `apply_injection` · RT-05
 - **Part2-15** runtime `apply_direct` · RT-06
