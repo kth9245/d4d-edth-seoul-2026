@@ -53,3 +53,4 @@
 {"at": "2026-10-09T23:14:01+09:00", "by": "kth9245", "op": "start", "id": "Part1-1", "take": false, "from": null}
 {"at": "2026-10-09T23:14:04+09:00", "by": "kth9245", "op": "decide", "id": "Part1-1", "text": "결정 0015·0016·0017·0018 참조(두 층 구조, contracts 세부, API 규약)"}
 {"at": "2026-10-09T23:14:06+09:00", "by": "kth9245", "op": "add", "id": "Part1-1.1", "title": "contracts/API.md, contracts/README, AGENTS.md 읽을 목록, 09 문서 2·3절 정본 안내와 6절 수정", "parent": "Part1-1", "assign": null, "slot": "밤", "spec": null}
+{"at": "2026-10-09T23:14:14+09:00", "by": "kth9245", "op": "start", "id": "Part1-1.1", "take": false, "from": null}
