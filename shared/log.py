@@ -10,10 +10,21 @@ Pure action functions do not log (80-line limit, reproducible tests).
 
 import logging
 import os
+from datetime import datetime
 from pathlib import Path
+
+from shared.kst import KST
 
 FORMAT = "%(asctime)s %(levelname).1s %(name)s: %(message)s"
 ROOT = Path(__file__).resolve().parent.parent
+
+
+class KSTFormatter(logging.Formatter):
+    """asctime in KST whatever the machine timezone (decision 0012)."""
+
+    def formatTime(self, record, datefmt=None):
+        t = datetime.fromtimestamp(record.created, KST)
+        return t.strftime("%Y-%m-%d %H:%M:%S") + f",{int(record.msecs):03d}+0900"
 
 
 def setup_logging(name: str, level: str | None = None, log_dir: Path | None = None) -> Path:
@@ -25,7 +36,7 @@ def setup_logging(name: str, level: str | None = None, log_dir: Path | None = No
     root = logging.getLogger()
     root.setLevel(lvl)
     if not any(getattr(h, "_kdth", False) for h in root.handlers):
-        fmt = logging.Formatter(FORMAT)
+        fmt = KSTFormatter(FORMAT)
         for h in (logging.StreamHandler(), logging.FileHandler(path, encoding="utf-8")):
             h.setFormatter(fmt)
             h._kdth = True  # type: ignore[attr-defined]

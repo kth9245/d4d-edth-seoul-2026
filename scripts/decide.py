@@ -8,8 +8,10 @@ Usage: uv run python scripts/decide.py new "<title>" [--modules a,b]
 import argparse
 import re
 import sys
-from datetime import date
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from shared.kst import now_kst  # noqa: E402
 
 TEMPLATE = """---
 id: {id}
@@ -42,7 +44,7 @@ def cmd_new(log: Path, title: str, modules: str) -> None:
     mods = ", ".join(m.strip() for m in modules.split(",") if m.strip())
     path = log / f"{nid}-{slugify(title)}.md"
     path.write_text(
-        TEMPLATE.format(id=nid, title=title, date=date.today().isoformat(), modules=mods),
+        TEMPLATE.format(id=nid, title=title, date=now_kst().date().isoformat(), modules=mods),
         encoding="utf-8",
     )
     print(
@@ -59,7 +61,7 @@ def cmd_accept(log: Path, nid: str, by: str) -> None:
     text = p.read_text(encoding="utf-8")
     text = re.sub(r"^status:.*$", "status: 확정", text, count=1, flags=re.M)
     text = re.sub(r"^decided_by:.*$", f"decided_by: {by}", text, count=1, flags=re.M)
-    text = re.sub(r"^date:.*$", f"date: {date.today().isoformat()}", text, count=1, flags=re.M)
+    text = re.sub(r"^date:.*$", f"date: {now_kst().date().isoformat()}", text, count=1, flags=re.M)
     p.write_text(text, encoding="utf-8")
     print(f"확정: {p}")
 

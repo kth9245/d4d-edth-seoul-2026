@@ -1,6 +1,7 @@
 import logging
+import time
 
-from shared.log import get_logger, setup_logging
+from shared.log import FORMAT, KSTFormatter, get_logger, setup_logging
 
 
 def test_setup_logging_writes_file_and_is_idempotent(tmp_path):
@@ -25,3 +26,16 @@ def test_setup_logging_writes_file_and_is_idempotent(tmp_path):
                 root.removeHandler(h)
                 h.close()
         assert root.handlers == before
+
+
+def test_formatter_writes_kst_even_when_machine_is_utc(monkeypatch):
+    monkeypatch.setenv("TZ", "UTC")
+    time.tzset()
+    try:
+        rec = logging.LogRecord("kdth.x", logging.INFO, __file__, 1, "hi", None, None)
+        rec.created, rec.msecs = 0.0, 0.0
+        out = KSTFormatter(FORMAT).format(rec)
+        assert out.startswith("1970-01-01 09:00:00,000+0900 I kdth.x: hi")
+    finally:
+        monkeypatch.undo()
+        time.tzset()
