@@ -126,7 +126,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
   - 펼치기 표: `(ActionKind, Domain) -> CommandKind | None`. 표는 JSON 하나(`modules/play/expand_table.json`). None이면 그 기체는 그 역할 후보에서 빠진다. hold는 모든 영역에서 hold.
   - AI 초안: 문장 + 어휘(ActionKind·ConditionKind) + Play JSON 스키마를 LLM에 주고 구조화 출력만 받는다. 스키마 밖이면 버리고 한 번 재요청. `origin="ai_draft", approved=False`로 돌려준다. 응답은 `demo/plays/cache/<sha256(prompt)>.json`에 저장하고, 캐시가 있으면 호출하지 않는다. API 키는 `.env`.
   - 템플릿 2개를 손으로 쓴다: 해안 경계(**역할 4**: AIR 순찰(vehicles [드론1, 드론3])·SEA 확인·GROUND 상륙 감시·AIR 예비 순찰(vehicles [드론2], 결정 전에는 wait 줄에서 대기)), 고속 보트 추적(역할 1: AIR 추적). 역할 3개로는 사건 2의 "예비 드론이 빈 구역 순찰"이 나오지 않는다(검토에서 확인: 결정은 `Choice.step_by_role`로 역할을 움직이므로 넷째 역할이 있어야 넷째 기체가 움직인다).
-- 공개 API: `load_play(path) -> Play`, `check_play(play, op: Operation, specs) -> PlayCheck`, `expand_action(action, domain) -> CommandKind|None`, `draft_play(text, op) -> Play`, `list_templates() -> list[Play]`
+- 공개 API: `load_play(path) -> Play`, `check_play(play, op: Operation, specs) -> PlayCheck`, `expand_action(action, domain) -> CommandKind|None`, `draft_play(text, op) -> Play`, `list_templates() -> list[Play]`, `compile_mavlink(play, op, specs) -> dict[str, tuple[dict, str]]`(결정 0011: 기체별 QGC `.plan`과 pymavlink 스크립트. 실제 전송 없음)
 - 완료 기준: 템플릿 2개가 `check_play` 통과. 보고 지점을 뺀 플레이는 실패. AI 초안이 캐시로 재현. 전부 순수 함수, 예시 JSON으로 테스트.
 - 하지 않는 것: 서명, 버전 관리, 플레이 간 참조.
 
@@ -328,6 +328,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | Part3-12 (리드) | 편집기: 카드 편집 | 행동·조건·갈 step·보고 드롭다운, 카드 추가 | "보고 카드 끼워 넣기" 뒤 저장 통과 | Part3-11 | 2(빼는 순서 6) |
 | Part3-13 (리드) | 편집기: AI 초안 입력 칸 | 문장 → `POST /plays/draft` → 카드 열에 표시(approved=False 표시) | 캐시 문장으로 카드가 뜸 | Part3-9, Part3-10 | 2 |
 | Part3-14 (리드) | 작전 설정 패널 | Operation JSON → 이름·구역·기체 목록 표시(편집은 빼는 순서 1) | 시나리오의 작전이 패널에 보임 | Part1-4 | 2(빼는 순서 1) |
+| Part3-15 | play `compile_mavlink` (결정 0011) | Play, Operation, specs → 기체별 (QGC `.plan` JSON, pymavlink 실행 스크립트 문자열) | 템플릿 2개 × 기체 5대 `.plan` 생성(mission.items[].command가 MAV_CMD 정수), 스크립트 `py_compile` 통과. do→MAV_CMD 대응과 조건→텔레메트리 대응은 결정 0011. SITL 실행은 동결 뒤 추가 | Part3-1, Part3-7 | 2 뒤(동결 전). 통합 1 먼저 끝낸 사람이 가져감 |
 
 통합 1까지 3개(Part3-1, 3-2, 3-7)이며 황승주(Part 2B)가 맡는다(6절 머리 표). 18:00 뒤 황승주는 3-3~3-9(검사·템플릿·AI 초안), 리드는 3-10~3-14(편집기 화면)를 한다. 결정 0009: React 경험자가 없어 편집기는 9절대로 읽기 전용 카드 + "보고 카드 끼워 넣기" 버튼(3-12는 그 버튼 하나)으로 고정한다.
 
