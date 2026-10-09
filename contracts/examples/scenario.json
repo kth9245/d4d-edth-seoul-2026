@@ -579,6 +579,7 @@
    "params": {
     "id": "boat1",
     "new_id": "fast1",
+    "kind": "fast_boat",
     "ve": -2.0,
     "vn": 6.0
    }

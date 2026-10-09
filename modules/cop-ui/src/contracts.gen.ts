@@ -291,6 +291,7 @@ export interface TickOutcome {
   passed?: PassedCommand[];
   blocks?: Block[];
   new_reports?: Report[];
+  reports?: Report[];
   assignments?: Assignment[];
   states?: VehicleState[];
   targets?: Target[];

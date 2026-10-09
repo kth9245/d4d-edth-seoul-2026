@@ -1075,6 +1075,14 @@
       "title": "New Reports",
       "type": "array"
     },
+    "reports": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Report"
+      },
+      "title": "Reports",
+      "type": "array"
+    },
     "assignments": {
       "default": [],
       "items": {

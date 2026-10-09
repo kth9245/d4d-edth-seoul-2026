@@ -71,6 +71,7 @@ class TickOutcome(BaseModel):  # what one tick produced; input of runtime.update
     passed: list[PassedCommand] = []
     blocks: list[Block] = []
     new_reports: list[Report] = []
+    reports: list[Report] = []  # every card after this tick (open_reports_max)
     assignments: list[Assignment] = []
     states: list[VehicleState] = []
     targets: list[Target] = []

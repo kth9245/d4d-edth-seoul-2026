@@ -13,6 +13,7 @@ from contracts.models import (
     Polygon,
     Scenario,
     ScenarioEvent,
+    TickOutcome,
     VehicleState,
 )
 
@@ -88,3 +89,7 @@ def test_strength_out_of_range_rejected():
 def test_unknown_sensor_rejected():
     with pytest.raises(ValidationError):
         Detection(id="d", sensor="sonar", t_ms=0, lat=37.0, lon=127.0, alt_m=10, strength=0.5)
+
+
+def test_tick_outcome_carries_all_reports_for_open_report_counting():
+    assert "reports" in TickOutcome.model_fields

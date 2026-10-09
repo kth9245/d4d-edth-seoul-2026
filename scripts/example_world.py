@@ -145,7 +145,7 @@ EVENTS = [
     ScenarioEvent(
         offset_ms=23 * MIN,
         kind="split_target",
-        params={"id": "boat1", "new_id": "fast1", "ve": -2.0, "vn": 6.0},
+        params={"id": "boat1", "new_id": "fast1", "kind": "fast_boat", "ve": -2.0, "vn": 6.0},
     ),
 ]
 

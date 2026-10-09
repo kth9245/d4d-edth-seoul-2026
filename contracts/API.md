@@ -43,7 +43,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | 3 | runtime | 입력 적용: `apply_decision(states, plays, decision, reports) -> (states, reports)`, 승인된 것만 `apply_injection(states, plays, injection) -> states`, `apply_direct(states, direct, t_ms) -> (states, Command)` |
 | 4 | runtime | `apply_emergency(states, plays) -> states` |
 | 5 | runtime | 기체마다 `step_vehicle(state, specs[id], plays[state.play_id], targets, t_ms) -> (state, Command \| None, Report \| None)` |
-| 6 | runtime | `apply_reserves(states, op, assignments, t_ms) -> (states, assignments, Report \| None)` |
+| 6 | runtime | `apply_reserves(states, op, plays, assignments, t_ms) -> (states, assignments, Report \| None)` |
 | 7 | safety | 명령마다 `check_command(cmd, state, spec, op, plays, injections) -> PassedCommand \| Block` |
 | 8 | sim | `advance(states, specs, passed, dt_ms, targets) -> states` |
 | 9 | runtime | `update_metrics(metrics, outcome: TickOutcome) -> Metrics` |
@@ -66,7 +66,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | 전체 전환 버튼 | `POST /injections {switch_id}` | `Injection(pending)`과 `injection_pending` 카드를 만들고, 승인 뒤 `apply_injection`으로 적용 |
 | 일부 전환 | `POST /injections {play_by_vehicle}` | 위와 같다(사건 4: 드론 2를 고속 보트 추적으로) |
 
-어느 경로든 원래 플레이는 끝나고 자동 복귀는 없다. `resume_play_id`·`resume_step_id`는 직접 조종(`/direct`) 뒤 복귀에만 쓴다. 이어받기는 기체가 returning·lost·maintenance가 되면 `op.reserve[id]`의 첫 가용 기체가 그 기체의 플레이와 현재 step을 `entered_step=False`로 이어받는 것이다. 이때 배정 사유는 "예비 투입: <id> 대신"이고 `vehicle_gap` 카드가 생긴다.
+어느 경로든 원래 플레이는 끝나고 자동 복귀는 없다. `resume_play_id`·`resume_step_id`는 직접 조종(`/direct`) 뒤 복귀에만 쓴다. 이어받기는 기체가 returning·lost·maintenance가 되면 `op.reserve[id]`의 첫 가용 기체가 그 기체의 플레이를 **첫 step(entry)부터** `entered_step=False`로 시작하는 것이다(결정 0022: 빠진 기체는 이미 귀환 step에 있으므로 현재 step을 이어받으면 예비도 귀환한다). 이때 배정 사유는 "예비 투입: <id> 대신"이고 `vehicle_gap` 카드가 생긴다.
 
 ## 5. 화면과 서버 (REST, WS)
 

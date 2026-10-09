@@ -34,3 +34,9 @@ def test_switch_scene_shows_the_target_select_card():
     s5 = Frame.model_validate(_load(ROOT / "contracts/examples/frames/s5_zone_block.json"))
     picks = [r for r in s5.reports if r.kind == "target_select"]
     assert picks and picks[0].decision_id == "dec-2"
+
+
+def test_split_event_makes_a_fast_boat():
+    sc = Scenario.model_validate(_load(SCENARIO))
+    split = next(e for e in sc.events if e.kind == "split_target")
+    assert split.params["kind"] == "fast_boat"
