@@ -31,13 +31,14 @@ KDTH 2026 해커톤 팀 저장소. 24시간 안에 **로컬에서 작동하는 �
 ## 액션 규칙 (1 액션 = 1 파일 = 1 테스트)
 - 액션 파일: 공개 함수 1개, 이름 = 파일 이름, 80줄 이하. 다른 .py/.ts/.tsx는 200줄 이하. `pipeline.py`·`engine.py`는 호출 순서만.
 - 시작: `uv run python scripts/new_action.py <m> <verb_noun> "<설명>"`. SPEC.md에 `예정` 행이 있으면 같은 명령이 그 행을 가져간다(담당 = 내 git 이름, 파일·실패 테스트 생성). 남이 `진행중`인 행은 `--take`. SPEC.md에 없는 액션 파일은 guard가 막는다.
-- 테스트 먼저: 생성된 실패 테스트를 진짜 테스트로 바꾸고 통과시킨다.
+- TDD(결정 0014): 모든 코드 변경은 실패하는 테스트를 먼저 쓰고, 실패를 확인하고, 구현해 통과시킨다. 액션은 생성된 실패 테스트를 진짜 테스트로 바꾸는 것부터. 문서·데이터만 바꾸면 예외.
 - 다른 모듈은 `from modules.<m> import <공개 API>`로만. `modules.<m>.actions...` import 금지.
 - 통합 1(10/10 18:00) 전에는 sim·gateway 레거시 공개 API(`load_scenario`·`simulate`·`Engine`)를 바꾸지 않는다(smoke가 깨져 전원 ship 불가). 새 동작은 새 이름으로 추가.
 - 로깅(결정 0010): 실행 경계(gateway app, 틱 루프, REST, 스크립트)는 `from shared.log import setup_logging, get_logger`로 stderr와 `logs/<이름>.log`에 남긴다. 순수 함수 액션 안에는 넣지 않는다.
 - 새 모듈이 필요하면 `uv run python scripts/new_module.py <이름> <PREFIX>`.
 
 ## 반영 (결정 0010)
+- 작업은 항상 자기 git worktree에서(결정 0014). 메인 폴더에서는 파일을 고치지 않는다. Claude Code는 시작할 때 `EnterWorktree`(이름 = 작업 번호). 그 뒤 `git rev-parse --path-format=absolute --git-common-dir`가 출력한 경로의 상위 폴더(메인 폴더)를 M이라 하고 `ln -s M/.venv .venv`(UI면 `ln -s M/modules/cop-ui/node_modules modules/cop-ui/node_modules`도). 명령은 `$(...)` 없이 따로 실행한다(worktree 세션이 겹친 git 명령을 거부함). ship은 worktree에서 그대로.
 - 액션 하나가 끝날 때마다 `scripts/ship.sh`: origin/main에 rebase → 바뀐 모듈 테스트 → smoke → main에 push. 원격 브랜치·PR 없음.
 - 실패 테스트가 있는 액션은 ship하지 않는다(같은 모듈 전원의 ship이 막힌다). 남의 실패 테스트를 skip으로 바꾸지 않는다.
 - 작업 중인 액션은 가져갈 수 없다(그 사람 노트북에만 있다). 가져가는 사람은 `예정` 행이나 스파이크에서 다시 시작한다.

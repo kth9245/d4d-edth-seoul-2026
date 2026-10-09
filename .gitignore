@@ -15,3 +15,6 @@ decisions/INDEX.md
 
 # runtime logs (decision 0010)
 logs/
+
+# per-session git worktrees (decision 0014)
+.claude/worktrees/
