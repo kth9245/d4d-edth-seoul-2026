@@ -1,0 +1,50 @@
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part1-1", "title": "contracts 패키지", "parent": null, "assign": "kth9245", "slot": "밤", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part1-2", "title": "백령도 타일 커밋", "parent": null, "assign": "kth9245", "slot": "밤", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part1-3", "title": "play·runtime·safety 뼈대 + SPEC 행", "parent": null, "assign": "kth9245", "slot": "밤", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part1-4", "title": "시나리오 JSON + 템플릿 2개", "parent": null, "assign": "kth9245", "slot": "밤", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part1-5", "title": "AI 초안 프롬프트·캐시 2개", "parent": null, "assign": "kth9245", "slot": "2", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part1-7", "title": "gateway REST + WS", "parent": null, "assign": "kth9245", "slot": "1", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part1-9", "title": "지도: 위성 raster + 기체·표적·구역", "parent": null, "assign": "kth9245", "slot": "1", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part1-10", "title": "상황판 카드 열 + 결정 버튼", "parent": null, "assign": "kth9245", "slot": "1", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part1-11", "title": "직접 조종 + 차단 카드 대안 버튼", "parent": null, "assign": "kth9245", "slot": "2", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part1-12", "title": "주입 승인 카드", "parent": null, "assign": "kth9245", "slot": "2", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part1-13", "title": "지표 패널 + 배속 + 다음 사건", "parent": null, "assign": "kth9245", "slot": "2", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part1-14", "title": "smoke 전환 + 통합 주관", "parent": null, "assign": "kth9245", "slot": "1·2", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part1-15", "title": "3분 대본·BUILT_HERE·제출 설명", "parent": null, "assign": "kth9245", "slot": "뒤", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-1", "title": "sim `move_straight`", "parent": null, "assign": "최동호", "slot": "1", "spec": "SIM-05"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-2", "title": "sim `follow_route`", "parent": null, "assign": "최동호", "slot": "1", "spec": "SIM-06"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-3", "title": "sim `orbit_or_keep`", "parent": null, "assign": "최동호", "slot": "1", "spec": "SIM-07"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-4", "title": "sim `advance_vehicles`(공개 API 이름 `advance`)", "parent": null, "assign": "최동호", "slot": "1", "spec": "SIM-08"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-5", "title": "sim `apply_events`", "parent": null, "assign": "최동호", "slot": "1", "spec": "SIM-09"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-6", "title": "sensing `observe_targets`(공개 API 이름 `observe`)", "parent": null, "assign": "최동호", "slot": "1", "spec": "SNS-02"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-7", "title": "safety `point_in_polygon`", "parent": null, "assign": "황승주", "slot": "1", "spec": "SFT-01"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-8", "title": "safety `return_feasible`", "parent": null, "assign": "황승주", "slot": "1", "spec": "SFT-02"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-9", "title": "safety `check_command`", "parent": null, "assign": "황승주", "slot": "1", "spec": "SFT-03"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-10", "title": "runtime `step_vehicle`", "parent": null, "assign": "황승주", "slot": "1", "spec": "RT-01"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-11", "title": "runtime `assign_roles`", "parent": null, "assign": "황승주", "slot": "1", "spec": "RT-02"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-12", "title": "runtime `apply_decision`", "parent": null, "assign": "황승주", "slot": "1", "spec": "RT-03"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-13", "title": "runtime `update_metrics`", "parent": null, "assign": "황승주", "slot": "1", "spec": "RT-04"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-14", "title": "runtime `apply_injection`", "parent": null, "assign": "황승주", "slot": "2", "spec": "RT-05"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-15", "title": "runtime `apply_direct`", "parent": null, "assign": "황승주", "slot": "2", "spec": "RT-06"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-16", "title": "runtime `apply_emergency`", "parent": null, "assign": "황승주", "slot": "2", "spec": "RT-07"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-17", "title": "gateway `engine.py` 틱 루프", "parent": null, "assign": "최동호", "slot": "1", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-18", "title": "gateway `build_frame` 재작성", "parent": null, "assign": "최동호", "slot": "1", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-19", "title": "시나리오 튜닝", "parent": null, "assign": "최동호", "slot": "2", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-20", "title": "sim `load_scenario_json`", "parent": null, "assign": "최동호", "slot": "1", "spec": "SIM-04"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part3-1", "title": "play `load_play`", "parent": null, "assign": "황승주", "slot": "1", "spec": "PLY-01"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part3-2", "title": "play `check_links`", "parent": null, "assign": "황승주", "slot": "1", "spec": "PLY-02"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part3-3", "title": "play `check_report_points`", "parent": null, "assign": "황승주", "slot": "2", "spec": "PLY-03"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part3-4", "title": "play `check_return_battery`", "parent": null, "assign": "황승주", "slot": "2", "spec": "PLY-04"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part3-5", "title": "play `check_zone`", "parent": null, "assign": "황승주", "slot": "2", "spec": "PLY-05"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part3-6", "title": "play `check_play`", "parent": null, "assign": "황승주", "slot": "2", "spec": "PLY-06"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part3-7", "title": "play `expand_action` + 표", "parent": null, "assign": "황승주", "slot": "1", "spec": "PLY-07"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part3-8", "title": "play `list_templates`", "parent": null, "assign": "황승주", "slot": "2", "spec": "PLY-08"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part3-9", "title": "play `draft_play`", "parent": null, "assign": "황승주", "slot": "2", "spec": "PLY-09"}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part3-10", "title": "편집기: 카드 열(읽기 전용)", "parent": null, "assign": "kth9245", "slot": "2", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part3-11", "title": "편집기: 저장 → 검사 결과 표시", "parent": null, "assign": "kth9245", "slot": "2", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part3-12", "title": "편집기: 카드 편집", "parent": null, "assign": "kth9245", "slot": "2", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part3-13", "title": "편집기: AI 초안 입력 칸", "parent": null, "assign": "kth9245", "slot": "2", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part3-14", "title": "작전 설정 패널", "parent": null, "assign": "kth9245", "slot": "2", "spec": null}
+{"at": "2026-10-09T23:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part3-15", "title": "play `compile_mavlink` (결정 0011)", "parent": null, "assign": null, "slot": "2 뒤", "spec": "PLY-10"}
+{"at": "2026-10-09T02:28:09+09:00", "by": "kth9245", "op": "start", "id": "Part1-3", "take": false, "from": null}
+{"at": "2026-10-09T02:28:09+09:00", "by": "kth9245", "op": "done", "id": "Part1-3", "take": false}
