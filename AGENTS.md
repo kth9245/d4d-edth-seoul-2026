@@ -4,10 +4,11 @@ KDTH 2026 해커톤 팀 저장소. 24시간 안에 **로컬에서 작동하는 �
 
 ## 먼저 읽을 것
 1. `decisions/INDEX.md` — 사람이 확정한 결정. 반드시 따른다. 다르게 해야 한다고 판단되면 멈추고 사람에게 묻는다.
-2. `docs/research/09-rolecall-implementation-foundation.md` — 설계(2절 데이터 형식, 3절 모듈, 4절 통합 기준)와 **6절 사람별 할 일**. 6절 머리의 "통합 1 배정" 표에서 자기 줄을 찾는다.
-3. 작업할 모듈의 `modules/<m>/AGENTS.md`와 `SPEC.md`. `knowledge/INDEX.md`는 조사가 필요할 때만.
+2. `contracts/API.md` — 개념(플레이 = 기체 하나, 오퍼레이션 = 기체들의 플레이 묶음), 함수 서명, 틱 순서, REST·WS. 데이터 형식은 `contracts/models/`. 09 문서와 다르면 이쪽이 맞다.
+3. `docs/research/09-rolecall-implementation-foundation.md` — 4절 통합 기준과 **6절 사람별 할 일**. 6절 머리의 "통합 1 배정" 표에서 자기 줄을 찾는다.
+4. 작업할 모듈의 `modules/<m>/AGENTS.md`와 `SPEC.md`. `knowledge/INDEX.md`는 조사가 필요할 때만.
 
-우선순위: 확정 결정·정책 > SPEC.md > 09 문서 > 지식 카드 > 너의 판단.
+우선순위: 확정 결정·정책 > contracts/API.md > SPEC.md > 09 문서 > 지식 카드 > 너의 판단.
 
 ## 정책 (decisions/POLICY.md 자동 복사본 — 여기서 수정하지 말 것)
 <!-- POLICY:BEGIN -->

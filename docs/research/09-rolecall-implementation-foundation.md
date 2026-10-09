@@ -30,6 +30,8 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 
 ## 2. 데이터 형식 (contracts/models.py, 확정 수준)
 
+> **정본 안내(2026-10-09 23시, 결정 0015~0018).** 데이터 형식의 정본은 `contracts/models/`, 개념·함수 서명·틱 순서·REST는 `contracts/API.md`다. 이 절은 두 층 구조(플레이 = 기체 하나, 오퍼레이션 = 기체들의 플레이 묶음) 전에 쓴 것이라 `Role`·`step_by_role`·`role_id`·`role_gap`·`ScenarioEvent.t_ms`·`TickOutcome` 위치 등이 남아 있다. 다르면 정본을 따른다.
+
 단위: 위경도 도(WGS84), 거리 m, 속도 m/s, 시간 UTC epoch ms(`t_ms`). 모든 모델은 pydantic v2. id는 문자열. `contracts.gen.ts`는 자동 생성.
 
 ### 2.1 열거형
@@ -106,6 +108,8 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 ---
 
 ## 3. 모듈별 목표·방향·공개 API·완료 기준
+
+> **정본 안내(2026-10-09 23시, 결정 0015~0018).** 데이터 형식의 정본은 `contracts/models/`, 개념·함수 서명·틱 순서·REST는 `contracts/API.md`다. 이 절은 두 층 구조(플레이 = 기체 하나, 오퍼레이션 = 기체들의 플레이 묶음) 전에 쓴 것이라 `Role`·`step_by_role`·`role_id`·`role_gap`·`ScenarioEvent.t_ms`·`TickOutcome` 위치 등이 남아 있다. 다르면 정본을 따른다.
 
 형식: 목표(한 줄) / 방향(어떻게) / 공개 API(`from modules.<m> import ...`) / 완료 기준 / 하지 않는 것 / 담당.
 
@@ -201,7 +205,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 ## 4. 통합 슬라이스(검사 가능한 끝에서 끝 경로)
 
 **통합 1 (10/10 18:00)** — 편집기 없이.
-손으로 쓴 플레이 JSON → `check_play` 통과 → `/run/live` → 드론이 순찰 → 표적 출현(사건 1) → `target_found` 탈출 → 보고 step 진입 → Report 카드가 WS Frame에 실림 → `/decisions`로 선택 → 역할 4개의 기체가 각자 step으로 이동 → `check_command`가 전부 통과 → 지도에 네 기체가 움직임. Metrics에 operator_actions=1이 찍힘.
+손으로 쓴 플레이 JSON → `check_play` 통과 → `/run/live` → 드론이 순찰 → 표적 출현(사건 1) → `target_found` 탈출 → 보고 step 진입 → Report 카드가 WS Frame에 실림 → `/decisions`로 선택 → 기체 4대가 선택지의 `play_by_vehicle`대로 각자 새 플레이로 전환 → `check_command`가 전부 통과 → 지도에 네 기체가 움직임. Metrics에 operator_actions=1이 찍힘.
 
 통합 1에 필요한 항목(6절 번호): 리드 Part1-7·1-9·1-10·1-14, 엔진 Part2-1~2-13·2-17·2-18·2-20, 플레이 Part3-1·3-2·3-7. 12:00~18:00 배정은 6절 머리의 "통합 1 배정" 표(A/B/리드 각 5~6시간, 여유 0). 스파이크 코드를 옮기는 전제에서만 가능하다.
 
@@ -272,7 +276,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | Part1-1 | contracts 패키지 | 2절 + 스파이크 models09.py → `contracts/models/` 6파일, LegacyFrame 개명, check.sh 31행, 예시 JSON 29개, TS | `pytest`·`smoke.py`·`gen_contracts.py` 통과 | 없음 | 밤 |
 | Part1-2 | 백령도 타일 커밋 | `fetch_tiles_baengnyeong.sh 14` → `public/tiles/baengnyeong/` 199장 | 파일 199개 + ATTRIBUTION.txt 커밋 | 없음 | 밤 |
 | Part1-3 | play·runtime·safety 뼈대 + SPEC 행 | `new_module.py` ×3 → 디렉터리; **`new_action.py <m> <이름> "<설명>" --planned --inputs .. --outputs .. --done ..`로 Part2·Part3 액션 행을 `예정` 상태로**(파일 없음). 시작하는 사람이 같은 명령을 플래그 없이 돌리면 담당이 그 사람으로 바뀌고 파일이 생긴다 | 세 SPEC.md에 통합 1 액션 행이 전부 `예정`으로 있음. **파일·실패 테스트를 미리 만들지 않는다**(검토에서 재현: 남의 실패 테스트가 같은 모듈에 있으면 `ship.sh`의 pytest가 막혀 아무도 push 못 함) | Part1-1 | 밤 |
-| Part1-4 | 시나리오 JSON + 템플릿 2개 | 스파이크 engine_proto.py 하단 데이터 → `demo/scenarios/baengnyeong_night.json`, `demo/plays/coast_guard.json`·`fast_boat.json` | `Scenario.model_validate`·`Play.model_validate` 통과, 사건 1(표적 출현)이 스파이크에서 보고 카드까지 감. 사건 2·3·6의 시각·경로 튜닝은 Part2-19 | Part1-1 | 밤 |
+| Part1-4 | 시나리오 JSON + 기체별 플레이 | `scripts/example_world.py`(결정 0015·0016 구조, 예시와 같은 세계) → `demo/scenarios/baengnyeong_night.json`(작전·기체 5·플레이·사건), `demo/plays/*.json`(기체별 플레이) | `Scenario.model_validate`·`Play.model_validate` 통과. 사건 2·3·6의 시각·경로 튜닝은 Part2-19 | Part1-1 | 밤 |
 | Part1-5 | AI 초안 프롬프트·캐시 2개 | 어휘(ActionKind 9·ConditionKind 6)+Play 스키마+시연 문장 2개 → `demo/plays/cache/<sha>.json` ×2 | 캐시 JSON이 `Play.model_validate` 통과 | Part1-4 | 2(밤에서 뺌: 통합 1에 안 쓰이고 Part3-9·3-13만 쓴다. 통합 1 뒤 인터넷 되는 곳에서) |
 | ~~Part1-6~~ | → **Part2-17**로 이동(틱 루프는 엔진 쪽 사람이 쓴다, 12절 공격 2) | | | | |
 | Part1-7 | gateway REST + WS | `/plays`, `/operation`, `/run/live?speed=`, `/run/reset`, `/decisions`, `/direct` → app.py. **`tick(state, inputs) -> (state, Frame)` 서명에만 의존**: Part2-17이 안 왔으면 예시 Frame을 돌려주는 스텁 tick으로 만든다. 모듈 import 시점에 시나리오를 읽는 지금 `app.py` 끝의 `app = create_app(...)`은 없앤다(`uvicorn --factory`) | `test_app.py`로 `/run/live` 뒤 WS Frame 수신, `/decisions`가 TickInputs에 들어감. 핸들러마다 입력 요약을 INFO, 예외를 ERROR로(`shared/log`, 결정 0010) | Part1-1 | 1 |
@@ -293,22 +297,22 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | Part2-2 | sim `follow_route` | VehicleState, Spec, PassedCommand(follow_route), dt_ms → VehicleState | 경로점 순회, 끝나면 처음으로 | Part1-1 | 1 |
 | Part2-3 | sim `orbit_or_keep` | VehicleState, Spec, PassedCommand(orbit·keep_distance), Target, dt_ms → VehicleState | orbit 반지름 유지, keep_distance 거리 유지 | Part1-1 | 1 |
 | Part2-4 | sim `advance_vehicles`(공개 API 이름 `advance`) | states, specs, passed, dt_ms, targets → states | 이번 틱 PassedCommand로 `active` 갱신, 없으면 `active` 계속 수행. 명령 없는 틱 테스트 | Part2-1~3 | 1 |
-| Part2-5 | sim `apply_events` | Scenario.events, states, targets, t_ms, dt_ms → (states, targets). params 키는 2.2 `ScenarioEvent`에 적힌 대로(Part1-4의 JSON과 같은 키) | spawn_target·vehicle_battery_set·target_move·split_target·vehicle_link_lost 각 1테스트. 스파이크에는 앞 둘만 있다 | Part1-1 | 1 |
+| Part2-5 | sim `apply_events` | scenario, states, targets, t_ms, dt_ms → (states, targets). 사건 시각 = `operation.started_ms + offset_ms`(결정 0018), params 키는 2.2 `ScenarioEvent` | spawn_target·vehicle_battery_set·target_move·split_target·vehicle_link_lost 각 1테스트. 스파이크에는 앞 둘만 있다 | Part1-1 | 1 |
 | Part2-6 | sensing `observe_targets`(공개 API 이름 `observe`) | states, specs, targets, t_ms → targets | 범위 안이면 seen_by에 추가·last_seen 갱신, 밖이면 제거 | Part1-1 | 1 |
 | Part2-7 | safety `point_in_polygon` | GeoPoint, Polygon → bool | 안·밖·경계 테스트 | Part1-1 | 1 |
 | Part2-8 | safety `return_feasible` | VehicleState, Spec, 목적지 → (bool, 대안 GeoPoint\|None) | 왕복 시간 > 가용 80%면 False와 최대 거리 지점. 대안 = 현재 위치→목적지 선분을 200등분해 목적지 쪽에서부터 되돌아오며 "그 점까지 + 그 점에서 home까지"가 가용 80% 안에 드는 첫 점(스파이크의 구역 대안과 같은 방식. 스파이크에는 배터리 대안이 없다) | Part1-1 | 1 |
 | Part2-9 | safety `check_command` | Command, state, spec, Operation, plays, injections → PassedCommand \| Block | 규칙 1→2→3, 규칙마다 통과·차단·대안 테스트, grep 테스트(PassedCommand 생성은 여기뿐) | Part2-7, Part2-8 | 1 |
-| Part2-10 | runtime `step_vehicle` | VehicleState, **VehicleSpec**, Play, targets, t_ms → (state, Command\|None, Report\|None) | step 진입 때 명령·카드 한 번, `on` 첫 참으로 전이, pending_report_id면 정지. 명령 kind는 `from modules.play import expand_action`(step.do, spec.domain)으로; None이면 명령 없이 step만 진입. 스파이크 step_vehicle.py에서 `_EXPAND` 사전만 이 호출로 바꾼다 | Part1-1, **Part3-7** | 1 |
-| Part2-11 | runtime `assign_roles` | Play, states, assignments, t_ms → **(states, assignments, Report\|None)** | Role.vehicles 순서, 다른 역할에 없는 ready·active 첫 기체. 이탈(returning·lost·maintenance 또는 Play.emergency의 귀환 step 진입) 시 다음 예비 기체의 `role_id·play_id·step_id`를 이탈 기체의 것으로, `entered_step=False`로 바꿔 states에 반영; Assignment reason "예비 n번 투입"; 예비 없으면 `role_gap` Report. **스파이크의 `assign_roles`는 첫 배정만 있고 이어받기는 `run()` 안의 "handover" 블록에 있다 — 그 블록을 옮긴다** | Part1-1 | 1 |
-| Part2-12 | runtime `apply_decision` | states, Play, Decision, reports → (states, reports) | pending_report_id 지우고 step_by_role대로 전이(역할 id → `VehicleState.role_id`가 같은 기체), resolved_ms·decision_id 기록. 역할 4개 동시 전이 테스트 | Part1-1 | 1 |
-| Part2-13 | runtime `update_metrics` | Metrics, **이번 틱의 `TickOutcome`(cmds, passed, blocks, new_reports, assignments, inputs, states, targets, plays)** → Metrics | 2.3 정의 5개 각 1테스트. role_gap 끝 = 후임 기체의 현재 step `do.kind`가 watch_target·approach_target이면 그 기체 id가 어느 Target.seen_by에 든 틱, move_to·patrol_route면 `waypoint_idx`가 -1 또는 1 이상이 된 틱, 그 밖(hold 등)은 첫 PassedCommand 틱. `TickOutcome`은 gateway `engine.py`의 dataclass(계약 아님, Part2-17이 정의) | Part1-1, Part2-17 | 1 |
-| Part2-14 | runtime `apply_injection` | states, Injection(approved), plays → states | proposed대로 배정, resume (play, step) 보관 | Part2-11 | 2 |
+| Part2-10 | runtime `step_vehicle` | VehicleState, VehicleSpec, Play(그 기체의 현재 플레이), targets, t_ms → (state, Command\|None, Report\|None) | step 진입 때 명령·카드 한 번, `on` 첫 참으로 전이, pending_report_id면 정지. 명령 kind는 `from modules.play import expand_action`(step.do, spec.domain). `do.params.target`(nearest·operator·고정 id)을 진입 때 `target_id`로(contracts/API.md 1절). 스파이크 step_vehicle.py에서 `_EXPAND` 사전만 이 호출로 바꾼다 | Part1-1, **Part3-7** | 1 |
+| Part2-11 | runtime `apply_reserves`(구 assign_roles, 결정 0017) | states, Operation, assignments, t_ms → (states, assignments, Report\|None) | 이탈(returning·lost·maintenance) 기체의 `op.reserve` 첫 ready·active 기체가 그 기체의 `play_id·step_id`를 `entered_step=False`로 이어받음. Assignment "예비 투입: <id> 대신", `vehicle_gap` Report. 스파이크 `run()` 안의 "handover" 블록을 옮긴다 | Part1-1 | 1 |
+| Part2-12 | runtime `apply_decision` | states, plays, Decision, reports → (states, reports) | 선택지 `play_by_vehicle`대로 기체들을 새 플레이 entry로(`entered_step=False`), 보고한 기체 pending_report_id 지움, resolved_ms·decision_id 기록. target_select 보고면 `target_id = choice_id`. 기체 4대 동시 전환 테스트 | Part1-1 | 1 |
+| Part2-13 | runtime `update_metrics` | Metrics, 이번 틱의 `TickOutcome`(contracts 모델, 결정 0017) → Metrics | 2.3 정의 5개 각 1테스트. 역할 공백은 `vehicle_gap_ms`, 끝 규칙은 contracts/API.md 2절 | Part1-1, Part2-17 | 1 |
+| Part2-14 | runtime `apply_injection` | states, plays, Injection(approved) → states | `play_by_vehicle`대로 새 플레이 entry로 전환. 원래 플레이는 끝, 자동 복귀 없음(결정 0016) | Part2-10 | 2 |
 | Part2-15 | runtime `apply_direct` | states, DirectControl, t_ms → (states, Command) | operator_direct 명령 생성, 도착 시 resume 복귀 | Part2-10 | 2 |
-| Part2-16 | runtime `apply_emergency` | states, Play.emergency → states | battery_below면 지정 step으로, 끝나면 resume | Part2-10 | 2 |
-| Part2-17 (구 Part1-6) | gateway `engine.py` 틱 루프 | Scenario, TickInputs → `tick(state: EngineState, inputs) -> (state, Frame)`; 순서는 3.7. `EngineState` dataclass(이 파일에, 계약 아님): t_ms, scenario, specs: dict[id, VehicleSpec], states, targets, reports, assignments, blocks, injections, metrics, rng. `TickOutcome` dataclass(2-13 입력)도 여기 | 스파이크 `run()`의 while 본문을 옮긴 것. **아직 없는 액션은 `contracts/examples/*.json`을 돌려주는 스텁 함수로 대체**해 12:00 당일 첫 커밋에서 Frame이 나오게 한다(스텁 목록을 파일 머리 주석에). 사건 1 → 보고 → 결정 → 전이가 스텁 없이 도는 것이 완료. 틱마다 `get_logger("gateway.engine")`로 명령·차단·보고 수와 Frame.log 줄을 DEBUG로 남긴다(결정 0010) | Part1-1, Part2-20 | 1 |
+| Part2-16 | runtime `apply_emergency` | states, plays → states | 기체의 현재 플레이 emergency 규칙에 걸리면 그 플레이의 지정 step으로. 틱에서 `step_vehicle` 바로 앞 | Part2-10 | 2 |
+| Part2-17 (구 Part1-6) | gateway `engine.py` 틱 루프 | Scenario, TickInputs → `tick(state: EngineState, inputs) -> (state, Frame)`; 순서는 contracts/API.md 3절. `EngineState` dataclass(이 파일에, 계약 아님): t_ms, scenario, specs, plays, states, targets, reports, assignments, blocks, injections, metrics, run. 시작 상태도 API.md 3절. `TickOutcome`은 contracts 모델 | 스파이크 `run()`의 while 본문을 옮긴 것. **아직 없는 액션은 `contracts/examples/*.json`(장면은 `frames/`)을 돌려주는 스텁 함수로 대체**해 12:00 당일 첫 커밋에서 Frame이 나오게 한다(스텁 목록을 파일 머리 주석에). 사건 1 → 보고 → 결정 → 전환이 스텁 없이 도는 것이 완료. 틱마다 `get_logger("gateway.engine")`로 명령·차단·보고 수와 Frame.log 줄을 DEBUG로 남긴다(결정 0010) | Part1-1, Part2-20 | 1 |
 | Part2-18 (구 Part1-8) | gateway `build_frame` 재작성 | EngineState, 이번 틱 log → Frame | 예시 JSON과 같은 모양, 직렬화 테스트 | Part1-1 | 1 |
 | Part2-19 | 시나리오 튜닝 | `baengnyeong_night.json`, 템플릿 2개 → 사건 2·3·6의 시각·경로·예비 드론 경로 길이 조정 | 틱 루프로 돌려 사건 1·2·3·6이 3분 대본 순서로 남, 예비 드론 경로가 귀환 배터리 안 | Part2-17, Part2-4·2-9·2-11 | 2 |
-| Part2-20 | sim `load_scenario_json` | 경로 → Scenario(2절 모델) | JSON 읽어 `Scenario.model_validate`, 잘못된 값은 ValueError에 위치. 레거시 `load_scenario`는 건드리지 않는다(3.5) | Part1-1 | 1 |
+| Part2-20 | sim `load_scenario_json` | 경로 → Scenario | JSON 읽어 `Scenario.model_validate`, 잘못된 값은 ValueError에 위치. `operation.started_ms`가 비거나 `assign`이 없는 플레이를 가리키면 ValueError(결정 0018). 레거시 `load_scenario`는 건드리지 않는다(3.5) | Part1-1 | 1 |
 
 통합 1까지 엔진 쪽 16개(Part2-1~2-13, 2-17, 2-18, 2-20). 스파이크 함수를 액션 파일로 옮기고 테스트를 붙이는 일이며, 6절 머리의 "통합 1 배정" 표대로 A(sim·sensing·틱 루프 8개)와 B(safety·runtime 7개 + play 3개)로 가른다. 12절 검사 1: 둘이 가르지 않고 한 사람이 13개를 하면 추정 합계 7.4시간으로 18:00을 넘긴다(19:30).
 
@@ -317,19 +321,19 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | 번호 | 항목(액션/화면) | 입력 → 출력 | 완료 기준 | 앞선 항목 | 통합 |
 |---|---|---|---|---|---|
 | Part3-1 | play `load_play` | 경로 → Play | 템플릿 2개 로드, 잘못된 파일은 ValueError에 위치 | Part1-1 | 1 |
-| Part3-2 | play `check_links` | Play → list[ValidationIssue] | 없는 step을 가리키는 go_step·step_by_role·entry, entry에서 닿을 수 없는 step | Part1-1 | 1 |
+| Part3-2 | play `check_links` | Play → list[ValidationIssue] | 없는 step을 가리키는 go_step·entry, entry에서 닿을 수 없는 step | Part1-1 | 1 |
 | Part3-3 | play `check_report_points` | Play → list[ValidationIssue] | target_found 탈출 뒤 choices 있는 report 없이 approach_target에 닿으면 오류 | Part1-1 | 2 |
 | Part3-4 | play `check_return_battery` | Play, specs → (list[ValidationIssue], est_return_battery) | 역할별 경로 길이로 추정, 30% 미만이면 오류 | Part1-1, Part2-8(재사용 가능) | 2 |
 | Part3-5 | play `check_zone` | Play, Operation → list[ValidationIssue] | 경로점·목적지가 zone 밖이면 오류 | Part2-7 | 2 |
-| Part3-6 | play `check_play` | Play, Operation, specs → PlayCheck | 3-2~3-5 묶음. 템플릿 2개 통과, 보고 지점 뺀 플레이 실패 | Part3-2~5 | 2 |
+| Part3-6 | play `check_play` + `check_operation` | `check_play(play, op, specs)`, `check_operation(op, plays, specs)` → PlayCheck | check_play = 3-2 + 받는 기체의 영역·능력. check_operation = assign·reserve·switches·선택지 `play_by_vehicle`의 플레이·기체 존재 + 3-3~3-5. 예시 작전 통과, 보고 지점 뺀 작전 실패 | Part3-2~5 | 2 |
 | Part3-7 | play `expand_action` + 표 | Action, Domain → CommandKind\|None; `expand_table.json` | 9×3 표 전부 테스트, None이면 후보 제외. **표 초안(행 = ActionKind, 열 = air/sea/ground):** move_to → move/move/move · patrol_route → follow_route ×3 · search_area → zigzag/zigzag/None · return_home → return_home ×3 · watch_target → orbit/keep_distance/None · watch_point → orbit/hold/hold · approach_target → keep_distance/keep_distance/None · relay_comms → relay ×3 · hold → hold ×3. 템플릿 검사에서 None에 걸리면 표를 고치고 커밋에 적는다 | Part1-1 | 1 |
 | Part3-8 | play `list_templates` | — → list[Play] | `demo/plays/*.json` 중 template=True | Part1-4 | 2 |
 | Part3-9 | play `draft_play` | 문장, Operation → Play(origin=ai_draft) | 캐시 hit면 호출 없음, miss면 1회 호출·스키마 밖이면 재요청 1회, 실패 시 템플릿 반환 | Part1-5 | 2 |
-| Part3-10 (리드) | 편집기: 카드 열(읽기 전용) | Play → 역할별 세로 열, 카드 = 행동 + 조건 목록 + 보고 | 템플릿 2개가 화면에 그려짐 | Part1-1(TS), Part3-1 | 2 |
+| Part3-10 (리드) | 편집기: 카드 열(읽기 전용) | Operation + plays → 기체별 세로 열(그 기체의 플레이 step 카드), 카드 = 행동 + 조건 목록 + 보고 | 예시 작전이 화면에 그려짐 | Part1-1(TS), Part3-1 | 2 |
 | Part3-11 (리드) | 편집기: 저장 → 검사 결과 표시 | 저장 버튼 → `POST /plays/check` → 카드 옆 오류 표시 | 보고 지점 없는 플레이에서 오류 카드가 보임 | Part3-10, Part1-7 | 2 |
 | Part3-12 (리드) | 편집기: 카드 편집 | 행동·조건·갈 step·보고 드롭다운, 카드 추가 | "보고 카드 끼워 넣기" 뒤 저장 통과 | Part3-11 | 2(빼는 순서 6) |
 | Part3-13 (리드) | 편집기: AI 초안 입력 칸 | 문장 → `POST /plays/draft` → 카드 열에 표시(approved=False 표시) | 캐시 문장으로 카드가 뜸 | Part3-9, Part3-10 | 2 |
-| Part3-14 (리드) | 작전 설정 패널 | Operation JSON → 이름·구역·기체 목록 표시(편집은 빼는 순서 1) | 시나리오의 작전이 패널에 보임 | Part1-4 | 2(빼는 순서 1) |
+| Part3-14 (리드) | 작전 설정 패널 | Operation JSON → 이름·구역·기체 목록·기체별 플레이(assign)·예비·전환 버튼 표시(편집은 빼는 순서 1) | 시나리오의 작전이 패널에 보임 | Part1-4 | 2(빼는 순서 1) |
 | Part3-15 | play `compile_mavlink` (결정 0011) | Play, Operation, specs → 기체별 (QGC `.plan` JSON, pymavlink 실행 스크립트 문자열) | 템플릿 2개 × 기체 5대 `.plan` 생성(mission.items[].command가 MAV_CMD 정수), 스크립트 `py_compile` 통과. do→MAV_CMD 대응과 조건→텔레메트리 대응은 결정 0011. SITL 실행은 동결 뒤 추가 | Part3-1, Part3-7 | 2 뒤(동결 전). 통합 1 먼저 끝낸 사람이 가져감 |
 
 통합 1까지 3개(Part3-1, 3-2, 3-7)이며 황승주(Part 2B)가 맡는다(6절 머리 표). 18:00 뒤 황승주는 3-3~3-9(검사·템플릿·AI 초안), 리드는 3-10~3-14(편집기 화면)를 한다. 결정 0009: React 경험자가 없어 편집기는 9절대로 읽기 전용 카드 + "보고 카드 끼워 넣기" 버튼(3-12는 그 버튼 하나)으로 고정한다.
