@@ -5,7 +5,7 @@
 마지막 기록 10/9 23:14 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- **Part1-1** contracts 패키지 — kth9245, 10/9 23:14부터
+- **Part1-1** contracts 패키지 — kth9245, 10/9 23:14부터 · 하위 0/1 완료
 
 ## 막힘
 - (없음)
@@ -63,6 +63,7 @@
 - **Part2-20** sim `load_scenario_json` · SIM-04
 
 ### 누구나
+- **Part1-1.1** contracts/API.md, contracts/README, AGENTS.md 읽을 목록, 09 문서 2·3절 정본 안내와 6절 수정
 - **Part3-15** play `compile_mavlink` (결정 0011) · PLY-10
 
 ## 최근 결정
