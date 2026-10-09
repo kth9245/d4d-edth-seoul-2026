@@ -2,12 +2,10 @@
 
 # 지금 작업판
 
-마지막 기록 10/9 23:14 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/9 23:18 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- **Part1-1** contracts 패키지 — kth9245, 10/9 23:14부터 · 하위 0/1 완료
-- **Part1-1.1** contracts/API.md, contracts/README, AGENTS.md 읽을 목록, 09 문서 2·3절 정본 안내와 6절 수정 — kth9245, 10/9 23:14부터
-- ⚠ kth9245 진행중 2개
+- **Part1-1** contracts 패키지 — kth9245, 10/9 23:14부터 · 하위 1/1 완료
 
 ## 막힘
 - (없음)
@@ -71,6 +69,7 @@
 - 10/9 23:14 kth9245 · Part1-1 · 결정 0015·0016·0017·0018 참조(두 층 구조, contracts 세부, API 규약)
 
 ## 완료
+- **Part1-1.1** contracts/API.md, contracts/README, AGENTS.md 읽을 목록, 09 문서 2·3절 정본 안내와 6절 수정 — kth9245, 10/9 23:18
 - **Part1-2** 백령도 타일 커밋 — kth9245, 10/9 23:13
 - **Part1-3** play·runtime·safety 뼈대 + SPEC 행 — kth9245, 10/9 02:28
 
