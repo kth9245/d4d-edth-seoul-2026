@@ -44,6 +44,8 @@
 
 ### 2.4 `tasks/NOW.md` (읽기용, 같은 커밋에서 다시 만듦)
 
+**팀 공용 작업판.** git에 커밋되어 main에 즉시 올라가므로 세 사람이 GitHub과 `task.py show`에서 같은 내용을 본다. 기존 `tasks/BOARD.md`는 `.gitignore` 대상이다: post-checkout·post-merge·post-rewrite hook이 rebase 때마다 `sync_docs.py`로 다시 쓰므로 커밋 대상이면 작업 폴더가 더러워져 ship이 막힌다. BOARD.md는 각자 로컬의 SPEC 행 요약으로 그대로 두고, NOW.md는 `task.py`만 저수준 커밋으로 쓰므로 그 문제가 없다(로컬 hook·커밋이 건드리지 않음).
+
 머리: 자동 생성 표시, 마지막 기록 시각(KST), "상세(입력·출력·완료 기준)는 docs/research/09 6절". 이어서 절 순서대로:
 
 1. **진행중** — `- **Part2-17** 틱 루프 — 최동호, 10/10 12:03부터 · 하위 1/3 완료 · SIM-08` (한 사람이 진행중 2개 이상이면 절 끝에 "최동호 진행중 2개" 한 줄)
