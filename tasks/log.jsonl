@@ -67,3 +67,4 @@
 {"at": "2026-10-10T00:04:42+09:00", "by": "kth9245", "op": "add", "id": "Part1-17", "title": "스파이크를 이식 모양으로 재배치(devil-advocate: SPEC 행마다 포맷된 파일, tick 계산 액션화, build_frame 새 이름, geo를 shared로, 모듈 AGENTS.md 정리)", "parent": null, "assign": null, "slot": null, "spec": null}
 {"at": "2026-10-10T00:04:56+09:00", "by": "kth9245", "op": "start", "id": "Part1-17", "take": false, "from": null}
 {"at": "2026-10-10T00:22:28+09:00", "by": "kth9245", "op": "done", "id": "Part1-17", "take": false}
+{"at": "2026-10-10T00:22:34+09:00", "by": "kth9245", "op": "note", "id": "Part2-10", "text": "원본이 port/modules/runtime/으로 바뀜: step_vehicle은 enter_step(RT-08 새 행)과 나뉨, switch_play(RT-09)도 새 행. 파일 그대로 복사 + 테스트(README 참고)"}
