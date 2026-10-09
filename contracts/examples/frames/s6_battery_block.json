@@ -323,6 +323,28 @@
    "decision_id": null
   },
   {
+   "id": "rep-d2-1791635040000",
+   "t_ms": 1791635040000,
+   "kind": "target_select",
+   "vehicle_id": "d2",
+   "target_id": null,
+   "text": "추적할 표적 선택(d2)",
+   "choices": [
+    {
+     "id": "fast1",
+     "label": "fast1 고속 보트",
+     "play_by_vehicle": {}
+    },
+    {
+     "id": "boat1",
+     "label": "boat1 선박",
+     "play_by_vehicle": {}
+    }
+   ],
+   "resolved_ms": 1791635050000,
+   "decision_id": "dec-2"
+  },
+  {
    "id": "rep-d2-1791635460000",
    "t_ms": 1791635460000,
    "kind": "command_blocked",
@@ -448,12 +470,12 @@
   }
  ],
  "metrics": {
-  "operator_actions": 6,
-  "manual_baseline_actions": 14,
+  "operator_actions": 7,
+  "manual_baseline_actions": 15,
   "open_reports_max": 2,
   "vehicle_gap_ms": 240000,
   "blocked_commands": 2,
-  "decisions": 1,
+  "decisions": 2,
   "commands_sent": 10,
   "mission_success": null
  },

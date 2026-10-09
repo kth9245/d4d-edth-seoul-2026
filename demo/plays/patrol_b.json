@@ -1,0 +1,43 @@
+{
+ "id": "patrol_b",
+ "name": "해안 순찰 B",
+ "domains": [
+  "air"
+ ],
+ "steps": [
+  {
+   "id": "patrol",
+   "name": "경로 B 순찰",
+   "do": {
+    "kind": "patrol_route",
+    "params": {
+     "route": [
+      {
+       "lat": 37.93,
+       "lon": 124.6,
+       "alt_m": 0
+      },
+      {
+       "lat": 37.93,
+       "lon": 124.8,
+       "alt_m": 0
+      }
+     ]
+    }
+   },
+   "on": [],
+   "report": null,
+   "ui": {}
+  }
+ ],
+ "entry": "patrol",
+ "emergency": {
+  "battery_low_pct": 30.0,
+  "link_lost_step": null,
+  "battery_low_step": null,
+  "operator_call_step": null
+ },
+ "origin": "human",
+ "approved": true,
+ "template": false
+}

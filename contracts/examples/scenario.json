@@ -496,7 +496,7 @@
      "do": {
       "kind": "watch_target",
       "params": {
-       "target": "fast1",
+       "target": "operator",
        "distance_m": 300
       }
      },

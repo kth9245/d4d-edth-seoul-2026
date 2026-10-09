@@ -9,6 +9,7 @@ from example_world import LANDING, MIN, PLAYS, SPECS, START_MS, gp
 from contracts.models import (
     Assignment,
     Block,
+    Choice,
     Command,
     Frame,
     Injection,
@@ -111,6 +112,7 @@ ALT1 = gp(37.99955, 124.6903)
 BLK1 = Block(command_id=f"cmd-d2-{T5}", vehicle_id="d2", reason="outside_zone", detail="작전 구역 밖(38.0500, 124.7000)", alternative=cmd("d2", "move", {"target": ALT1.model_dump()}, T5, source="operator_direct", operator_id="op1"), t_ms=T5)
 BLK2 = Block(command_id=f"cmd-d2-{T6}", vehicle_id="d2", reason="battery_insufficient", detail="필요 1873s > 가용 960s", alternative=cmd("d2", "move", {"target": gp(37.9509, 124.6255).model_dump()}, T6, source="operator_direct", operator_id="op1"), t_ms=T6)
 REP4 = Report(id=f"rep-d2-{T5}", t_ms=T5, kind="command_blocked", vehicle_id="d2", text="구역 밖 차단: d2 → 38.0500, 124.7000")
+PICK = Report(id=f"rep-d2-{at(24)}", t_ms=at(24), kind="target_select", vehicle_id="d2", text="추적할 표적 선택(d2)", choices=[Choice(id="fast1", label="fast1 고속 보트"), Choice(id="boat1", label="boat1 선박")], resolved_ms=at(24, 10), decision_id="dec-2")
 REP5 = Report(id=f"rep-d2-{T6}", t_ms=T6, kind="command_blocked", vehicle_id="d2", text="배터리 차단: d2 → 37.9050, 124.5650")
 
 
@@ -119,7 +121,7 @@ def scenes() -> dict[str, Frame]:
     usv_go = cmd("usv", "keep_distance", {"target_id": "boat1", "distance_m": 200}, T2, "approach", "approach")
     d2_patrol = cmd("d2", "follow_route", PLAYS["patrol_b"].steps[0].do.params, T2, "patrol_b", "patrol")
     d3_watch = cmd("d3", "orbit", {"target_id": "boat1", "distance_m": 150}, T3, "watch", "watch")
-    d2_track = cmd("d2", "orbit", {"target_id": "fast1", "distance_m": 300}, at(24), "track_fast", "track")
+    d2_track = cmd("d2", "orbit", {"target_id": "fast1", "distance_m": 300}, at(24, 10), "track_fast", "track")
     d2_alt = cmd("d2", "move", {"target": ALT1.model_dump()}, at(31, 10), source="operator_direct", operator_id="op1")
     s1 = frame(T1, [vs("d1", T1, gp(37.98, 124.695), 72.1, "active", "patrol_a", "report", cmd("d1", "hold", {}, T1, "patrol_a", "report"), pending_report_id=REP1.id),
                     standby("d2", T1), standby("d3", T1), standby("usv", T1), standby("ugv", T1)],
@@ -149,16 +151,16 @@ def scenes() -> dict[str, Frame]:
                [boat(T4, 37.97825, ["d3", "usv"]), boat(T4, 37.9799, ["d3", "usv"], fast=True)], [REP1_DONE, REP2_DONE, REP3], AFTER_TAKEOVER,
                Metrics(operator_actions=2, decisions=1, manual_baseline_actions=11, open_reports_max=1, commands_sent=8, vehicle_gap_ms=240000),
                ["[대본] 21:23 split_target boat1 → fast1", "[계산] 21:23 d3 표적 도달, 기체 공백 4분 0초", "[계산] 21:23 전환 요청 inj-1 승인 대기"], injections=[INJ])
-    done = [REP1_DONE, REP2_DONE, REP3.model_copy(update={"resolved_ms": at(24)})]
+    done = [REP1_DONE, REP2_DONE, REP3.model_copy(update={"resolved_ms": at(24)}), PICK]
     later = [s4.vehicles[0], s4.vehicles[2], s4.vehicles[3], s4.vehicles[4]]
     s5 = frame(T5, [*later[:1], vs("d2", T5, gp(37.998, 124.69), 51.3, "active", "track_fast", "track", d2_track, target_id="fast1"), *later[1:]],
                [boat(T5, 37.97375, ["d3", "usv"]), boat(T5, 38.0055, ["d2"], fast=True)], [*done, REP4], AFTER_SWITCH,
-               Metrics(operator_actions=4, decisions=1, manual_baseline_actions=13, open_reports_max=1, commands_sent=9, blocked_commands=1, vehicle_gap_ms=240000),
+               Metrics(operator_actions=5, decisions=2, manual_baseline_actions=14, open_reports_max=1, commands_sent=9, blocked_commands=1, vehicle_gap_ms=240000),
                ["[계산] 21:31 직접 조종 dir-1 d2 → 38.0500, 124.7000", "[계산] 21:31 차단 outside_zone, 대안 37.9996, 124.6903"],
                blocks=[BLK1], injections=[INJ.model_copy(update={"status": "approved"})])
     s6 = frame(T6, [*later[:1], vs("d2", T6, gp(37.9993, 124.6905), 50.0, "active", "track_fast", "track", d2_alt, target_id="fast1", resume_play_id="track_fast", resume_step_id="track"), *later[1:]],
                [boat(T6, 37.9734, ["d3", "usv"]), boat(T6, 38.0073, [], fast=True)], [*done, REP4, REP5], AFTER_SWITCH,
-               Metrics(operator_actions=6, decisions=1, manual_baseline_actions=14, open_reports_max=2, commands_sent=10, blocked_commands=2, vehicle_gap_ms=240000),
+               Metrics(operator_actions=7, decisions=2, manual_baseline_actions=15, open_reports_max=2, commands_sent=10, blocked_commands=2, vehicle_gap_ms=240000),
                ["[계산] 21:31 직접 조종 dir-2(대안) 통과", "[계산] 21:31 직접 조종 dir-3 차단 battery_insufficient, 대안 37.9509, 124.6255"],
                blocks=[BLK1, BLK2], injections=s5.injections)
     return {"s1_report_wait": s1, "s2_after_decision": s2, "s3_takeover": s3,

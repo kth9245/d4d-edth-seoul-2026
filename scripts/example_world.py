@@ -106,7 +106,7 @@ PLAYS = {
         ], template=False),
         _play("track_fast", "고속 보트 추적", ["air"], [
             Step(id="track", name="추적",
-                 do=Action(kind="watch_target", params={"target": "fast1", "distance_m": 300})),
+                 do=Action(kind="watch_target", params={"target": "operator", "distance_m": 300})),
         ]),
         _play("go_home", "귀환", ["air", "sea", "ground"], [
             Step(id="return", name="귀환", do=Action(kind="return_home")),

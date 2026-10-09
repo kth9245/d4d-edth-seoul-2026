@@ -1,0 +1,36 @@
+{
+ "id": "landing",
+ "name": "상륙 지점 감시",
+ "domains": [
+  "ground"
+ ],
+ "steps": [
+  {
+   "id": "move",
+   "name": "상륙 예상 지점",
+   "do": {
+    "kind": "move_to",
+    "params": {
+     "target": {
+      "lat": 37.975,
+      "lon": 124.7,
+      "alt_m": 0
+     }
+    }
+   },
+   "on": [],
+   "report": null,
+   "ui": {}
+  }
+ ],
+ "entry": "move",
+ "emergency": {
+  "battery_low_pct": 30.0,
+  "link_lost_step": null,
+  "battery_low_step": null,
+  "operator_call_step": null
+ },
+ "origin": "human",
+ "approved": true,
+ "template": false
+}

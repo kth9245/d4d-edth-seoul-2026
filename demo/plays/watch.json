@@ -1,0 +1,54 @@
+{
+ "id": "watch",
+ "name": "표적 감시",
+ "domains": [
+  "air"
+ ],
+ "steps": [
+  {
+   "id": "watch",
+   "name": "선회 감시",
+   "do": {
+    "kind": "watch_target",
+    "params": {
+     "target": "nearest",
+     "distance_m": 150
+    }
+   },
+   "on": [
+    {
+     "cond": {
+      "kind": "battery_below",
+      "params": {
+       "pct": 30.0
+      }
+     },
+     "go_step": "return"
+    }
+   ],
+   "report": null,
+   "ui": {}
+  },
+  {
+   "id": "return",
+   "name": "귀환",
+   "do": {
+    "kind": "return_home",
+    "params": {}
+   },
+   "on": [],
+   "report": null,
+   "ui": {}
+  }
+ ],
+ "entry": "watch",
+ "emergency": {
+  "battery_low_pct": 30.0,
+  "link_lost_step": null,
+  "battery_low_step": null,
+  "operator_call_step": null
+ },
+ "origin": "human",
+ "approved": true,
+ "template": true
+}

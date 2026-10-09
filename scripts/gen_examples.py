@@ -1,4 +1,5 @@
-"""Write contracts/examples/*.json (one per model) and contracts/examples/frames/*.json (six scenes).
+"""Write contracts/examples/*.json (one per model) and contracts/examples/frames/*.json (six scenes),
+and the demo scenario demo/scenarios/baengnyeong_night.json with its plays in demo/plays/ (Part1-4).
 
 All examples come from one world (example_world.py) so ids match across files. Legacy T1-3 examples
 (detection, track, assessment, response, legacy_frame) are hand-written and left alone.
@@ -105,7 +106,11 @@ def _write(path: Path, model) -> None:
 def main(argv: list[str] | None = None) -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=str(ROOT))
-    out = Path(ap.parse_args(argv).root) / "contracts" / "examples"
+    root = Path(ap.parse_args(argv).root)
+    out = root / "contracts" / "examples"
+    _write(root / "demo" / "scenarios" / f"{SCENARIO.id}.json", SCENARIO)
+    for play in SCENARIO.plays:
+        _write(root / "demo" / "plays" / f"{play.id}.json", play)
     ex = examples()
     missing = set(ALL_MODELS) - LEGACY - set(ex)
     if missing:
