@@ -71,3 +71,4 @@
 {"at": "2026-10-10T00:22:40+09:00", "by": "kth9245", "op": "note", "id": "Part2-18", "text": "build_frame 재작성 대신 새 이름 GW-06 build_frame_v2(레거시 GW-01은 smoke 때문에 통합 1까지 그대로). 원본 port/modules/gateway/actions/build_frame_v2.py"}
 {"at": "2026-10-10T00:31:53+09:00", "by": "kth9245", "op": "add", "id": "Part2-17.1", "title": "gateway init_engine · GW-02 (묶음 A, engine_state.py 먼저)", "parent": "Part2-17", "assign": "최동호", "slot": "1", "spec": null}
 {"at": "2026-10-10T00:31:59+09:00", "by": "kth9245", "op": "add", "id": "Part2-17.2", "title": "gateway record_injections · GW-03 (묶음 A)", "parent": "Part2-17", "assign": "최동호", "slot": "1", "spec": null}
+{"at": "2026-10-10T00:32:07+09:00", "by": "kth9245", "op": "add", "id": "Part2-17.3", "title": "gateway run_checks · GW-04 (황승주 SFT-03 뒤, 그 전엔 스텁)", "parent": "Part2-17", "assign": "최동호", "slot": "1", "spec": null}
