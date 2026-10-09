@@ -2,7 +2,7 @@
 
 # 지금 작업판
 
-마지막 기록 10/9 23:56 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 00:04 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - (없음)
@@ -62,6 +62,7 @@
 - **Part2-20** sim `load_scenario_json` · SIM-04
 
 ### 누구나
+- **Part1-17** 스파이크를 이식 모양으로 재배치(devil-advocate: SPEC 행마다 포맷된 파일, tick 계산 액션화, build_frame 새 이름, geo를 shared로, 모듈 AGENTS.md 정리)
 - **Part3-15** play `compile_mavlink` (결정 0011) · PLY-10
 
 ## 최근 결정
