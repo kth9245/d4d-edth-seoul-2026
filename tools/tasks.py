@@ -12,9 +12,19 @@ from dataclasses import dataclass, field
 from shared.kst import now_kst
 
 TEAM = ("kth9245", "황승주", "최동호")
+GIT_NAMES = {
+    "paleshift": "황승주",
+    "blackchoi0624": "최동호",
+}  # git user.name (lowercase) -> member
 CLOSED = ("완료", "뺌")
 TOP_RE = re.compile(r"Part\d+")
 TEXT_OPS = ("block", "decide", "note", "drop")
+
+
+def person_of(git_name: str) -> str:
+    """Team member behind a git user.name; other names come back unchanged (then refused)."""
+    name = git_name.strip()
+    return GIT_NAMES.get(name.lower(), name)
 
 
 class Refused(Exception):
@@ -113,7 +123,7 @@ def apply(items, op, by, target, text="", take=False, assign=None, at=None) -> d
     if by not in TEAM:
         raise Refused(
             f"팀 명단 {TEAM} 밖의 이름 {by!r}: "
-            "이 저장소에서 `git config user.name <한글 이름>` (리드는 kth9245)"
+            "git user.name이 다르면 리드에게 tools/tasks.py GIT_NAMES에 추가를 요청"
         )
     target, text = normalize_id(target), " ".join(text.split())
     ev = {"at": at or now_kst().isoformat(timespec="seconds"), "by": by, "op": op}

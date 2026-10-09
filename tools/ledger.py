@@ -7,7 +7,7 @@ import subprocess
 from pathlib import Path
 
 from tools.gitpush import LOG, OfflineError, fetch, fetch_age_min, push_tasks, read_remote_file
-from tools.tasks import Item, Refused, apply, dump_event, parse_log, replay
+from tools.tasks import Item, Refused, apply, dump_event, parse_log, person_of, replay
 from tools.tasks_view import render_now
 
 
@@ -15,7 +15,7 @@ def git_name(root: Path) -> str:
     r = subprocess.run(
         ["git", "config", "user.name"], cwd=root, capture_output=True, text=True, encoding="utf-8"
     )
-    return r.stdout.strip()
+    return person_of(r.stdout)
 
 
 def is_repo_top(root: Path) -> bool:

@@ -33,4 +33,4 @@ ignore = ["E501", "UP042"]
 testpaths = ["tests", "modules"]
 pythonpath = ["."]
 norecursedirs = ["node_modules", "dist", ".venv", "knowledge"]
-addopts = "-q -n auto"  # decision 0018: parallel by default; `-n 0` for one-test debugging
+addopts = "-q -n auto"  # decision 0021: parallel by default; `-n 0` for one-test debugging

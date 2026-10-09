@@ -72,7 +72,7 @@ def test_start_of_someone_elses_assignment_warns(tmp_path):
 def test_name_outside_team_refused(tmp_path):
     remote, work = setup(tmp_path, name="철수")
     r = task(work, "start", "2-17")
-    assert r.returncode == 1 and "git config user.name" in r.stderr
+    assert r.returncode == 1 and "GIT_NAMES" in r.stderr
     assert len(remote_file(remote, "tasks/log.jsonl").splitlines()) == 1
 
 

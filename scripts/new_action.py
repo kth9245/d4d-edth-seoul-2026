@@ -19,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from tools.gitpush import OfflineError, PushFailed  # noqa: E402
 from tools.ledger import start_for_spec  # noqa: E402
 from tools.spec import SpecRow, append_row, next_id, parse_spec, replace_row  # noqa: E402
-from tools.tasks import Refused  # noqa: E402
+from tools.tasks import Refused, person_of  # noqa: E402
 
 NAME_RE = re.compile(r"^[a-z]+(_[a-z0-9]+)+$")
 
@@ -50,7 +50,7 @@ def fail(msg: str) -> None:
 
 def git_user() -> str:
     r = subprocess.run(["git", "config", "user.name"], capture_output=True, text=True)
-    return r.stdout.strip() or "?"
+    return person_of(r.stdout) or "?"
 
 
 def claim_ledger(root: Path, spec_id: str, owner: str, take: bool) -> None:

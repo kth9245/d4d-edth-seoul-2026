@@ -173,7 +173,7 @@ def test_text_is_collapsed_to_one_line():
 def test_name_outside_team_is_refused():
     items = replay([add("Part2-1")])
     for name in ("", "dongho", "철수"):
-        with pytest.raises(Refused, match="git config user.name"):
+        with pytest.raises(Refused, match="GIT_NAMES"):
             apply(items, "start", name, "2-1")
 
 

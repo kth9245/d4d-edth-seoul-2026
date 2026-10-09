@@ -27,7 +27,7 @@
 | `block` · `decide` · `note` · `drop` | `text` |
 
 - `at`: KST ISO 8601 초 단위, 예 `2026-10-10T12:03:15+09:00`. 고정 오프셋 `timezone(timedelta(hours=9))`로 만든다(한국은 서머타임 없음, 기계 시간대와 무관 — 결정 0012).
-- `by`: `git config user.name`. 팀 명단 `TEAM = ("kth9245", "황승주", "최동호")`에 없으면 모든 쓰기 명령을 거부하고 `git config user.name <한글 이름>`을 안내한다.
+- `by`: `git config user.name`을 `tools/tasks.py`의 `GIT_NAMES`로 사람 이름에 대응한 값(결정 0020: Paleshift = 황승주, Blackchoi0624 = 최동호). 팀 명단 `TEAM = ("kth9245", "황승주", "최동호")`에 없으면 모든 쓰기 명령을 거부하고 리드에게 `GIT_NAMES` 추가를 요청하라고 안내한다.
 
 ### 2.2 다시 읽어 얻는 상태(항목마다)
 
@@ -114,7 +114,7 @@ origin 원격이 없으면(`git remote get-url origin` 실패) `OfflineError`와
    - 막히면 5분 안에 `task.py block <번호> "<증상>"` + 채팅에 번호(기존 "막힘:" 줄을 이것으로 바꿈).
    - 작업 중 결정은 4절 기준.
    - 현황의 기준은 `task.py show`·`tasks/NOW.md`. SPEC 상태 칸은 액션 파일 관리용. 두 파일 직접 수정 금지.
-   - 처음 한 번 `git config user.name <한글 이름>`(리드는 kth9245).
+   - git user.name은 바꾸지 않는다(결정 0020, GitHub 이름을 `GIT_NAMES`로 대응).
 5. **스킬**: `.claude/skills/task/SKILL.md`(설명: 번호표 항목 시작·완료·막힘·하위 항목·작업 중 결정 때 사용) 10줄 안팎. new-action 스킬 6단계 뒤에 "ship 뒤 `task.py done <번호>`".
 6. **결정 0012 반영(같은 계획에 포함)**: `scripts/decide.py`의 날짜를 KST로(`datetime.now(KST).date()`), `shared/log.py` Formatter 시각을 KST로(converter 지정, `+0900` 표시). cop-ui 시각 표시는 화면 작업 때 리드.
 
