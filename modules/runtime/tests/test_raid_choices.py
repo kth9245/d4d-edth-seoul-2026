@@ -121,3 +121,21 @@ def test_a_ugv_still_at_sea_gets_no_usv_track():  # just landed from the enemy u
         c.label for c in run(states, [tg("e_ugv1", "ugv", _at(0, -2000), 20, ("d2",))]).choices
     ]
     assert not [x for x in labels if x.startswith("usv →")]
+
+
+def test_a_card_from_outside_a_patrol_gets_the_raid_choices():  # decision 0057 card in the 24h raid
+    from contracts.models import Report
+    from modules.runtime.actions.raid_choices import raid_spot
+
+    spot = Report(id="rep-d1-9-s", t_ms=9, kind="target_detected", vehicle_id="d1", target_id="e_drone",
+                  text="새 적 탐지", choices=[{"id": "watch_d3", "label": "d3 → e_drone 감시", "role_by_vehicle": {"d3": "watch"}}])  # fmt: skip
+    d1 = vs("d1", "focus_orbit", "s", target="boat1")
+    states = [d1, *(s for s in base() if s.id != "d1")]
+    targets = [SEA, tg("e_drone", "drone", _at(0, 0), 30, ("d1",))]
+    rep = raid_spot(spot, states, OPX, RAID, targets, LAND, SPECS)
+    labels = [c.label for c in rep.choices]
+    assert labels == [
+        "d3 → 적기 2 발견 지점 집중 순찰",
+        "대기",
+    ]  # air enemy: no usv/ugv track; d4 is not full
+    assert raid_spot(spot, states, OPX, ROLES, targets, LAND, SPECS) == spot  # night: untouched

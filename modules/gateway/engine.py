@@ -25,6 +25,7 @@ from modules.runtime import (
     apply_injection,
     apply_reserves,
     fleet_choices,
+    raid_spot,
     relieve_hover,
     rotate_patrols,
     spot_reports,
@@ -98,6 +99,10 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
     targets = mark_reported(targets, spotted)
     new_reports += spotted
     raid = (targets, sc.land, specs)  # 24h raid choices (decision 0055)
+    new_reports = [
+        raid_spot(r, stepped, sc.operation, roles, *raid) if r in spotted else r
+        for r in new_reports
+    ]
     new_reports = [
         fleet_choices(r, stepped, sc.operation, roles, *raid) for r in new_reports
     ]  # 5.2

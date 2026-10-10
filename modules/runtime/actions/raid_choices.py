@@ -7,7 +7,16 @@ SPEC: modules/runtime/SPEC.md#RT-16
 
 from collections.abc import Sequence
 
-from contracts.models import Choice, Polygon, Target, VehicleSpec, VehicleState
+from contracts.models import (
+    Choice,
+    Operation,
+    Polygon,
+    Report,
+    Role,
+    Target,
+    VehicleSpec,
+    VehicleState,
+)
 from modules.runtime.actions.target_domain import DOMAIN_LABEL, target_domain
 
 FOCUS = "focus_orbit"
@@ -26,11 +35,16 @@ def raid_choices(
     land: Sequence[Polygon],
     specs: dict[str, VehicleSpec],
     rotation: list[str],
+    spotted: list[str] | None = None,
 ) -> list[Choice]:
     seen = [t for t in targets if (t.seen_by or t.reported_by) and t.neutralized_ms is None]
     num = {t.id: i + 1 for i, t in enumerate(sorted(seen, key=lambda t: t.first_seen_ms))}
     by = {t.id: t for t in seen}
-    spotted = list(dict.fromkeys(s.target_id for s in hover if s.target_id in num))
+    spotted = (
+        [t for t in spotted if t in num]
+        if spotted is not None
+        else list(dict.fromkeys(s.target_id for s in hover if s.target_id in num))
+    )
     focused = {s.target_id for s in states if s.role_id == FOCUS}
     focus = [
         Choice(id=f"focus_{x.id}_{tid}", label=f"{x.id} → 적기 {num[tid]} 발견 지점 집중 순찰",
@@ -49,3 +63,15 @@ def raid_choices(
         and NEVER.get(dom) != by[tid].kind.value
     ]  # fmt: skip
     return [*focus, *track, Choice(id="stay", label="대기")]
+
+
+def raid_spot(rep: Report, states: list[VehicleState], op: Operation, roles: dict[str, Role],
+              targets: Sequence[Target], land: Sequence[Polygon], specs: dict[str, VehicleSpec]) -> Report:  # fmt: skip
+    """A decision 0057 card (raised from outside a patrol, the reporter keeps its job) gets the raid choices for its
+    enemy in the 24h operation: full standby drones may focus on it, usv/ugv track it by domain, or stand by."""
+    if FOCUS not in roles or not rep.target_id:
+        return rep
+    standby = [s for s in states if s.id in op.rotation and s.id != rep.vehicle_id and s.status.value == "ready"
+               and s.battery_pct >= 99.9 and s.pending_report_id is None]  # fmt: skip
+    picks = raid_choices(standby, [], states, targets, land, specs, op.rotation, [rep.target_id])
+    return rep.model_copy(update={"choices": picks})

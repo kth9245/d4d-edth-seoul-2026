@@ -4,6 +4,7 @@ from modules.runtime.actions.apply_emergency import apply_emergency
 from modules.runtime.actions.apply_injection import apply_injection
 from modules.runtime.actions.apply_reserves import apply_reserves
 from modules.runtime.actions.fleet_choices import fleet_choices
+from modules.runtime.actions.raid_choices import raid_spot
 from modules.runtime.actions.relief_due import relief_due
 from modules.runtime.actions.relieve_hover import relieve_hover
 from modules.runtime.actions.rotate_patrols import rotate_patrols
@@ -21,6 +22,7 @@ __all__ = [
     "relief_due",
     "relieve_hover",
     "rotate_patrols",
+    "raid_spot",
     "spot_reports",
     "step_vehicle",
     "update_metrics",
