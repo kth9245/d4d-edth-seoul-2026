@@ -435,3 +435,4 @@
 {"at": "2026-10-10T20:21:21+09:00", "by": "황승주", "op": "start", "id": "Part2-43", "take": false, "from": null}
 {"at": "2026-10-10T20:22:40+09:00", "by": "황승주", "op": "done", "id": "Part2-42", "take": false}
 {"at": "2026-10-10T20:23:13+09:00", "by": "kth9245", "op": "add", "id": "Part1-39", "title": "경로 추가(결정 0054): 경로 드롭다운의 '＋ 경로 추가' 창, 고정 경로는 지도에서 점 찍기, 상대 경로는 동·북 거리 입력, POST /routes", "parent": null, "assign": null, "slot": null, "spec": null}
+{"at": "2026-10-10T20:23:37+09:00", "by": "kth9245", "op": "start", "id": "Part1-39", "take": false, "from": null}
