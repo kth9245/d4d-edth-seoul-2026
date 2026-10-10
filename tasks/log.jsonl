@@ -208,3 +208,4 @@
 {"at": "2026-10-10T11:46:46+09:00", "by": "kth9245", "op": "decide", "id": "Part3-12", "text": "결정 0031 참조(보고 선택지가 보고한 기체를 다른 플레이로 안 보내면 같은 플레이의 operator_choice 탈출로 이어짐, runtime apply_decision 수정은 이 세션이 하고 황승주에게 알림)"}
 {"at": "2026-10-10T11:51:19+09:00", "by": "kth9245", "op": "done", "id": "Part3-12", "take": false}
 {"at": "2026-10-10T11:51:23+09:00", "by": "kth9245", "op": "note", "id": "Part3-12", "text": "화면 클릭 경로(초안 저장→막힘→끼워 넣기→저장 통과)는 Part3-13에서 초안이 편집기 목록에 들어온 뒤 확인. 서버 검사로는 확인함(전 missing_report_point, 후 ok)"}
+{"at": "2026-10-10T11:52:48+09:00", "by": "kth9245", "op": "add", "id": "Part1-21", "title": "편집기 적 열 + GET /enemies (결정 0032, 읽기 전용)", "parent": null, "assign": null, "slot": null, "spec": null}

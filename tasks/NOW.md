@@ -2,7 +2,7 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 11:51 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 11:52 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - (없음)
@@ -31,6 +31,7 @@
 - **Part1-18** 타격: 계약 추가 5개 + play 대응표 행 + TS·예시 (한 커밋)
 - **Part1-19** 타격: 시나리오·플레이 JSON (fast1 동쪽 해안 우회, track_fast 수정·track_fast_sea·strike, 고속 보트 추적 전환 버튼)
 - **Part1-20** 타격: 화면 (무력화 표적 X·결과 카드·작전 성공·예시 장면 s7·s8)
+- **Part1-21** 편집기 적 열 + GET /enemies (결정 0032, 읽기 전용)
 
 ## 최근 결정
 - 10/10 11:46 kth9245 · Part3-12 · 결정 0031 참조(보고 선택지가 보고한 기체를 다른 플레이로 안 보내면 같은 플레이의 operator_choice 탈출로 이어짐, runtime apply_decision 수정은 이 세션이 하고 황승주에게 알림)
