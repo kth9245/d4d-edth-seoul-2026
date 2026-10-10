@@ -1,5 +1,5 @@
 """GW-07 tick_log: 이번 틱의 기록 줄(Frame.log). [대본]은 사건 대본, [계산]은 엔진이 계산한 것(09 4.5)
-시각은 KST(결정 0012). 타격 통과·무력화 줄은 결정 0033.
+시각은 KST(결정 0012). 타격 통과·무력화 줄은 결정 0033. 적 등장 줄은 결정 0032.
 SPEC: modules/gateway/SPEC.md#GW-07
 """
 
@@ -24,6 +24,11 @@ def tick_log(
         f"[대본] {hhmm} {ev.kind} {ev.params.get('id', '')}"
         for ev in scenario.events
         if t_ms - dt_ms < start + ev.offset_ms <= t_ms
+    ]
+    lines += [
+        f"[대본] {hhmm} 적 등장 {e.id}"
+        for e in scenario.enemies
+        if t_ms - dt_ms < start + e.appear_offset_ms <= t_ms
     ]
     lines += [f"[계산] {hhmm} 결정 {d.id} → {d.choice_id}" for d in inputs.decisions]
     lines += [f"[계산] {hhmm} 전환 {i.id} {i.status}" for i in inputs.injections]

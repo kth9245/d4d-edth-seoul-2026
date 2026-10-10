@@ -13,3 +13,5 @@
 | SIM-08 | advance_vehicles | states, specs, passed: list[PassedCommand], dt_ms, targets | states | 이번 틱 PassedCommand로 active 갱신, 없으면 active 계속 수행. 명령 없는 틱 테스트 · strike도 orbit_or_keep(결정 0033) | 최동호 | 완료 |
 | SIM-09 | apply_events | Scenario, states, targets, t_ms, dt_ms | (states, targets) | 사건 시각 = operation.started_ms + offset_ms(결정 0018). spawn_target·vehicle_battery_set·target_move·split_target·vehicle_link_lost 각 1테스트. params 키는 09 2.2 | 최동호 | 완료 |
 | SIM-10 | resolve_strikes | states, targets, t_ms | (targets, list[Report]) | 100 m 안·밖, 이미 무력화면 카드 없음, 같은 틱 두 기체면 카드 하나(결정 0033) | kth9245 | 진행중 |
+| SIM-11 | spawn_enemies | scenario, targets, t_ms, dt_ms | targets | 등장 틱에만 하나, from_enemy 위치, play_id·step_id·step_since_ms | kth9245 | 진행중 |
+| SIM-12 | steer_enemies | enemies, plays, targets, t_ms, dt_ms | targets | 목적지 방향 속도, 도착 틱에 위치 맞춤·속도 0·waypoint -1, time_elapsed 전이, 무력화면 그대로 | kth9245 | 진행중 |

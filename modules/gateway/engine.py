@@ -23,7 +23,7 @@ from modules.runtime import (
     update_metrics,
 )
 from modules.sensing import observe
-from modules.sim import advance, apply_events, resolve_strikes
+from modules.sim import advance, apply_events, resolve_strikes, spawn_enemies, steer_enemies
 from shared.log import get_logger
 
 __all__ = ["EngineState", "init_engine", "tick"]
@@ -34,6 +34,9 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
     sc, dt, plays, specs = es.scenario, es.scenario.tick_ms, es.plays, es.specs
     t = es.t_ms + dt
     states, targets = apply_events(sc, es.states, es.targets, t, dt)  # 1
+    targets = steer_enemies(
+        sc.enemies, plays, spawn_enemies(sc, targets, t, dt), t, dt
+    )  # 1.5 (0032)
     targets = observe(states, specs, targets, t)  # 2
     reports, assigns = list(es.reports), list(es.assignments)  # 3 operator inputs
     for d in inputs.decisions:

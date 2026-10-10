@@ -65,3 +65,12 @@ def test_strike_pass_and_neutralized_lines():
         "[계산] 21:11:00 타격 명령 통과: d2 → fast1, 운용자 결정 dec-3 확인",
         "[계산] 21:11:00 fast1 무력화(d2)",
     ]
+
+
+def test_enemy_appearance_is_a_script_line():
+    from contracts.models import EnemySpec
+
+    sc = SC.model_copy(update={"events": [], "enemies": [
+        EnemySpec(id="boat1", kind="boat", speed_mps=1, appear_offset_ms=660_000, pos=G,
+                  play_id="p")]})  # fmt: skip
+    assert tick_log(sc, T, 200, TickInputs(), []) == ["[대본] 21:11:00 적 등장 boat1"]

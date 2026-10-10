@@ -70,3 +70,20 @@ def test_strike_next_to_a_target_neutralizes_it_and_logs():
     assert fr.targets[0].neutralized_ms == es.t_ms
     assert any(line.endswith("x 무력화(d1)") for line in fr.log)
     assert fr.metrics.mission_success is True
+
+
+def test_enemy_appears_and_moves_by_its_play():
+    from contracts.models import Action, EnemySpec, Play, Step
+
+    dest = {"lat": 37.985, "lon": 124.75, "alt_m": 0}
+    play = Play(id="enemy_x", name="x", domains=["sea"], entry="go", approved=True,
+                steps=[Step(id="go", name="go", do=Action(kind="move_to", params={"target": dest}))])  # fmt: skip
+    enemy = EnemySpec(id="x", kind="boat", speed_mps=5, appear_offset_ms=SC.tick_ms,
+                      pos={"lat": 37.985, "lon": 124.70}, play_id="enemy_x")  # fmt: skip
+    sc = SC.model_copy(update={"enemies": [enemy], "plays": [*SC.plays, play]})
+    es = init_engine(sc)
+    es, fr = tick(es, TickInputs())
+    first = next(t for t in fr.targets if t.id == "x")
+    assert first.vel_east_mps > 4.9 and any("적 등장 x" in line for line in fr.log)
+    es, fr = tick(es, TickInputs())
+    assert next(t for t in fr.targets if t.id == "x").pos.lon > first.pos.lon
