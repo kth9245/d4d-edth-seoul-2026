@@ -469,3 +469,4 @@
 {"at": "2026-10-10T21:39:01+09:00", "by": "kth9245", "op": "add", "id": "Part1-42", "title": "죽은 코드·느린 ship 정리: 서울 타일·백업 JSON·일회용 스크립트 삭제, 24시간 순찰 테스트를 ship에서 빼기(옛 T1-3 엔진은 그대로)", "parent": null, "assign": null, "slot": null, "spec": null}
 {"at": "2026-10-10T21:39:07+09:00", "by": "kth9245", "op": "start", "id": "Part1-42", "take": false, "from": null}
 {"at": "2026-10-10T21:40:27+09:00", "by": "황승주", "op": "done", "id": "Part2-50", "take": false}
+{"at": "2026-10-10T21:40:39+09:00", "by": "황승주", "op": "add", "id": "Part2-51", "title": "멸공 적 5/7: runtime 동적 선택지(이탈 순찰·적기 N 집중 순찰·usv/ugv 추적·대기), 중복 집중 순찰 무시", "parent": null, "assign": "황승주", "slot": null, "spec": null}
