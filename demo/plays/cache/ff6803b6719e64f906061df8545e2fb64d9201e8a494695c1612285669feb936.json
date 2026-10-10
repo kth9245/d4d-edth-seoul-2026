@@ -1,0 +1,69 @@
+{
+ "id": "west_route_patrol_return",
+ "name": "서쪽 항로 순찰 후 저배터리 귀환",
+ "domains": [
+  "sea"
+ ],
+ "steps": [
+  {
+   "id": "patrol_west_route",
+   "name": "서쪽 항로 순찰",
+   "do": {
+    "kind": "patrol_route",
+    "params": {
+     "route": [
+      {
+       "lat": 37.945,
+       "lon": 124.572,
+       "alt_m": 0
+      },
+      {
+       "lat": 37.957,
+       "lon": 124.568,
+       "alt_m": 0
+      },
+      {
+       "lat": 37.968,
+       "lon": 124.574,
+       "alt_m": 0
+      }
+     ]
+    }
+   },
+   "on": [
+    {
+     "cond": {
+      "kind": "battery_below",
+      "params": {
+       "pct": 30.0
+      }
+     },
+     "go_step": "return_base"
+    }
+   ],
+   "report": null,
+   "ui": {}
+  },
+  {
+   "id": "return_base",
+   "name": "기지 귀환",
+   "do": {
+    "kind": "return_home",
+    "params": {}
+   },
+   "on": [],
+   "report": null,
+   "ui": {}
+  }
+ ],
+ "entry": "patrol_west_route",
+ "emergency": {
+  "battery_low_pct": 30.0,
+  "link_lost_step": null,
+  "battery_low_step": null,
+  "operator_call_step": null
+ },
+ "origin": "ai_draft",
+ "approved": false,
+ "template": false
+}

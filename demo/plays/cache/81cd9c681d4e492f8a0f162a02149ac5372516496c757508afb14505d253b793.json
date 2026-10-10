@@ -1,0 +1,75 @@
+{
+ "id": "north_coast_patrol_follow",
+ "name": "북쪽 해안 순찰 및 고속정 접근",
+ "domains": [
+  "air"
+ ],
+ "steps": [
+  {
+   "id": "patrol_north_coast",
+   "name": "북쪽 해안 순찰",
+   "do": {
+    "kind": "patrol_route",
+    "params": {
+     "route": [
+      {
+       "lat": 37.984,
+       "lon": 124.69,
+       "alt_m": 0
+      },
+      {
+       "lat": 37.988,
+       "lon": 124.705,
+       "alt_m": 0
+      },
+      {
+       "lat": 37.984,
+       "lon": 124.72,
+       "alt_m": 0
+      },
+      {
+       "lat": 37.981,
+       "lon": 124.705,
+       "alt_m": 0
+      }
+     ]
+    }
+   },
+   "on": [
+    {
+     "cond": {
+      "kind": "target_found",
+      "params": {}
+     },
+     "go_step": "approach_and_follow"
+    }
+   ],
+   "report": null,
+   "ui": {}
+  },
+  {
+   "id": "approach_and_follow",
+   "name": "고속정 접근 추적",
+   "do": {
+    "kind": "approach_target",
+    "params": {
+     "target": "nearest",
+     "distance_m": 50
+    }
+   },
+   "on": [],
+   "report": null,
+   "ui": {}
+  }
+ ],
+ "entry": "patrol_north_coast",
+ "emergency": {
+  "battery_low_pct": 30.0,
+  "link_lost_step": null,
+  "battery_low_step": null,
+  "operator_call_step": null
+ },
+ "origin": "ai_draft",
+ "approved": false,
+ "template": false
+}
