@@ -47,15 +47,15 @@
 
 | id | 액션 | 입력 | 출력 | 완료 기준 |
 |---|---|---|---|---|
-| UI-54 | trackState | Frame, Target, 기준점 | {k, pos, est?, agoMs?, dir?} | k: seen(seen_by 있음)·rf(RF만)·lost(first_seen_ms 있고 지금 못 봄)·never·gone. lost는 pos=last_seen_pos, 속도 0.3 m/s 미만 still, 기준점 쪽 approach, 반대 away, est=마지막 위치+속도×지난 시간 (결정 0047) |
-| UI-55 | targetStage | Frame, Target | {key, label, detail} | 무력화 > 타격 중(그 표적에 strike 명령 기체) > 허락 대기(열린 타격 승인 요청) > 놓침 > RF 탐지 > 미탐 > 추적(임무 중 기체가 맡음) > 발견 |
-| UI-56 | situationCounts | Frame | {targets, stages[], decisions} | 단계별 개수를 급한 순(허락 대기·타격 중·놓침·RF·추적·발견·무력화·미탐), 0개는 뺌, 결정 수는 결정 단위(합친 표적 선택은 기체 수) |
-| UI-57 | decisionQueue | Card[](frameCards), t_ms | {action, alerts, history} | action: 선택지 있는 미처리 보고·대기 전환·30초 안의 대안 있는 차단. 같은 전환이 만든 표적 선택 여러 장은 한 항목. 순서 타격 허락 > 차단 > 전환 > 위험도. alerts: 2분 안의 무력화·공백·배터리·차단. 나머지 history(최신 위) |
-| UI-58 | choiceGroups | Card | {planned, requests} | planned = 카드의 정해진 선택지(엔진 순서, 결정 0046), requests = "X → 무엇" 꼴 1기체 선택지를 무엇별로 묶고 기체 목록 |
-| UI-59 | vehicleRows | Frame, 플레이 이름, VehicleSpec[] | Row[] | 하는 일(귀환 중·기지 정비·플레이 이름), 표적은 status active일 때만(귀환한 기체의 target_id는 무시), 배터리, 결정 대기 표시 |
-| UI-60 | targetPlays | Play[], 도메인 | Play[] | 첫 step 행동이 watch_target·approach_target이고 그 도메인을 쓰는 플레이. strike_target은 없음 (결정 0048) |
-| UI-61 | cameraPoints | Frame, action | GeoPoint[] | 살아 있는(2분 안 무력화 포함) 표적의 표시 위치·추정 위치, 임무 중 표적 맡은 기체, 열린 카드의 기체(보고·선택지), 차단의 대안 지점 |
-| UI-62 | postPoint | 기체, 플레이, 표적 | Sent | POST /injections {play_by_vehicle, target_by_vehicle, approve: true} (결정 0049), 실패해도 throw 없이 |
+| UI-82 | trackState | Frame, Target, 기준점 | {k, pos, est?, agoMs?, dir?} | k: seen(seen_by 있음)·rf(RF만)·lost(first_seen_ms 있고 지금 못 봄)·never·gone. lost는 pos=last_seen_pos, 속도 0.3 m/s 미만 still, 기준점 쪽 approach, 반대 away, est=마지막 위치+속도×지난 시간 (결정 0047) |
+| UI-83 | targetStage | Frame, Target | {key, label, detail} | 무력화 > 타격 중(그 표적에 strike 명령 기체) > 허락 대기(열린 타격 승인 요청) > 놓침 > RF 탐지 > 미탐 > 추적(임무 중 기체가 맡음) > 발견 |
+| UI-84 | situationCounts | Frame | {targets, stages[], decisions} | 단계별 개수를 급한 순(허락 대기·타격 중·놓침·RF·추적·발견·무력화·미탐), 0개는 뺌, 결정 수는 결정 단위(합친 표적 선택은 기체 수) |
+| UI-80 | decisionQueue | Card[](frameCards), t_ms | {action, alerts, history} | action: 선택지 있는 미처리 보고·대기 전환·30초 안의 대안 있는 차단. 같은 전환이 만든 표적 선택 여러 장은 한 항목. 순서 타격 허락 > 차단 > 전환 > 위험도. alerts: 2분 안의 무력화·공백·배터리·차단. 나머지 history(최신 위) |
+| UI-81 | choiceGroups | Card | {planned, requests} | planned = 카드의 정해진 선택지(엔진 순서, 결정 0046), requests = "X → 무엇" 꼴 1기체 선택지를 무엇별로 묶고 기체 목록 |
+| UI-85 | vehicleRows | Frame, 플레이 이름, VehicleSpec[] | Row[] | 하는 일(귀환 중·기지 정비·플레이 이름), 표적은 status active일 때만(귀환한 기체의 target_id는 무시), 배터리, 결정 대기 표시 |
+| UI-86 | targetPlays | Play[], 도메인 | Play[] | 첫 step 행동이 watch_target·approach_target이고 그 도메인을 쓰는 플레이. strike_target은 없음 (결정 0048) |
+| UI-87 | cameraPoints | Frame, action | GeoPoint[] | 살아 있는(2분 안 무력화 포함) 표적의 표시 위치·추정 위치, 임무 중 표적 맡은 기체, 열린 카드의 기체(보고·선택지), 차단의 대안 지점 |
+| UI-88 | postPoint | 기체, 플레이, 표적 | Sent | POST /injections {play_by_vehicle, target_by_vehicle, approve: true} (결정 0049), 실패해도 throw 없이 |
 
 `frameCards`(UI-19)·보내기 잠금(UI-20·21)·`RunBar`(UI-27) 요청 로직은 그대로 쓴다.
 
@@ -90,9 +90,9 @@
 ## 7. 순서와 빼는 순서
 
 통합 2(10/11 00:00) 전, 순서대로 하나씩 ship:
-1. 오른쪽 열(UI-57·58, `DecisionQueue`), 머리(UI-56, `SituationBar`·`LoadBar`), 색·글자 크기(theme.css) — 가장 큰 효과, 계약 없음.
-2. 왼쪽 목록(UI-59, UI-55 중 계약 없는 단계), 지도 선·이름표·카메라(UI-61).
-3. 계약 커밋 → 탐지 상태(UI-54, sensing) → 지목(UI-60·62, runtime·gateway).
+1. 오른쪽 열(UI-80·58, `DecisionQueue`), 머리(UI-84, `SituationBar`·`LoadBar`), 색·글자 크기(theme.css) — 가장 큰 효과, 계약 없음.
+2. 왼쪽 목록(UI-85, UI-83 중 계약 없는 단계), 지도 선·이름표·카메라(UI-87).
+3. 계약 커밋 → 탐지 상태(UI-82, sensing) → 지목(UI-86·62, runtime·gateway).
 4. `live.json`·`runStops.ts` 맞춤, 3분 대본 리허설.
 
 늦으면 뒤에서부터 뺀다: ① 지목 메뉴(지금처럼 전환 패널로 대체) ② 놓침 추정선(마지막 위치만) ③ 카메라 자동 맞춤(고정 화면).
@@ -105,6 +105,6 @@
 ## 9. 알려진 위험
 
 - runtime·sensing은 다른 사람 영역이다. 6절 세 줄은 담당자 동의 뒤 시작하고, 리드가 하면 채팅으로 알린다.
-- 귀환한 기체도 `target_id`가 남는다(엔진). 화면은 임무 중 기체만 표적과 잇는다(UI-59·61). 엔진 정리는 이번 범위 밖.
+- 귀환한 기체도 `target_id`가 남는다(엔진). 화면은 임무 중 기체만 표적과 잇는다(UI-85·61). 엔진 정리는 이번 범위 밖.
 - 카메라 자동 맞춤은 장면이 바뀔 때 지도가 움직인다. 리허설에서 어지러우면 고정 화면으로 뺀다(7절 ③).
 - 미탐 배는 실제 위치에 흐리게 보인다(시뮬레이션이라 리드가 고름). 발표에서 "센서에 안 잡힌 배는 흐리게, 운용자 판단에는 쓰이지 않음"을 말한다.

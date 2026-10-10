@@ -42,21 +42,21 @@
 | `contracts/models/events.py`, `contracts/models/api.py` | Target 칸 3개, SwitchIn 칸 2개, Injection 칸 1개 |
 | `modules/gateway/live.py`, `modules/gateway/app.py` | 전환 요청이 표적·바로 승인을 싣기, `GET /watch_points` |
 | `modules/cop-ui/src/features/board/boardFixtures.ts` | 테스트용 Frame·카드 만들기(테스트만 씀) |
-| `.../board/trackState.ts` (UI-54) | 배 하나의 탐지 상태 |
-| `.../board/targetStage.ts` (UI-55) | 배 하나의 단계 |
-| `.../board/situationCounts.ts` (UI-56) | 머리 개수 |
-| `.../board/decisionQueue.ts` (UI-57) | 대기열·알림·지난 기록 |
-| `.../board/choiceGroups.ts` (UI-58) | 정해진 선택지·드론 요청 묶음 |
-| `.../board/vehicleRows.ts` (UI-59) | 아군 목록 줄 |
-| `.../board/targetPlays.ts` (UI-60) | 지목 메뉴 플레이 |
-| `.../board/cameraPoints.ts` (UI-61) | 지도가 볼 점 |
-| `.../board/postPoint.ts` (UI-62) | 지목 요청 보내기 |
-| `.../board/fetchBoardData.ts` (UI-63) | /plays·/vehicles·/watch_points 읽기 |
-| `.../board/boardView.ts` (UI-64) | 위 계산을 한 번에 |
-| `.../board/linkLines.ts` (UI-65) | 지도 선 GeoJSON |
-| `.../board/watchCircles.ts` (UI-66) | 기준점 원 GeoJSON |
+| `.../board/trackState.ts` (UI-82) | 배 하나의 탐지 상태 |
+| `.../board/targetStage.ts` (UI-83) | 배 하나의 단계 |
+| `.../board/situationCounts.ts` (UI-84) | 머리 개수 |
+| `.../board/decisionQueue.ts` (UI-80) | 대기열·알림·지난 기록 |
+| `.../board/choiceGroups.ts` (UI-81) | 정해진 선택지·드론 요청 묶음 |
+| `.../board/vehicleRows.ts` (UI-85) | 아군 목록 줄 |
+| `.../board/targetPlays.ts` (UI-86) | 지목 메뉴 플레이 |
+| `.../board/cameraPoints.ts` (UI-87) | 지도가 볼 점 |
+| `.../board/postPoint.ts` (UI-88) | 지목 요청 보내기 |
+| `.../board/fetchBoardData.ts` (UI-89) | /plays·/vehicles·/watch_points 읽기 |
+| `.../board/boardView.ts` (UI-90) | 위 계산을 한 번에 |
+| `.../board/linkLines.ts` (UI-91) | 지도 선 GeoJSON |
+| `.../board/watchCircles.ts` (UI-92) | 기준점 원 GeoJSON |
 | `.../board/useBoardData.ts` | 게이트웨이가 답하면 한 번 읽는 hook |
-| `.../board/SituationBar.tsx`, `LoadBar.tsx`, `RosterPanel.tsx`, `DecisionQueue.tsx`, `QueueCard.tsx`, `PointMenu.tsx`, `board.css` | 화면 부품(UI-67~70) |
+| `.../board/SituationBar.tsx`, `LoadBar.tsx`, `RosterPanel.tsx`, `DecisionQueue.tsx`, `QueueCard.tsx`, `PointMenu.tsx`, `board.css` | 화면 부품(UI-93~96) |
 | `modules/cop-ui/src/features/cards/frameCards.ts` | 위험 이유를 항목 배열로도(`threat.parts`) |
 | `modules/cop-ui/src/features/map/frameMarkers.ts`, `markers.ts`, `MapView.tsx`, `useDirectControl.ts` | 탐지 상태 마커, 선·원 레이어, 카메라, 지목 |
 | `modules/cop-ui/src/Screen.tsx`, `App.tsx`, `index.css`, `theme.css` | 3열 배치, 머리 자리, 색·글꼴 |
@@ -182,7 +182,7 @@ scripts/ship.sh
 
 ---
 
-### Task 2: 결정 대기열과 선택지 묶음 (UI-57, UI-58)
+### Task 2: 결정 대기열과 선택지 묶음 (UI-80, UI-81)
 
 **Files:**
 - Create: `modules/cop-ui/src/features/board/boardFixtures.ts`
@@ -456,8 +456,8 @@ Run: `cd modules/cop-ui && npx vitest run src/features/cards src/features/board`
 `modules/cop-ui/SPEC.md` 끝에:
 
 ```
-| UI-57 | decisionQueue | Card[], t_ms | {action, alerts, history} | 선택지 있는 미처리 보고·대기 전환·30초 안의 대안 있는 차단이 대기열, 같은 전환의 표적 선택 여러 장은 한 항목, 순서 타격 허락 > 차단 > 전환 > 위험도(같으면 최신), 2분 안의 무력화·공백·배터리·차단은 알림, 나머지 최신 위(Part1-32) | 리드 | 완료 |
-| UI-58 | choiceGroups | CardChoice[] | {planned, requests} | 정해진 선택지 먼저 엔진 순서(결정 0046), "X → 무엇" 한 기체 선택지는 무엇별 묶음(발생 지역 순찰 → "… 이어받기", 함께 감시 → "Y와 함께 T 감시") | 리드 | 완료 |
+| UI-80 | decisionQueue | Card[], t_ms | {action, alerts, history} | 선택지 있는 미처리 보고·대기 전환·30초 안의 대안 있는 차단이 대기열, 같은 전환의 표적 선택 여러 장은 한 항목, 순서 타격 허락 > 차단 > 전환 > 위험도(같으면 최신), 2분 안의 무력화·공백·배터리·차단은 알림, 나머지 최신 위(Part1-32) | 리드 | 완료 |
+| UI-81 | choiceGroups | CardChoice[] | {planned, requests} | 정해진 선택지 먼저 엔진 순서(결정 0046), "X → 무엇" 한 기체 선택지는 무엇별 묶음(발생 지역 순찰 → "… 이어받기", 함께 감시 → "Y와 함께 T 감시") | 리드 | 완료 |
 ```
 
 ```bash
@@ -468,7 +468,7 @@ scripts/ship.sh
 
 ---
 
-### Task 3: 탐지 상태와 단계 (UI-54, UI-55, UI-56)
+### Task 3: 탐지 상태와 단계 (UI-82, UI-83, UI-84)
 
 **Files:**
 - Create: `modules/cop-ui/src/features/board/trackState.ts`, `trackState.test.ts`
@@ -719,9 +719,9 @@ Run: `cd modules/cop-ui && npx vitest run src/features/board` → PASS
 `modules/cop-ui/SPEC.md` 끝에:
 
 ```
-| UI-54 | trackState | Target, t_ms, 기준점 | {k, pos, est?, agoMs?, dir?, speed?} | seen·rf·lost·never·gone, lost는 마지막으로 본 위치(없으면 실제 위치), 0.3 m/s 미만 정지, 기준점 쪽 접근·반대 이탈(기준점 없으면 접근), 추정 위치 = 마지막 위치 + 속도 × 지난 시간(결정 0047) | 리드 | 완료 |
-| UI-55 | targetStage | Frame, Target, Track | {key, label, detail, away} | 무력화 > 타격 중 > 허락 대기 > 놓침(경과·방향·속도, 이탈이면 away) > RF 탐지 > 미탐 > 추적(임무 중 기체만) > 발견 | 리드 | 완료 |
-| UI-56 | situationCounts | Stage[], Queue | {targets, stages, decisions} | 단계별 개수 급한 순, 0개 뺌, 결정 수는 합친 표적 선택의 기체 수만큼 | 리드 | 완료 |
+| UI-82 | trackState | Target, t_ms, 기준점 | {k, pos, est?, agoMs?, dir?, speed?} | seen·rf·lost·never·gone, lost는 마지막으로 본 위치(없으면 실제 위치), 0.3 m/s 미만 정지, 기준점 쪽 접근·반대 이탈(기준점 없으면 접근), 추정 위치 = 마지막 위치 + 속도 × 지난 시간(결정 0047) | 리드 | 완료 |
+| UI-83 | targetStage | Frame, Target, Track | {key, label, detail, away} | 무력화 > 타격 중 > 허락 대기 > 놓침(경과·방향·속도, 이탈이면 away) > RF 탐지 > 미탐 > 추적(임무 중 기체만) > 발견 | 리드 | 완료 |
+| UI-84 | situationCounts | Stage[], Queue | {targets, stages, decisions} | 단계별 개수 급한 순, 0개 뺌, 결정 수는 합친 표적 선택의 기체 수만큼 | 리드 | 완료 |
 ```
 
 ```bash
@@ -731,7 +731,7 @@ git commit -m "Part1-32: per-target detection state (lost at the last seen spot,
 
 ---
 
-### Task 4: 아군 목록 줄, 지목 플레이, 지목 요청 (UI-59, UI-60, UI-62)
+### Task 4: 아군 목록 줄, 지목 플레이, 지목 요청 (UI-85, UI-86, UI-88)
 
 **Files:**
 - Create: `modules/cop-ui/src/features/board/vehicleRows.ts`, `vehicleRows.test.ts`
@@ -925,9 +925,9 @@ Run: `cd modules/cop-ui && npx vitest run src/features/board` → PASS
 - [ ] **Step 7: SPEC 행, commit, ship (Task 3·4 함께)**
 
 ```
-| UI-59 | vehicleRows | Frame, 플레이 이름, VehicleSpec[] | VehicleRow[] | 하는 일(귀환 중·기지 정비·플레이 이름·대기), 종류 한글, 표적·타격은 임무 중일 때만, 배터리(35% 미만 low), 결정 대기 | 리드 | 완료 |
-| UI-60 | targetPlays | Play[], 도메인 | Play[] | 첫 step이 watch_target·approach_target이고 그 도메인을 쓰는 플레이, strike_target 없음(결정 0048) | 리드 | 완료 |
-| UI-62 | postPoint | 기체, 플레이, 표적 | Sent | POST /injections {play_by_vehicle, target_by_vehicle, approve: true}(결정 0049), throw 없음 | 리드 | 완료 |
+| UI-85 | vehicleRows | Frame, 플레이 이름, VehicleSpec[] | VehicleRow[] | 하는 일(귀환 중·기지 정비·플레이 이름·대기), 종류 한글, 표적·타격은 임무 중일 때만, 배터리(35% 미만 low), 결정 대기 | 리드 | 완료 |
+| UI-86 | targetPlays | Play[], 도메인 | Play[] | 첫 step이 watch_target·approach_target이고 그 도메인을 쓰는 플레이, strike_target 없음(결정 0048) | 리드 | 완료 |
+| UI-88 | postPoint | 기체, 플레이, 표적 | Sent | POST /injections {play_by_vehicle, target_by_vehicle, approve: true}(결정 0049), throw 없음 | 리드 | 완료 |
 ```
 
 ```bash
@@ -938,7 +938,7 @@ scripts/ship.sh
 
 ---
 
-### Task 5: 게이트웨이 데이터 읽기, 카메라 점, 지도 선·원 (UI-63, UI-61, UI-65, UI-66)
+### Task 5: 게이트웨이 데이터 읽기, 카메라 점, 지도 선·원 (UI-89, UI-87, UI-91, UI-92)
 
 **Files:**
 - Create: `modules/cop-ui/src/features/board/fetchBoardData.ts`, `fetchBoardData.test.ts`
@@ -1214,10 +1214,10 @@ Run: `cd modules/cop-ui && npx vitest run src/features/board` → PASS
 - [ ] **Step 7: SPEC 행, commit**
 
 ```
-| UI-61 | cameraPoints | Frame, Track 묶음, Queue | GeoPoint[] | 표적 표시 위치·추정 위치(2분 넘은 무력화 제외), 임무 중 표적 맡은 기체, 열린 카드가 부르는 기체(보고·선택지 미리 보기), 차단 대안 지점, 없으면 빈 목록 | 리드 | 완료 |
-| UI-63 | fetchBoardData | — | {plays, vehicles, watch} | GET /plays·/vehicles·/watch_points, 실패·목록 아님·연결 실패는 빈 목록 | 리드 | 완료 |
-| UI-65 | linkLines | Frame, Track 묶음, Queue | FeatureCollection | 임무 중 기체→표적(감시·타격, 무력화 표적엔 타격만), 놓친 표적 추정선, 차단 기체→대안 지점 | 리드 | 완료 |
-| UI-66 | watchCircles | WatchPoint[] | FeatureCollection | 기준점 반경 고리(64칸, 닫힘) | 리드 | 완료 |
+| UI-87 | cameraPoints | Frame, Track 묶음, Queue | GeoPoint[] | 표적 표시 위치·추정 위치(2분 넘은 무력화 제외), 임무 중 표적 맡은 기체, 열린 카드가 부르는 기체(보고·선택지 미리 보기), 차단 대안 지점, 없으면 빈 목록 | 리드 | 완료 |
+| UI-89 | fetchBoardData | — | {plays, vehicles, watch} | GET /plays·/vehicles·/watch_points, 실패·목록 아님·연결 실패는 빈 목록 | 리드 | 완료 |
+| UI-91 | linkLines | Frame, Track 묶음, Queue | FeatureCollection | 임무 중 기체→표적(감시·타격, 무력화 표적엔 타격만), 놓친 표적 추정선, 차단 기체→대안 지점 | 리드 | 완료 |
+| UI-92 | watchCircles | WatchPoint[] | FeatureCollection | 기준점 반경 고리(64칸, 닫힘) | 리드 | 완료 |
 ```
 
 ```bash
@@ -1227,7 +1227,7 @@ git commit -m "Part1-32: board data reads, camera points, map link lines and wat
 
 ---
 
-### Task 6: boardView 묶음과 오른쪽·머리·왼쪽 화면 (UI-64, UI-67~69)
+### Task 6: boardView 묶음과 오른쪽·머리·왼쪽 화면 (UI-90, UI-93~95)
 
 **Files:**
 - Create: `modules/cop-ui/src/features/board/boardView.ts`, `boardView.test.ts`
@@ -1969,10 +1969,10 @@ Run: `scripts/qa.sh scripts/qa/live.json` → `[qa] 전부 통과`. 스크린샷
 `modules/cop-ui/SPEC.md`: UI-21 CardList와 UI-28 MetricsPanel 행의 상태를 `폐기(Part1-32, DecisionQueue·LoadBar로 대체)`로, 끝에:
 
 ```
-| UI-64 | boardView | Frame, BoardData | {tracks, stages, queue, situation, rows} | 데이터가 오기 전(빈 목록)에도 그려짐 | 리드 | 완료 |
-| UI-67 | SituationBar·LoadBar | Situation / Metrics | 머리 한 줄 | 앱 머리 자리(#header-slot)에 단계별 개수·결정 대기(흰색)·운용자 조작 대 수동 기준(나머지는 툴팁)·LIVE | 리드 | 완료 |
-| UI-68 | RosterPanel | VehicleRow[], Target[], Stage | 왼쪽 열 | 아군 줄(하는 일·표적·배터리·결정 대기), 적 줄 위험도 순(무력화·미탐 아래), 단계 표시, 줄 누르면 기체 선택 | 리드 | 완료 |
-| UI-69 | DecisionQueue·QueueCard | Frame, Queue | 오른쪽 열 | 한 장 펼침(나머지 한 줄), 정해진 선택지 먼저·드론 요청 묶음, 표적 선택 위험도 순 칩, 타격 빨강, 승인·거부, 대안 지점, 보내기 잠금(UI-20), 결정 없으면 할 일 없음·무력화 결과, 알림 2분 | 리드 | 완료 |
+| UI-90 | boardView | Frame, BoardData | {tracks, stages, queue, situation, rows} | 데이터가 오기 전(빈 목록)에도 그려짐 | 리드 | 완료 |
+| UI-93 | SituationBar·LoadBar | Situation / Metrics | 머리 한 줄 | 앱 머리 자리(#header-slot)에 단계별 개수·결정 대기(흰색)·운용자 조작 대 수동 기준(나머지는 툴팁)·LIVE | 리드 | 완료 |
+| UI-94 | RosterPanel | VehicleRow[], Target[], Stage | 왼쪽 열 | 아군 줄(하는 일·표적·배터리·결정 대기), 적 줄 위험도 순(무력화·미탐 아래), 단계 표시, 줄 누르면 기체 선택 | 리드 | 완료 |
+| UI-95 | DecisionQueue·QueueCard | Frame, Queue | 오른쪽 열 | 한 장 펼침(나머지 한 줄), 정해진 선택지 먼저·드론 요청 묶음, 표적 선택 위험도 순 칩, 타격 빨강, 승인·거부, 대안 지점, 보내기 잠금(UI-20), 결정 없으면 할 일 없음·무력화 결과, 알림 2분 | 리드 | 완료 |
 ```
 
 ```bash
@@ -2166,7 +2166,7 @@ scripts/ship.sh
 
 ---
 
-### Task 8: 표적 지목 — 기체 선택 → 표적 → 플레이 (useDirectControl·PointMenu, UI-70)
+### Task 8: 표적 지목 — 기체 선택 → 표적 → 플레이 (useDirectControl·PointMenu, UI-96)
 
 **Files:**
 - Modify: `modules/cop-ui/src/features/map/useDirectControl.ts`
@@ -2341,7 +2341,7 @@ Run: `cd modules/cop-ui && npx tsc -b && npm test` → PASS, `scripts/qa.sh scri
 - [ ] **Step 6: SPEC, commit, ship**
 
 ```
-| UI-70 | PointMenu·지목(useDirectControl) | 선택 기체, 표적 | 플레이 메뉴 | 기체를 고른 동안만 표적이 클릭을 받음, 표적 옆 메뉴에 targetPlays 버튼("지금 → 새 · 표적"), 누르면 postPoint, 빈 지도 클릭은 메뉴만 닫고 다음 클릭은 직접 이동, Esc 취소, 목록 줄로도 지목(결정 0048·0049) | 리드 | 완료 |
+| UI-96 | PointMenu·지목(useDirectControl) | 선택 기체, 표적 | 플레이 메뉴 | 기체를 고른 동안만 표적이 클릭을 받음, 표적 옆 메뉴에 targetPlays 버튼("지금 → 새 · 표적"), 누르면 postPoint, 빈 지도 클릭은 메뉴만 닫고 다음 클릭은 직접 이동, Esc 취소, 목록 줄로도 지목(결정 0048·0049) | 리드 | 완료 |
 ```
 
 ```bash
