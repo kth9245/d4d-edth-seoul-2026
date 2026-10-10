@@ -483,3 +483,4 @@
 {"at": "2026-10-10T22:07:34+09:00", "by": "황승주", "op": "add", "id": "Part2-54", "title": "멸공 적 A안: 자폭 드론·적 USV가 T+17에 북·남 순찰 드론 위치를 지나가게 침투 지점 맞춤", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T22:07:38+09:00", "by": "황승주", "op": "start", "id": "Part2-54", "take": false, "from": null}
 {"at": "2026-10-10T22:19:57+09:00", "by": "황승주", "op": "done", "id": "Part2-54", "take": false}
+{"at": "2026-10-10T22:22:11+09:00", "by": "황승주", "op": "add", "id": "Part2-55", "title": "멸공 적 최종 리뷰 수정: 해상에 막 내린 적 UGV에 USV 추적 안 냄, 영역은 마지막 본 위치로 판단", "parent": null, "assign": "황승주", "slot": null, "spec": null}
