@@ -171,3 +171,4 @@
 {"at": "2026-10-10T11:11:41+09:00", "by": "kth9245", "op": "start", "id": "Part1-5", "take": false, "from": null}
 {"at": "2026-10-10T11:12:38+09:00", "by": "최동호", "op": "start", "id": "Part2-6", "take": false, "from": null}
 {"at": "2026-10-10T11:13:32+09:00", "by": "kth9245", "op": "add", "id": "Part1-9.3", "title": "디자인 v2: D4D 톤, Pretendard·Orbitron·JetBrains Mono 번들", "parent": "Part1-9", "assign": null, "slot": "1", "spec": null}
+{"at": "2026-10-10T11:13:34+09:00", "by": "kth9245", "op": "start", "id": "Part1-9.3", "take": false, "from": null}

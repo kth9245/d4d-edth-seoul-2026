@@ -6,7 +6,9 @@
 
 ## 진행중
 - **Part1-5** AI 초안 프롬프트·캐시 2개 — kth9245, 10/10 11:11부터 · 하위 1/1 완료
+- **Part1-9.3** 디자인 v2: D4D 톤, Pretendard·Orbitron·JetBrains Mono 번들 — kth9245, 10/10 11:13부터
 - **Part2-6** sensing `observe_targets`(공개 API 이름 `observe`) — 최동호, 10/10 11:12부터 · SNS-02
+- ⚠ kth9245 진행중 2개
 
 ## 막힘
 - (없음)
@@ -33,7 +35,6 @@
 - **Part2-19** 시나리오 튜닝
 
 ### 누구나
-- **Part1-9.3** 디자인 v2: D4D 톤, Pretendard·Orbitron·JetBrains Mono 번들
 - **Part3-15** play `compile_mavlink` (결정 0011) · 하위 0/1 완료 · PLY-10
 
 ## 최근 결정
