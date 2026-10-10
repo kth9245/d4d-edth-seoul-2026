@@ -2,7 +2,7 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 10:02 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 10:04 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - (없음)
@@ -33,8 +33,7 @@
 - **Part2-10** runtime `step_vehicle` · 하위 0/1 완료 · RT-01
 - **Part2-10.1** runtime enter_step · RT-08 (PLY-07 뒤)
 - **Part2-11** runtime `assign_roles` · RT-02
-- **Part2-12** runtime `apply_decision` · 하위 0/1 완료 · RT-03
-- **Part2-12.1** runtime switch_play · RT-09 (묶음 A, apply_decision·apply_injection·apply_reserves 전에)
+- **Part2-12** runtime `apply_decision` · 하위 1/1 완료 · RT-03
 - **Part2-13** runtime `update_metrics` · RT-04
 - **Part2-14** runtime `apply_injection` · RT-05
 - **Part2-15** runtime `apply_direct` · RT-06
@@ -74,6 +73,7 @@
 - 10/9 23:14 kth9245 · Part1-1 · 결정 0015·0016·0017·0018 참조(두 층 구조, contracts 세부, API 규약)
 
 ## 완료
+- **Part2-12.1** runtime switch_play · RT-09 (묶음 A, apply_decision·apply_injection·apply_reserves 전에) — 황승주, 10/10 10:04
 - **Part3-7** play `expand_action` + 표 — 황승주, 10/10 10:02 · PLY-07
 - **Part2-9** safety `check_command` — 황승주, 10/10 10:02 · SFT-03
 - **Part2-8** safety `return_feasible` — 황승주, 10/10 10:00 · SFT-02
