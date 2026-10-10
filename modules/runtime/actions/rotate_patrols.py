@@ -54,18 +54,25 @@ def rotate_patrols(
         else:  # both hold waypoint m until they meet (the patrol waits there)
             by[s] = by[s].model_copy(update={"waypoint_idx": m})
             by[r] = by[r].model_copy(update={"waypoint_idx": m})
+
+    def free(after: str | None) -> str | None:  # first charged, idle rotation drone after `after`
+        k = op.rotation.index(after) + 1 if after else 0
+        order = op.rotation[k:] + op.rotation[:k]
+        ok = [w for w in order if by[w].status.value == "ready" and by[w].battery_pct >= 99.9]
+        return next((w for w in ok if by[w].play_id not in op.rotation_plays), None)
+
     busy = set(pairs) | {r for r, _ in pairs.values()}
     for v in (v for v in on if v not in busy and by[v].play_id in op.rotation_plays):
         st, spec = by[v], specs[v]
         alone = sum(by[w].play_id == st.play_id for w in on) == 1
-        if not alone or st.battery_pct - 2 * _back(st, spec) > START:
-            continue
-        k = op.rotation.index(v)
-        order = op.rotation[k + 1 :] + op.rotation[:k]
-        free = [w for w in order if by[w].status.value == "ready" and by[w].battery_pct >= 99.9]
-        r = next((w for w in free if by[w].play_id not in op.rotation_plays), None)
-        if r:
-            m = max(st.waypoint_idx, 0)
+        if alone and st.battery_pct - 2 * _back(st, spec) <= START and (r := free(v)):
             by[r] = switch_play(by[r], plays[st.play_id])
-            note(r, st.play_id, f"교대 출발: {r} → {v} @{m}")
+            note(r, st.play_id, f"교대 출발: {r} → {v} @{max(st.waypoint_idx, 0)}")
+    for p in op.rotation_plays:  # a coast nobody holds (a patrol went home at the floor)
+        held = any(
+            by[w].play_id == p and by[w].status.value in ("ready", "active") for w in op.rotation
+        )
+        if not held and (r := free(None)):
+            by[r] = switch_play(by[r], plays[p])
+            note(r, p, f"교대 투입(빈 순찰): {r} → {p}")
     return [by[s.id] for s in states], asg

@@ -1,0 +1,116 @@
+"""Coast patrol routes (decision 0037) and the 24h rotation scenario demo/scenarios/baengnyeong_24h.json.
+
+The island outline (Scenario.land, decision 0034) is pushed 400 m out to sea, thinned to about 900 m
+between points and split at its west and east ends into the north coast (A) and the south coast (B).
+Each route runs end to end and back, so follow_route's wrap to the first point never crosses the island.
+The JSON is the source afterwards (decision 0035); rerun only to rebuild the routes.
+Usage: uv run python scripts/make_coast_routes.py
+"""
+
+import json
+import math
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path[:0] = [str(ROOT)]
+
+from contracts.models import GeoPoint, Scenario  # noqa: E402
+from shared.geo import dist_m, enu_delta_m, offset_latlon  # noqa: E402
+
+NIGHT = ROOT / "demo" / "scenarios" / "baengnyeong_night.json"
+OUT = ROOT / "demo" / "scenarios" / "baengnyeong_24h.json"
+OFFSHORE_M, SPACING_M = 400, 900
+
+
+def coast_routes(land) -> tuple[list[dict], list[dict]]:
+    pts = land[0].points
+    c = GeoPoint(lat=sum(p.lat for p in pts) / len(pts), lon=sum(p.lon for p in pts) / len(pts))
+
+    def out(p: GeoPoint) -> GeoPoint:
+        e, n = enu_delta_m(c.lat, c.lon, p.lat, p.lon)
+        k = math.hypot(e, n)
+        lat, lon = offset_latlon(p.lat, p.lon, e / k * OFFSHORE_M, n / k * OFFSHORE_M)
+        return GeoPoint(lat=lat, lon=lon)
+
+    ring = [out(p) for p in pts]
+    w = min(range(len(ring)), key=lambda i: ring[i].lon)
+    e = max(range(len(ring)), key=lambda i: ring[i].lon)
+
+    def walk(a: int, b: int) -> list[GeoPoint]:
+        seq, i = [ring[a]], a
+        while i != b:
+            i = (i + 1) % len(ring)
+            seq.append(ring[i])
+        return seq
+
+    def thin(seq: list[GeoPoint]) -> list[dict]:
+        keep = [seq[0]]
+        for p in seq[1:-1]:
+            if dist_m(keep[-1], p) >= SPACING_M:
+                keep.append(p)
+        keep.append(seq[-1])
+        there = [{"lat": round(p.lat, 5), "lon": round(p.lon, 5), "alt_m": 0} for p in keep]
+        return there + there[-2:0:-1]  # end to end and back
+
+    one, two = walk(w, e), walk(e, w)
+    mean = lambda s: sum(p.lat for p in s) / len(s)  # noqa: E731
+    north, south = (one, two) if mean(one) > mean(two) else (two, one)
+    return thin(north), thin(south)
+
+
+def patrol(pid: str, name: str, route: list[dict]) -> dict:
+    step = {"id": "patrol", "name": "해안 순찰", "do": {"kind": "patrol_route", "params": {"route": route}},
+            "on": [], "report": None, "ui": {}}  # fmt: skip
+    return {"id": pid, "name": name, "domains": ["air"], "steps": [step], "entry": "patrol",
+            "origin": "human", "approved": True, "template": False}  # fmt: skip
+
+
+def main() -> None:
+    night = json.loads(NIGHT.read_text(encoding="utf-8"))
+    sc = Scenario.model_validate(night)
+    a, b = coast_routes(sc.land)
+    drones = [
+        v | {"endurance_min": 90, "recharge_min": 10}
+        for v in night["vehicles"]
+        if v["domain"] == "air"
+    ]
+    plays = {p["id"]: p for p in night["plays"]}
+    op = night["operation"] | {
+        "name": "백령도 해안 순찰 24시간 교대(가상)",
+        "purpose": "드론 3대가 북(A)·남(B) 해안을 교대로 늘 1대씩 순찰(결정 0037)",
+        "vehicle_ids": [v["id"] for v in drones],
+        "assign": {"d1": "coast_a", "d2": "coast_b", "d3": "standby"},
+        "reserve": {},
+        "switches": [],
+        "rotation": ["d1", "d2", "d3"],
+        "rotation_plays": ["coast_a", "coast_b"],
+    }
+    out = {
+        "id": "baengnyeong_24h",
+        "operation": op,
+        "vehicles": drones,
+        "plays": [
+            patrol("coast_a", "해안 순찰 A · 북", a),
+            patrol("coast_b", "해안 순찰 B · 남", b),
+            plays["standby"],
+            plays["go_home"],
+        ],  # fmt: skip
+        # B starts half a cycle ahead so A and B never need the one spare at once. 1 s, not 0: events
+        # fire in (t - dt, t] and the first tick is started_ms + tick_ms.
+        "events": [
+            {"offset_ms": 1000, "kind": "vehicle_battery_set", "params": {"id": "d2", "pct": 60}}
+        ],
+        "enemies": [],
+        "land": night["land"],
+        "seed": 0,
+        "tick_ms": 1000,
+        "speed": 1.0,
+    }
+    Scenario.model_validate(out)
+    OUT.write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    print(f"{OUT.name}: coast_a {len(a)} points, coast_b {len(b)} points")
+
+
+if __name__ == "__main__":
+    main()

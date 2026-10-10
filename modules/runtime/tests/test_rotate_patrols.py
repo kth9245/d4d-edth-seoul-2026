@@ -102,6 +102,14 @@ def test_no_relief_still_goes_home_at_the_floor():
     assert [a.reason for a in asg] == ["교대 귀환(하한선): d1"]
 
 
+def test_empty_patrol_play_gets_a_ready_drone():
+    states = [vs("d1", "coast_a", 80, 6000), vs("d2", "go_home", 35, 3000, "returning"),
+              vs("d3", None, 100, 0, "ready")]  # fmt: skip
+    by, asg = run(states)
+    assert by["d3"].play_id == "coast_b"
+    assert [a.reason for a in asg] == ["교대 투입(빈 순찰): d3 → coast_b"]
+
+
 def test_two_on_one_play_without_relief_record_is_not_a_handover():
     by, asg = run(fleet(d1_battery=90, d3_play="coast_a", d3_north=5900))
     assert by["d1"].play_id == "coast_a" and by["d3"].play_id == "coast_a" and asg == []

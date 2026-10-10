@@ -20,6 +20,7 @@ from modules.runtime import (
     apply_emergency,
     apply_injection,
     apply_reserves,
+    rotate_patrols,
     step_vehicle,
     update_metrics,
 )
@@ -58,6 +59,7 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
         before_direct[cmd.id] = pre
         cmds.append(cmd)
     states = apply_emergency(states, plays)  # 4
+    states, assigns = rotate_patrols(states, specs, sc.operation, plays, assigns, t)  # 4.5 (0037)
     stepped = []
     for s in states:  # 5
         s, cmd, rep = step_vehicle(s, specs[s.id], plays.get(s.play_id), targets, t)
