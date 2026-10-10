@@ -2,7 +2,7 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 16:56 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 17:04 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - (없음)
@@ -16,6 +16,7 @@
 - **Part1-15** 3분 대본·BUILT_HERE·제출 설명
 
 ### 누구나
+- **Part1-30** 화면 점검 목록 최신화: editor.json·live.json 기대값을 d4·적 3척·위협 점수 변경에 맞춤
 - **Part3-12.2** 카드 편집: 지도에서 좌표 찍기(이동 지점·순찰 경로) — gio 세션
 
 ## 최근 결정
