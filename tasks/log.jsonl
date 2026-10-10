@@ -217,3 +217,4 @@
 {"at": "2026-10-10T11:59:53+09:00", "by": "kth9245", "op": "done", "id": "Part3-13", "take": false}
 {"at": "2026-10-10T11:59:56+09:00", "by": "kth9245", "op": "note", "id": "Part3-12", "text": "화면 클릭 경로 확인 끝(Part3-13과 함께, 실제 엔진): 예시 문장 → 초안 → 저장 막힘(missing_report_point) → 보고 카드 끼워 넣기 → 저장 통과, 서버 /plays에 approved=true로 저장"}
 {"at": "2026-10-10T12:02:09+09:00", "by": "최동호", "op": "start", "id": "Part2-19", "take": false, "from": null}
+{"at": "2026-10-10T12:04:41+09:00", "by": "kth9245", "op": "add", "id": "Part3-10.1", "title": "워크플로우 그래프 보기(step 카드 + 조건 연결선, React Flow)", "parent": "Part3-10", "assign": null, "slot": "2", "spec": null}
