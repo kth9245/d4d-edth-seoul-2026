@@ -6,6 +6,7 @@ SPEC: modules/safety/SPEC.md#SFT-03
 from contracts.models import (
     Block,
     Command,
+    CommandKind,
     GeoPoint,
     Injection,
     Operation,
@@ -24,6 +25,8 @@ RULES = ["no_provenance", "outside_zone", "battery_insufficient"]
 def _no_provenance(cmd: Command, plays: dict[str, Play], injections: list[Injection]) -> bool:
     p = cmd.provenance
     if p is None:
+        return True
+    if cmd.kind == CommandKind.strike and not p.decision_id:  # decision 0033
         return True
     if p.source == "play_step":
         return not plays[p.play_id].approved
@@ -50,7 +53,8 @@ def check_command(
                      alternative=cmd.model_copy(update=new) if new else None, t_ms=state.t_ms)  # fmt: skip
 
     if _no_provenance(cmd, plays, injections):
-        return block("no_provenance", "출처 없음")
+        why = "운용자 결정 없는 타격" if cmd.kind == CommandKind.strike else "출처 없음"
+        return block("no_provenance", why)
     p = cmd.params
     dests = (
         [GeoPoint(**p["target"])] if "target" in p else [GeoPoint(**q) for q in p.get("route", [])]

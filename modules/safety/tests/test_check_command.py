@@ -129,3 +129,25 @@ def test_only_check_command_creates_passed_command():
         if p != me and "tests" not in p.parts and re.search(r"PassedCommand\(", p.read_text())
     ]
     assert hits == []
+
+
+def strike(target: GeoPoint, decision_id: str | None) -> Command:
+    prov = Provenance(source="play_step", play_id="ok", step_id="s1", issued_ms=0,
+                      decision_id=decision_id)  # fmt: skip
+    return Command(id="c1", vehicle_id="d1", kind="strike", provenance=prov,
+                   params={"target_id": "fast1", "distance_m": 0, "target": target.model_dump()})  # fmt: skip
+
+
+def test_strike_with_operator_decision_passes():
+    assert isinstance(check(strike(P(37.06, 126.06), "dec-3")), PassedCommand)
+
+
+def test_strike_without_decision_is_blocked():
+    b = check(strike(P(37.06, 126.06), None))
+    assert isinstance(b, Block) and b.reason == "no_provenance" and b.alternative is None
+    assert b.detail == "운용자 결정 없는 타격"
+
+
+def test_strike_at_a_target_outside_the_zone_is_blocked():
+    b = check(strike(P(37.2, 126.05), "dec-3"))
+    assert isinstance(b, Block) and b.reason == "outside_zone"
