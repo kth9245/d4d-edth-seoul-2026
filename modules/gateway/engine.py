@@ -8,6 +8,7 @@ from dataclasses import replace
 from contracts.models import Frame, TickInputs, TickOutcome
 from modules.gateway.actions.build_frame_v2 import build_frame_v2
 from modules.gateway.actions.init_engine import init_engine
+from modules.gateway.actions.mark_reported import mark_reported
 from modules.gateway.actions.record_injections import record_injections
 from modules.gateway.actions.run_checks import run_checks
 from modules.gateway.actions.tick_log import tick_log
@@ -60,6 +61,7 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
     stepped = []
     for s in states:  # 5
         s, cmd, rep = step_vehicle(s, specs[s.id], plays.get(s.play_id), targets, t)
+        targets = mark_reported(targets, [rep] if rep else [])  # 5.1 decision 0036
         stepped.append(s)
         cmds += [cmd] if cmd else []
         new_reports += [rep] if rep else []

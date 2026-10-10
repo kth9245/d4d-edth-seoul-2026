@@ -51,6 +51,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | 3 | runtime | 입력 적용: `apply_decision(states, plays, decision, reports) -> (states, reports)`, 승인된 것만 `apply_injection(states, plays, injection) -> states`, `apply_direct(states, direct, t_ms) -> (states, Command)` |
 | 4 | runtime | `apply_emergency(states, plays) -> states` |
 | 5 | runtime | 기체마다 `step_vehicle(state, specs[id], plays[state.play_id], targets, t_ms) -> (state, Command \| None, Report \| None)` |
+| 5.1 | gateway | 그 기체가 카드를 냈으면 바로 `mark_reported(targets, [report]) -> targets`: `target_detected` 카드의 표적에 `reported_by`(결정 0036). 다음 기체는 같은 틱에도 그 배를 새 접촉으로 보지 않는다 |
 | 6 | runtime | `apply_reserves(states, op, plays, assignments, t_ms) -> (states, assignments, Report \| None)` |
 | 7 | safety | 명령마다 `check_command(cmd, state, spec, op, plays, injections) -> PassedCommand \| Block` |
 | 8 | sim | `advance(states, specs, passed, dt_ms, targets, land) -> states`(해상 기체는 섬을 돌아감, 결정 0034) |
