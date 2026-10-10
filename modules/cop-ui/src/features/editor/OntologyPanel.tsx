@@ -3,7 +3,7 @@ import type { OntologyView, Operation, Role, VehicleSpec } from "../../contracts
 import { fetchOntology } from "./fetchOntology";
 import { kindRows, reasonLine, reserveLines } from "./ontologyView";
 
-// Editor "온톨로지" (decision 0038): the kind hierarchy, each vehicle's verdict per action with the path the
+// Editor "기체 종류·능력" (decision 0038 ontology; label Part1-15.7): the kind hierarchy, each vehicle's verdict per action with the path the
 // server walked (GET /ontology runs the same inference as the role check) and why each reserve qualifies.
 export function OntologyPanel({ op, roles, vehicles }: { op: Operation; roles: Role[]; vehicles: VehicleSpec[] }) {
   const [view, setView] = useState<OntologyView | null>(null);
@@ -12,13 +12,13 @@ export function OntologyPanel({ op, roles, vehicles }: { op: Operation; roles: R
   useEffect(() => {
     fetchOntology().then(setView, (e: Error) => setError(e.message));
   }, []);
-  if (error) return <div className="onto load-error">온톨로지를 불러오지 못했습니다 ({error})</div>;
+  if (error) return <div className="onto load-error">기체 종류·능력을 불러오지 못했습니다 ({error})</div>;
   if (!view) return <div className="onto">불러오는 중…</div>;
   const onto = view.ontology;
   const chosen = view.vehicles.find((v) => v.vehicle_id === pick);
   return (
     <div className="onto">
-      <h2>온톨로지</h2>
+      <h2>기체 종류·능력</h2>
       <div className="onto-top">
         <section>
           <h3>종류 계층</h3>

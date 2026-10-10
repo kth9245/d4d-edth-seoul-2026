@@ -37,7 +37,7 @@ export function RoleSidebar({ groups, selected, showOverview, onSelect, top, sce
         </div>
       )}
       {showOverview && item(OVERVIEW, "작전 개요")}
-      {showOverview && item(ONTOLOGY, "온톨로지")}
+      {showOverview && item(ONTOLOGY, "기체 종류·능력")}
       {groups.map((g) => (
         <div key={g.key}>
           <div className="group">{g.label}</div>

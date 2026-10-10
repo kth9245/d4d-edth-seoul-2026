@@ -8,7 +8,7 @@
  {"click": "24시간 침투 대응", "wait": 2500},
  {"label": "O2 picking the 24h operation switches the overview and the running mark", "eval": "({ title: document.querySelector('.op-head h2')?.innerText, columns: document.querySelectorAll('.friend-columns .column').length, active: document.querySelector('.role-sidebar .item.op.active')?.innerText.trim() })", "expect": {"title": "24시간 침투 대응", "columns": 6, "active": "24시간 침투 대응"}},
  {"shot": "ops-editor-24h.png"},
- {"click": "온톨로지", "wait": 2000},
+ {"click": "기체 종류·능력", "wait": 2000},
  {"label": "O2 the 24h operation shows the night ontology: the kind tree with its drones, no load error (decision 0051)", "eval": "({ error: !!document.querySelector('.onto.load-error'), kinds: document.querySelectorAll('.onto-tree li').length > 0, d4: [...document.querySelectorAll('.onto-tree .who')].some(w => w.innerText.includes('d4')) })", "expect": {"error": false, "kinds": true, "d4": true}},
  {"shot": "ops-ontology-24h.png"},
  {"click": "작전 개요", "wait": 800},
