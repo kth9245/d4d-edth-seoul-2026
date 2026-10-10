@@ -2,32 +2,31 @@ import { useEffect, useRef, useState } from "react";
 import { fetchMavlink } from "./fetchMavlink";
 import "./mavlink.css";
 
-// MAVLink log window (decision 0064): the header's MAVLink button opens #mavlink in a new window. It reads
-// GET /mavlink every second and keeps the newest line in view.
-export function MavlinkLog() {
+// MAVLink log panel (decisions 0064, 0065): the header's MAVLink button opens it in the middle of the map column,
+// "닫기" closes it. While open it reads GET /mavlink every second and keeps the newest line in view.
+export function MavlinkPanel({ onClose }: { onClose: () => void }) {
   const [lines, setLines] = useState<string[]>([]);
-  const end = useRef<HTMLDivElement>(null);
+  const box = useRef<HTMLPreElement>(null);
   useEffect(() => {
     const read = () => fetchMavlink().then((l) => l && setLines(l));
     read();
     const id = setInterval(read, 1000);
     return () => clearInterval(id);
   }, []);
-  useEffect(() => end.current?.scrollIntoView({ block: "end" }), [lines.length]);
+  useEffect(() => {
+    if (box.current) box.current.scrollTop = box.current.scrollHeight;
+  }, [lines.length]);
   return (
     <div className="mavlink-log">
-      <h1>MAVLink</h1>
-      <pre>{lines.join("\n")}</pre>
-      <div ref={end} />
+      <div className="ml-head">
+        <b>MAVLink</b>
+        <button onClick={onClose}>닫기</button>
+      </div>
+      <pre ref={box}>{lines.join("\n")}</pre>
     </div>
   );
 }
 
-// Header button: one named window, so a second press brings the same window back.
-export function MavlinkButton() {
-  return (
-    <button className="mavlink-open" onClick={() => window.open("#mavlink", "rolecall-mavlink", "width=820,height=760")}>
-      MAVLink
-    </button>
-  );
+export function MavlinkButton({ onClick }: { onClick: () => void }) {
+  return <button className="mavlink-open" onClick={onClick}>MAVLink</button>;
 }

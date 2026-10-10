@@ -3,7 +3,6 @@ import type { Polygon } from "./contracts.gen";
 import { EditorScreen } from "./features/editor/EditorScreen";
 import { fetchZone } from "./features/live/fetchZone";
 import { useFrames } from "./features/live/useFrames";
-import { MavlinkLog } from "./features/mavlink/MavlinkLog";
 import { tabFromHash } from "./features/nav/tab";
 import { Screen } from "./Screen";
 
@@ -30,7 +29,6 @@ export default function App() {
     return () => removeEventListener("hashchange", onHash);
   }, []);
   const tab = tabFromHash(hash);
-  if (tab === "mavlink") return <MavlinkLog />; // decision 0064: the new window opened from the header
   return (
     <div className="app">
       <header className="tabs">

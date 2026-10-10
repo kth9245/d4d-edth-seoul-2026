@@ -104,7 +104,7 @@ Role은 다른 기체를 알지 못하지만, 선택지의 `role_by_vehicle`은 
 | `POST /routes` | `RouteDef`(고정이면 `points`, 상대면 `offsets`) | `RouteDef[]`(실행 작전 경로 목록 끝에 더함, 같은 id는 바꿈. 카드는 고를 때 경로를 복사하므로 실행을 되돌리지 않음. gateway 메모리에만, 결정 0054) |
 | `GET /ontology` | — | `OntologyView`(계층 + 기체마다 행동 10개의 판정과 경로, 결정 0038). 시나리오에 온톨로지가 없으면 404 |
 | `GET /graph?focus=` | — | `ObjectGraph`(그 객체에서 링크를 따라 모은 객체. 기체와 focus가 아닌 표적은 더 펼치지 않음, 결정 0038). 없는 id는 404 |
-| `GET /mavlink` | — | `string[]`(이번 실행에 안전 검사를 통과한 명령을 시간순 MAVLink 메시지 줄로: `HH:MM:SS(KST) 기체 메시지 MAV_CMD이름(번호) p1 … p7`. NAV는 `MISSION_ITEM_INT seq<n>` 줄들 + `MISSION_START`, 그 밖은 `COMMAND_LONG`, 대응 명령이 없는 타격은 줄 없음. 헤더 MAVLink 버튼의 새 창이 1초마다 읽음, 결정 0064) |
+| `GET /mavlink` | — | `string[]`(이번 실행에 안전 검사를 통과한 명령을 시간순 MAVLink 메시지 줄로: `HH:MM:SS(KST) 기체 메시지 MAV_CMD이름(번호) p1 … p7`. NAV는 `MISSION_ITEM_INT seq<n>` 줄들 + `MISSION_START`, 그 밖은 `COMMAND_LONG`, 대응 명령이 없는 타격은 줄 없음. 헤더 MAVLink 버튼이 여는 가운데 패널이 열린 동안 1초마다 읽음, 결정 0064·0065) |
 | `POST /roles/check` | `Role` | `RoleCheck` |
 | `POST /roles/draft` | `DraftIn{text}` | `Role`(origin=ai_draft, approved=false) |
 | `GET /operation` · `POST /operation` | — · `Operation` | `Operation` |

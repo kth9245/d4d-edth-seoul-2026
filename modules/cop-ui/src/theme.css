@@ -507,9 +507,11 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .board .pickpop button.x { border-color: var(--line2); background: transparent; color: var(--text2); }
 .board .pickpop .pn { color: var(--muted); font-size: 11px; line-height: 1.45; }
 .map.picking .mk.target:hover i { outline: 2px solid var(--live); outline-offset: 4px; }
-/* MAVLink log window and its header button (decision 0064) */
-.mavlink-log { background: var(--bg); color: var(--text2); }
-.mavlink-log h1 { color: var(--muted); font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: var(--ls); }
+/* MAVLink log panel and its header button (decisions 0064, 0065): the same frame as the object graph panel */
+.mavlink-log { border: 1px solid var(--line2); background: rgba(0, 0, 0, 0.94); color: var(--text2); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); }
+.mavlink-log .ml-head { border-bottom: 1px solid var(--line); color: var(--muted); font-family: var(--font-mono); font-size: 12px; letter-spacing: var(--ls); }
+.mavlink-log .ml-head button { border: 1px solid var(--line2); border-radius: var(--r); background: transparent; color: var(--text2); letter-spacing: 0; }
+.mavlink-log .ml-head button:hover { border-color: var(--text); color: var(--text); }
 .mavlink-log pre { font-family: var(--font-mono); font-size: 12px; line-height: 1.6; }
 .header-slot .mavlink-open { border: 1px solid var(--line2); border-radius: var(--r); background: transparent; color: var(--text2);
   font-family: var(--font-mono); font-size: 11px; }

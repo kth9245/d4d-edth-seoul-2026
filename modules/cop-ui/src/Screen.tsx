@@ -15,7 +15,7 @@ import { SwitchPanel } from "./features/cards/SwitchPanel";
 import { ObjectGraphView } from "./features/graph/ObjectGraphView";
 import { tilesExist } from "./features/map/basemap";
 import { MapView } from "./features/map/MapView";
-import { MavlinkButton } from "./features/mavlink/MavlinkLog";
+import { MavlinkButton, MavlinkPanel } from "./features/mavlink/MavlinkLog";
 import { useDirectControl } from "./features/map/useDirectControl";
 import { RunBar } from "./features/run/RunBar";
 
@@ -27,6 +27,7 @@ export function Screen({ frame, zone, status, ok }:
   const [tiles, setTiles] = useState<boolean | null>(null);
   const [graph, setGraph] = useState<string | null>(null);
   const [slot, setSlot] = useState<HTMLElement | null>(null);
+  const [mavlink, setMavlink] = useState(false); // decision 0065: the MAVLink log panel
   const data = useBoardData(frame !== null);
   const direct = useDirectControl(frame?.t_ms ?? 0);
   const board = useMemo(() => (frame ? boardView(frame, data) : null), [frame, data]);
@@ -40,7 +41,7 @@ export function Screen({ frame, zone, status, ok }:
         <>
           {board && <SituationBar situation={board.situation} />}
           <LoadBar metrics={frame?.metrics ?? null} />
-          <MavlinkButton />
+          <MavlinkButton onClick={() => setMavlink((v) => !v)} />
           <div className={ok ? "status ok" : "status down"}>{status}</div>
         </>, slot)}
       {frame && board ? (
@@ -61,6 +62,7 @@ export function Screen({ frame, zone, status, ok }:
         })()}
         <RunBar frame={frame} />
         {graph && <ObjectGraphView focus={graph} onClose={() => setGraph(null)} />}
+        {mavlink && <MavlinkPanel onClose={() => setMavlink(false)} />}
       </div>
       <aside className="ops">
         <div className="ops-scroll">
