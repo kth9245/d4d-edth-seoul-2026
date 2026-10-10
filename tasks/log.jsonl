@@ -306,3 +306,4 @@
 {"at": "2026-10-10T14:59:17+09:00", "by": "kth9245", "op": "start", "id": "Part1-23.1", "take": false, "from": null}
 {"at": "2026-10-10T15:01:22+09:00", "by": "kth9245", "op": "done", "id": "Part1-23.1", "take": false}
 {"at": "2026-10-10T15:01:25+09:00", "by": "kth9245", "op": "note", "id": "Part1-23", "text": "tests/test_ship.py::test_ship_allows_module_with_spec_only_and_no_tests 실패는 이 작업과 무관(ship.sh는 이 파일을 제외하고 돌림). 원래부터 깨져 있던 것으로 보임"}
+{"at": "2026-10-10T15:01:28+09:00", "by": "kth9245", "op": "start", "id": "Part1-23.2", "take": false, "from": null}
