@@ -12,10 +12,10 @@
 
 ## Global Constraints
 - 시연은 인터넷 없이 동작한다. AI 초안 캐시 키가 맞도록 새 작전의 `zone`·`area`는 야간 작전(`baengnyeong_night`)과 같은 폴리곤을 쓴다(정책 1, 결정 0062). (verbatim: zone·area = 야간 작전 그대로)
-- 공개·가상 데이터만. 사람(`person`) 표적을 두지 않는다(정책 2, 결정 0073).
+- 공개·가상 데이터만. 사람(`person`) 표적을 두지 않는다(정책 2, 결정 0078).
 - 좌표는 WGS84 위경도(도), 고도 m, 시간 `t_ms`(UTC epoch ms)(정책 3).
 - 액션 파일 규칙은 이 작업에 해당 없음(새 코드 모듈 없음). 생성 스크립트·테스트·데이터만 추가한다. 줄 수 제한 없음(결정 0023).
-- `baengnyeong_strike`·`scripts/make_strike_scenario.py`와 그 테스트, 야간·24시간 작전, contracts·sim·sensing·runtime·safety·role 코드는 **고치지 않는다**(결정 0072, 통합 1 레거시 공개 API 보존).
+- `baengnyeong_strike`·`scripts/make_strike_scenario.py`와 그 테스트, 야간·24시간 작전, contracts·sim·sensing·runtime·safety·role 코드는 **고치지 않는다**(결정 0077, 통합 1 레거시 공개 API 보존).
 - TDD(결정 0014): 각 코드·데이터 변경은 실패하는 테스트를 먼저 쓴다. 생성 스크립트는 "스크립트가 쓴 JSON == 디스크" 테스트로 고정한다(결정 0035 패턴).
 - 작전 id = `baengnyeong_assault`. 기체 id = `r1`·`r2`·`a1`·`a2`·`usv`·`ugv`. 적 id = `site_rf`·`e_usv`·`e_ugv1`·`e_ugv2`.
 
@@ -132,9 +132,9 @@ Expected: FAIL — 파일 `demo/scenarios/baengnyeong_assault.json`·모듈 `scr
 
 ```python
 """Assault operation "해안 거점·무인장비 무력화" (virtual): demo/scenarios/baengnyeong_assault.json.
-발표 라이브 시연의 유일한 작전(결정 0069). 1막: RF 거점(site_rf, unknown)을 직접 조종으로 보고 식별·타격.
+발표 라이브 시연의 유일한 작전(결정 0074). 1막: RF 거점(site_rf, unknown)을 직접 조종으로 보고 식별·타격.
 2막: 적 무인 수상정(e_usv)이 상륙 지점으로 가며 지상 로봇 둘(e_ugv1/2)을 내리고, 우리 수상정의 발견 카드
-'함께 타격'으로 공격 드론·수상정이 타격하고 지상 로봇이 상륙 지점을 관측(결정 0070·0073). 엔진 코드 변경 없음.
+'함께 타격'으로 공격 드론·수상정이 타격하고 지상 로봇이 상륙 지점을 관측(결정 0075·0078). 엔진 코드 변경 없음.
 JSON이 그 뒤로 정본(결정 0035); 다시 만들 때만 실행. Usage: uv run python scripts/make_assault_scenario.py
 """
 
@@ -215,7 +215,7 @@ def site_recon():
 
 
 def sea_patrol():
-    """2막 해상 순찰 Role (usv). 발견 카드의 '함께 타격'이 공중·해상·지상을 한 번에 옮긴다(결정 0070)."""
+    """2막 해상 순찰 Role (usv). 발견 카드의 '함께 타격'이 공중·해상·지상을 한 번에 옮긴다(결정 0075)."""
     together = {"id": "strike_all_domains", "label": "함께 타격(공격 드론·수상정) · 지상 로봇 상륙 지점 관측",
                 "role_by_vehicle": {"a1": "strike", "a2": "strike", "usv": "strike", "ugv": "watch_landing"},
                 "target_by_vehicle": {"a1": "e_usv", "a2": "e_usv", "usv": "e_usv"}}
@@ -329,7 +329,7 @@ Expected: PASS. 실패하면 좌표(SITE_RF가 섬 안·경로에서 800~2000 m)
 
 ```bash
 git add scripts/make_assault_scenario.py demo/scenarios/baengnyeong_assault.json tests/test_assault_scenario.py
-git commit -m "Part1-15.1: assault scenario JSON — 6-vehicle fleet, RF site, enemy usv+ugv (decisions 0069-0073)"
+git commit -m "Part1-15.1: assault scenario JSON — 6-vehicle fleet, RF site, enemy usv+ugv (decisions 0074-0078)"
 ```
 
 ---
@@ -687,7 +687,7 @@ git commit -m "Part1-15.1: 다음 사건 stops for baengnyeong_assault"
 설계 문서 7절 타임라인(A1~A3 편집기, B1~B7 실행)을 발표 대본으로 옮긴다. 각 멈춤에서 말할 한 줄과 배속 ×30·'다음 사건' 조작을 적는다. `demo/RUNBOOK.md`의 순서를 공격 작전으로 바꾸고(야간 3분 대본 대신), `demo/BUILT_HERE.md`에 한 줄 더한다:
 
 ```
-| 10/11 | demo·gateway·cop-ui | Part1-15.1 발표 공격 작전 baengnyeong_assault(결정 0069~0073): 1막 RF 거점 직접 조종→식별→승인→타격, 2막 적 무인 수상정·지상로봇, 결정 한 번에 공중·해상·지상 타격. 데이터만, 엔진 코드 변경 없음. 작전 고르기·'다음 사건' 멈춤 추가 | kth9245 |
+| 10/11 | demo·gateway·cop-ui | Part1-15.1 발표 공격 작전 baengnyeong_assault(결정 0074~0078): 1막 RF 거점 직접 조종→식별→승인→타격, 2막 적 무인 수상정·지상로봇, 결정 한 번에 공중·해상·지상 타격. 데이터만, 엔진 코드 변경 없음. 작전 고르기·'다음 사건' 멈춤 추가 | kth9245 |
 ```
 
 - [ ] **Step 5: 전체 테스트와 smoke, 커밋**
