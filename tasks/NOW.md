@@ -2,11 +2,12 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 10:25 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 10:27 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part1-7** gateway REST + WS — kth9245, 10/10 10:25부터
 - **Part1-9** 지도: 위성 raster + 기체·표적·구역 — kth9245, 10/10 10:18부터
+- **Part2-2** sim `follow_route` — 최동호, 10/10 10:27부터 · SIM-06
 - **Part3-6** play `check_play` — 황승주, 10/10 10:20부터 · 하위 0/1 완료 · PLY-06
 - **Part3-10** 편집기: 카드 열(읽기 전용) — kth9245, 10/10 10:25부터
 - ⚠ kth9245 진행중 3개
@@ -35,7 +36,6 @@
 - **Part3-9** play `draft_play` · PLY-09
 
 ### 최동호
-- **Part2-2** sim `follow_route` · SIM-06
 - **Part2-3** sim `orbit_or_keep` · SIM-07
 - **Part2-4** sim `advance_vehicles`(공개 API 이름 `advance`) · SIM-08
 - **Part2-5** sim `apply_events` · SIM-09
