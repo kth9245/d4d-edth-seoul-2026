@@ -157,3 +157,36 @@ def test_the_silent_sites_stay_unidentified_without_a_clue(sc):
     for _ in range(1500):  # five simulated minutes
         es, _ = tick(es, TickInputs())
     assert [_site(es, i).ident_state for i in ("site_b", "site_c")] == ["undetected"] * 2
+
+
+def _identified_card_state(sc):
+    es = init_engine(sc)
+    return _run_until(  # the card appears a little after the identification
+        es,
+        lambda e: (
+            any(t.id == "site_a" and t.ident_state == "identified" for t in e.targets)
+            and any(r.kind == "target_detected" and r.target_id == "site_a" for r in e.reports)
+        ),
+    )
+
+
+def test_the_card_offers_exactly_the_three_attack_drones_and_not_the_usv(sc):
+    es = _identified_card_state(sc)
+    ids = [c.id for c in _card(es).choices if c.id.startswith("strike_")]
+    assert ids == ["strike_a1", "strike_a2", "strike_a3", "strike_all"]  # no strike_usv
+
+
+def test_only_the_chosen_attack_drone_flies_to_the_site(sc):
+    es = _identified_card_state(sc)
+    dec = Decision(
+        id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=_card(es).id, choice_id="strike_a2"
+    )
+    es, _ = tick(es, TickInputs(decisions=[dec]))
+    es = _run_until(es, lambda e: _site(e).neutralized_ms is not None, limit=9000)
+    states = {s.id: s for s in es.states}
+    home = next(v for v in sc.vehicles if v.id == "usv").home
+    assert states["a2"].role_id == "strike"
+    for idle in ("a1", "a3"):
+        assert states[idle].role_id == "standby", idle
+        assert dist_m(states[idle].pos, home) < 1.0, idle  # still at the usv spot
+    assert not es.blocks  # no safety rule (zone, battery, provenance) stopped the strike
