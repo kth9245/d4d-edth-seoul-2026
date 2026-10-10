@@ -1,7 +1,5 @@
 """Part2-19: the demo scenario on the real tick loop gives the scenes in the strike-phase order
 (docs/superpowers/specs/2026-10-10-strike-phase-design.md section 2): s1 s2 s3 s5 s6 s4 s7 s8.
-Since 10/10 (user) the demo starts on the coast patrol: s1 = d1's coast card, s2 = a fleet choice
-(d3 takes the north coast), s3 = a coast relief leaves the base.
 
 The operator is scripted here: cards answered 20 s after they appear (target picks 10 s, fast1;
 strike approval: '함께 타격'), d2 sent past the NLL at 20:00, the block's alternative applied at
@@ -24,9 +22,9 @@ PAST_NLL = GeoPoint(lat=38.05, lon=124.66)  # s5: north of the zone edge (lat 38
 FAR_SE = GeoPoint(lat=37.905, lon=124.835)  # s6: inside the zone, beyond d2's return battery
 
 
-def _pick(r) -> str:  # coast patrol card: send d3 to the coast d1 left; later cards: keep
+def _pick(r) -> str:
     ids = [c.id for c in r.choices]
-    return next((i for i in ("fast1", "strike_both", "take_d3", "keep") if i in ids), ids[0])
+    return next((i for i in ("fast1", "strike_both") if i in ids), ids[0])
 
 
 def _inputs(es, t: int, n: dict) -> TickInputs:
@@ -61,13 +59,11 @@ def run():
         if ok and scene not in seen:
             seen[scene] = es.t_ms - START
 
-    for _ in range(36 * MIN // SC.tick_ms):
+    for _ in range(35 * MIN // SC.tick_ms):
         es, fr = tick(es, _inputs(es, es.t_ms + SC.tick_ms, n))
         mark("s1", any(r.kind == "target_detected" and r.vehicle_id == "d1" for r in es.reports))
-        mark(
-            "s2", any(a.reason == "결정 dec-1" for a in es.assignments)
-        )  # fleet choice: d3 takes the coast
-        mark("s3", any(a.reason.startswith("교대 출발") for a in es.assignments))  # coast relief
+        mark("s2", sum(a.reason == "결정 dec-1" for a in es.assignments) == 3)  # d1·usv·ugv (0036)
+        mark("s3", any(r.kind == "vehicle_gap" for r in es.reports))
         mark("s5", any(b.vehicle_id == "d2" and b.reason == "outside_zone" for b in es.blocks))
         mark(
             "s6",
@@ -85,22 +81,23 @@ def scenes(run) -> dict[str, int]:
 
 
 def test_scenes_happen_in_strike_phase_order(scenes):
-    order = ["s1", "s2", "s5", "s6", "s4", "s7", "s8"]
-    assert set(order) | {"s3"} <= set(scenes), scenes
+    order = ["s1", "s2", "s3", "s5", "s6", "s4", "s7", "s8"]
+    assert [s for s in order if s in scenes] == order, scenes
     assert [scenes[s] for s in order] == sorted(scenes[s] for s in order), scenes
-    assert scenes["s1"] < scenes["s3"] < scenes["s5"], (
-        scenes
-    )  # a coast relief leaves around the card
 
 
-def test_coast_patrol_card_offers_fleet_choices_and_the_finder_hovers(run):  # user, 10/10
+def test_three_boats_each_get_one_card_from_the_drone_that_found_it(run):  # decision 0036
     es, _ = run
-    first = next(r for r in es.reports if r.kind == "target_detected")
-    assert (first.vehicle_id, first.target_id) == ("d1", "boat1")
-    ids = [c.id for c in first.choices]
-    assert ids[:3] == ["take_d2", "take_d3", "take_d4"] and ids[-1] == "keep"
-    assert {"join_d2_d1", "join_d3_d1", "join_d4_d1"} <= set(ids)
-    assert first.resolved_ms - first.t_ms == 20_000  # answered by the scripted operator
+    found = [r for r in es.reports if r.kind == "target_detected" and r.text.startswith("미식별")]
+    assert [(r.vehicle_id, r.target_id) for r in found] == [
+        ("d1", "boat1"), ("d2", "boat2"), ("d2", "boat3"),
+    ]  # fmt: skip
+    assert found[1].t_ms < found[0].resolved_ms  # two cards open at once
+    assert all(r.resolved_ms - START < 20 * MIN for r in found)  # before d2 is sent past the NLL
+    # planned choices come first (usv takes boat2 over, d2 keeps boat3), decision 0044
+    assert [r.choices[0].id for r in found[1:]] == ["handoff", "keep"]
+    extra = {c.id for r in found for c in r.choices[1:]}  # what the fleet choices add
+    assert extra and all(i.split("_")[1] in ("d3", "d4") for i in extra)  # only standby drones
 
 
 def test_alternative_after_zone_block_is_not_blocked(scenes):
@@ -119,20 +116,6 @@ def test_strike_ends_in_mission_success(run):
     es, _ = run
     assert es.metrics.mission_success is True
     assert any(r.kind == "target_neutralized" and r.target_id == "fast1" for r in es.reports)
-
-
-def test_fast1_graph_shows_the_decision_behind_the_strikes(run):  # 0038: the last demo beat
-    from modules.gateway.actions.build_object_graph import build_object_graph
-
-    es, _ = run
-    g = build_object_graph(es, "fast1")
-    label = {n.id: n.label for n in g.nodes}
-    strikes = {lk.src for lk in g.links
-               if lk.rel == "aims_at" and lk.dst == "fast1" and label[lk.src].startswith("strike")}  # fmt: skip
-    assert {label[c].split(" · ")[1] for c in strikes} == {"d2", "usv"}
-    decs = {lk.dst for lk in g.links if lk.rel == "from_decision" and lk.src in strikes}
-    assert len(decs) == 1 and label[next(iter(decs))].endswith("'함께 타격'")
-    assert all(label[c].endswith("출처·구역·배터리 통과") for c in strikes)
 
 
 def test_operation_passes_play_checks_including_reserve_return_battery():
@@ -191,3 +174,17 @@ def test_ugv_waits_near_the_shore_where_boat1_stops():
     # boat1's target may be on land; sim stops it at the sea point off that coast (decision 0034)
     boat_at = to_sea(GeoPoint(**plays["enemy_boat1"].steps[0].do.params["target"]), SC.land)
     assert inside(ugv_at, SC.land) and dist_m(ugv_at, boat_at) < 500
+
+
+def test_fast1_graph_shows_the_decision_behind_the_strikes(run):  # 0038: the last demo beat
+    from modules.gateway.actions.build_object_graph import build_object_graph
+
+    es, _ = run
+    g = build_object_graph(es, "fast1")
+    label = {n.id: n.label for n in g.nodes}
+    strikes = {lk.src for lk in g.links
+               if lk.rel == "aims_at" and lk.dst == "fast1" and label[lk.src].startswith("strike")}  # fmt: skip
+    assert {label[c].split(" · ")[1] for c in strikes} == {"d2", "usv"}
+    decs = {lk.dst for lk in g.links if lk.rel == "from_decision" and lk.src in strikes}
+    assert len(decs) == 1 and label[next(iter(decs))].endswith("'함께 타격'")
+    assert all(label[c].endswith("출처·구역·배터리 통과") for c in strikes)

@@ -69,7 +69,8 @@
        "usv": "approach"
       }
      }
-    ]
+    ],
+    "auto_choices": true
    },
    "ui": {}
   },
@@ -135,7 +136,8 @@
       "label": "감시 유지",
       "play_by_vehicle": {}
      }
-    ]
+    ],
+    "auto_choices": true
    },
    "ui": {}
   },

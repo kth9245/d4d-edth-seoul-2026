@@ -62,14 +62,18 @@
   ],
   "started_ms": 1791633600000,
   "assign": {
-   "d1": "coast_a",
-   "d2": "coast_b",
+   "d1": "patrol_a",
+   "d2": "patrol_b",
    "d3": "standby",
    "usv": "standby",
    "ugv": "standby",
    "d4": "standby"
   },
-  "reserve": {},
+  "reserve": {
+   "d1": [
+    "d3"
+   ]
+  },
   "switches": [
    {
     "id": "all_home",
@@ -317,7 +321,8 @@
          "ugv": "landing"
         }
        }
-      ]
+      ],
+      "auto_choices": true
      },
      "ui": {}
     }
@@ -527,7 +532,8 @@
          "usv": "approach"
         }
        }
-      ]
+      ],
+      "auto_choices": true
      },
      "ui": {}
     },
@@ -593,7 +599,8 @@
         "label": "감시 유지",
         "play_by_vehicle": {}
        }
-      ]
+      ],
+      "auto_choices": true
      },
      "ui": {}
     },

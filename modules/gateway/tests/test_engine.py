@@ -36,19 +36,32 @@ def test_boat_event_gives_target_detected_card_from_d1():
     assert rep.t_ms - SC.operation.started_ms >= 11 * MIN
 
 
-def test_fleet_choice_sends_a_drone_to_watch_with_the_finder():  # coast patrol finds -> card
+def test_one_decision_switches_four_vehicles():
     es, _ = _until(init_engine(SC), lambda e: any(r.kind == "target_detected" for r in e.reports))
     rep = next(r for r in es.reports if r.kind == "target_detected")
-    join = next(c for c in rep.choices if c.id == "join_d3_d1")
-    dec = Decision(id="dec-1", t_ms=es.t_ms + SC.tick_ms, report_id=rep.id, choice_id=join.id)
+    dec = Decision(id="dec-1", t_ms=es.t_ms + SC.tick_ms, report_id=rep.id,
+                   choice_id=rep.choices[0].id)  # fmt: skip
+    es, fr = tick(es, TickInputs(decisions=[dec]))
+    for _ in range(5):
+        es, fr = tick(es, TickInputs())
+    plays = {v.id: v.play_id for v in fr.vehicles}
+    want = {"d1": "watch", "usv": "approach", "ugv": "landing", "d2": "patrol_b"}
+    assert {k: plays[k] for k in want} == want
+    assert any(a.reason == "결정 dec-1" for a in fr.assignments)
+
+
+def test_fleet_choice_sends_a_standby_drone_to_watch_with_the_finder():  # decision 0044
+    es, _ = _until(init_engine(SC), lambda e: any(r.kind == "target_detected" for r in e.reports))
+    rep = next(r for r in es.reports if r.kind == "target_detected")
+    ids = [c.id for c in rep.choices]
+    assert ids[0] == "approach" and "join_d3_d1" in ids and "keep" not in ids
+    dec = Decision(id="dec-1", t_ms=es.t_ms + SC.tick_ms, report_id=rep.id, choice_id="join_d3_d1")
     es, fr = tick(es, TickInputs(decisions=[dec]))
     for _ in range(5):
         es, fr = tick(es, TickInputs())
     by = {v.id: v for v in fr.vehicles}
     assert (by["d3"].play_id, by["d3"].target_id) == ("watch", rep.target_id)
-    assert (by["d1"].play_id, by["d1"].step_id) == ("coast_a", "report")  # still over the boat
-    assert [c.id for c in rep.choices][-1] == "keep"
-    assert any(a.reason == "결정 dec-1" for a in fr.assignments)
+    assert (by["d1"].play_id, by["d1"].step_id) == ("patrol_a", "report")  # still over the boat
 
 
 def test_strike_next_to_a_target_neutralizes_it_and_logs():

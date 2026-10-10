@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from contracts.models import Frame, GeoPoint, Play, Scenario, TargetKind, TickInputs
+from contracts.models import Decision, Frame, GeoPoint, Play, Scenario, TargetKind, TickInputs
 from modules.gateway.engine import init_engine, tick
 from modules.sim import load_scenario_json
 from shared.geo import dist_m
@@ -69,29 +69,18 @@ def test_sea_vehicles_and_boats_start_at_sea():
 
 
 def test_nothing_at_sea_crosses_the_island():
-    # the coast card's choices are drones only (user, 10/10), so the operator sends the USV to the
-    # boat with a partial switch once the first card is up, then runs to T+45 min
-    from contracts.models import Injection
-
+    # smoke's operator: the first card's first choice ('근접 확인' sends the USV), then run to T+45 min
     sc = load_scenario_json(str(SCENARIO))
     es, card, frame = init_engine(sc), None, None
     sea = {v.id for v in sc.vehicles if v.domain == "sea"}
     boats = (TargetKind.boat, TargetKind.fast_boat)
-    req = None
     while es.t_ms < sc.operation.started_ms + 45 * 60_000:
         inputs = TickInputs()
         if card is None:
             card = next((r for r in es.reports if r.kind == "target_detected" and r.choices), None)
             if card:
-                req = Injection(
-                    id="inj-usv", t_ms=es.t_ms, label="usv", play_by_vehicle={"usv": "approach"}
-                )
-                inputs = TickInputs(injections=[req])
-        elif req is not None:
-            inputs, req = (
-                TickInputs(injections=[req.model_copy(update={"status": "approved"})]),
-                None,
-            )
+                inputs = TickInputs(decisions=[Decision(id="dec-1", t_ms=es.t_ms, report_id=card.id,
+                                                        choice_id=card.choices[0].id)])  # fmt: skip
         es, frame = tick(es, inputs)
         wet = [v.id for v in frame.vehicles if v.id in sea and inside(v.pos, sc.land)]
         wet += [t.id for t in frame.targets if t.kind in boats and inside(t.pos, sc.land)]

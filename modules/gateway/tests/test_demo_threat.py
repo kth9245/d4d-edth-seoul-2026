@@ -1,7 +1,7 @@
 """Part2-28: the demo scenario's threat scene (decisions 0039, 0040).
 
-boat2 starts emitting at 17:00; when a drone first hears it (RF range) its score jumps by exactly 0.30 and
-passes boat1's, so its card moves to the top of the list. The demo now starts on the coast patrol (user, 10/10).
+boat2 is silent when its contact card comes (16:32.8, once its threat has built up), starts emitting at 17:00 while d2 is within
+RF range, and its score jumps by exactly 0.30 (0.42 to 0.72) above boat1's: the card moves to the top of the list.
 """
 
 from contracts.models import Decision, TickInputs
@@ -31,18 +31,22 @@ def test_scenario_has_watch_point_and_rf_drones():
     }  # fmt: skip
 
 
-def test_boat2_emits_from_17_and_overtakes_boat1_once_a_drone_hears_it():
-    es, before, start_emit = init_engine(SC), None, None
-    for _ in range(30 * MIN // SC.tick_ms):
+def test_boat2_starts_emitting_after_its_card_and_overtakes_boat1():
+    es, before, card_ms = init_engine(SC), None, None
+    for _ in range(17 * MIN // SC.tick_ms + 25):
         before = _score(es, "boat2")
         es, _ = tick(es, _answer_cards_after_20s(es, es.t_ms + SC.tick_ms))
         now = _score(es, "boat2")
-        if now and now.emitting and start_emit is None:
-            start_emit = es.t_ms - START
-        if now and now.rf_detected and not before.rf_detected:
+        card = next(
+            (r for r in es.reports if r.kind == "target_detected" and r.target_id == "boat2"), None
+        )
+        card_ms = card.t_ms if card else card_ms
+        if now and now.emitting and not before.emitting:
             break
-    assert start_emit == 17 * MIN
-    assert es.t_ms - START >= 17 * MIN and now.rf_detected and "rf_emission" in now.threat_reasons
-    assert now.threat - before.threat == 30  # +0.30 for the RF and nothing else changes
-    assert now.threat > _score(es, "boat1").threat  # its card goes to the top
+    assert card_ms is not None and card_ms - START == 16 * MIN + 32_800
+    assert es.t_ms - START == 17 * MIN
+    assert now.rf_detected and now.seen_by and "rf_emission" in now.threat_reasons
+    assert (before.threat, now.threat) == (42, 72)  # +0.30 for the RF and nothing else changes
+    assert "near_watch_radius" in now.threat_reasons  # outside 2 km but inside 4 km (0041)
+    assert now.threat > _score(es, "boat1").threat  # 0.72 vs 0.50: its card goes to the top
     assert not _score(es, "boat1").emitting and not _score(es, "boat3").emitting

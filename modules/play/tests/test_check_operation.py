@@ -8,9 +8,6 @@ from modules.sim import load_scenario_json
 DEMO = Path(__file__).resolve().parents[3] / "demo"
 SC = json.loads((DEMO / "scenarios" / "baengnyeong_night.json").read_text(encoding="utf-8"))
 OP = Operation.model_validate(SC["operation"])
-# demo start is the coast patrol (user, 10/10); patrol_a/patrol_b and the d1 -> d3 reserve are checked here
-PATROL_OP = OP.model_copy(update={"assign": {**OP.assign, "d1": "patrol_a", "d2": "patrol_b"},
-                                  "reserve": {"d1": ["d3"]}})  # fmt: skip
 # capabilities come from the ontology through the loader (decision 0038)
 LOADED = load_scenario_json(DEMO / "scenarios" / "baengnyeong_night.json")
 SPECS = {v.id: v for v in LOADED.vehicles}
@@ -28,15 +25,12 @@ def test_example_operation_passes():
 
 
 def test_battery_estimate_is_the_lowest_over_every_play_a_vehicle_may_run():
-    chk = check_operation(PATROL_OP, PLAYS, SPECS)
-    d2_plays = ["patrol_b", "go_home", "coast_b"]  # start, switch all_home, switch patrol_all
-    one = {pid: check_operation(PATROL_OP.model_copy(update={"assign": {"d2": pid}, "reserve": {},
-                                                             "switches": []}), {pid: PLAYS[pid]}, SPECS)
+    chk = check_operation(OP, PLAYS, SPECS)
+    d2_plays = ["standby", "patrol_b", "go_home"]  # start, choice "approach", switch all_home
+    one = {pid: check_operation(OP.model_copy(update={"assign": {"d2": pid}, "reserve": {},
+                                                      "switches": []}), {pid: PLAYS[pid]}, SPECS)
            for pid in d2_plays}  # fmt: skip
-    rated = [c.est_return_battery["d2"] for c in one.values() if "d2" in c.est_return_battery]
-    assert chk.est_return_battery["d2"] == min(
-        rated
-    )  # coast_b: rotation play, no full-lap estimate
+    assert chk.est_return_battery["d2"] == min(c.est_return_battery["d2"] for c in one.values())
 
 
 def test_operation_without_its_report_point_fails():
@@ -45,7 +39,7 @@ def test_operation_without_its_report_point_fails():
              on=[Exit(cond=Condition(kind="target_found"), go_step="go")]),
         Step(id="go", name="g", do=Action(kind="approach_target", params={"target": "nearest"})),
     ])  # fmt: skip
-    chk = check_operation(PATROL_OP, {**PLAYS, "patrol_a": rush}, SPECS)
+    chk = check_operation(OP, {**PLAYS, "patrol_a": rush}, SPECS)
     assert not chk.ok and "missing_report_point" in [i.code for i in chk.issues]
     assert any(i.message.startswith("[patrol_a]") for i in chk.issues)
 

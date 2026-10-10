@@ -61,7 +61,8 @@
        "ugv": "landing"
       }
      }
-    ]
+    ],
+    "auto_choices": true
    },
    "ui": {}
   }
