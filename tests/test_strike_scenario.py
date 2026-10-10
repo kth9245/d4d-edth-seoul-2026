@@ -3,6 +3,8 @@ from pathlib import Path
 
 import pytest
 
+from contracts.models import Decision, TickInputs
+from modules.gateway.engine import init_engine, tick
 from modules.role import check_operation
 from modules.safety import point_in_polygon
 from modules.sim import load_scenario_json
@@ -81,3 +83,50 @@ def test_the_strike_role_is_available_to_the_armed_vehicles(sc):
     assert "strike" in roles
     armed = [v for v, s in specs.items() if "strike_target" in [c.value for c in s.capabilities]]
     assert set(armed) == {"d2", "usv"}  # the ontology comes from night
+
+
+def _run_until(es, pred, limit=6000):
+    for _ in range(limit):
+        if pred(es):
+            return es
+        es, _ = tick(es, TickInputs())
+    raise AssertionError("never happened")
+
+
+def _card(es):
+    return next(r for r in es.reports if r.kind == "target_detected" and r.target_id == "site_a")
+
+
+def _site(es, sid="site_a"):
+    return next(t for t in es.targets if t.id == sid)
+
+
+def test_site_a_is_identified_then_approved_then_neutralized(sc):
+    es = init_engine(sc)
+    # 1. the RF clue comes first: heard, not yet scanned, so nothing to strike
+    es = _run_until(
+        es, lambda e: any(t.id == "site_a" and t.ident_state == "rf_only" for t in e.targets)
+    )
+    # 2. the drone scans it and the confidence climbs; the card never offers a strike before that
+    es = _run_until(es, lambda e: any(r.target_id == "site_a" for r in e.reports))
+    if _site(es).ident_state != "identified":
+        assert not any(c.id.startswith("strike_") for c in _card(es).choices)
+    # 3. identified: d2 and usv can be approved, and the card says why
+    es = _run_until(es, lambda e: _site(e).ident_state == "identified")
+    assert {"strike_d2", "strike_usv", "strike_all"} <= {c.id for c in _card(es).choices}
+    assert "식별: 식별됨" in _card(es).text
+    # 4. the operator approves d2 only; the strike runs through the existing engine path
+    dec = Decision(
+        id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=_card(es).id, choice_id="strike_d2"
+    )
+    es, _ = tick(es, TickInputs(decisions=[dec]))
+    es = _run_until(es, lambda e: _site(e).neutralized_ms is not None, limit=9000)
+    assert any(r.kind == "target_neutralized" and r.target_id == "site_a" for r in es.reports)
+    assert not es.blocks  # no safety rule stopped it
+
+
+def test_the_silent_sites_stay_unidentified_without_a_clue(sc):
+    es = init_engine(sc)
+    for _ in range(1500):  # five simulated minutes
+        es, _ = tick(es, TickInputs())
+    assert [_site(es, i).ident_state for i in ("site_b", "site_c")] == ["undetected"] * 2
