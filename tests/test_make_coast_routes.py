@@ -25,3 +25,14 @@ def test_rerunning_the_24h_script_keeps_the_route_list_and_route_names():  # dec
         if s["do"]["kind"] == "patrol_route"
     ]
     assert names == ["해안 A(북)", "해안 B(남)"]
+
+
+def test_the_24h_scenario_takes_the_night_ontology_and_drone_kinds():  # decision 0051
+    night = json.loads((ROOT / "demo/scenarios/baengnyeong_night.json").read_text("utf-8"))
+    kinds = {v["id"]: v["kind"] for v in night["vehicles"]}
+    out = _script().build()
+    assert out["ontology"] == night["ontology"]
+    assert all(v["kind"] == kinds[v["id"]] and "capabilities" not in v for v in out["vehicles"])
+    committed = json.loads((ROOT / "demo/scenarios/baengnyeong_24h.json").read_text("utf-8"))
+    assert committed["ontology"] == out["ontology"]
+    assert committed["vehicles"] == out["vehicles"]

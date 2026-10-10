@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { OntologyView, Operation, Play, VehicleSpec } from "../../contracts.gen";
+import { fetchOntology } from "./fetchOntology";
 import { kindRows, reasonLine, reserveLines } from "./ontologyView";
 
 // Editor "온톨로지" (decision 0038): the kind hierarchy, each vehicle's verdict per action with the path the
@@ -9,12 +10,7 @@ export function OntologyPanel({ op, plays, vehicles }: { op: Operation; plays: P
   const [error, setError] = useState<string | null>(null);
   const [pick, setPick] = useState(vehicles[0]?.id ?? "");
   useEffect(() => {
-    fetch("/ontology")
-      .then(async (r) => {
-        if (!r.ok) throw new Error(`/ontology answered ${r.status}`);
-        setView((await r.json()) as OntologyView);
-      })
-      .catch((e: Error) => setError(e.message));
+    fetchOntology().then(setView, (e: Error) => setError(e.message));
   }, []);
   if (error) return <div className="onto load-error">온톨로지를 불러오지 못했습니다 ({error})</div>;
   if (!view) return <div className="onto">불러오는 중…</div>;

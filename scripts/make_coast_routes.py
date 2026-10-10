@@ -6,6 +6,8 @@ Each route runs end to end and back, so follow_route's wrap to the first point n
 The JSON is the source afterwards (decision 0035); rerun only to rebuild the routes.
 The editor's route list (decision 0044) comes from the night scenario's `routes`, with the coast routes
 replaced by the ones built here, and the coast cards carry their route names.
+The drones keep their night `kind` and the night `ontology` comes along, so the loader fills the same
+capabilities and the editor's ontology view works on this operation too (decision 0051).
 Usage: uv run python scripts/make_coast_routes.py
 """
 
@@ -18,7 +20,6 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT)]
 
 from contracts.models import GeoPoint, Scenario  # noqa: E402
-from modules.sim import load_scenario_json  # noqa: E402
 from shared.geo import dist_m, enu_delta_m, offset_latlon  # noqa: E402
 
 NIGHT = ROOT / "demo" / "scenarios" / "baengnyeong_night.json"
@@ -85,13 +86,7 @@ def build() -> dict:
     night = json.loads(NIGHT.read_text(encoding="utf-8"))
     sc = Scenario.model_validate(night)
     a, b = coast_routes(sc.land, sc.vehicles[0].home)
-    plain = ("kind", "kind_path")  # the 24h scenario has no ontology; same drones as the demo
-    resolved = load_scenario_json(str(NIGHT)).vehicles  # capabilities filled from the ontology
-    drones = [
-        {k: x for k, x in v.model_dump(mode="json").items() if k not in plain} | {"recharge_min": 5}
-        for v in resolved
-        if v.domain.value == "air"
-    ]
+    drones = [v | {"recharge_min": 5} for v in night["vehicles"] if v["domain"] == "air"]
     plays = {p["id"]: p for p in night["plays"]}
     op = night["operation"] | {
         "name": "백령도 해안 순찰 24시간 교대(가상)",
@@ -127,6 +122,7 @@ def build() -> dict:
             ),
         ],  # decision 0044: the night list without the night-only patrols
         "land": night["land"],
+        "ontology": night["ontology"],  # decision 0051: same drones, same kinds
         "seed": 0,
         "tick_ms": 1000,
         "speed": 1.0,

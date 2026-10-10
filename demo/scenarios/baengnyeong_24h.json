@@ -96,24 +96,14 @@
    "speed_mps": 15.0,
    "endurance_min": 100.0,
    "sensor_range_m": 800.0,
-   "capabilities": [
-    "move_to",
-    "patrol_route",
-    "search_area",
-    "return_home",
-    "watch_target",
-    "watch_point",
-    "approach_target",
-    "relay_comms",
-    "hold"
-   ],
    "home": {
     "lat": 37.95,
     "lon": 124.7,
     "alt_m": 0.0
    },
    "recharge_min": 5,
-   "rf_range_m": 2000.0
+   "rf_range_m": 2000.0,
+   "kind": "recon_drone"
   },
   {
    "id": "d2",
@@ -122,25 +112,14 @@
    "speed_mps": 15.0,
    "endurance_min": 100.0,
    "sensor_range_m": 800.0,
-   "capabilities": [
-    "move_to",
-    "patrol_route",
-    "search_area",
-    "return_home",
-    "watch_target",
-    "watch_point",
-    "approach_target",
-    "relay_comms",
-    "hold",
-    "strike_target"
-   ],
    "home": {
     "lat": 37.955,
     "lon": 124.7,
     "alt_m": 0.0
    },
    "recharge_min": 5,
-   "rf_range_m": 2000.0
+   "rf_range_m": 2000.0,
+   "kind": "armed_drone"
   },
   {
    "id": "d3",
@@ -149,24 +128,14 @@
    "speed_mps": 15.0,
    "endurance_min": 100.0,
    "sensor_range_m": 800.0,
-   "capabilities": [
-    "move_to",
-    "patrol_route",
-    "search_area",
-    "return_home",
-    "watch_target",
-    "watch_point",
-    "approach_target",
-    "relay_comms",
-    "hold"
-   ],
    "home": {
     "lat": 37.945,
     "lon": 124.7,
     "alt_m": 0.0
    },
    "recharge_min": 5,
-   "rf_range_m": 2000.0
+   "rf_range_m": 2000.0,
+   "kind": "recon_drone"
   },
   {
    "id": "d4",
@@ -175,24 +144,14 @@
    "speed_mps": 15.0,
    "endurance_min": 100.0,
    "sensor_range_m": 800.0,
-   "capabilities": [
-    "move_to",
-    "patrol_route",
-    "search_area",
-    "return_home",
-    "watch_target",
-    "watch_point",
-    "approach_target",
-    "relay_comms",
-    "hold"
-   ],
    "home": {
     "lat": 37.96,
     "lon": 124.7,
     "alt_m": 0.0
    },
    "recharge_min": 5,
-   "rf_range_m": 2000.0
+   "rf_range_m": 2000.0,
+   "kind": "recon_drone"
   }
  ],
  "plays": [
@@ -1591,6 +1550,115 @@
    ]
   }
  ],
+ "ontology": {
+  "groups": [
+   {
+    "id": "move",
+    "label": "이동",
+    "actions": [
+     "move_to",
+     "patrol_route",
+     "return_home",
+     "hold"
+    ]
+   },
+   {
+    "id": "watch",
+    "label": "감시",
+    "actions": [
+     "watch_target",
+     "watch_point",
+     "search_area"
+    ]
+   },
+   {
+    "id": "approach",
+    "label": "접근",
+    "actions": [
+     "approach_target"
+    ]
+   },
+   {
+    "id": "relay",
+    "label": "통신 중계",
+    "actions": [
+     "relay_comms"
+    ]
+   },
+   {
+    "id": "strike",
+    "label": "타격",
+    "actions": [
+     "strike_target"
+    ]
+   }
+  ],
+  "kinds": [
+   {
+    "id": "vehicle",
+    "label": "기체",
+    "is_a": null,
+    "provides": [
+     "move"
+    ]
+   },
+   {
+    "id": "air_vehicle",
+    "label": "공중 기체",
+    "is_a": "vehicle",
+    "provides": [
+     "watch",
+     "approach",
+     "relay"
+    ]
+   },
+   {
+    "id": "recon_drone",
+    "label": "정찰 드론",
+    "is_a": "air_vehicle",
+    "provides": []
+   },
+   {
+    "id": "armed_drone",
+    "label": "무장 드론",
+    "is_a": "air_vehicle",
+    "provides": [
+     "strike"
+    ]
+   },
+   {
+    "id": "sea_vehicle",
+    "label": "해상 기체",
+    "is_a": "vehicle",
+    "provides": [
+     "watch",
+     "approach"
+    ]
+   },
+   {
+    "id": "armed_usv",
+    "label": "무장 수상정",
+    "is_a": "sea_vehicle",
+    "provides": [
+     "strike"
+    ]
+   },
+   {
+    "id": "ground_vehicle",
+    "label": "지상 기체",
+    "is_a": "vehicle",
+    "provides": [
+     "watch_point"
+    ]
+   },
+   {
+    "id": "ground_robot",
+    "label": "지상 로봇",
+    "is_a": "ground_vehicle",
+    "provides": []
+   }
+  ]
+ },
  "seed": 0,
  "tick_ms": 1000,
  "speed": 1.0

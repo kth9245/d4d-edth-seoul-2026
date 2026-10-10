@@ -54,7 +54,20 @@ def test_capabilities_come_from_the_ontology():  # decision 0038
     assert v["d2"].kind_path == ["무장 드론", "공중 기체", "기체"]
 
 
-def test_scenario_without_ontology_keeps_hand_written_capabilities():  # 24h scenario, decision 0037
-    sc = load_scenario_json(ROOT / "demo" / "scenarios" / "baengnyeong_24h.json")
+def test_scenario_without_ontology_keeps_hand_written_capabilities(tmp_path):  # decision 0038
+    def plain(d):
+        d.pop("ontology")
+        for v in d["vehicles"]:
+            v.pop("kind", None)
+            v["capabilities"] = ["move_to", "hold"]
+
+    sc = load_scenario_json(_write(tmp_path, plain))
     assert sc.ontology is None
-    assert all(v.capabilities and v.kind_path == [] for v in sc.vehicles)
+    assert all(v.capabilities == ["move_to", "hold"] and v.kind_path == [] for v in sc.vehicles)
+
+
+def test_the_24h_drones_get_the_night_capabilities_from_the_ontology():  # decision 0051
+    night = {v.id: v for v in load_scenario_json(DEMO).vehicles}
+    day = load_scenario_json(ROOT / "demo" / "scenarios" / "baengnyeong_24h.json")
+    assert day.ontology is not None
+    assert all(v.kind_path and v.capabilities == night[v.id].capabilities for v in day.vehicles)

@@ -8,6 +8,10 @@
  {"click": "백령도 해안 순찰 24시간 교대(가상)", "wait": 2500},
  {"label": "O2 picking the 24h operation switches the overview and the running mark", "eval": "({ title: document.querySelector('.op-head h2')?.innerText, columns: document.querySelectorAll('.friend-columns .column').length, active: document.querySelector('.play-sidebar .item.op.active')?.innerText.trim() })", "expect": {"title": "백령도 해안 순찰 24시간 교대(가상)", "columns": 4, "active": "백령도 해안 순찰 24시간 교대(가상)"}},
  {"shot": "ops-editor-24h.png"},
+ {"click": "온톨로지", "wait": 2000},
+ {"label": "O2 the 24h operation shows the night ontology: the kind tree with its drones, no load error (decision 0051)", "eval": "({ error: !!document.querySelector('.onto.load-error'), kinds: document.querySelectorAll('.onto-tree li').length > 0, d4: [...document.querySelectorAll('.onto-tree .who')].some(w => w.innerText.includes('d4')) })", "expect": {"error": false, "kinds": true, "d4": true}},
+ {"shot": "ops-ontology-24h.png"},
+ {"click": "작전 개요", "wait": 800},
  {"click": "▶ 시뮬레이션", "wait": 5000},
  {"label": "O3 simulate opens the live tab paused at the start (24h ticks are 1 s, so the first Frame is T+0:01), no next-event stops", "eval": "({ hash: location.hash, vehicles: document.querySelectorAll('.mk.vehicle').length, play: document.querySelector('.runbar .play')?.innerText, clock: document.querySelector('.runbar .clock')?.innerText, next: document.querySelector('.runbar .next')?.innerText })", "expect": {"hash": "#live", "vehicles": 4, "play": "▶ 재생", "clock": "T+0:01", "next": "다음 사건 없음"}},
  {"shot": "ops-live-24h.png"},
@@ -15,6 +19,6 @@
  {"click": "백령도 야간 해안 경계", "wait": 2500},
  {"label": "O4 back to the night operation", "eval": "document.querySelector('.op-head h2')?.innerText", "expect": "백령도 야간 해안 경계"},
  {"click": "▶ 시뮬레이션", "wait": 5000},
- {"label": "O4 night operation on the live tab with its next-event stops", "eval": "({ hash: location.hash, vehicles: document.querySelectorAll('.mk.vehicle').length, play: document.querySelector('.runbar .play')?.innerText, clock: document.querySelector('.runbar .clock')?.innerText, next: document.querySelector('.runbar .next')?.innerText })", "expect": {"hash": "#live", "vehicles": 6, "play": "▶ 재생", "clock": "T+0:00", "next": "다음 사건 ▸ 16:25 보고 카드"}},
+ {"label": "O4 night operation on the live tab with its next-event stops", "eval": "({ hash: location.hash, vehicles: document.querySelectorAll('.mk.vehicle').length, play: document.querySelector('.runbar .play')?.innerText, clock: document.querySelector('.runbar .clock')?.innerText, next: document.querySelector('.runbar .next')?.innerText })", "expect": {"hash": "#live", "vehicles": 6, "play": "▶ 재생", "clock": "T+0:00", "next": "다음 사건 ▸ 17:05 보고 카드"}},
  {"shot": "ops-live-night.png"}
 ]
