@@ -22,13 +22,21 @@ const PAD = 0.2; // degrees of panning room beyond the fetched tiles (plain back
 const EMPTY = { type: "FeatureCollection" as const, features: [] };
 const USER_HOLD_MS = 10_000;
 
+// A target pointed at with a vehicle selected (decision 0048) and where it sits in the map box, for the role menu.
+export interface Pick { target: string; x: number; y: number }
+
 export interface DirectProps {
   selected: string | null;
   pending: PendingAim | null; // the order just sent; the crosses come from the frame (directAims)
+  pick: Pick | null;
   onVehicleClick: (id: string) => void;
   onMapClick: (p: GeoPoint) => void;
+  onTargetClick: (id: string, x: number, y: number) => void;
+  onPoint: (role: string) => void;
+  cancelPick: () => void;
 }
-const NO_DIRECT: DirectProps = { selected: null, pending: null, onVehicleClick: () => {}, onMapClick: () => {} };
+const NO_DIRECT: DirectProps = { selected: null, pending: null, pick: null, onVehicleClick: () => {}, onMapClick: () => {},
+  onTargetClick: () => {}, onPoint: () => {}, cancelPick: () => {} };
 
 // The live board's map (Part1-32): targets where our side knows them (decision 0047), lines from each vehicle on
 // a mission to its target, lost targets' estimates and a block's alternative, the landing ring, and a camera that
@@ -53,11 +61,17 @@ export function MapView({ frame, zone, tilesAvailable, direct = NO_DIRECT, board
   const aims = useRef<MarkerStore>(new Map());
   // Marker click handlers are made once per marker, so they read the latest callback through the ref.
   const onVehicleClick = (id: string) => latest.current.direct.onVehicleClick(id);
+  // A target click reports where the target sits in the map box, so the role menu opens beside it.
+  const onTargetClick = (id: string) => {
+    const box = el.current?.getBoundingClientRect();
+    const at = targets.current.get(id)?.getElement().getBoundingClientRect();
+    if (box && at) latest.current.direct.onTargetClick(id, at.left - box.left + at.width / 2, at.top - box.top + at.height / 2);
+  };
   const draw = (m: MapLibreMap) => {
     const { frame: f, direct: d, board: b } = latest.current;
     const { vehicles: vs, targets: ts } = f ? frameMarkers(f, b?.tracks) : { vehicles: [], targets: [] };
     syncVehicles(m, vehicles.current, vs, d.selected, onVehicleClick);
-    syncTargets(m, targets.current, ts);
+    syncTargets(m, targets.current, ts, onTargetClick);
     syncAim(m, aims.current, directAims(f, d.pending));
     m.getCanvas().style.cursor = d.selected ? "crosshair" : "";
     (m.getSource("links") as GeoJSONSource | undefined)?.setData(f && b ? linkLines(f, b.tracks, b.queue) : EMPTY);
@@ -135,5 +149,6 @@ export function MapView({ frame, zone, tilesAvailable, direct = NO_DIRECT, board
     (map.current?.getSource("zone") as GeoJSONSource | undefined)?.setData(zoneGeoJSON(zone));
   }, [zone]);
 
-  return <div ref={el} className="map" />;
+  // While a vehicle is selected the map is picking: targets take clicks (theme.css) for pointing.
+  return <div ref={el} className={direct.selected ? "map picking" : "map"} />;
 }

@@ -4,8 +4,10 @@ import type { Frame, Polygon } from "./contracts.gen";
 import { boardView } from "./features/board/boardView";
 import { DecisionQueue } from "./features/board/DecisionQueue";
 import { LoadBar } from "./features/board/LoadBar";
+import { PointMenu } from "./features/board/PointMenu";
 import { RosterPanel } from "./features/board/RosterPanel";
 import { SituationBar } from "./features/board/SituationBar";
+import { targetRoles } from "./features/board/targetRoles";
 import { useBoardData } from "./features/board/useBoardData";
 import "./features/board/board.css";
 import "./features/cards/cards.css";
@@ -41,11 +43,20 @@ export function Screen({ frame, zone, status, ok }:
         </>, slot)}
       {frame && board ? (
         <RosterPanel rows={board.rows} targets={frame.targets} stages={board.stages} selected={direct.selected}
-          onVehicle={direct.onVehicleClick} onTarget={() => {}} />
+          onVehicle={direct.onVehicleClick} onTarget={(id) => direct.selected && direct.onTargetClick(id, 220, 120)} />
       ) : <aside className="roster" />}
       <div className="map-col">
         {tiles === null ? <div className="map" /> : <MapView frame={frame} zone={zone} tilesAvailable={tiles} direct={direct} board={board} watch={data.watch} />}
         {direct.hint && <div className={direct.selected ? "direct-hint on" : "direct-hint"}>{direct.hint}</div>}
+        {frame && direct.selected && direct.pick && (() => {
+          // Pointing (decisions 0048, 0049): the selected vehicle's target roles beside the pointed target.
+          const v = frame.vehicles.find((x) => x.id === direct.selected);
+          const spec = data.vehicles.find((x) => x.id === direct.selected);
+          const current = data.roles.find((r) => r.id === v?.role_id)?.name ?? "대기";
+          return <PointMenu vehicle={direct.selected} target={direct.pick.target} x={direct.pick.x} y={direct.pick.y}
+            roles={spec ? targetRoles(data.roles, spec.domain) : []} current={current}
+            onPick={direct.onPoint} onCancel={direct.cancelPick} />;
+        })()}
         <RunBar frame={frame} />
         {graph && <ObjectGraphView focus={graph} onClose={() => setGraph(null)} />}
       </div>

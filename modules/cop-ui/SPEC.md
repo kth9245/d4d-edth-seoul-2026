@@ -83,3 +83,4 @@
 | UI-93 | SituationBar·LoadBar | Situation / Metrics | 머리 한 줄 | 앱 머리 자리(#header-slot)에 단계별 개수·결정 대기(흰색)·운용자 조작 대 수동 기준(나머지는 툴팁)·LIVE | 리드 | 완료 |
 | UI-94 | RosterPanel | VehicleRow[], Target[], Stage | 왼쪽 열 | 아군 줄(하는 일·표적·배터리·결정 대기), 적 줄 위험도 순(무력화·미탐 아래), 단계 표시, 줄 누르면 기체 선택 | 리드 | 완료 |
 | UI-95 | DecisionQueue·QueueCard | Frame, Queue | 오른쪽 열 | 한 장 펼침(나머지 한 줄), 정해진 선택지 먼저·드론 요청 묶음, 표적 선택 위험도 순 칩, 타격 빨강, 승인·거부, 대안 지점, 보내기 잠금(UI-20), 결정 없으면 할 일 없음·무력화 결과, 알림 2분 | 리드 | 완료 |
+| UI-96 | PointMenu·지목(useDirectControl) | 선택 기체, 표적 | Role 메뉴 | 기체를 고른 동안만 살아 있는 표적이 클릭을 받음(기체 위), 표적 옆 메뉴에 targetRoles 버튼("지금 → 새 · 표적"), 누르면 postPoint(승인된 전환, 조작 1번), 메뉴가 열린 채 지도 클릭은 메뉴만 닫음, Esc 취소, 목록의 적 줄로도 지목, 타격 없음(결정 0048·0049) | 리드 | 완료 |

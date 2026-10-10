@@ -498,3 +498,12 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .offset-pad .pad-point circle { fill: var(--live); stroke: #000; stroke-width: 1; }
 .offset-pad .pad-number { fill: var(--text); font-size: 11px; font-family: var(--font-mono); }
 .offset-pad .pad-origin { fill: var(--friend); stroke: #000; stroke-width: 1; }
+
+/* Pointing menu (Part1-32): white buttons = your turn; the press is the approval. */
+.board .pickpop { border: 1px solid var(--text); background: var(--s1); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6); }
+.board .pickpop .ph { font-family: var(--font-mono); font-size: 13px; font-weight: 700; }
+.board .pickpop button { border: 1px solid var(--text); border-radius: var(--r); background: var(--text); color: var(--bg); font-size: 13px; font-weight: 700; }
+.board .pickpop button small { color: var(--s3); font-family: var(--font-mono); font-size: 11px; font-weight: 500; }
+.board .pickpop button.x { border-color: var(--line2); background: transparent; color: var(--text2); }
+.board .pickpop .pn { color: var(--muted); font-size: 11px; line-height: 1.45; }
+.map.picking .mk.target:hover i { outline: 2px solid var(--live); outline-offset: 4px; }
