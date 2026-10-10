@@ -429,3 +429,4 @@
 {"at": "2026-10-10T20:05:44+09:00", "by": "kth9245", "op": "start", "id": "Part1-37", "take": false, "from": null}
 {"at": "2026-10-10T20:07:31+09:00", "by": "kth9245", "op": "done", "id": "Part1-38", "take": false}
 {"at": "2026-10-10T20:10:37+09:00", "by": "황승주", "op": "done", "id": "Part2-41", "take": false}
+{"at": "2026-10-10T20:16:33+09:00", "by": "황승주", "op": "add", "id": "Part2-42", "title": "교대 SPARE 10→7%(여유와 교대 횟수 절충, B안)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
