@@ -56,8 +56,8 @@
   1. `modules/cop-ui/public/tiles/baengnyeong/13/`을 이어 붙인다.
   2. 바다 = B > 1.5·R, 메디안 필터 9로 잡음 제거.
   3. 가장 큰 육지 덩어리(본섬)만 남기고 외곽선을 딴다(작은 바위·색 얼룩은 버림).
-  4. Douglas-Peucker로 줄인다(허용 오차 약 30 m, 점 40~70개). 위경도 소수 5자리.
-  5. `demo/scenarios/baengnyeong_night.json`의 `land`에 `[{"points": [...]}]`로 쓴다(다른 키는 건드리지 않음).
+  4. Douglas-Peucker로 줄인다(허용 오차 약 30 m, 점 30~90개). 위경도 소수 5자리.
+  5. `demo/scenarios/baengnyeong_land.json`에 `[{"points": [...]}]`로 쓴다. 시나리오 JSON은 손으로 고치지 않는다: `scripts/example_world.py`가 이 파일을 읽어 `Scenario(land=...)`에 넣고 `scripts/gen_examples.py`가 `baengnyeong_night.json`을 다시 만든다(시나리오 좌표 수정(7절)도 example_world.py에서).
 - 출처: EOX Sentinel-2 cloudless 2020 타일에서 만든 파생 데이터. `demo/BUILT_HERE.md`에 한 줄.
 
 ## 6. sim
@@ -103,12 +103,12 @@
 
 ## 8. 테스트 (TDD, 결정 0014)
 
-- `tests/test_geo_land.py`(shared): inside, blocked(통과·비통과·꼭짓점 스침), to_sea(육지 안 점이 바다로, 바다 점은 그대로), corners(볼록 꼭짓점만, 바깥쪽).
+- `tests/test_land.py`(shared): inside, blocked(통과·비통과), to_sea(육지 안 점이 바다로, 바다 점은 그대로, 좁은 만 건너편에 떨어지면 더 밀기), corners(볼록 꼭짓점만, 바깥쪽, 시계·반시계 둘 다).
 - `modules/sim/tests/test_sea_aim.py`: 사각형 섬 하나로 — 열린 직선이면 goal, 막히면 모서리 점, 모서리에 도착한 뒤 다음 모서리, 목표가 육지면 바다 점, land 비면 goal.
 - SIM-05·06·07·08·12 테스트에 해상 기체·적 배가 사각형 섬을 돌아가는 케이스 하나씩(틱을 돌려 어느 틱에도 섬 안에 없고 결국 도착).
 - `tests/test_demo_scenario.py`
   - `land`가 1개 이상, 해상 기체 home과 적 등장 위치(pos)가 육지 밖.
-  - 엔진 경로 테스트: smoke와 같은 흐름(첫 보고 카드의 첫 선택지)으로 실제 시나리오를 결정 뒤 20분 돌리고, 매 틱 해상 기체 위치와 boat·fast_boat 위치가 `land` 밖.
+  - 엔진 경로 테스트: smoke와 같은 흐름(첫 보고 카드의 첫 선택지)으로 실제 시나리오를 작전 시작 후 45분까지 돌리고(fast1이 북동쪽 곶을 돌아 동쪽 해안에 닿는 시간 포함), 매 틱 해상 기체 위치와 boat·fast_boat 위치가 `land` 밖.
 - smoke는 그대로 통과해야 한다.
 
 ## 9. 순서와 담당
