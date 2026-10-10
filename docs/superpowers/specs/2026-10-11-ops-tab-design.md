@@ -34,7 +34,7 @@ WS Frame ─▶ LiveApp ─┬─ 시뮬레이션(#live): Screen(frame, ops=fals
 
 | id | 액션 | 입력 | 출력 | 완료 기준 |
 |---|---|---|---|---|
-| UI-103 | sensedFrame | Frame | Frame | `targets`에서 `trackState(t, t_ms, null).k === "never"`인 적만 뺀 새 Frame. 나머지 칸과 다른 탐지 상태(seen·rf·lost·gone)는 그대로, 입력 Frame은 바꾸지 않음 (결정 0067) |
+| UI-104 | sensedFrame | Frame | Frame | `targets`에서 `trackState(t, t_ms, null).k === "never"`인 적만 뺀 새 Frame. 나머지 칸과 다른 탐지 상태(seen·rf·lost·gone)는 그대로, 입력 Frame은 바꾸지 않음 (결정 0067) |
 
 `tab.ts`(UI 탭 해석)는 `Tab`에 `"ops"`를 더하고 `#ops`를 알아본다. 테스트 한 줄 추가.
 
@@ -54,6 +54,6 @@ WS Frame ─▶ LiveApp ─┬─ 시뮬레이션(#live): Screen(frame, ops=fals
 
 ## 6. 기록
 
-- `modules/cop-ui/SPEC.md` UI-103 행(`new_action.py`가 만듦).
+- `modules/cop-ui/SPEC.md` UI-104 행(`new_action.py`가 만듦).
 - `demo/BUILT_HERE.md`에 실작전 탭 한 줄.
 - 발표(Part1-15): 실작전 창의 자료는 시연에서 시뮬레이터가 넣는다. 심사에서 실기체 연결을 물으면 "지금 자료는 시뮬레이터이고, 실기체는 이 자리에 MAVLink 텔레메트리가 들어간다(만들지는 않았다)"고 답한다(결정 0067). 대본 제안: 적이 나타났지만 아무도 탐지 못한 때 시뮬레이션 머리줄 "적 3척 · 미탐 3"을 보여 주고 실작전 탭으로 넘어가 같은 순간 바다가 비어 있는 것을 보여 준다.
