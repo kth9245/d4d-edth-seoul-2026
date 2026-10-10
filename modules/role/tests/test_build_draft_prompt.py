@@ -39,7 +39,7 @@ def test_prompt_has_text_vocabulary_operation_and_output_keys():
     p = build_draft_prompt(TEXT, OP)
     assert TEXT in p and OP.name in p and OP.purpose in p
     # at_time (decision 0045) is set by the operator in the editor, target_neutralized (0066) and
-    # target_resighted (0067 draft) by the scenario's strike operation, so the AI draft vocabulary leaves them out.
+    # target_resighted (0068 draft) by the scenario's strike operation, so the AI draft vocabulary leaves them out.
     not_drafted = (
         ConditionKind.at_time,
         ConditionKind.target_neutralized,

@@ -46,7 +46,7 @@ def test_a_vehicle_remembers_where_it_left_its_patrol_route():  # decision 0066
     assert (st.patrol_step_id, st.patrol_idx) == (None, 0)
 
 
-def test_a_condition_can_wait_for_a_site_another_vehicle_reported():  # decision 0067
+def test_a_condition_can_wait_for_a_site_another_vehicle_reported():  # decision 0068
     from contracts.models import ConditionKind
 
     assert ConditionKind("target_resighted") is ConditionKind.target_resighted
