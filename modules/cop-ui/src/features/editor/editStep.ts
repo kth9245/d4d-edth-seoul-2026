@@ -8,6 +8,15 @@ export const EDIT_ACTIONS: ActionKind[] = ["patrol_route", "move_to", "watch_tar
 export const EDIT_CONDITIONS: ConditionKind[] = ["target_found", "arrived", "battery_below", "operator_choice", "at_time"];
 // Decision 0045: the editor shows move_to and patrol_route as one action, "경로 비행", with "반복" (looping).
 export const ROUTE_KINDS: ActionKind[] = ["move_to", "patrol_route"];
+
+// What the card panel offers. An enemy play keeps its script as it is (decision 0045): sim steers enemies by a
+// move_to target or a patrol_route route only and reads arrived/time_elapsed, so no route select and no T+.
+export function cardOptions(kind: ActionKind, enemy: boolean): { routeControls: boolean; conditions: ConditionKind[] } {
+  return {
+    routeControls: !enemy && ROUTE_KINDS.includes(kind),
+    conditions: enemy ? EDIT_CONDITIONS.filter((k) => k !== "at_time") : EDIT_CONDITIONS,
+  };
+}
 const TARGETED: ActionKind[] = ["watch_target", "approach_target", "strike_target"];
 const DISTANCE: Partial<Record<ActionKind, number>> = { watch_target: 150, approach_target: 200 };
 

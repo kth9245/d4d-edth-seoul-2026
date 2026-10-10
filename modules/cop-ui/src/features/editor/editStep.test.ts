@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Play, RouteDef } from "../../contracts.gen";
-import { addChoice, addStepAfter, applyRoute, defaultCondition, removeChoice, removeStep, routeChoice, setActionKind, setLoop, updateStep, zoneCentre } from "./editStep";
+import { addChoice, addStepAfter, applyRoute, cardOptions, defaultCondition, removeChoice, removeStep, routeChoice, setActionKind, setLoop, updateStep,
+  zoneCentre } from "./editStep";
 
 const play: Play = {
   id: "p", name: "순찰", domains: ["air"], entry: "patrol", origin: "human", approved: true, template: false,
@@ -145,5 +146,22 @@ describe("route flying", () => {
   });
   it("defaults a T+ condition to one minute", () => {
     expect(defaultCondition("at_time", routePlay.steps[0])).toEqual({ kind: "at_time", params: { offset_ms: 60000 } });
+  });
+});
+
+describe("cardOptions", () => {
+  it("offers route controls and T+ on a friendly route card", () => {
+    const o = cardOptions("move_to", false);
+    expect(o.routeControls).toBe(true);
+    expect(o.conditions).toContain("at_time");
+  });
+  it("keeps an enemy card's route as the script has it and offers no T+ (sim steers enemies by target or route only)", () => {
+    const o = cardOptions("move_to", true);
+    expect(o.routeControls).toBe(false);
+    expect(o.conditions).not.toContain("at_time");
+    expect(cardOptions("patrol_route", true).routeControls).toBe(false);
+  });
+  it("has no route controls on a card that is not route flying", () => {
+    expect(cardOptions("hold", false).routeControls).toBe(false);
   });
 });

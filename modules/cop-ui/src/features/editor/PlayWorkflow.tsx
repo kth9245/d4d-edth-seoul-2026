@@ -25,6 +25,7 @@ type Props = {
   plays?: { id: string; name: string }[];
   fallbackPoint?: GeoPoint | null;
   routes?: RouteDef[]; // decision 0044: for the card panel's route select
+  enemy?: boolean; // the play an enemy follows (no route select, no T+)
 };
 
 function SaveStatus({ result }: { result?: SaveResult }) {
@@ -46,7 +47,7 @@ function SaveStatus({ result }: { result?: SaveResult }) {
 }
 
 export function PlayWorkflow({ play, usage, playName, onOpen, result, onSave, edited, freshStep, onInsertReport, onBack, backLabel,
-  onEdit, vehicleIds = [], plays = [], fallbackPoint = null, routes = [] }: Props) {
+  onEdit, vehicleIds = [], plays = [], fallbackPoint = null, routes = [], enemy = false }: Props) {
   const view = result?.state === "done" ? issuesByStep(result.check, play) : null;
   const [picked, setPicked] = useState<string | null>(null);
   const step = onEdit ? play.steps.find((s) => s.id === picked) : undefined;
@@ -82,7 +83,7 @@ export function PlayWorkflow({ play, usage, playName, onOpen, result, onSave, ed
         <PlayGraph play={play} issues={view?.byStep ?? {}} freshStep={freshStep} playName={playName} onOpen={onOpen}
           onInsertReport={onInsertReport} selectedStep={step?.id ?? null} onSelectStep={setPicked} />
         {step && onEdit && (
-          <StepEditor play={play} step={step} vehicleIds={vehicleIds} plays={plays} fallbackPoint={fallbackPoint} routes={routes} onChange={(next) => onEdit(next)}
+          <StepEditor play={play} step={step} vehicleIds={vehicleIds} plays={plays} fallbackPoint={fallbackPoint} routes={routes} enemy={enemy} onChange={(next) => onEdit(next)}
             onAddAfter={() => {
               const { play: next, id } = addStepAfter(play, step.id);
               onEdit(next, id);

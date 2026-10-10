@@ -151,6 +151,7 @@ export function EditorScreen() {
             fallbackPoint={zoneCentre(data.operation.zone)}
             plays={data.plays.map((p) => ({ id: p.id, name: p.name }))}
             routes={data.routes}
+            enemy={data.enemies.some((e) => e.play_id === play.id)}
           />
         ) : selected === ONTOLOGY ? (
           <OntologyPanel op={data.operation} plays={data.plays} vehicles={data.vehicles} />

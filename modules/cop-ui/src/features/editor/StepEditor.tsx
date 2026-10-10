@@ -1,6 +1,6 @@
 import type { ActionKind, Choice, ConditionKind, Exit, GeoPoint, Play, RouteDef, Step } from "../../contracts.gen";
 import { ACTION_LABEL, CONDITION_LABEL, describeAction } from "./describe";
-import { addChoice, applyRoute, defaultCondition, EDIT_ACTIONS, EDIT_CONDITIONS, removeChoice, ROUTE_KINDS, routeChoice, setActionKind, setLoop,
+import { addChoice, applyRoute, cardOptions, defaultCondition, EDIT_ACTIONS, removeChoice, ROUTE_KINDS, routeChoice, setActionKind, setLoop,
   updateStep } from "./editStep";
 
 type Props = {
@@ -10,6 +10,7 @@ type Props = {
   plays: { id: string; name: string }[];
   fallbackPoint?: GeoPoint | null; // where a new move or route starts when the play has no point (zone centre)
   routes?: RouteDef[]; // decision 0044: what the route select offers
+  enemy?: boolean; // an enemy play keeps its script: no route select, no T+ (decision 0045)
   onChange: (next: Play) => void;
   onAddAfter: () => void;
   onRemove: () => void;
@@ -23,7 +24,7 @@ const withCurrent = <T extends string>(list: T[], cur: T) => (list.includes(cur)
 
 // Side panel for the card picked on the graph (Part3-12.1). Every change goes up as a new play; saving and the
 // server check stay as they are.
-export function StepEditor({ play, step, vehicleIds, plays, fallbackPoint = null, routes = [], onChange, onAddAfter, onRemove, onClose }: Props) {
+export function StepEditor({ play, step, vehicleIds, plays, fallbackPoint = null, routes = [], enemy = false, onChange, onAddAfter, onRemove, onClose }: Props) {
   const set = (change: (s: Step) => Step) => onChange(updateStep(play, step.id, change));
   const params = step.do.params ?? {};
   const setParam = (k: string, v: unknown) => set((s) => ({ ...s, do: { ...s.do, params: { ...(s.do.params ?? {}), [k]: v } } }));
@@ -36,6 +37,7 @@ export function StepEditor({ play, step, vehicleIds, plays, fallbackPoint = null
   const targeted = ["watch_target", "approach_target", "strike_target"].includes(step.do.kind);
   // Decision 0045: move_to and patrol_route are one action here, "경로 비행"; 반복 picks which.
   const isRoute = ROUTE_KINDS.includes(step.do.kind);
+  const options = cardOptions(step.do.kind, enemy);
   const nonRoute = EDIT_ACTIONS.filter((k) => !ROUTE_KINDS.includes(k));
   const current = routeChoice(params, routes);
   const target = typeof params.target === "string" ? params.target : "nearest";
@@ -71,7 +73,7 @@ export function StepEditor({ play, step, vehicleIds, plays, fallbackPoint = null
             )}
           </div>
         )}
-        {isRoute && (
+        {options.routeControls && (
           <div className="se-route">
             <label className="se-check">
               <input type="checkbox" aria-label="반복" checked={step.do.kind === "patrol_route"}
@@ -99,7 +101,7 @@ export function StepEditor({ play, step, vehicleIds, plays, fallbackPoint = null
             <div key={i} className="se-exit">
               <select aria-label={`연결 ${i + 1} 조건`} value={ex.cond.kind}
                 onChange={(e) => put({ ...ex, cond: defaultCondition(e.target.value as ConditionKind, step) })}>
-                {withCurrent(EDIT_CONDITIONS, ex.cond.kind).map((k) => <option key={k} value={k}>{CONDITION_LABEL[k] ?? k}</option>)}
+                {withCurrent(options.conditions, ex.cond.kind).map((k) => <option key={k} value={k}>{CONDITION_LABEL[k] ?? k}</option>)}
               </select>
               {ex.cond.kind === "battery_below" && (
                 <label className="se-num">
