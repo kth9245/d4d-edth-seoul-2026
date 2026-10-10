@@ -5,6 +5,7 @@
 마지막 기록 10/10 11:19 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
+- **Part1-12** 주입 승인 카드 — kth9245, 10/10 11:19부터
 - **Part2-17.1** gateway init_engine · GW-02 (묶음 A, engine_state.py 먼저) — 최동호, 10/10 11:17부터
 
 ## 막힘
@@ -14,7 +15,6 @@
 
 ### kth9245
 - **Part1-11** 직접 조종 + 차단 카드 대안 버튼
-- **Part1-12** 주입 승인 카드
 - **Part1-14** smoke 전환 + 통합 주관
 - **Part1-15** 3분 대본·BUILT_HERE·제출 설명
 - **Part3-12** 편집기: 카드 편집
