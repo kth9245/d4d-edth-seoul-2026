@@ -1,0 +1,99 @@
+/* Look of the whole screen (Part1-9.2). Feature CSS files own layout (size, position); this file owns color and type
+   and is loaded last (main.tsx), so it wins at equal specificity. New screens: use these tokens, never raw hex.
+   Colors carry meaning only: symbol and accent colors follow MIL-STD-2525 affiliation fills (friendly crystal blue,
+   unknown yellow, hostile salmon), so the operator's buttons share the friendly color of the vehicles they command. */
+:root {
+  --bg: #0c1720; /* night sea */
+  --panel: #122230;
+  --raised: #1a2e3e;
+  --line: #24394a;
+  --text: #d9e4ea;
+  --muted: #8397a7;
+  --friend: #80e0ff;
+  --on-friend: #08202b;
+  --unknown: #ffe680;
+  --hostile: #ff7a7a;
+  --warn: #ffb547;
+  --warn-soft: rgba(255, 181, 71, 0.12);
+  --r: 2px;
+  /* Offline: system faces only. Bahnschrift is the DIN face that ships with Windows (signage, instruments). */
+  --font-ui: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", "Noto Sans CJK KR", system-ui, sans-serif;
+  --font-data: Bahnschrift, "DIN Alternate", "Roboto Condensed", "Noto Sans", "Malgun Gothic", system-ui, sans-serif;
+}
+html, body, #root { background: var(--bg); color: var(--text); font-family: var(--font-ui); }
+* { scrollbar-color: var(--line) transparent; }
+button { font-family: inherit; }
+:focus-visible { outline: 2px solid var(--friend); outline-offset: 2px; }
+
+/* Tabs */
+.tabs { gap: 0; padding: 0 12px; background: var(--bg); border-bottom: 1px solid var(--line); }
+.tabs a { padding: 10px 14px; border-radius: 0; border-bottom: 2px solid transparent; color: var(--muted); font-weight: 600; }
+.tabs a:hover { color: var(--text); }
+.tabs a.on { background: none; border-bottom-color: var(--friend); color: var(--text); }
+
+/* Side column, connection status */
+aside { background: var(--panel); border-left: 1px solid var(--line); }
+.status { display: flex; align-items: center; gap: 6px; font-family: var(--font-data); font-size: 13px; }
+.status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.status.ok { color: var(--friend); }
+.status.down { color: var(--hostile); }
+
+/* Cards: the left rule says what kind of event it is */
+.card { background: var(--raised); border-radius: var(--r); border-left: 3px solid var(--friend); }
+.card.warn { border-left-color: var(--warn); }
+.card.pending { border-left-color: var(--unknown); }
+.card.block { border-left-color: var(--hostile); }
+.card.done { opacity: 0.55; }
+.card .head span, .card .head time { font-family: var(--font-data); color: var(--muted); }
+.card .head time { opacity: 1; }
+.card button { border-radius: var(--r); background: var(--friend); color: var(--on-friend); }
+.card button:hover:not(:disabled) { filter: brightness(1.08); }
+.card button:disabled { background: var(--line); color: var(--muted); }
+.card button small { font-family: var(--font-data); opacity: 0.8; }
+.card .note { color: var(--muted); opacity: 1; }
+.card .note.error { color: var(--hostile); }
+
+/* Map symbols: friendly vehicles share one color and show status by fill and ring; targets by affiliation */
+.mk i { border: 2px solid var(--bg); }
+.mk span { left: 17px; padding: 1px 4px; border-radius: var(--r); background: rgba(12, 23, 32, 0.78);
+  color: var(--text); font-family: var(--font-data); font-size: 11px; font-weight: 600; text-shadow: none; }
+.vehicle i, .vehicle.active i { background: var(--friend); border-color: var(--bg); }
+.vehicle.ready i { background: var(--bg); border-color: var(--friend); }
+.vehicle.returning i { background: var(--friend); border-color: var(--warn); }
+.vehicle.maintenance i { background: var(--bg); border-color: var(--muted); }
+.vehicle.maintenance { opacity: 0.7; }
+.vehicle.lost i { background: transparent; border: 2px dashed var(--warn); }
+.target i, .target.boat i { background: var(--unknown); border-color: var(--bg); }
+.target.fast_boat i { background: var(--hostile); }
+.target.unseen { opacity: 0.5; }
+.target.unseen i { border-style: dashed; border-color: var(--text); }
+
+/* Map source line: small and quiet, but always shown (EOX imagery is CC BY-NC-SA, attribution required) */
+.maplibregl-ctrl.maplibregl-ctrl-attrib { margin: 0; padding: 0 8px 4px; background: none; }
+.maplibregl-ctrl-attrib-inner, .maplibregl-ctrl-attrib a { color: var(--muted); font-size: 10px; opacity: 0.75; }
+
+/* Run bar and metrics (Part1-13) */
+.runbar { background: var(--bg); border-top: 1px solid var(--line); }
+.runbar button { border: 1px solid var(--line); border-radius: var(--r); background: var(--raised); color: var(--text); }
+.runbar button:hover:not(:disabled) { border-color: var(--friend); }
+.runbar .clock { font-family: var(--font-data); }
+.runbar .speeds button.on { background: var(--friend); border-color: var(--friend); color: var(--on-friend); }
+.runbar .speeds button.on.dim { background: var(--raised); border-color: var(--friend); color: var(--friend); }
+.runbar .error { color: var(--hostile); }
+.metrics { border: 1px solid var(--line); border-radius: var(--r); background: var(--raised); }
+.metrics .pair b, .metrics dd { font-family: var(--font-data); }
+.metrics .pair .operator b { color: var(--friend); }
+
+/* Play editor (Part3-10) */
+.editor { background: var(--bg); }
+.play-sidebar { background: var(--panel); border-right: 1px solid var(--line); }
+.play-sidebar .group { color: var(--muted); opacity: 1; }
+.play-sidebar .item { border-radius: var(--r); }
+.play-sidebar .item:hover { background: var(--raised); }
+.play-sidebar .item.on { background: var(--raised); box-shadow: inset 2px 0 0 var(--friend); }
+.example-badge { border: 1px solid rgba(255, 181, 71, 0.35); border-radius: var(--r); background: var(--warn-soft); color: var(--warn); }
+.step-card { border-radius: var(--r); border-left: 3px solid var(--friend); background: var(--raised); }
+.step-report { border-radius: var(--r); background: var(--panel); }
+.switch { border-radius: var(--r); background: var(--warn-soft); color: var(--warn); }
+.link { color: var(--friend); }
+.missing { color: var(--hostile); }

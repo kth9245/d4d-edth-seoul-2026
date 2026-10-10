@@ -35,12 +35,15 @@ export function MapView({ frame, zone, tilesAvailable }:
       container: el.current, style: basemapStyle(tilesAvailable),
       bounds: TILE_BOUNDS, fitBoundsOptions: { padding: 24 },
       maxBounds: [W - PAD, S - PAD, E + PAD, N + PAD],
+      // Only the imagery source line (EOX, required); no MapLibre link, never collapsed (theme.css keeps it small).
+      attributionControl: { compact: false, customAttribution: [] },
     });
     m.on("load", () => {
       m.addSource("zone", { type: "geojson", data: zoneGeoJSON(latest.current.zone) });
-      m.addLayer({ id: "zone-fill", type: "fill", source: "zone", paint: { "fill-color": "#4da3ff", "fill-opacity": 0.08 } });
+      // Friendly operating area: theme.css --friend (map paint cannot read CSS variables).
+      m.addLayer({ id: "zone-fill", type: "fill", source: "zone", paint: { "fill-color": "#80e0ff", "fill-opacity": 0.05 } });
       m.addLayer({ id: "zone-line", type: "line", source: "zone",
-        paint: { "line-color": "#4da3ff", "line-width": 2, "line-dasharray": [3, 2] } });
+        paint: { "line-color": "#80e0ff", "line-opacity": 0.7, "line-width": 1.5, "line-dasharray": [4, 3] } });
     });
     map.current = m;
     draw(m, vehicles.current, targets.current, latest.current.frame);

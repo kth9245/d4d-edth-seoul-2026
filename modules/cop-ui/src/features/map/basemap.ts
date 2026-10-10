@@ -5,7 +5,8 @@ export const TILE_BOUNDS: [number, number, number, number] = [124.55, 37.88, 124
 const TILES_DIR = "/tiles/baengnyeong";
 const PROBE = `${TILES_DIR}/8/216/98.jpg`;
 const ATTRIBUTION = "© EOX IT Services GmbH — Sentinel-2 cloudless 2020 (CC BY-NC-SA 4.0), contains modified Copernicus Sentinel data";
-const BG: LayerSpecification = { id: "bg", type: "background", paint: { "background-color": "#0b1320" } };
+// The dimmed sea of the imagery, so the edge of the fetched tiles leaves no seam.
+const BG: LayerSpecification = { id: "bg", type: "background", paint: { "background-color": "#0b1616" } };
 
 export async function tilesExist(): Promise<boolean> {
   const ctl = new AbortController();
@@ -33,6 +34,7 @@ export function basemapStyle(tilesAvailable: boolean): StyleSpecification {
       },
     },
     // Daytime imagery dimmed for the night operation so vehicle and target markers stand out.
-    layers: [BG, { id: "sat", type: "raster", source: "sat", paint: { "raster-brightness-max": 0.65 } }],
+    layers: [BG, { id: "sat", type: "raster", source: "sat",
+      paint: { "raster-brightness-max": 0.6, "raster-saturation": -0.4 } }],
   };
 }
