@@ -1,6 +1,7 @@
-import type { ActionKind, Choice, ConditionKind, Exit, GeoPoint, Play, Step } from "../../contracts.gen";
+import type { ActionKind, Choice, ConditionKind, Exit, GeoPoint, Play, RouteDef, Step } from "../../contracts.gen";
 import { ACTION_LABEL, CONDITION_LABEL, describeAction } from "./describe";
-import { addChoice, defaultCondition, EDIT_ACTIONS, EDIT_CONDITIONS, removeChoice, setActionKind, updateStep } from "./editStep";
+import { addChoice, applyRoute, defaultCondition, EDIT_ACTIONS, EDIT_CONDITIONS, removeChoice, ROUTE_KINDS, routeChoice, setActionKind, setLoop,
+  updateStep } from "./editStep";
 
 type Props = {
   play: Play;
@@ -8,6 +9,7 @@ type Props = {
   vehicleIds: string[];
   plays: { id: string; name: string }[];
   fallbackPoint?: GeoPoint | null; // where a new move or route starts when the play has no point (zone centre)
+  routes?: RouteDef[]; // decision 0044: what the route select offers
   onChange: (next: Play) => void;
   onAddAfter: () => void;
   onRemove: () => void;
@@ -21,7 +23,7 @@ const withCurrent = <T extends string>(list: T[], cur: T) => (list.includes(cur)
 
 // Side panel for the card picked on the graph (Part3-12.1). Every change goes up as a new play; saving and the
 // server check stay as they are.
-export function StepEditor({ play, step, vehicleIds, plays, fallbackPoint = null, onChange, onAddAfter, onRemove, onClose }: Props) {
+export function StepEditor({ play, step, vehicleIds, plays, fallbackPoint = null, routes = [], onChange, onAddAfter, onRemove, onClose }: Props) {
   const set = (change: (s: Step) => Step) => onChange(updateStep(play, step.id, change));
   const params = step.do.params ?? {};
   const setParam = (k: string, v: unknown) => set((s) => ({ ...s, do: { ...s.do, params: { ...(s.do.params ?? {}), [k]: v } } }));
@@ -32,6 +34,10 @@ export function StepEditor({ play, step, vehicleIds, plays, fallbackPoint = null
   const setChoice = (id: string, change: (c: Choice) => Choice) =>
     set((s) => ({ ...s, report: s.report && { ...s.report, choices: (s.report.choices ?? []).map((c) => (c.id === id ? change(c) : c)) } }));
   const targeted = ["watch_target", "approach_target", "strike_target"].includes(step.do.kind);
+  // Decision 0045: move_to and patrol_route are one action here, "경로 비행"; 반복 picks which.
+  const isRoute = ROUTE_KINDS.includes(step.do.kind);
+  const nonRoute = EDIT_ACTIONS.filter((k) => !ROUTE_KINDS.includes(k));
+  const current = routeChoice(params, routes);
   const target = typeof params.target === "string" ? params.target : "nearest";
 
   return (
@@ -47,8 +53,10 @@ export function StepEditor({ play, step, vehicleIds, plays, fallbackPoint = null
 
       <div className="se-sec">
         <div className="se-title">행동</div>
-        <select aria-label="행동" value={step.do.kind} onChange={(e) => onChange(setActionKind(play, step.id, e.target.value as ActionKind, fallbackPoint))}>
-          {withCurrent(EDIT_ACTIONS, step.do.kind).map((k) => <option key={k} value={k}>{ACTION_LABEL[k] ?? k}</option>)}
+        <select aria-label="행동" value={isRoute ? "route" : step.do.kind}
+          onChange={(e) => onChange(setActionKind(play, step.id, (e.target.value === "route" ? "patrol_route" : e.target.value) as ActionKind, fallbackPoint))}>
+          <option value="route">경로 비행</option>
+          {(isRoute ? nonRoute : withCurrent(nonRoute, step.do.kind)).map((k) => <option key={k} value={k}>{ACTION_LABEL[k] ?? k}</option>)}
         </select>
         {targeted && (
           <div className="se-row">
@@ -63,8 +71,23 @@ export function StepEditor({ play, step, vehicleIds, plays, fallbackPoint = null
             )}
           </div>
         )}
-        {(step.do.kind === "move_to" || step.do.kind === "patrol_route") && (
-          <div className="se-note">{describeAction(step.do)} · 좌표는 그대로 둡니다(지도 편집 없음)</div>
+        {isRoute && (
+          <div className="se-route">
+            <label className="se-check">
+              <input type="checkbox" aria-label="반복" checked={step.do.kind === "patrol_route"}
+                onChange={(e) => onChange(setLoop(play, step.id, e.target.checked))} /> 반복
+            </label>
+            <select aria-label="경로" value={current}
+              onChange={(e) => { const r = routes.find((x) => x.id === e.target.value); if (r) onChange(applyRoute(play, step.id, r)); }}>
+              {current === "" && <option value="">지금 값 유지: {describeAction(step.do)}</option>}
+              <optgroup label="고정 경로">
+                {routes.filter((r) => !r.offsets?.length).map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
+              </optgroup>
+              <optgroup label="상대 경로 (기체 위치 기준)">
+                {routes.filter((r) => r.offsets?.length).map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
+              </optgroup>
+            </select>
+          </div>
         )}
       </div>
 
@@ -84,6 +107,18 @@ export function StepEditor({ play, step, vehicleIds, plays, fallbackPoint = null
                     onChange={(e) => num(e.target.value) !== null && put({ ...ex, cond: { ...ex.cond, params: { pct: num(e.target.value)! } } })} /> % 미만
                 </label>
               )}
+              {ex.cond.kind === "at_time" && (() => {
+                const ms = Number(ex.cond.params?.offset_ms ?? 0);
+                const setMs = (m: number, sec: number) => put({ ...ex, cond: { ...ex.cond, params: { offset_ms: (m * 60 + sec) * 1000 } } });
+                return (
+                  <span className="se-num">T+
+                    <input aria-label={`연결 ${i + 1} 분`} type="number" min={0} value={Math.floor(ms / 60000)}
+                      onChange={(e) => num(e.target.value) !== null && setMs(num(e.target.value)!, Math.floor(ms / 1000) % 60)} />분
+                    <input aria-label={`연결 ${i + 1} 초`} type="number" min={0} max={59} value={Math.floor(ms / 1000) % 60}
+                      onChange={(e) => num(e.target.value) !== null && setMs(Math.floor(ms / 60000), num(e.target.value)!)} />초
+                  </span>
+                );
+              })()}
               {ex.cond.kind === "operator_choice" && (
                 <select aria-label={`연결 ${i + 1} 선택지`} value={String(ex.cond.params?.choice ?? "")}
                   onChange={(e) => put({ ...ex, cond: { ...ex.cond, params: { choice: e.target.value } } })}>

@@ -160,3 +160,5 @@ aside { overflow-y: auto; padding: 12px; border-left: 1px solid #22304a; }
 .onto-reasons { list-style: none; margin: 10px 0; padding: 0; }
 .onto-reasons li { padding: 3px 0; font-size: 13px; }
 .onto-reserve { margin-top: 10px; font-size: 13px; }
+.se-route { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 6px; }
+.se-check { display: flex; gap: 4px; align-items: center; }
