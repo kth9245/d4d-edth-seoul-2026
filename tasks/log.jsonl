@@ -348,3 +348,4 @@
 {"at": "2026-10-10T15:53:36+09:00", "by": "최동호", "op": "done", "id": "Part2-28", "take": false}
 {"at": "2026-10-10T15:54:03+09:00", "by": "kth9245", "op": "add", "id": "Part3-12.3", "title": "플레이 삭제 버튼 + DELETE /plays/{id} (서버까지, 쓰는 중이어도 막지 않음)", "parent": "Part3-12", "assign": null, "slot": "2", "spec": null}
 {"at": "2026-10-10T15:54:09+09:00", "by": "kth9245", "op": "start", "id": "Part3-12.3", "take": false, "from": null}
+{"at": "2026-10-10T15:56:30+09:00", "by": "kth9245", "op": "add", "id": "Part3-15.2", "title": "mavlink 스크립트: 운용자 선택을 엔진과 같게(결정 0031, 선택지 id 비교·같은 플레이 이어 가기)", "parent": "Part3-15", "assign": null, "slot": "2 뒤", "spec": null}
