@@ -402,3 +402,4 @@
 {"at": "2026-10-10T18:57:32+09:00", "by": "황승주", "op": "add", "id": "Part2-35", "title": "24시간 교대 작전 이름을 '멸공'으로", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T18:57:44+09:00", "by": "황승주", "op": "start", "id": "Part2-35", "take": false, "from": null}
 {"at": "2026-10-10T18:59:54+09:00", "by": "황승주", "op": "done", "id": "Part2-35", "take": false}
+{"at": "2026-10-10T19:07:53+09:00", "by": "황승주", "op": "add", "id": "Part2-36", "title": "멸공 작전 시뮬 틱을 야간 작전과 같은 200 ms로", "parent": null, "assign": "황승주", "slot": null, "spec": null}
