@@ -149,3 +149,10 @@ def test_track_plays_ask_strike_approval_with_three_choices():
 def test_demo_play_files_match_scenario_plays():
     for p in SC.plays:
         assert load_play(f"demo/plays/{p.id}.json") == p, p.id
+
+
+def test_ugv_waits_near_the_shore_where_boat1_stops():
+    plays = {p.id: p for p in SC.plays}
+    ugv_at = GeoPoint(**plays["landing"].steps[0].do.params["target"])
+    boat_at = GeoPoint(**plays["enemy_boat1"].steps[0].do.params["target"])
+    assert dist_m(ugv_at, boat_at) < 500
