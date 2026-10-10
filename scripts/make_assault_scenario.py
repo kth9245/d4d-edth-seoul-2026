@@ -48,8 +48,15 @@ SEARCH = {
 }
 # the objective area: every site lies within three radii (near step +0.15), so a silent site scores 0.45 and
 # the finder's card goes up (decision 0043)
-TARGET_AREA = {"id": "target_area", "name": "목표 지역 중심", "pos": _p(37.955, 124.665), "radius_m": 2000.0}
-ATTACK_SPEED_MPS = 30.0  # virtual: the attack drones cross 6 km from the sea home in about 3 minutes
+TARGET_AREA = {
+    "id": "target_area",
+    "name": "목표 지역 중심",
+    "pos": _p(37.955, 124.665),
+    "radius_m": 2000.0,
+}
+ATTACK_SPEED_MPS = (
+    30.0  # virtual: the attack drones cross 6 km from the sea home in about 3 minutes
+)
 
 EMERGENCY = {"battery_low_pct": 30.0, "link_lost_step": None,
              "battery_low_step": None, "operator_call_step": None}  # fmt: skip
@@ -91,7 +98,10 @@ def recon(vid, legs):
     for i, (search_id, area) in enumerate(legs):
         watch_id = search_id.replace("search", "watch")
         after = legs[i + 1][0] if i + 1 < len(legs) else "home"
-        steps += [_search(search_id, f"거점 탐색 · {area}", area), _watch(watch_id, f"감시 · {area}", after)]
+        steps += [
+            _search(search_id, f"거점 탐색 · {area}", area),
+            _watch(watch_id, f"감시 · {area}", after),
+        ]
     steps.append(_step("home", "귀환", "return_home", {}, []))
     return _role(f"recon_{vid}", f"정찰 · {vid}", ["air"], steps, "formation")
 
@@ -104,7 +114,9 @@ def point_strike(night_strike):
 
 
 def site_hold():
-    return _role("site_hold", "적: 거점 대기", ["ground"], [_step("hold", "대기", "hold", {}, [])], "hold")
+    return _role(
+        "site_hold", "적: 거점 대기", ["ground"], [_step("hold", "대기", "hold", {}, [])], "hold"
+    )
 
 
 def fleet(night_vehicles):
@@ -149,7 +161,9 @@ def build():
 def main():
     out = build()
     OUT.write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    print(f"{OUT.name}: {len(out['vehicles'])} vehicles, {len(out['enemies'])} sites, {len(out['roles'])} roles")
+    print(
+        f"{OUT.name}: {len(out['vehicles'])} vehicles, {len(out['enemies'])} sites, {len(out['roles'])} roles"
+    )
 
 
 if __name__ == "__main__":

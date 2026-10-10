@@ -14,7 +14,9 @@ from shared.land import inside, to_sea
 ROOT = Path(__file__).resolve().parent.parent
 PATH = ROOT / "demo/scenarios/baengnyeong_assault.json"
 SITES = ("site_n", "site_s", "site_f")
-BEACH = GeoPoint(lat=37.955, lon=124.625, alt_m=0.0)  # the operator's click just past the west shore
+BEACH = GeoPoint(
+    lat=37.955, lon=124.625, alt_m=0.0
+)  # the operator's click just past the west shore
 
 
 @pytest.fixture(scope="module")
@@ -75,7 +77,9 @@ def test_assign_and_operation_checks(sc):
     assert sc.id == "baengnyeong_assault" and sc.operation.id == "op_assault"
     assert sc.operation.assign == {"usv": "standby", "r1": "recon_r1", "r2": "recon_r2",
                                    "a1": "standby", "a2": "standby", "ugv": "standby"}  # fmt: skip
-    assert {"recon_r1", "recon_r2", "point_strike", "standby", "go_home", "site_hold"} <= set(_roles(sc))
+    assert {"recon_r1", "recon_r2", "point_strike", "standby", "go_home", "site_hold"} <= set(
+        _roles(sc)
+    )
     # no role named "strike": the engine then never puts strike buttons on the site cards (GW-13), the strike
     # goes only through the vehicle menu, which keys off the strike_target step, not the role id
     assert "strike" not in _roles(sc)
@@ -85,7 +89,7 @@ def test_assign_and_operation_checks(sc):
 def test_the_two_recon_drones_fly_the_beach_side_by_side(sc):
     r1, r2 = _route(sc, "recon_r1", "formation"), _route(sc, "recon_r2", "formation")
     assert len(r1) == len(r2)
-    for a, b in zip(r1, r2):
+    for a, b in zip(r1, r2, strict=True):
         assert 300 < dist_m(a, b) < 800  # a formation, not stacked on one point
 
 
@@ -113,10 +117,16 @@ def test_r2_goes_on_to_the_east_coast_far_from_the_forest_site(sc):
     south = next(e.pos for e in sc.enemies if e.id == "site_s")
     forest = next(e.pos for e in sc.enemies if e.id == "site_f")
     east = _route(sc, "recon_r2", "search_e")
-    legs = [(south, east[0]), *zip(east, east[1:] + east[:1])]  # the transit from the south site, then the loop
+    legs = [
+        (south, east[0]),
+        *zip(east, east[1:] + east[:1], strict=True),
+    ]  # the transit from the south site, then the loop
 
     def nearest(a, b, k=60):
-        pts = [GeoPoint(lat=a.lat + (b.lat - a.lat) * i / k, lon=a.lon + (b.lon - a.lon) * i / k) for i in range(k + 1)]
+        pts = [
+            GeoPoint(lat=a.lat + (b.lat - a.lat) * i / k, lon=a.lon + (b.lon - a.lon) * i / k)
+            for i in range(k + 1)
+        ]
         return min(dist_m(p, forest) for p in pts)
 
     # out of r2's 800 m camera, so r2 never reports the forest site first and r1 still finds it
@@ -162,7 +172,9 @@ def _down(es, site):
     return t is not None and t.neutralized_ms is not None
 
 
-def _point(es, sc, n, vehicle, site):  # the vehicle menu's '표적 타격' (decision 0058): one approved request
+def _point(
+    es, sc, n, vehicle, site
+):  # the vehicle menu's '표적 타격' (decision 0058): one approved request
     inj = Injection(id=f"inj-{n}", t_ms=es.t_ms + sc.tick_ms, label=f"표적 타격: {vehicle} → {site}",
                     role_by_vehicle={vehicle: "point_strike"}, target_by_vehicle={vehicle: site},
                     status="approved")  # fmt: skip

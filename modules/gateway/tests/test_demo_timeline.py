@@ -199,7 +199,8 @@ def test_fast1_graph_shows_the_decision_behind_the_strikes(run):  # 0038: the la
     label = {n.id: n.label for n in g.nodes}
     strikes = {lk.src for lk in g.links
                if lk.rel == "aims_at" and lk.dst == "fast1" and label[lk.src].startswith("strike")}  # fmt: skip
-    assert {label[c].split(" · ")[1] for c in strikes} == {"d2", "usv"}
+    # 10/11 (Part2-72): d2 is under its 30% emergency line by then and goes home, so only usv strikes
+    assert {label[c].split(" · ")[1] for c in strikes} == {"usv"}
     decs = {lk.dst for lk in g.links if lk.rel == "from_decision" and lk.src in strikes}
     assert len(decs) == 1 and label[next(iter(decs))].endswith("'함께 타격'")
     assert all(label[c].endswith("출처·구역·배터리 통과") for c in strikes)

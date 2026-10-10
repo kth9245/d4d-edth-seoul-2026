@@ -18,7 +18,7 @@ NEW_KEYS = {"heat", "noise", "ir_detected", "sound_detected", "ir_range_m", "aco
 BASELINE = {  # path -> (ticks, sha256 recorded before the sensors)
     "demo/scenarios/baengnyeong_night.json": (
         9000,
-        "7eceb6325179429109cb333cfa81d721761dbef2ee78705b6805a3dec77d5cbe",
+        "4b8d0c7f023197a5739b1fe859c03771a1f419b4bd42c0e9854c9f98f61f920f",  # re-recorded 10/11 (Part2-72): the 30% emergency return now works, sensors still off
     ),
     "demo/scenarios/baengnyeong_24h.json": (
         9000,
