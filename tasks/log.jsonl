@@ -540,3 +540,4 @@
 {"at": "2026-10-11T00:02:08+09:00", "by": "황승주", "op": "add", "id": "Part2-60", "title": "멸공 단계별 카드: raid_cards 후보·선택지(RT-18)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-11T00:02:12+09:00", "by": "황승주", "op": "start", "id": "Part2-60", "take": false, "from": null}
 {"at": "2026-10-11T00:05:21+09:00", "by": "kth9245", "op": "add", "id": "Part1-32.2", "title": "지도에 기체 탐지 영역: 살아 있는 기체마다 sensor_range_m 원(드론 800m·수상정 500m·지상로봇 300m), 엔진 탐지 조건(ready·active)과 같게", "parent": "Part1-32", "assign": null, "slot": null, "spec": null}
+{"at": "2026-10-11T00:05:27+09:00", "by": "kth9245", "op": "start", "id": "Part1-32.2", "take": false, "from": null}
