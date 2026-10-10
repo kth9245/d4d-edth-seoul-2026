@@ -57,3 +57,9 @@ def test_a_spawned_enemy_carries_its_heat_and_noise():  # decision 0071
     out = spawn_enemies(sc, [], START + 1000, 200)
     assert {t.id: (t.heat, t.noise) for t in out} == {
         "site_a": (False, False), "site_b": (True, False), "site_c": (False, True)}  # fmt: skip
+
+
+def test_nobody_comes_off_a_neutralized_enemy():  # user 10/11: a sunk boat lands nobody
+    boat1 = Target(id="boat1", kind="boat", pos=G, vel_east_mps=0, vel_north_mps=0, first_seen_ms=0,
+                   last_seen_ms=0, neutralized_ms=T1)  # fmt: skip
+    assert spawn_enemies(SC, [boat1], T2, 200) == [boat1]

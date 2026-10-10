@@ -6,7 +6,7 @@ from modules.runtime.actions.apply_reserves import apply_reserves
 from modules.runtime.actions.fleet_choices import fleet_choices
 from modules.runtime.actions.raid_choices import raid_spot, release
 from modules.runtime.actions.raid_flow import raid_next
-from modules.runtime.actions.raid_idle import raid_idle
+from modules.runtime.actions.raid_idle import auto_watch, raid_idle
 from modules.runtime.actions.relief_due import relief_due
 from modules.runtime.actions.relieve_hover import relieve_hover
 from modules.runtime.actions.rotate_patrols import rotate_patrols
@@ -28,6 +28,7 @@ __all__ = [
     "release",
     "raid_next",
     "raid_idle",
+    "auto_watch",
     "spot_reports",
     "step_vehicle",
     "update_metrics",

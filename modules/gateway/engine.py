@@ -24,6 +24,7 @@ from modules.runtime import (
     apply_emergency,
     apply_injection,
     apply_reserves,
+    auto_watch,
     fleet_choices,
     raid_idle,
     raid_next,
@@ -115,6 +116,9 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
         else r
         for r in reports
     ]  # 5.3 open cards follow the fleet (decision 0046)
+    before = {s.id: s.role_id for s in stepped}  # 5.33 idle vehicles take the enemy they see (24h)
+    stepped = auto_watch(stepped, targets, specs, sc.land, roles)
+    assigns = track_assignments(assigns, before, stepped, t, "자동 감시")
     stepped = release(
         stepped, reports + new_reports, roles
     )  # 5.35 alert cards hold no vehicle (24h)
@@ -125,7 +129,9 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
     )
     if ask and any(r.id == ask.id for r in reports):  # an open question rebuilt
         reports = [ask if r.id == ask.id else r for r in reports]
-    elif ask:
+    elif ask:  # a new question withdraws the unanswered one it gives way to (user 10/11)
+        reports = [r for r in reports if not (r.id.startswith("raid-") and not r.id.startswith("raid-idle-")
+                                              and r.choices and not r.resolved_ms)]  # fmt: skip
         new_reports.append(ask)
     states, assigns, gap = apply_reserves(stepped, sc.operation, roles, assigns, t)  # 6
     new_reports += [gap] if gap else []

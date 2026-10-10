@@ -204,3 +204,8 @@ def test_target_resighted_ignores_everything_else():
     assert stays(vs(role_id="s"), reported(seen_by=("d2",)))  # I do not see it
     assert stays(vs(role_id="s", target_id="boat1"), reported())  # it is already my target
     assert stays(vs(role_id="s"), reported(threat_accum=449_999))  # the threat has not built up
+
+
+def test_a_neutralized_boat_is_never_found():  # user 10/11: a sunk boat is not reported again
+    sunk = boat(["d1"]).model_copy(update={"neutralized_ms": 1})
+    assert step(vs(), [sunk])[0].step_id == "patrol"

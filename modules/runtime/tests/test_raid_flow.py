@@ -181,3 +181,18 @@ def test_a_started_flow_finishes_before_a_higher_threat_enemy():  # user 10/11
     reports, decisions, _ = walk("observe_d1")
     low = DRONE.model_copy(update={"threat": 5})
     assert nxt(reports, decisions, targets=(low, boat)).id == "raid-e_drone-track-0"
+
+
+def test_an_unanswered_act_card_gives_way_to_a_riskier_enemy():  # user 10/11: e_drone before e_usv
+    boat = tg("e_usv", "usv", SEA.pos, 10, seen=("d2",), threat=64)
+    open_act = nxt([], [], targets=(boat,))
+    assert open_act.id == "raid-e_usv-act"
+    assert nxt([open_act], [], targets=(boat, DRONE)).id == "raid-e_drone-act"
+
+
+def test_a_tracking_finder_keeps_its_target_and_skips_the_act_card():  # user 10/11
+    busy = [vs("d1", "watch", "watch", target="e_usv"), *STATES[1:]]
+    *_, rep = walk(states=busy)
+    assert rep.id == "raid-e_drone-track-0" and "track_d1" not in ids(rep)
+    *_, rep = walk("track_skip", "focus_skip", states=busy)
+    assert rep.id == "raid-e_drone-done" and "d1 기존 추적 유지" in rep.text

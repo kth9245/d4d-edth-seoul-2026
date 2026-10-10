@@ -71,7 +71,7 @@ def enter_step(
         upd["status"] = VehicleStatus.returning
     rep = None
     if step.report:
-        seen = upd.get("target_id") or next((tg.id for tg in targets if st.id in tg.seen_by), None)
+        seen = upd.get("target_id") or next((tg.id for tg in targets if st.id in tg.seen_by and tg.neutralized_ms is None), None)  # fmt: skip
         rep = Report(id=rid, t_ms=t_ms, kind="target_detected", vehicle_id=st.id, target_id=seen,
                      text=step.report.text + _basis(st, targets, seen),
                      choices=step.report.choices)  # fmt: skip

@@ -17,6 +17,7 @@ def resighted(st: VehicleState, targets: list[Target]) -> Target | None:
             and tg.reported_by not in (None, st.id)
             and tg.id != st.target_id
             and tg.threat_accum >= CARD_ACCUM
+            and tg.neutralized_ms is None  # user 10/11
         ),
         None,
     )
@@ -34,7 +35,10 @@ def condition_true(
         if tracking:
             return any(tg.id == st.target_id and st.id in tg.seen_by for tg in targets)
         return any(
-            st.id in tg.seen_by and tg.reported_by is None and tg.threat_accum >= CARD_ACCUM
+            st.id in tg.seen_by
+            and tg.reported_by is None
+            and tg.threat_accum >= CARD_ACCUM
+            and tg.neutralized_ms is None  # a sunk boat is never found again (user 10/11)
             for tg in targets
         )  # decision 0043: the card goes up once the threat has built up
     if cond.kind == ConditionKind.arrived:

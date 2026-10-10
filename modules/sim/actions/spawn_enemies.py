@@ -14,6 +14,10 @@ def spawn_enemies(scenario: Scenario, targets: list[Target], t_ms: int, dt_ms: i
         if not t_ms - dt_ms < start + e.appear_offset_ms <= t_ms:
             continue
         src = next((t for t in out if t.id == e.from_enemy), None)
+        if (
+            src and src.neutralized_ms is not None
+        ):  # nobody comes off a neutralized enemy (user 10/11)
+            continue
         out.append(Target(id=e.id, kind=e.kind, pos=src.pos if src else e.pos,
                           vel_east_mps=0, vel_north_mps=0, first_seen_ms=0, last_seen_ms=0,
                           heat=e.heat, noise=e.noise,  # decision 0071: what it gives off

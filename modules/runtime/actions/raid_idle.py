@@ -1,14 +1,15 @@
 """RT-20 raid_idle: 멸공에서 적 대응 임무가 사라진 기체에 "기지 복귀 / 현재 위치에서 대기" 카드(설계 2026-10-10-24h-raid-flow).
 사유: 표적 무력화, USV가 쫓는 적이 땅 위, UGV가 쫓는 적이 바다, 드론 배터리가 지금 돌아가야 할 만큼(relief_due 기준, 편도).
-그 기체의 raid-idle 카드가 열려 있으면 새로 만들지 않는다.
+그 기체의 raid-idle 카드가 열려 있으면 새로 만들지 않는다. auto_watch: 공중의 대기·복귀 기체가 본 적을 바로 감시(사용자 10/11).
 SPEC: modules/runtime/SPEC.md#RT-20
 """
 
 from collections.abc import Sequence
 
 from contracts.models import Polygon, Report, Role, Target, VehicleSpec, VehicleState
-from modules.runtime.actions.raid_cards import idle_choices
+from modules.runtime.actions.raid_cards import TRACK_ROLE, idle_choices
 from modules.runtime.actions.relief_due import START, _back
+from modules.runtime.actions.switch_role import switch_role
 from modules.runtime.actions.target_domain import target_domain
 
 JOBS = ("watch", "track_sea", "track_ground", "focus_orbit", "strike")
@@ -42,4 +43,23 @@ def raid_idle(reports: list[Report], states: list[VehicleState], targets: list[T
         if why := _why(s, tg, specs[s.id], land):
             out.append(Report(id=f"raid-idle-{s.id}-{t_ms}", t_ms=t_ms, kind="target_detected", vehicle_id=s.id,
                               target_id=None, text=f"{s.id}: {why}", choices=idle_choices(s.id)))  # fmt: skip
+    return out
+
+
+def auto_watch(states: list[VehicleState], targets: list[Target], specs: dict[str, VehicleSpec],
+               land: Sequence[Polygon], roles: dict[str, Role]) -> list[VehicleState]:  # fmt: skip
+    """24h: an idle vehicle in the air (standby or going home, battery above 30%) that sees an enemy nobody has
+    takes it at once, the patrol's own auto job (user 10/11). Drones take any, usv only sea, ugv only ground."""
+    if "focus_orbit" not in roles:
+        return states
+    taken, out = {s.target_id for s in states if s.target_id}, []
+    for s in states:
+        dom = specs[s.id].domain.value if s.id in specs else None
+        tg = next((t for t in targets if s.id in t.seen_by and t.neutralized_ms is None and t.id not in taken
+                   and dom in ("air", target_domain(t, land))), None)  # fmt: skip
+        if (tg and s.role_id in ("standby", "go_home") and s.status.value in ("active", "returning")
+                and s.target_id is None and s.battery_pct > 30):  # fmt: skip
+            s = switch_role(s, roles[TRACK_ROLE[dom]]).model_copy(update={"target_id": tg.id})
+            taken.add(tg.id)
+        out.append(s)
     return out

@@ -154,3 +154,26 @@ def test_pool_without_a_ready_partner_does_not_borrow_the_other_coast():
               vs("d3", "go_home", 40, 0, "returning"), vs("d4", None, 100, 0, "ready")]  # fmt: skip
     by, asg = run(states, op=POOLS)
     assert by["d4"].role_id is None and asg == []
+
+
+def test_24h_a_patrol_taken_by_the_raid_is_not_refilled():  # user 10/11: only the ④ cover card fills it
+    raid = ROLES | {"focus_orbit": ROLES["go_home"]}
+    states = [
+        vs("d1", "coast_a", 80, 6000),
+        vs("d2", "strike", 80, 3000),
+        vs("d3", None, 100, 0, "ready"),
+    ]
+    out, asg = rotate_patrols(states, SPECS, OP, raid, [], 0)
+    by = {s.id: s for s in out}
+    assert by["d3"].role_id is None and asg == []
+
+
+def test_24h_a_patrol_gone_home_at_the_floor_is_still_refilled():
+    raid = ROLES | {"focus_orbit": ROLES["go_home"]}
+    states = [
+        vs("d1", "coast_a", 80, 6000),
+        vs("d2", "coast_b", 20, 3000),
+        vs("d3", None, 100, 0, "ready"),
+    ]
+    by = {s.id: s for s in rotate_patrols(states, SPECS, OP, raid, [], 0)[0]}
+    assert by["d2"].role_id == "go_home" and by["d3"].role_id == "coast_b"

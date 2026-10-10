@@ -7,6 +7,8 @@ SPEC: modules/runtime/SPEC.md#RT-18
 from collections.abc import Callable, Iterable, Sequence
 
 from contracts.models import Choice, Operation, Report, Target, VehicleSpec, VehicleState
+from modules.runtime.actions.raid_choices import NEVER
+from modules.runtime.actions.target_domain import target_domain
 
 STRIKE, HOME, HOLD = "strike", "go_home", "standby"
 TRACK_ROLE = {
@@ -45,7 +47,9 @@ def pick_choices(stage: str, cands: Iterable[VehicleState], tid: str,
                  role_of: Callable[[VehicleState], str]) -> list[Choice]:  # fmt: skip
     out = [Choice(id=f"{stage}_{s.id}", label=f"{s.id} → {tid} {VERB[stage]}", role_by_vehicle={s.id: role_of(s)},
                   target_by_vehicle={s.id: tid}) for s in cands]  # fmt: skip
-    out.append(Choice(id=f"{stage}_skip", label="대기"))
+    out.append(
+        Choice(id=f"{stage}_skip", label="선택 기체는 옮기지 않음" if stage == "track" else "대기")
+    )
     return [*out, Choice(id="track_allstay", label="전체 대기")] if stage == "track" else out
 
 
@@ -54,10 +58,16 @@ def idle_choices(v: str) -> list[Choice]:
             Choice(id=f"hold_{v}", label=f"{v} → 현재 위치에서 대기", role_by_vehicle={v: HOLD})]  # fmt: skip
 
 
-def summary(tid: str, finder: str, struck: bool, picks: dict[str, list[str]], t_ms: int) -> Report:
+def summary(tid: str, finder: str, act: str, picks: dict[str, list[str]], t_ms: int) -> Report:
     parts = [
-        f"{finder} {'격추' if struck else '관찰'}",
+        f"{finder} {act}",
         *(f"{NAME[s]} {', '.join(vs)}" for s, vs in picks.items() if vs),
     ]
     return Report(id=f"raid-{tid}-done", t_ms=t_ms, kind="target_neutralized", vehicle_id=finder, target_id=tid,
                   text=f"{tid} 대응: " + " · ".join(parts))  # fmt: skip
+
+
+def track_dom(
+    t: Target, land
+) -> str:  # who may chase t: NEVER means drones only (a ugv at sea, a beached usv)
+    return "air" if NEVER.get(d := target_domain(t, land)) == t.kind.value else d

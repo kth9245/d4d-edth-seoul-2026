@@ -22,7 +22,7 @@ BASELINE = {  # path -> (ticks, sha256 recorded before the sensors)
     ),
     "demo/scenarios/baengnyeong_24h.json": (
         9000,
-        "2c1d27c497917167f99e7808748d678edba298567e85a2ca021881a25afeef67",
+        "9621314bef7b9452d9693262c2f11a3c27dc74fa4d10a93e3505671a91e72968",  # re-recorded for the user's 24h raid fixes 10/11 (Part2-66), sensors still off
     ),
 }
 

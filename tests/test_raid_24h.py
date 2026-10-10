@@ -59,5 +59,43 @@ def test_24h_raid_asks_one_question_at_a_time_in_order():  # user 10/10: step-by
     flow = [a for a in asked if a.startswith(f"raid-{first}-")]
     assert flow[:2] == [f"raid-{first}-act", f"raid-{first}-track-0"], asked
     assert flow[2].startswith(f"raid-{first}-tact-") and flow[3] == f"raid-{first}-track-1", asked
-    assert f"raid-{other}-act" in asked and f"raid-{first}-done" in asked, asked
-    assert asked.index(f"raid-{first}-track-1") < asked.index(f"raid-{other}-act"), asked
+    later = [
+        a for a in asked if a.startswith(f"raid-{other}-")
+    ]  # its finder may already track: no ① then
+    assert later and f"raid-{first}-done" in asked, asked
+    assert asked.index(f"raid-{first}-track-1") < asked.index(later[0]), asked
+
+
+def _user(
+    r,
+) -> str | None:  # user 10/11 replay: wait, then strike e_usv, d3 tracks e_drone, the rest stay
+    ids = [c.id for c in r.choices]
+    if r.id == "raid-e_usv-act":
+        return "strike_d2"
+    if r.id == "raid-e_drone-track-0" and "track_d3" in ids:
+        return "track_d3"
+    pref = ("observe_", "track_skip", "focus_skip", "cover_skip", "hold_")
+    return next(i for p in pref for i in ids if i.startswith(p))
+
+
+def test_24h_user_replay_drone_first_no_landing_no_unasked_patrol():  # user 10/11
+    day = load_scenario_json(DAY)
+    t0 = day.operation.started_ms
+    es, n, first = init_engine(day), 0, None
+    while es.t_ms < t0 + 40 * 60_000:
+        todo = [
+            r for r in es.reports if r.id.startswith("raid-") and r.choices and not r.resolved_ms
+        ]
+        if es.t_ms >= t0 + 16.5 * 60_000:
+            first = first or todo[0].id
+            decs = [Decision(id=f"dec-u-{n + i}", t_ms=es.t_ms, report_id=r.id, choice_id=_user(r))
+                    for i, r in enumerate(todo)]  # fmt: skip
+            n += len(decs)
+        else:
+            decs = []
+        es, _ = tick(es, TickInputs(decisions=decs))
+    assert first == "raid-e_drone-act"
+    assert not [t.id for t in es.targets if t.id.startswith("e_ugv")]
+    assert not [a for a in es.assignments if a.reason.startswith("교대 투입(빈 순찰)")]
+    by = {s.id: s for s in es.states}
+    assert (by["d3"].role_id, by["d3"].target_id) == ("watch", "e_drone")

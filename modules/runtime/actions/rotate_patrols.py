@@ -1,5 +1,4 @@
-"""RT-10 rotate_patrols: 해안 순찰 교대(결정 0037). 교대 시점은 relief_due(RT-14), 그때 대기 기체 출발, 경로점 m에 닿으면
-인계·나간 기체 귀환(그 전까지 순찰 계속). 하한선 우선, rotation_pools 짝 안에서만, 비면 아무것도 안 함.
+"""RT-10 rotate_patrols: 해안 순찰 교대(결정 0037). 교대 시점은 relief_due(RT-14), 그때 대기 기체 출발, 경로점 m에 닿으면 인계·나간 기체 귀환(그 전까지 순찰 계속). 하한선 우선, rotation_pools 짝 안에서만, 비면 아무것도 안 함. 멸공은 하한선 귀환으로 빈 순찰만 채움(적 대응으로 빈 곳은 ④ 대체 순찰, 사용자 10/11).
 SPEC: modules/runtime/SPEC.md#RT-10
 """
 
@@ -29,7 +28,7 @@ def rotate_patrols(
 ) -> tuple[list[VehicleState], list[Assignment]]:
     if not op.rotation or not op.rotation_roles:
         return states, assignments
-    by, asg = {s.id: s for s in states}, list(assignments)
+    by, asg, floored = {s.id: s for s in states}, list(assignments), set()
 
     def note(vid: str, role: str, reason: str) -> None:
         asg[:] = [a for a in asg if a.vehicle_id != vid]
@@ -39,6 +38,7 @@ def rotate_patrols(
     on = [v for v in op.rotation if by[v].status.value == "active" and by[v].role_id in op.rotation_roles]  # fmt: skip
     for v in on:  # floor first: a patrol never trades its return battery for coverage
         if by[v].battery_pct - _back(by[v], specs[v]) <= FLOOR:
+            floored.add(by[v].role_id)
             by[v] = switch_role(by[v], roles["go_home"])
             note(v, "go_home", f"교대 귀환(하한선): {v}")
     for s, (r, m) in pairs.items():
@@ -74,7 +74,7 @@ def rotate_patrols(
 
     engaged = any(held(p) for p in op.rotation_roles)  # rotation runs once a patrol is out
     for p in op.rotation_roles:  # a coast nobody holds (a patrol went home at the floor)
-        if engaged and not held(p) and (r := free(None, p)):
+        if engaged and not held(p) and ("focus_orbit" not in roles or p in floored) and (r := free(None, p)):  # fmt: skip
             by[r] = switch_role(by[r], roles[p])
             note(r, p, f"교대 투입(빈 순찰): {r} → {p}")
     return [by[s.id] for s in states], asg
