@@ -1,8 +1,9 @@
 import json
 from pathlib import Path
 
-from contracts.models import Frame, Play, Scenario
+from contracts.models import Frame, GeoPoint, Play, Scenario
 from shared.geo import dist_m
+from shared.land import inside
 
 ROOT = Path(__file__).resolve().parent.parent
 SCENARIO = ROOT / "demo" / "scenarios" / "baengnyeong_night.json"
@@ -50,3 +51,10 @@ def test_fast_boat_enemy_comes_out_of_boat1():  # decision 0032: enemies, not sp
     sc = Scenario.model_validate(_load(SCENARIO))
     fast = next(e for e in sc.enemies if e.id == "fast1")
     assert (fast.kind, fast.from_enemy) == ("fast_boat", "boat1")
+
+
+def test_scenario_has_the_island_traced_from_the_tiles():
+    sc = Scenario.model_validate(_load(SCENARIO))
+    assert len(sc.land) == 1 and 30 <= len(sc.land[0].points) <= 100
+    assert inside(GeoPoint(lat=37.95, lon=124.70), sc.land)  # the drone pads are on the island
+    assert not inside(GeoPoint(lat=38.0, lon=124.70), sc.land)  # NLL side is open sea
