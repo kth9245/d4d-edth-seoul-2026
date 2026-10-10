@@ -1,6 +1,7 @@
 """RT-08 enter_step: step에 들어갈 때 한 번 — 표적을 정하고 do를 명령 하나로, report가 있으면 카드 한 장
 표적(watch_target·approach_target의 params.target): "nearest" | "operator"(카드로 운용자가 고름) | 고정 id.
 move_to의 params.target은 목적지 좌표라 손대지 않는다. 귀환 step이면 status=returning.
+카드 문구 뒤에 근거(누가 보았나·어느 표적·거리)를 붙인다(에이전트 투명성 SAT 2단계, Mercado 2016).
 SPEC: modules/runtime/SPEC.md#RT-08
 """
 
@@ -20,6 +21,7 @@ from modules.play import expand_action
 from shared.geo import dist_m
 
 TARGET_ACTIONS = ("watch_target", "approach_target", "strike_target")
+KIND_KO = {"boat": "보트", "fast_boat": "고속정", "person": "사람", "unknown": "미상"}
 
 
 def _target(st: VehicleState, step: Step, targets: list[Target]) -> tuple[str | None, bool]:
@@ -30,6 +32,15 @@ def _target(st: VehicleState, step: Step, targets: list[Target]) -> tuple[str | 
         best = min(targets, key=lambda t: dist_m(st.pos, t.pos), default=None)
         return (best.id if best else None), False
     return want, False
+
+
+def _basis(st: VehicleState, targets: list[Target], tid: str | None) -> str:
+    tg = next((t for t in targets if t.id == tid), None)
+    if tg is None:
+        return ""
+    who = "센서 탐지" if st.id in tg.seen_by else "추적 중"
+    kind = KIND_KO.get(tg.kind.value, tg.kind.value)
+    return f" · {st.id} {who} · {tg.id}({kind}) · {dist_m(st.pos, tg.pos):.0f} m"
 
 
 def enter_step(
@@ -60,7 +71,8 @@ def enter_step(
     if step.report:
         seen = upd.get("target_id") or next((tg.id for tg in targets if st.id in tg.seen_by), None)
         rep = Report(id=rid, t_ms=t_ms, kind="target_detected", vehicle_id=st.id, target_id=seen,
-                     text=step.report.text, choices=step.report.choices)  # fmt: skip
+                     text=step.report.text + _basis(st, targets, seen),
+                     choices=step.report.choices)  # fmt: skip
         if step.report.choices:
             upd["pending_report_id"] = rid
     return st.model_copy(update=upd), cmd, rep
