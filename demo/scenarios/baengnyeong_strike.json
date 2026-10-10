@@ -1,0 +1,1462 @@
+{
+ "id": "baengnyeong_strike",
+ "operation": {
+  "id": "op_strike",
+  "name": "해안 거점 무력화(가상)",
+  "purpose": "정찰 드론이 가상 해안 거점을 RF 방출로 먼저 찾고 스캔해서 위협 카드를 올린다(1단계)",
+  "area": {
+   "points": [
+    {
+     "lat": 37.9,
+     "lon": 124.56,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9,
+     "lon": 124.84,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 38.0,
+     "lon": 124.84,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 38.0,
+     "lon": 124.56,
+     "alt_m": 0.0
+    }
+   ]
+  },
+  "zone": {
+   "points": [
+    {
+     "lat": 37.9,
+     "lon": 124.56,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9,
+     "lon": 124.84,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 38.0,
+     "lon": 124.84,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 38.0,
+     "lon": 124.56,
+     "alt_m": 0.0
+    }
+   ]
+  },
+  "vehicle_ids": [
+   "d1",
+   "d2",
+   "d3",
+   "d4",
+   "usv",
+   "ugv"
+  ],
+  "started_ms": 1791633600000,
+  "assign": {
+   "d1": "site_patrol",
+   "d2": "standby",
+   "d3": "standby",
+   "d4": "standby",
+   "usv": "standby",
+   "ugv": "standby"
+  },
+  "reserve": {},
+  "switches": [],
+  "rotation": [],
+  "rotation_roles": [],
+  "rotation_pools": {}
+ },
+ "vehicles": [
+  {
+   "id": "d1",
+   "name": "드론1",
+   "domain": "air",
+   "speed_mps": 15.0,
+   "endurance_min": 100.0,
+   "sensor_range_m": 800.0,
+   "home": {
+    "lat": 37.95,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "recharge_min": 5.0,
+   "rf_range_m": 2000.0,
+   "kind": "recon_drone"
+  },
+  {
+   "id": "d2",
+   "name": "드론2",
+   "domain": "air",
+   "speed_mps": 15.0,
+   "endurance_min": 100.0,
+   "sensor_range_m": 800.0,
+   "home": {
+    "lat": 37.955,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "recharge_min": 5.0,
+   "rf_range_m": 2000.0,
+   "kind": "armed_drone"
+  },
+  {
+   "id": "d3",
+   "name": "드론3",
+   "domain": "air",
+   "speed_mps": 15.0,
+   "endurance_min": 100.0,
+   "sensor_range_m": 800.0,
+   "home": {
+    "lat": 37.945,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "recharge_min": 5.0,
+   "rf_range_m": 2000.0,
+   "kind": "recon_drone"
+  },
+  {
+   "id": "d4",
+   "name": "드론4",
+   "domain": "air",
+   "speed_mps": 15.0,
+   "endurance_min": 100.0,
+   "sensor_range_m": 800.0,
+   "home": {
+    "lat": 37.96,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "recharge_min": 5.0,
+   "rf_range_m": 2000.0,
+   "kind": "recon_drone"
+  },
+  {
+   "id": "usv",
+   "name": "수상정",
+   "domain": "sea",
+   "speed_mps": 8.0,
+   "endurance_min": 720.0,
+   "sensor_range_m": 500.0,
+   "home": {
+    "lat": 37.981,
+    "lon": 124.691,
+    "alt_m": 0.0
+   },
+   "recharge_min": 0.0,
+   "rf_range_m": 0.0,
+   "kind": "armed_usv"
+  },
+  {
+   "id": "ugv",
+   "name": "지상로봇",
+   "domain": "ground",
+   "speed_mps": 5.0,
+   "endurance_min": 480.0,
+   "sensor_range_m": 300.0,
+   "home": {
+    "lat": 37.955,
+    "lon": 124.72,
+    "alt_m": 0.0
+   },
+   "recharge_min": 0.0,
+   "rf_range_m": 0.0,
+   "kind": "ground_robot"
+  }
+ ],
+ "roles": [
+  {
+   "id": "site_patrol",
+   "name": "거점 탐색 순찰 · 북",
+   "domains": [
+    "air"
+   ],
+   "steps": [
+    {
+     "id": "patrol",
+     "name": "해안 순찰",
+     "do": {
+      "kind": "patrol_route",
+      "params": {
+       "route": [
+        {
+         "lat": 37.98375,
+         "lon": 124.69246,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98707,
+         "lon": 124.70404,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98605,
+         "lon": 124.71943,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.9823,
+         "lon": 124.72886,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.97416,
+         "lon": 124.736,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.96454,
+         "lon": 124.74708,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.96147,
+         "lon": 124.75156,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.96454,
+         "lon": 124.74708,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.97416,
+         "lon": 124.736,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.9823,
+         "lon": 124.72886,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98605,
+         "lon": 124.71943,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98707,
+         "lon": 124.70404,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98375,
+         "lon": 124.69246,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98407,
+         "lon": 124.68076,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98337,
+         "lon": 124.66832,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98001,
+         "lon": 124.65638,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.9756,
+         "lon": 124.64615,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.97056,
+         "lon": 124.63679,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.97692,
+         "lon": 124.62122,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98047,
+         "lon": 124.6118,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.97093,
+         "lon": 124.60522,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98047,
+         "lon": 124.6118,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.97692,
+         "lon": 124.62122,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.97056,
+         "lon": 124.63679,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.9756,
+         "lon": 124.64615,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98001,
+         "lon": 124.65638,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98337,
+         "lon": 124.66832,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98407,
+         "lon": 124.68076,
+         "alt_m": 0
+        }
+       ],
+       "route_name": "해안 A(북)"
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "target_found",
+        "params": {}
+       },
+       "go_step": "report"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "report",
+     "name": "발견·감시·보고",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "nearest",
+       "distance_m": 150
+      }
+     },
+     "on": [],
+     "report": {
+      "text": "미식별 거점 감지",
+      "choices": [],
+      "auto_choices": true
+     },
+     "ui": {}
+    }
+   ],
+   "entry": "patrol",
+   "origin": "human",
+   "approved": true,
+   "template": false
+  },
+  {
+   "id": "standby",
+   "name": "대기",
+   "domains": [
+    "air",
+    "sea",
+    "ground"
+   ],
+   "steps": [
+    {
+     "id": "wait",
+     "name": "대기",
+     "do": {
+      "kind": "hold",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "wait",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "go_home",
+   "name": "귀환",
+   "domains": [
+    "air",
+    "sea",
+    "ground"
+   ],
+   "steps": [
+    {
+     "id": "return",
+     "name": "귀환",
+     "do": {
+      "kind": "return_home",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "return",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "watch",
+   "name": "표적 감시",
+   "domains": [
+    "air"
+   ],
+   "steps": [
+    {
+     "id": "watch",
+     "name": "선회 감시",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 150
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "battery_below",
+        "params": {
+         "pct": 30.0
+        }
+       },
+       "go_step": "return"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "return",
+     "name": "귀환",
+     "do": {
+      "kind": "return_home",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "watch",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "approach",
+   "name": "근접 확인",
+   "domains": [
+    "sea"
+   ],
+   "steps": [
+    {
+     "id": "approach",
+     "name": "접근",
+     "do": {
+      "kind": "approach_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 200
+      }
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "approach",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "site_hold",
+   "name": "적: 거점 대기",
+   "domains": [
+    "ground"
+   ],
+   "steps": [
+    {
+     "id": "hold",
+     "name": "대기",
+     "do": {
+      "kind": "hold",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "hold",
+   "origin": "human",
+   "approved": true,
+   "template": false,
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   }
+  }
+ ],
+ "events": [],
+ "enemies": [
+  {
+   "id": "site_a",
+   "kind": "unknown",
+   "speed_mps": 0.0,
+   "appear_offset_ms": 1000,
+   "pos": {
+    "lat": 37.9823,
+    "lon": 124.72247,
+    "alt_m": 0.0
+   },
+   "from_enemy": null,
+   "role_id": "site_hold",
+   "emit_start_offset_ms": 0
+  },
+  {
+   "id": "site_b",
+   "kind": "unknown",
+   "speed_mps": 0.0,
+   "appear_offset_ms": 1000,
+   "pos": {
+    "lat": 37.96382,
+    "lon": 124.74617,
+    "alt_m": 0.0
+   },
+   "from_enemy": null,
+   "role_id": "site_hold",
+   "emit_start_offset_ms": null
+  },
+  {
+   "id": "site_c",
+   "kind": "unknown",
+   "speed_mps": 0.0,
+   "appear_offset_ms": 1000,
+   "pos": {
+    "lat": 37.97272,
+    "lon": 124.64615,
+    "alt_m": 0.0
+   },
+   "from_enemy": null,
+   "role_id": "site_hold",
+   "emit_start_offset_ms": null
+  }
+ ],
+ "watch_points": [
+  {
+   "id": "target_area",
+   "name": "목표 지역 중심",
+   "pos": {
+    "lat": 37.978,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "radius_m": 2000.0
+  }
+ ],
+ "routes": [
+  {
+   "id": "coast_a",
+   "name": "해안 A(북)",
+   "points": [
+    {
+     "lat": 37.98375,
+     "lon": 124.69246,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.98707,
+     "lon": 124.70404,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.98605,
+     "lon": 124.71943,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.9823,
+     "lon": 124.72886,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.97416,
+     "lon": 124.736,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.96454,
+     "lon": 124.74708,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.96147,
+     "lon": 124.75156,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.96454,
+     "lon": 124.74708,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.97416,
+     "lon": 124.736,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.9823,
+     "lon": 124.72886,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.98605,
+     "lon": 124.71943,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.98707,
+     "lon": 124.70404,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.98375,
+     "lon": 124.69246,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.98407,
+     "lon": 124.68076,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.98337,
+     "lon": 124.66832,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.98001,
+     "lon": 124.65638,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.9756,
+     "lon": 124.64615,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.97056,
+     "lon": 124.63679,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.97692,
+     "lon": 124.62122,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.98047,
+     "lon": 124.6118,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.97093,
+     "lon": 124.60522,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.98047,
+     "lon": 124.6118,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.97692,
+     "lon": 124.62122,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.97056,
+     "lon": 124.63679,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.9756,
+     "lon": 124.64615,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.98001,
+     "lon": 124.65638,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.98337,
+     "lon": 124.66832,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.98407,
+     "lon": 124.68076,
+     "alt_m": 0
+    }
+   ]
+  },
+  {
+   "id": "base_to_north",
+   "name": "기지 → 북쪽 해역",
+   "points": [
+    {
+     "lat": 37.97,
+     "lon": 124.7,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.99,
+     "lon": 124.7,
+     "alt_m": 0.0
+    }
+   ]
+  },
+  {
+   "id": "square_300",
+   "name": "사각형 수색 300m",
+   "offsets": [
+    {
+     "north_m": 300.0,
+     "east_m": 0.0
+    },
+    {
+     "north_m": 300.0,
+     "east_m": 300.0
+    },
+    {
+     "north_m": 0.0,
+     "east_m": 300.0
+    },
+    {
+     "north_m": 0.0,
+     "east_m": 0.0
+    }
+   ]
+  },
+  {
+   "id": "zigzag_600",
+   "name": "지그재그 수색 600m",
+   "offsets": [
+    {
+     "north_m": 200.0,
+     "east_m": -300.0
+    },
+    {
+     "north_m": 200.0,
+     "east_m": 300.0
+    },
+    {
+     "north_m": 400.0,
+     "east_m": 300.0
+    },
+    {
+     "north_m": 400.0,
+     "east_m": -300.0
+    },
+    {
+     "north_m": 600.0,
+     "east_m": -300.0
+    },
+    {
+     "north_m": 600.0,
+     "east_m": 300.0
+    }
+   ]
+  },
+  {
+   "id": "orbit_200",
+   "name": "원 선회 200m",
+   "offsets": [
+    {
+     "north_m": 200.0,
+     "east_m": 0.0
+    },
+    {
+     "north_m": 141.0,
+     "east_m": 141.0
+    },
+    {
+     "north_m": 0.0,
+     "east_m": 200.0
+    },
+    {
+     "north_m": -141.0,
+     "east_m": 141.0
+    },
+    {
+     "north_m": -200.0,
+     "east_m": 0.0
+    },
+    {
+     "north_m": -141.0,
+     "east_m": -141.0
+    },
+    {
+     "north_m": 0.0,
+     "east_m": -200.0
+    },
+    {
+     "north_m": 141.0,
+     "east_m": -141.0
+    }
+   ]
+  },
+  {
+   "id": "north_1km",
+   "name": "북쪽으로 1km",
+   "offsets": [
+    {
+     "north_m": 1000.0,
+     "east_m": 0.0
+    }
+   ]
+  }
+ ],
+ "land": [
+  {
+   "points": [
+    {
+     "lat": 37.98507,
+     "lon": 124.68487,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98507,
+     "lon": 124.68676,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98223,
+     "lon": 124.68658,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98033,
+     "lon": 124.69105,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98047,
+     "lon": 124.69397,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9829,
+     "lon": 124.69431,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98426,
+     "lon": 124.69706,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98399,
+     "lon": 124.70169,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98493,
+     "lon": 124.70461,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98317,
+     "lon": 124.71027,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98358,
+     "lon": 124.71611,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98263,
+     "lon": 124.72298,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98033,
+     "lon": 124.72504,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97885,
+     "lon": 124.7307,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97654,
+     "lon": 124.73173,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97627,
+     "lon": 124.7331,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97289,
+     "lon": 124.73173,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96694,
+     "lon": 124.73413,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96409,
+     "lon": 124.74255,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96423,
+     "lon": 124.74392,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96572,
+     "lon": 124.74478,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96558,
+     "lon": 124.74684,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96355,
+     "lon": 124.74701,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96328,
+     "lon": 124.74495,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96125,
+     "lon": 124.74701,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95773,
+     "lon": 124.74667,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95611,
+     "lon": 124.74083,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.958,
+     "lon": 124.73671,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95367,
+     "lon": 124.73774,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95327,
+     "lon": 124.73602,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95137,
+     "lon": 124.73534,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95056,
+     "lon": 124.72984,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95205,
+     "lon": 124.72933,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95232,
+     "lon": 124.72675,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95097,
+     "lon": 124.72229,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.94474,
+     "lon": 124.71628,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.94163,
+     "lon": 124.71096,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.93079,
+     "lon": 124.70478,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92714,
+     "lon": 124.70032,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92484,
+     "lon": 124.69929,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91928,
+     "lon": 124.70049,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91617,
+     "lon": 124.69637,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91644,
+     "lon": 124.69208,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91319,
+     "lon": 124.69053,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91319,
+     "lon": 124.68899,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91495,
+     "lon": 124.68761,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91752,
+     "lon": 124.68727,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91779,
+     "lon": 124.68384,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92023,
+     "lon": 124.68332,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92199,
+     "lon": 124.67989,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92226,
+     "lon": 124.67543,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91996,
+     "lon": 124.67371,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91956,
+     "lon": 124.67045,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9224,
+     "lon": 124.66564,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92037,
+     "lon": 124.65551,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92362,
+     "lon": 124.65517,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9224,
+     "lon": 124.6483,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92308,
+     "lon": 124.63663,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92849,
+     "lon": 124.63423,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92958,
+     "lon": 124.63251,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.93932,
+     "lon": 124.62891,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.94027,
+     "lon": 124.62719,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95381,
+     "lon": 124.62496,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95828,
+     "lon": 124.61895,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95949,
+     "lon": 124.6126,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96112,
+     "lon": 124.61088,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97018,
+     "lon": 124.60968,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97424,
+     "lon": 124.61397,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97912,
+     "lon": 124.61603,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97844,
+     "lon": 124.61895,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97546,
+     "lon": 124.61878,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97627,
+     "lon": 124.62032,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97817,
+     "lon": 124.62015,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97817,
+     "lon": 124.6229,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9756,
+     "lon": 124.62547,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97479,
+     "lon": 124.63028,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97249,
+     "lon": 124.632,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96937,
+     "lon": 124.64109,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97086,
+     "lon": 124.64556,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9733,
+     "lon": 124.64573,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9737,
+     "lon": 124.65002,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97546,
+     "lon": 124.65071,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97546,
+     "lon": 124.6526,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97397,
+     "lon": 124.65448,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97411,
+     "lon": 124.65689,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97506,
+     "lon": 124.65912,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97736,
+     "lon": 124.65946,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9783,
+     "lon": 124.66822,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98006,
+     "lon": 124.6701,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98196,
+     "lon": 124.6701,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98223,
+     "lon": 124.6756,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97993,
+     "lon": 124.67714,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98047,
+     "lon": 124.68092,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98453,
+     "lon": 124.68281,
+     "alt_m": 0.0
+    }
+   ]
+  }
+ ],
+ "ontology": {
+  "groups": [
+   {
+    "id": "move",
+    "label": "이동",
+    "actions": [
+     "move_to",
+     "patrol_route",
+     "return_home",
+     "hold"
+    ]
+   },
+   {
+    "id": "watch",
+    "label": "감시",
+    "actions": [
+     "watch_target",
+     "watch_point",
+     "search_area"
+    ]
+   },
+   {
+    "id": "approach",
+    "label": "접근",
+    "actions": [
+     "approach_target"
+    ]
+   },
+   {
+    "id": "relay",
+    "label": "통신 중계",
+    "actions": [
+     "relay_comms"
+    ]
+   },
+   {
+    "id": "strike",
+    "label": "타격",
+    "actions": [
+     "strike_target"
+    ]
+   }
+  ],
+  "kinds": [
+   {
+    "id": "vehicle",
+    "label": "기체",
+    "is_a": null,
+    "provides": [
+     "move"
+    ]
+   },
+   {
+    "id": "air_vehicle",
+    "label": "공중 기체",
+    "is_a": "vehicle",
+    "provides": [
+     "watch",
+     "approach",
+     "relay"
+    ]
+   },
+   {
+    "id": "recon_drone",
+    "label": "정찰 드론",
+    "is_a": "air_vehicle",
+    "provides": []
+   },
+   {
+    "id": "armed_drone",
+    "label": "무장 드론",
+    "is_a": "air_vehicle",
+    "provides": [
+     "strike"
+    ]
+   },
+   {
+    "id": "sea_vehicle",
+    "label": "해상 기체",
+    "is_a": "vehicle",
+    "provides": [
+     "watch",
+     "approach"
+    ]
+   },
+   {
+    "id": "armed_usv",
+    "label": "무장 수상정",
+    "is_a": "sea_vehicle",
+    "provides": [
+     "strike"
+    ]
+   },
+   {
+    "id": "ground_vehicle",
+    "label": "지상 기체",
+    "is_a": "vehicle",
+    "provides": [
+     "watch_point"
+    ]
+   },
+   {
+    "id": "ground_robot",
+    "label": "지상 로봇",
+    "is_a": "ground_vehicle",
+    "provides": []
+   }
+  ]
+ },
+ "seed": 7,
+ "tick_ms": 200,
+ "speed": 1.0
+}
