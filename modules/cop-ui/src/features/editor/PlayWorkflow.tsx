@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { GeoPoint, Play, RouteDef } from "../../contracts.gen";
 import { batteryText, issuesByStep, saveErrorText, type SaveResult } from "./checkView";
 import { DOMAIN_LABEL } from "./describe";
@@ -6,6 +6,7 @@ import type { Usage } from "./playUsage";
 import { addStepAfter, removeStep } from "./editStep";
 import { PlayGraph } from "./PlayGraph";
 import { StepEditor } from "./StepEditor";
+import { RESET_WINDOW_MS, resetPress } from "../run/resetPress";
 
 type Props = {
   play: Play;
@@ -18,6 +19,8 @@ type Props = {
   freshStep?: string;
   onInsertReport?: (stepId: string) => void;
   onHome?: () => void; // "← 작전 개요": always the overview (Part1-33)
+  onDelete?: () => void; // decision 0050: drop the play (second press within 3 s, like "처음으로")
+  deleteError?: string | null;
   // Card editing (Part3-12.1): the changed play goes up unsaved; freshStep marks a card just added.
   onEdit?: (next: Play, freshStep?: string) => void;
   vehicleIds?: string[];
@@ -46,10 +49,23 @@ function SaveStatus({ result }: { result?: SaveResult }) {
 }
 
 export function PlayWorkflow({ play, usage, playName, onOpen, result, onSave, edited, freshStep, onInsertReport, onHome,
-  onEdit, vehicleIds = [], plays = [], fallbackPoint = null, routes = [], enemy = false }: Props) {
+  onDelete, deleteError = null, onEdit, vehicleIds = [], plays = [], fallbackPoint = null, routes = [], enemy = false }: Props) {
   const view = result?.state === "done" ? issuesByStep(result.check, play) : null;
   const [picked, setPicked] = useState<string | null>(null);
   const step = onEdit ? play.steps.find((s) => s.id === picked) : undefined;
+  // "삭제" asks for a second press instead of confirm(): the in-app browser cancels dialogs at once (Part1-22).
+  const [armedAt, setArmedAt] = useState<number | null>(null);
+  useEffect(() => {
+    if (armedAt === null) return;
+    const t = setTimeout(() => setArmedAt(null), RESET_WINDOW_MS);
+    return () => clearTimeout(t);
+  }, [armedAt]);
+  const pressDelete = () => {
+    const now = Date.now();
+    if (resetPress(armedAt, now) === "arm") return setArmedAt(now);
+    setArmedAt(null);
+    onDelete?.();
+  };
   return (
     <section className="workflow">
       {onHome && <button className="back" onClick={onHome}>← 작전 개요</button>}
@@ -70,6 +86,12 @@ export function PlayWorkflow({ play, usage, playName, onOpen, result, onSave, ed
         <button className="save" onClick={onSave} disabled={result?.state === "saving"}>
           저장
         </button>
+        {onDelete && (
+          <button className={armedAt === null ? "delete" : "delete armed"} onClick={pressDelete}>
+            {armedAt === null ? "삭제" : "한 번 더 누르면 삭제"}
+          </button>
+        )}
+        {deleteError && <span className="save-bad">{deleteError}</span>}
         <SaveStatus result={result} />
         {edited && !(result?.state === "done" && result.check.ok) && <span className="edited">고친 내용 있음 · 아직 저장 안 됨</span>}
       </div>

@@ -326,3 +326,5 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .og-edge .react-flow__edge-path { stroke: var(--muted); }
 .og-edge .react-flow__edge-text { fill: var(--text2); font-size: 11px; }
 .og-edge .react-flow__edge-textbg { fill: var(--bg); }
+.delete { border: 1px solid var(--hostile); background: none; color: var(--hostile); }
+.delete.armed { background: var(--hostile); color: var(--text); }

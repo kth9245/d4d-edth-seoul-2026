@@ -3,6 +3,7 @@ import type { Play, ScenarioInfo } from "../../contracts.gen";
 import { fetchScenarios } from "../live/fetchScenarios";
 import { postRun } from "../run/runApi";
 import { activateScenario } from "./activateScenario";
+import { deletePlay } from "./deletePlay";
 import type { SaveResult } from "./checkView";
 import { forSave } from "./draftRequests";
 import { groupPlays } from "./groupPlays";
@@ -34,8 +35,15 @@ export function EditorScreen() {
   // Decision 0042: the operations to pick, and why a pick or "시뮬레이션" failed.
   const [scenarios, setScenarios] = useState<ScenarioInfo[]>([]);
   const [opError, setOpError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<{ id: string; message: string } | null>(null);
+  // Plays the server has (loaded or saved since): a new play only on screen is deleted without asking it.
+  const [onServer, setOnServer] = useState<Set<string>>(new Set());
+  const loaded = (d: EditorData) => {
+    setData(d);
+    setOnServer(new Set(d.plays.map((p) => p.id)));
+  };
   useEffect(() => {
-    loadEditorData().then(setData, (e: Error) => setLoadError(e.message));
+    loadEditorData().then(loaded, (e: Error) => setLoadError(e.message));
     fetchScenarios().then(setScenarios);
   }, []);
   const view = useMemo(
@@ -83,6 +91,7 @@ export function EditorScreen() {
     savePlay(p).then(
       (check) => {
         put({ state: "done", check });
+        if (check.ok) setOnServer((ids) => new Set(ids).add(p.id));
         if (!check.ok || !edits[p.id]) return;
         setData((d) => d && { ...d, plays: d.plays.map((x) => (x.id === p.id ? p : x)) });
         setEdits((all) => without(all, p.id));
@@ -90,6 +99,29 @@ export function EditorScreen() {
       (e) => {
         console.warn("editor: save failed", e);
         put({ state: "error", message: String(e) });
+      },
+    );
+  };
+  // "삭제" (decision 0050): the server drops the play from the running operation and resets the run (a 404 is a
+  // new play that was only on screen). The editor drops it the same way, also from the start assignments, and
+  // goes home.
+  const remove = (id: string) => {
+    setDeleteError(null);
+    (onServer.has(id) ? deletePlay(id) : Promise.resolve(false)).then(
+      () => {
+        setData((d) => d && {
+          ...d,
+          plays: d.plays.filter((x) => x.id !== id),
+          operation: { ...d.operation, assign: Object.fromEntries(Object.entries(d.operation.assign ?? {}).filter(([, p]) => p !== id)) },
+        });
+        setEdits((all) => without(all, id));
+        setResults((all) => without(all, id));
+        setFresh((all) => without(all, id));
+        setSelected(OVERVIEW);
+      },
+      (e) => {
+        console.warn("editor: delete failed", e);
+        setDeleteError({ id, message: `삭제하지 못했습니다 (${String(e)})` });
       },
     );
   };
@@ -101,7 +133,7 @@ export function EditorScreen() {
       .then(() => Promise.all([loadEditorData(), fetchScenarios()]))
       .then(
         ([d, list]) => {
-          setData(d);
+          loaded(d);
           setScenarios(list);
           setEdits({});
           setResults({});
@@ -137,6 +169,8 @@ export function EditorScreen() {
             playName={playName}
             onOpen={open}
             onHome={home}
+            onDelete={() => remove(play.id)}
+            deleteError={deleteError?.id === play.id ? deleteError.message : null}
             result={results[play.id]}
             onSave={() => save(play)}
             edited={!!edits[play.id]}

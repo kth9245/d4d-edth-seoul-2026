@@ -56,3 +56,4 @@
 | UI-51 | stopsFor | 실행 작전 id | RunStop[] | 야간 시연(baengnyeong_night)이면 RUN_STOPS, 그 밖은 없음(다음 사건 없음, 결정 0042) | 리드 | 완료 |
 | UI-52 | applyRoute·setLoop·routeChoice·ROUTE_KINDS | Play, 카드 id, RouteDef/반복 | 새 Play / 경로 id | 경로 비행(결정 0044·0045): 고른 경로를 카드에 복사(고정=route, 상대=offsets, route_name), 반복=patrol_route·한 번=move_to(점 하나 이동은 반복 시 한 점 route), 행동을 바꾸면 경로 값 지움, 목록에 없는 경로는 "" | 리드 | 완료 |
 | UI-53 | describeAction·describeCondition(경로·T+) | Action/Condition | 카드 문구 | "경로 비행 · 이름|경로 N곳 · 한 번|반복 · 기체 위치 기준", at_time은 T+m:ss | 리드 | 완료 |
+| UI-54 | deletePlay | 플레이 id | 서버에 있었나(bool) | DELETE /plays/{id}(결정 0050, 실행 작전에서 지우고 시작 전으로), 404는 저장 전 새 플레이라 false, 그 밖의 실패는 오류. 플레이 화면 "삭제"는 두 번 누르기, 지운 뒤 작전 개요 | 리드 | 완료 |
