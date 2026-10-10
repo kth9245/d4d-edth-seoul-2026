@@ -67,12 +67,13 @@ def test_choices_for_every_other_drone_then_keep():
     assert rep.choices[-1] == Choice(id="keep", label="전 기체 현 임무 유지")
 
 
-def test_join_lists_every_hovering_drone():
+def test_join_only_with_the_drone_that_raised_the_card():
+    # decision 0048: boat1's card does not offer "with d2 on boat2" (it would close boat1's card for a boat2 action)
     states = [vs("d1", "coast_a", "report", target="boat1"), vs("d2", "coast_b", "report", target="boat2"),
               vs("d3", None, None, "ready"), vs("d4", None, None, "maintenance", battery=40)]  # fmt: skip
     rep = fleet_choices(CARD, states, OP, ROLES)
-    assert labels(rep) == ["take_d3", "join_d3_d1", "join_d3_d2", "keep"]
-    assert rep.choices[2].target_by_vehicle == {"d3": "boat2"}
+    assert labels(rep) == ["take_d3", "join_d3_d1", "keep"]
+    assert rep.choices[1].target_by_vehicle == {"d3": "boat1"}
 
 
 def test_card_without_auto_choices_is_unchanged():
