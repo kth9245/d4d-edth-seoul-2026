@@ -60,3 +60,6 @@
 | UI-55 | fetchOntology | — | OntologyView | GET /ontology(결정 0038), 실패하면 서버 detail("이 시나리오에는 온톨로지가 없습니다")을 담은 오류, 온톨로지 화면이 그 문구를 보임(결정 0051) | 리드 | 완료 |
 | UI-57 | decisionQueue | Card[], t_ms | {action, alerts, history} | 선택지 있는 미처리 보고·대기 전환·대안 있는 차단(그 기체에 차단 뒤 새 명령이 나갈 때까지, 최대 2분)이 대기열, 같은 전환의 표적 선택 여러 장은 한 항목, 순서 타격 허락 > 차단 > 전환 > 위험도(표적 선택은 0.55, 같으면 최신), 2분 안의 무력화·공백·배터리·차단은 알림, 나머지 최신 위(Part1-32) | 리드 | 완료 |
 | UI-58 | choiceGroups | CardChoice[] | {planned, requests} | 정해진 선택지 먼저 엔진 순서(결정 0046), "X → 무엇" 한 기체 선택지는 무엇별 묶음(발생 지역 순찰 → "… 이어받기", 함께 감시 → "Y와 함께 T 감시") | 리드 | 완료 |
+| UI-54 | trackState | Target, t_ms, 기준점 | {k, pos, est?, agoMs?, dir?, speed?} | seen·rf·lost·never·gone, lost는 마지막으로 본 위치(없으면 실제 위치), 0.3 m/s 미만 정지, 기준점 쪽 접근·반대 이탈(기준점 없으면 접근), 추정 위치 = 마지막 위치 + 속도 × 지난 시간(결정 0047) | 리드 | 완료 |
+| UI-55 | targetStage | Frame, Target, Track | {key, label, detail, away} | 무력화 > 타격 중 > 허락 대기 > 놓침(경과·방향·속도, 이탈이면 away) > RF 탐지 > 미탐 > 추적(임무 중 기체만) > 발견 | 리드 | 완료 |
+| UI-56 | situationCounts | Stage[], Queue | {targets, stages, decisions} | 단계별 개수 급한 순, 0개 뺌, 결정 수는 합친 표적 선택의 기체 수만큼 | 리드 | 완료 |
