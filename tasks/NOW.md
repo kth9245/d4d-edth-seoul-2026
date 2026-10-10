@@ -5,6 +5,7 @@
 마지막 기록 10/10 14:59 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
+- **Part1-23** B안(결정 0036): 적 3척 동시 침투, 발견한 기체가 붙어 카드, 표적 보고됨 칸 — kth9245, 10/10 14:59부터 · 하위 0/5 완료
 - **Part2-19** 시나리오 튜닝 — 최동호, 10/10 12:02부터 · 하위 1/1 완료
 
 ## 막힘
@@ -14,7 +15,6 @@
 
 ### kth9245
 - **Part1-15** 3분 대본·BUILT_HERE·제출 설명
-- **Part1-23** B안(결정 0036): 적 3척 동시 침투, 발견한 기체가 붙어 카드, 표적 보고됨 칸 · 하위 0/5 완료
 - **Part1-23.1** 계약: Target.reported_by + TS·예시
 - **Part1-23.2** runtime(황승주 모듈): target_found·nearest는 보고 안 된 표적만, apply_reserves 표적 넘김
 - **Part1-23.3** engine.py(최동호 모듈): target_detected 카드가 생기면 그 표적에 reported_by 기록
