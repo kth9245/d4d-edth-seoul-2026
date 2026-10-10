@@ -210,7 +210,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 통합 1에 필요한 항목(6절 번호): 리드 Part1-7·1-9·1-10·1-14, 엔진 Part2-1~2-13·2-17·2-18·2-20, 플레이 Part3-1·3-2·3-7. 12:00~18:00 배정은 6절 머리의 "통합 1 배정" 표(A/B/리드 각 5~6시간, 여유 0). 스파이크 코드를 옮기는 전제에서만 가능하다.
 
 **통합 2 (10/11 00:00)** — 화면 조작만으로.
-편집기에서 AI 초안 입력 → 검사 실패 카드(보고 지점 없음) → 카드 추가 → 저장 통과 → 상황판에서 실행 → 사건 1·2·3(귀환·이어받기·역할 공백 카드)·4(주입 승인 대기 → 승인)·6(구역 밖 차단·배터리 차단) → 사건 7·8(결정 0031: 타격 승인 카드 → '함께 타격' → fast1 무력화, 작전 성공) → 지표 패널에 두 모드 나란히 → 3분 안에 리허설 1회.
+편집기에서 AI 초안 입력 → 검사 실패 카드(보고 지점 없음) → 카드 추가 → 저장 통과 → 상황판에서 실행 → 사건 1·2·3(귀환·이어받기·역할 공백 카드)·4(주입 승인 대기 → 승인)·6(구역 밖 차단·배터리 차단) → 사건 7·8(결정 0033: 타격 승인 카드 → '함께 타격' → fast1 무력화, 작전 성공) → 지표 패널에 두 모드 나란히 → 3분 안에 리허설 1회.
 
 **동결 (10/11 06:00)** — `KDTH_FREEZE=1`. 이후 데이터·문구·대본만.
 
@@ -324,7 +324,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | Part1-13 | 지표 패널 + 배속 + 다음 사건 | Frame.metrics → 운용자 조작 수 대 수동 기준 명령 수, `/run/live?speed=`, `/run/jump` | 3분 안에 사건 5개 재생 | Part1-10 | 2 |
 | Part1-14 | smoke 전환 + 통합 주관 | `smoke.py`를 백령도 시나리오로; 18:00·00:00 통합 슬라이스 확인 | 4절 두 슬라이스 통과 | Part1-7·1-9·1-10, Part2-4·2-5·2-6·2-9~2-13·2-17·2-18·2-20, Part3-1·3-7(통합 1 전부) | 1·2 |
 | Part1-15 | 3분 대본·BUILT_HERE·제출 설명 | — | 리허설 1회, 사전 준비분(스파이크·contracts) 명시 | 동결 | 뒤 |
-| Part1-18 | 타격 계약(결정 0031, `docs/superpowers/specs/2026-10-10-strike-phase-design.md` 3절) | `ActionKind.strike_target`, `CommandKind.strike`, `ReportKind.target_neutralized`, `VehicleState.decision_id`, `Target.neutralized_ms` + play 대응표 행 + `describe.ts` 이름표 + API.md → TS·예시 재생성 | 한 커밋으로 pytest·smoke·TS 검사 통과(대응표 테스트가 ActionKind 전부를 요구) | Part1-1 | 2(지금) |
+| Part1-18 | 타격 계약(결정 0033, `docs/superpowers/specs/2026-10-10-strike-phase-design.md` 3절) | `ActionKind.strike_target`, `CommandKind.strike`, `ReportKind.target_neutralized`, `VehicleState.decision_id`, `Target.neutralized_ms` + play 대응표 행 + `describe.ts` 이름표 + API.md → TS·예시 재생성 | 한 커밋으로 pytest·smoke·TS 검사 통과(대응표 테스트가 ActionKind 전부를 요구) | Part1-1 | 2(지금) |
 | Part1-19 | 타격 시나리오·플레이(spec 5절·10.1) | 구조만: boat1·fast1을 enemies로(결정 0032), fast1 동쪽 해안 우회, 전환 버튼 '고속 보트 추적'(d2·usv), `track_fast` 수정·`track_fast_sea`·`strike`, 기체 capabilities. 숫자(등장 시각·경로점·속도)는 대략값, 맞추기는 Part2-19 | `check_operation` 통과, 틱 루프가 오류 없이 돌고 fast1이 나타나 움직임. s7·s8까지 가는 것은 Part2-19 완료 기준 | Part1-18, Part2-21~23, Part2-25 | 2 |
 | Part1-20 | 타격 화면(spec 6절) | 무력화 표적 회색 X, 결과 카드, 작전 성공, 예시 장면 s7·s8 추가·s5·s6 수정 | s7·s8이 화면 조작만으로 남 | Part1-18 | 2 |
 | Part1-21 | 편집기 적 열 + `GET /enemies`(결정 0032, spec 10.3) | Scenario.enemies → 작전 개요 적 열(등장 시각·위치·속도 + 플레이 카드, 읽기 전용) | 백령도 시나리오의 boat1·fast1이 편집기에 보임 | Part1-18 | 2 |
@@ -402,7 +402,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 6. 편집기 카드 편집(읽기 전용 카드 + 저장 검사만)
 (배정 점수는 결정 0005로 처음부터 없음. 미리 보기 경로와 두 모드 재실행은 검토에서 설계 자체를 뺐으므로 여기 없음)
 
-타격(결정 0031)이 늦으면: 수상정 추적을 빼고 드론2 단독(선택지 '타격' 하나) → 결과 카드를 빼고 기록 줄만.
+타격(결정 0033)이 늦으면: 수상정 추적을 빼고 드론2 단독(선택지 '타격' 하나) → 결과 카드를 빼고 기록 줄만.
 
 끝까지 남기는 것: 결정 한 번에 세 역할 이동, 보고 카드, 이어받기와 역할 공백 카드, 주입 승인 대기, 구역 밖·배터리 차단, 타격 승인 카드 → 타격 → 무력화, 지표 두 모드 나란히.
 
