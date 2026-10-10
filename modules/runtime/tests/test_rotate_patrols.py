@@ -79,13 +79,17 @@ def test_no_relief_before_the_threshold():
     assert by["d3"].play_id == "standby" and asg == []
 
 
-def test_relief_and_outgoing_meet_at_the_fixed_waypoint():
+def test_outgoing_keeps_patrolling_while_the_relief_flies_to_point_m():  # never stops (user)
     by, _ = run(fleet(d3_play="coast_a", d1_wp=3), [START])
-    assert (by["d1"].waypoint_idx, by["d3"].waypoint_idx) == (2, 2)
+    assert (by["d1"].waypoint_idx, by["d3"].waypoint_idx) == (3, 2)
+    assert by["d1"].play_id == "coast_a"
 
 
-def test_handover_within_500_m_sends_outgoing_home():
-    by, asg = run(fleet(d3_play="coast_a", d3_north=5700), [START])
+def test_handover_when_the_relief_reaches_point_m_sends_outgoing_home():
+    states = fleet(d3_play="coast_a", d1_wp=3)
+    p2 = ROUTE[2]
+    states[2] = states[2].model_copy(update={"pos": GeoPoint(lat=p2["lat"] - 0.003, lon=p2["lon"])})
+    by, asg = run(states, [START])
     assert by["d1"].play_id == "go_home" and by["d3"].play_id == "coast_a"
     assert "교대 완료: d3 ← d1" in [a.reason for a in asg]
     assert not any(a.reason.startswith("교대 출발") for a in asg)

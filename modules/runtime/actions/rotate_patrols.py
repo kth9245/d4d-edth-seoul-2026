@@ -1,21 +1,25 @@
-"""RT-10 rotate_patrols: 해안 순찰 교대(결정 0037, 초소 근무 교대)
-순찰 기체가 교대 기준 배터리에 닿으면 충전된 대기 기체가 출발해 경로점 m에서 만나 넘겨받고 나간 기체는 귀환.
-하한선(귀환 뒤 30%)이 교대보다 먼저. rotation_pools가 있으면 그 해안 짝 안에서만 교대. op.rotation·rotation_plays가 비면 아무것도 하지 않는다.
+"""RT-10 rotate_patrols: 해안 순찰 교대(결정 0037). 기준 배터리에 대기 기체 출발, 경로점 m에 닿으면
+인계·나간 기체 귀환(그 전까지 순찰 계속). 하한선 우선, rotation_pools 짝 안에서만, 비면 아무것도 안 함.
 SPEC: modules/runtime/SPEC.md#RT-10
 """
 
 import re
 
-from contracts.models import Assignment, Operation, Play, VehicleSpec, VehicleState
+from contracts.models import Assignment, GeoPoint, Operation, Play, VehicleSpec, VehicleState
 from modules.runtime.actions.switch_play import switch_play
 from shared.geo import dist_m
 
-FLOOR, START, MEET_M = 30.0, 35.0, 500.0  # landing floor %, relief start % (floor + 5), handover m
+FLOOR, START, MEET_M = 31.0, 35.0, 500.0  # floor 30% + 1 tick slack, relief %, handover m
 OUT = re.compile(r"교대 출발: (\S+) → (\S+) @(\d+)")
 
 
 def _back(st: VehicleState, spec: VehicleSpec) -> float:  # battery % to fly home from here
     return 100 / spec.endurance_min * dist_m(st.pos, spec.home) / spec.speed_mps / 60
+
+
+def _point(play: Play, m: int) -> GeoPoint:  # route point m of the patrol (it wraps)
+    route = play.steps[0].do.params["route"]
+    return GeoPoint(**route[m % len(route)])
 
 
 def rotate_patrols(
@@ -35,8 +39,7 @@ def rotate_patrols(
         asg.append(Assignment(vehicle_id=vid, play_id=play, since_ms=t_ms, reason=reason))
 
     pairs = {m[2]: (m[1], int(m[3])) for a in asg if (m := OUT.fullmatch(a.reason))}  # S: (R, m)
-    on = [v for v in op.rotation if by[v].status.value == "active"]
-    on = [v for v in on if by[v].play_id in op.rotation_plays]
+    on = [v for v in op.rotation if by[v].status.value == "active" and by[v].play_id in op.rotation_plays]  # fmt: skip
     for v in on:  # floor first: a patrol never trades its return battery for coverage
         if by[v].battery_pct - _back(by[v], specs[v]) <= FLOOR:
             by[v] = switch_play(by[v], plays["go_home"])
@@ -44,12 +47,11 @@ def rotate_patrols(
     for s, (r, m) in pairs.items():
         if by[s].play_id != by[r].play_id:  # relief or patrol left the play: drop the pair
             asg[:] = [a for a in asg if not (a.vehicle_id == r and OUT.fullmatch(a.reason))]
-        elif dist_m(by[s].pos, by[r].pos) <= MEET_M:
+        elif dist_m(by[r].pos, _point(plays[by[r].play_id], m)) <= MEET_M:  # relief on the coast
             by[s] = switch_play(by[s], plays["go_home"])
             note(r, by[r].play_id, f"교대 완료: {r} ← {s}")
             note(s, "go_home", f"교대 귀환: {s}")
-        else:  # both hold waypoint m until they meet (the patrol waits there)
-            by[s] = by[s].model_copy(update={"waypoint_idx": m})
+        else:  # the patrol keeps patrolling; the relief flies to route point m
             by[r] = by[r].model_copy(update={"waypoint_idx": m})
 
     def free(after: str | None, play: str) -> str | None:  # first charged idle drone of the pool
@@ -68,9 +70,7 @@ def rotate_patrols(
             note(r, st.play_id, f"교대 출발: {r} → {v} @{max(st.waypoint_idx, 0)}")
 
     def held(p: str) -> bool:
-        return any(
-            by[w].play_id == p and by[w].status.value in ("ready", "active") for w in op.rotation
-        )
+        return any(by[w].play_id == p and by[w].status.value in ("ready", "active") for w in op.rotation)  # fmt: skip
 
     engaged = any(held(p) for p in op.rotation_plays)  # rotation runs once a patrol is out
     for p in op.rotation_plays:  # a coast nobody holds (a patrol went home at the floor)
