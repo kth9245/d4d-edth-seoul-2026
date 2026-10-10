@@ -2,10 +2,10 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 10:00 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 10:01 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- (없음)
+- **Part2-9** safety `check_command` — 황승주, 10/10 10:01부터 · SFT-03
 
 ## 막힘
 - (없음)
@@ -30,7 +30,6 @@
 - **Part3-15.1** mavlink compile_mavlink · MAV-01 (리드, 결정 0025, 통합 2 뒤)
 
 ### 황승주
-- **Part2-9** safety `check_command` · SFT-03
 - **Part2-10** runtime `step_vehicle` · 하위 0/1 완료 · RT-01
 - **Part2-10.1** runtime enter_step · RT-08 (PLY-07 뒤)
 - **Part2-11** runtime `assign_roles` · RT-02
