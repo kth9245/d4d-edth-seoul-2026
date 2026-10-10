@@ -46,7 +46,7 @@ function strikeBasis(frame: Frame, r: Report): string | undefined {
   return `운용자 결정 ${dec}${choice ? ` '${choice.label}'` : ""} → ${ids.join("·")} 타격 · ${checks} 검사 통과`;
 }
 
-const KIND_KO: Record<string, string> = { boat: "보트", fast_boat: "고속정", person: "사람", unknown: "미상" };
+const KIND_KO: Record<string, string> = { boat: "보트", fast_boat: "고속정", person: "사람", unknown: "미상", drone: "자폭 드론", usv: "적 수상정", ugv: "적 지상로봇" };
 
 // Target.threat is in 0.01 units; threat_reasons says what added to it (sensing score_target, decisions 0039/0040).
 function threatOf(t: Target | undefined): CardThreat | undefined {

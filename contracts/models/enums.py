@@ -82,6 +82,9 @@ class TargetKind(str, Enum):
     fast_boat = "fast_boat"
     person = "person"
     unknown = "unknown"
+    drone = "drone"  # 24h raid: a suicide drone (user, 10/10)
+    usv = "usv"  # 24h raid: an enemy surface vessel carrying ugvs
+    ugv = "ugv"  # 24h raid: an enemy ground robot
 
 
 class EmergencyKind(str, Enum):

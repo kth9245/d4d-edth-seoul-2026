@@ -2,7 +2,7 @@ import type { Target } from "../../contracts.gen";
 import type { Stage } from "./targetStage";
 import type { VehicleRow } from "./vehicleRows";
 
-const KIND_KO: Record<string, string> = { boat: "보트", fast_boat: "고속정", person: "사람", unknown: "미상" };
+const KIND_KO: Record<string, string> = { boat: "보트", fast_boat: "고속정", person: "사람", unknown: "미상", drone: "자폭 드론", usv: "적 수상정", ugv: "적 지상로봇" };
 const tone = (r: number) => (r >= 0.7 ? "hi" : r >= 0.4 ? "mid" : "lo");
 const QUIET: Record<string, number> = { gone: 1, never: 2 };
 

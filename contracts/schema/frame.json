@@ -716,7 +716,10 @@
         "boat",
         "fast_boat",
         "person",
-        "unknown"
+        "unknown",
+        "drone",
+        "usv",
+        "ugv"
       ],
       "title": "TargetKind",
       "type": "string"

@@ -26,7 +26,7 @@ export const CONDITION_LABEL: Record<ConditionKind, string> = {
 
 export const DOMAIN_LABEL: Record<Domain, string> = { air: "드론", sea: "수상정", ground: "지상" };
 
-export const TARGET_KIND_LABEL: Record<TargetKind, string> = { boat: "보트", fast_boat: "고속 보트", person: "사람", unknown: "미상" };
+export const TARGET_KIND_LABEL: Record<TargetKind, string> = { boat: "보트", fast_boat: "고속 보트", person: "사람", unknown: "미상", drone: "자폭 드론", usv: "적 수상정", ugv: "적 지상로봇" };
 
 function targetText(t: unknown): string {
   if (t === "nearest") return "가장 가까운 표적";

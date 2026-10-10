@@ -102,7 +102,7 @@ export interface Operation {
   rotation_pools?: Record<string, string[]>;
 }
 
-export type TargetKind = "boat" | "fast_boat" | "person" | "unknown";
+export type TargetKind = "boat" | "fast_boat" | "person" | "unknown" | "drone" | "usv" | "ugv";
 
 export interface EnemySpec {
   id: string;
