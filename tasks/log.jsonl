@@ -523,3 +523,4 @@
 {"at": "2026-10-10T23:21:35+09:00", "by": "kth9245", "op": "start", "id": "Part1-42.2", "take": false, "from": null}
 {"at": "2026-10-10T23:24:01+09:00", "by": "kth9245", "op": "done", "id": "Part1-42.2", "take": false}
 {"at": "2026-10-10T23:25:10+09:00", "by": "kth9245", "op": "add", "id": "Part1-47.1", "title": "MAVLink 로그를 브라우저 새 창 대신 화면 가운데 패널로, 닫기로 닫음(결정 0064)", "parent": "Part1-47", "assign": null, "slot": null, "spec": null}
+{"at": "2026-10-10T23:25:15+09:00", "by": "kth9245", "op": "start", "id": "Part1-47.1", "take": false, "from": null}
