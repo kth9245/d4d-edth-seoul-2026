@@ -19,6 +19,6 @@ export function boardView(f: Frame, data: BoardData): BoardView {
   const stages = Object.fromEntries(f.targets.map((t) => [t.id, targetStage(f, t, tracks[t.id])]));
   const lastCmdMs = Object.fromEntries(f.vehicles.map((v) => [v.id, v.active?.command.provenance?.issued_ms ?? 0]));
   const queue = decisionQueue(frameCards(f), f.t_ms, lastCmdMs);
-  const names = Object.fromEntries(data.plays.map((p) => [p.id, p.name]));
+  const names = Object.fromEntries(data.roles.map((p) => [p.id, p.name]));
   return { tracks, stages, queue, situation: situationCounts(Object.values(stages), queue), rows: vehicleRows(f, names, data.vehicles) };
 }

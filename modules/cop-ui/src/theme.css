@@ -67,7 +67,7 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 @media (prefers-reduced-motion: reduce) { .status.ok::before { animation: none; } }
 .switchpanel::before { display: block; margin-bottom: 8px; font-family: var(--font-mono); font-size: 10px;
   letter-spacing: var(--ls); color: var(--dim); }
-.switchpanel::before { content: "PLAY SWITCH"; }
+.switchpanel::before { content: "ROLE SWITCH"; }
 
 
 /* Switch request panel (Part1-12): whole-operation switches are big moves, so amber; the request is the primary button */
@@ -132,8 +132,8 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .runbar button { padding: 7px 12px; border: 1px solid var(--line2); border-radius: var(--r); background: transparent;
   color: var(--text2); font-size: 13px; font-weight: 600; }
 .runbar button:hover:not(:disabled) { border-color: var(--text); color: var(--text); }
-.runbar button.play { min-width: 104px; border-color: var(--text); background: var(--text); color: var(--bg); }
-.runbar button.play:hover:not(:disabled) { border-color: var(--live); background: var(--live); }
+.runbar button.run-toggle { min-width: 104px; border-color: var(--text); background: var(--text); color: var(--bg); }
+.runbar button.run-toggle:hover:not(:disabled) { border-color: var(--live); background: var(--live); }
 .runbar .speeds { gap: 0; }
 .runbar .speeds button { margin-left: -1px; font-family: var(--font-mono); font-size: 12px; }
 .runbar .speeds button.on { position: relative; border-color: var(--live); background: var(--live); color: var(--bg); }
@@ -154,16 +154,16 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .metrics dd { color: var(--text); font-family: var(--font-mono); font-weight: 600; }
 .metrics .note { margin-top: 8px; color: var(--dim); font-size: 11px; opacity: 1; }
 
-/* Play editor (Part3-10) */
+/* Role editor (Part3-10) */
 .editor { background: var(--bg); }
-.play-sidebar { background-color: var(--s1); border-right: 1px solid var(--line); }
-.play-sidebar .group { margin-top: 18px; color: var(--dim); font-family: var(--font-mono); font-size: 10px; letter-spacing: var(--ls); opacity: 1; }
-.play-sidebar .item { border-radius: var(--r); color: var(--text2); }
-.play-sidebar .item:hover { background: var(--s3); color: var(--text); }
-.play-sidebar .item.on { background: var(--s2); box-shadow: inset 2px 0 0 var(--live); color: var(--text); }
-.play-sidebar .item.op::before { content: "○ "; color: var(--dim); }
-.play-sidebar .item.op.active { color: var(--text); cursor: default; }
-.play-sidebar .item.op.active::before { content: "● "; color: var(--live); }
+.role-sidebar { background-color: var(--s1); border-right: 1px solid var(--line); }
+.role-sidebar .group { margin-top: 18px; color: var(--dim); font-family: var(--font-mono); font-size: 10px; letter-spacing: var(--ls); opacity: 1; }
+.role-sidebar .item { border-radius: var(--r); color: var(--text2); }
+.role-sidebar .item:hover { background: var(--s3); color: var(--text); }
+.role-sidebar .item.on { background: var(--s2); box-shadow: inset 2px 0 0 var(--live); color: var(--text); }
+.role-sidebar .item.op::before { content: "○ "; color: var(--dim); }
+.role-sidebar .item.op.active { color: var(--text); cursor: default; }
+.role-sidebar .item.op.active::before { content: "● "; color: var(--live); }
 .editor.load-error { display: block; padding: 24px; color: var(--hostile); font-size: 13px; }
 .editor-main h1, .editor-main h2 { font-weight: 700; letter-spacing: -0.01em; }
 .step-card { border: 1px solid var(--line); border-left: 2px solid var(--friend); border-radius: var(--r); background: var(--s2); }
@@ -171,20 +171,20 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .switch { border: 1px solid rgba(245, 158, 11, 0.4); border-radius: var(--r); background: var(--warn-soft); color: var(--warn); }
 .workflow .back { border: 1px solid var(--line2); border-radius: var(--r); background: transparent; color: var(--text2); font-family: var(--font-mono); }
 .workflow .back:hover { border-color: var(--text); color: var(--text); }
-.newplay-toggle { border: 1px solid var(--text); border-radius: var(--r); background: var(--text); color: var(--bg); font-weight: 700; }
-.newplay-toggle:hover { border-color: var(--live); background: var(--live); }
-.newplay-toggle.on { border-color: var(--line2); background: transparent; color: var(--muted); }
-.newplay-toggle.on:hover { border-color: var(--text); background: transparent; color: var(--text); }
-.newplay-pick button { border: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); color: var(--text); }
-.newplay-pick button:hover { border-color: var(--live); }
-.newplay-pick b { font-weight: 700; }
-.newplay-pick small { color: var(--muted); }
-.newplay-manual input, .newplay-manual select { border: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); color: var(--text); }
-.newplay-manual input:focus, .newplay-manual select:focus { border-color: var(--live); outline: none; }
-.newplay-manual .make { border: 1px solid var(--text); border-radius: var(--r); background: var(--text); color: var(--bg); font-weight: 700; }
-.newplay-manual .make:hover { border-color: var(--live); background: var(--live); }
-.newplay-back { border: 0; background: none; color: var(--muted); font-family: var(--font-mono); }
-.newplay-back:hover { color: var(--text); }
+.newrole-toggle { border: 1px solid var(--text); border-radius: var(--r); background: var(--text); color: var(--bg); font-weight: 700; }
+.newrole-toggle:hover { border-color: var(--live); background: var(--live); }
+.newrole-toggle.on { border-color: var(--line2); background: transparent; color: var(--muted); }
+.newrole-toggle.on:hover { border-color: var(--text); background: transparent; color: var(--text); }
+.newrole-pick button { border: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); color: var(--text); }
+.newrole-pick button:hover { border-color: var(--live); }
+.newrole-pick b { font-weight: 700; }
+.newrole-pick small { color: var(--muted); }
+.newrole-manual input, .newrole-manual select { border: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); color: var(--text); }
+.newrole-manual input:focus, .newrole-manual select:focus { border-color: var(--live); outline: none; }
+.newrole-manual .make { border: 1px solid var(--text); border-radius: var(--r); background: var(--text); color: var(--bg); font-weight: 700; }
+.newrole-manual .make:hover { border-color: var(--live); background: var(--live); }
+.newrole-back { border: 0; background: none; color: var(--muted); font-family: var(--font-mono); }
+.newrole-back:hover { color: var(--text); }
 .draftbox textarea { border: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); color: var(--text); }
 .draftbox textarea:focus { border-color: var(--live); outline: none; }
 .draftbox .examples button { border: 1px solid var(--line); border-radius: var(--r); background: transparent; color: var(--muted); font-family: var(--font-mono); font-size: 11px; }

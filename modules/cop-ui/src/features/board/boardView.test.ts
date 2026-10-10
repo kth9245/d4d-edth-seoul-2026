@@ -6,7 +6,7 @@ import { boardView } from "./boardView";
 import { NO_BOARD_DATA } from "./fetchBoardData";
 
 describe("boardView", () => {
-  it("draws the board from a Frame even before plays, specs and watch points arrive", () => {
+  it("draws the board from a Frame even before roles, specs and watch points arrive", () => {
     const v = boardView(s1 as Frame, NO_BOARD_DATA);
     expect(Object.keys(v.tracks)).toEqual(["boat1"]);
     expect(v.stages.boat1.key).toBe("found"); // d1 sees boat1 but has no target_id in this example
