@@ -247,3 +247,4 @@
 {"at": "2026-10-10T12:29:30+09:00", "by": "kth9245", "op": "add", "id": "Part1-14.2", "title": "화면 QA 스크립트를 저장소에(scripts/qa.sh + 점검 목록)", "parent": "Part1-14", "assign": null, "slot": "1·2", "spec": null}
 {"at": "2026-10-10T12:29:33+09:00", "by": "kth9245", "op": "start", "id": "Part1-14.2", "take": false, "from": null}
 {"at": "2026-10-10T12:36:59+09:00", "by": "kth9245", "op": "done", "id": "Part1-14.2", "take": false}
+{"at": "2026-10-10T12:39:06+09:00", "by": "kth9245", "op": "decide", "id": "Part1-19", "text": "타격 화면에 '가상' 표시를 하지 않고 승인 카드 문구도 '타격 승인 요청' 그대로(devil-advocate 공격 3). 완료 기준에 실제 시나리오 끝까지(전환 승인→표적 선택→타격 승인→함께 타격→fast1 무력화) 테스트와 open_reports_max 타격 전후 기록 추가. 리드 답 '걍 이런건 필요 ㄴㄴ'"}
