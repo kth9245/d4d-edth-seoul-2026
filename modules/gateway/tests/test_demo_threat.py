@@ -1,6 +1,6 @@
 """Part2-28: the demo scenario's threat scene (decisions 0039, 0040).
 
-boat2 is silent when its contact card comes (16:22), starts emitting at 17:00 while d2 is within
+boat2 is silent when its contact card comes (16:32.8, once its threat has built up), starts emitting at 17:00 while d2 is within
 RF range, and its score jumps by exactly 0.30 (0.42 to 0.72) above boat1's: the card moves to the top of the list.
 """
 
@@ -43,7 +43,7 @@ def test_boat2_starts_emitting_after_its_card_and_overtakes_boat1():
         card_ms = card.t_ms if card else card_ms
         if now and now.emitting and not before.emitting:
             break
-    assert card_ms is not None and card_ms - START == 16 * MIN + 22_200
+    assert card_ms is not None and card_ms - START == 16 * MIN + 32_800
     assert es.t_ms - START == 17 * MIN
     assert now.rf_detected and now.seen_by and "rf_emission" in now.threat_reasons
     assert (before.threat, now.threat) == (42, 72)  # +0.30 for the RF and nothing else changes

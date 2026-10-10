@@ -15,13 +15,17 @@ from contracts.models import (
     VehicleState,
 )
 from modules.runtime.actions.enter_step import TARGET_ACTIONS, enter_step
+from modules.sensing import CARD_ACCUM
 
 
 def _true(cond: Condition, st: VehicleState, targets: list[Target], tracking: bool) -> bool:
     if cond.kind == ConditionKind.target_found:  # decision 0036: tracking my target, else new boat
         if tracking:
             return any(tg.id == st.target_id and st.id in tg.seen_by for tg in targets)
-        return any(st.id in tg.seen_by and tg.reported_by is None for tg in targets)
+        return any(
+            st.id in tg.seen_by and tg.reported_by is None and tg.threat_accum >= CARD_ACCUM
+            for tg in targets
+        )  # decision 0042: the card goes up once the threat has built up
     if cond.kind == ConditionKind.arrived:
         return st.waypoint_idx < 0
     if cond.kind == ConditionKind.battery_below:

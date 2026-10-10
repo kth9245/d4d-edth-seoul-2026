@@ -43,22 +43,20 @@ def test_accum_resets_below_threshold_or_when_unobserved():
     assert score(observed=False, accum=5000).accum == 0
 
 
-NEAR_3KM = GeoPoint(
-    lat=38.005, lon=124.70
-)  # ~3 km north: outside 2 km, inside 4 km (decision 0041)
-FAR_5KM = GeoPoint(lat=38.023, lon=124.70)  # ~5 km north
+NEAR_5KM = GeoPoint(lat=38.023, lon=124.70)  # ~5 km north: 2.5x the radius (decision 0042: 3x)
+FAR_7KM = GeoPoint(lat=38.041, lon=124.70)  # ~7 km north: beyond 3x
 
 
-def test_boat_within_twice_the_radius_gets_the_near_step_of_15():
-    r = score(pos=NEAR_3KM)
+def test_boat_within_three_times_the_radius_gets_the_near_step_of_15():
+    r = score(pos=NEAR_5KM)
     assert r.score == 35 and r.reasons == ["kind_boat", "near_watch_radius"]
 
 
-def test_boat_beyond_twice_the_radius_gets_no_watch_point_score():
-    r = score(pos=FAR_5KM)
+def test_boat_beyond_three_times_the_radius_gets_no_watch_point_score():
+    r = score(pos=FAR_7KM)
     assert r.score == 20 and r.reasons == ["kind_boat"]
 
 
 def test_approaching_boat_outside_the_radius_still_reaches_the_threshold():
-    r = score(pos=NEAR_3KM, speed=1.5)  # 20 + 15 + 7 = 42 >= 40
+    r = score(pos=NEAR_5KM, speed=1.5)  # 20 + 15 + 7 = 42 >= 40
     assert r.score == 42 and r.accum == 42 * 200

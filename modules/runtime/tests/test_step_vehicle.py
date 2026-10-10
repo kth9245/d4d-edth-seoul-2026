@@ -35,9 +35,9 @@ def vs(step: str | None = "patrol", entered: bool = True, **kw) -> VehicleState:
     return VehicleState(**{**base, **kw})
 
 
-def boat(seen_by: list[str]) -> Target:
+def boat(seen_by: list[str], accum: int = 450_000) -> Target:
     return Target(id="boat1", kind="boat", pos=HOME, vel_east_mps=0, vel_north_mps=0,
-                  first_seen_ms=0, last_seen_ms=0, seen_by=seen_by)  # fmt: skip
+                  first_seen_ms=0, last_seen_ms=0, seen_by=seen_by, threat_accum=accum)  # fmt: skip
 
 
 def step(st: VehicleState, targets: list[Target] = ()) -> tuple:
@@ -58,6 +58,13 @@ def test_target_found_and_arrived():
     assert step(vs(), [boat(["d1"])])[0].step_id == "watch"
     assert step(vs(), [boat(["d2"])])[0].step_id == "patrol"
     assert step(vs(waypoint_idx=-1))[0].step_id == "home"
+
+
+def test_target_found_while_patrolling_waits_until_the_threat_has_built_up():  # decision 0042
+    assert step(vs(), [boat(["d1"], accum=449_999)])[0].step_id == "patrol"
+    assert step(vs(), [boat(["d1"], accum=450_000)])[0].step_id == "watch"
+    quiet, ready = boat(["d1"], accum=0), boat(["d1"]).model_copy(update={"id": "boat2"})
+    assert step(vs(), [quiet, ready])[0].step_id == "watch"  # any one ready boat is enough
 
 
 def test_target_found_while_patrolling_wants_a_boat_nobody_reported():  # decision 0036
