@@ -64,7 +64,7 @@ def rotate_patrols(
     busy = set(pairs) | {r for r, _ in pairs.values()}
     for v in (v for v in on if v not in busy and by[v].play_id in op.rotation_plays):
         st, spec = by[v], specs[v]
-        alone = sum(by[w].play_id == st.play_id for w in on) == 1
+        alone = sum(by[w].play_id == st.play_id for w in on) == 1 and st.step_id == plays[st.play_id].entry  # fmt: skip
         if alone and st.battery_pct - 2 * _back(st, spec) <= START and (r := free(v, st.play_id)):
             by[r] = switch_play(by[r], plays[st.play_id])
             note(r, st.play_id, f"교대 출발: {r} → {v} @{max(st.waypoint_idx, 0)}")

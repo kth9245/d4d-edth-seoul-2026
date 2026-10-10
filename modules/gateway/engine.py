@@ -21,6 +21,8 @@ from modules.runtime import (
     apply_emergency,
     apply_injection,
     apply_reserves,
+    fleet_choices,
+    relieve_hover,
     rotate_patrols,
     step_vehicle,
     update_metrics,
@@ -70,6 +72,7 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
         cmds.append(cmd)
     states = apply_emergency(states, plays)  # 4
     states, assigns = rotate_patrols(states, specs, sc.operation, plays, assigns, t)  # 4.5 (0037)
+    states, assigns = relieve_hover(states, specs, sc.operation, plays, assigns, t)  # 4.6
     stepped = []
     for s in states:  # 5
         s, cmd, rep = step_vehicle(s, specs[s.id], plays.get(s.play_id), targets, t)
@@ -77,6 +80,7 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
         stepped.append(s)
         cmds += [cmd] if cmd else []
         new_reports += [rep] if rep else []
+    new_reports = [fleet_choices(r, stepped, sc.operation, plays) for r in new_reports]  # 5.2
     states, assigns, gap = apply_reserves(stepped, sc.operation, plays, assigns, t)  # 6
     new_reports += [gap] if gap else []
     states, passed, blocks, cards = run_checks(  # 7

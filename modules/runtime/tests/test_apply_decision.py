@@ -131,3 +131,23 @@ def test_operator_choice_exit_records_the_decision_for_a_strike_step():
     )
     out, _ = apply_decision([st], {**PLAYS, "draft": draft}, decide("strike", "r4"), [card])
     assert (out[0].step_id, out[0].decision_id) == ("hit", "dec1")
+
+
+def test_choice_target_by_vehicle_sets_each_moved_vehicles_target():  # fleet choices "함께 감시"
+    from contracts.models import Choice, Decision, Report
+
+    watch = Play(id="watch", name="w", domains=["air"], entry="w", approved=True,
+                 steps=[Step(id="w", name="w", do=Action(kind="watch_target", params={"target": "operator"}))])  # fmt: skip
+    st = VehicleState(id="d3", t_ms=0, pos=GeoPoint(lat=37.95, lon=124.7), heading_deg=0,
+                      battery_pct=100, status="ready")  # fmt: skip
+    ch = Choice(
+        id="join_d3_d2",
+        label="j",
+        play_by_vehicle={"d3": "watch"},
+        target_by_vehicle={"d3": "boat2"},
+    )
+    card = Report(id="r1", t_ms=0, kind="target_detected", vehicle_id="d1", target_id="boat1",
+                  text="t", choices=[ch])  # fmt: skip
+    out, _ = apply_decision([st], {"watch": watch}, Decision(id="dec-9", t_ms=5, report_id="r1",
+                            choice_id="join_d3_d2"), [card])  # fmt: skip
+    assert (out[0].play_id, out[0].target_id) == ("watch", "boat2")

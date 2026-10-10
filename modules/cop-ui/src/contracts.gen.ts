@@ -143,11 +143,13 @@ export interface Choice {
   id: string;
   label: string;
   play_by_vehicle?: Record<string, string>;
+  target_by_vehicle?: Record<string, string>;
 }
 
 export interface ReportSpec {
   text: string;
   choices?: Choice[];
+  auto_choices?: boolean;
 }
 
 export interface Step {

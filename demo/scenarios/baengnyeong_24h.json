@@ -187,7 +187,7 @@
     "hold"
    ],
    "home": {
-    "lat": 37.94,
+    "lat": 37.96,
     "lon": 124.7,
     "alt_m": 0.0
    },
@@ -211,46 +211,6 @@
       "params": {
        "route": [
         {
-         "lat": 37.97093,
-         "lon": 124.60522,
-         "alt_m": 0
-        },
-        {
-         "lat": 37.98047,
-         "lon": 124.6118,
-         "alt_m": 0
-        },
-        {
-         "lat": 37.97692,
-         "lon": 124.62122,
-         "alt_m": 0
-        },
-        {
-         "lat": 37.97056,
-         "lon": 124.63679,
-         "alt_m": 0
-        },
-        {
-         "lat": 37.9756,
-         "lon": 124.64615,
-         "alt_m": 0
-        },
-        {
-         "lat": 37.98001,
-         "lon": 124.65638,
-         "alt_m": 0
-        },
-        {
-         "lat": 37.98337,
-         "lon": 124.66832,
-         "alt_m": 0
-        },
-        {
-         "lat": 37.98407,
-         "lon": 124.68076,
-         "alt_m": 0
-        },
-        {
          "lat": 37.98375,
          "lon": 124.69246,
          "alt_m": 0
@@ -349,12 +309,78 @@
          "lat": 37.98047,
          "lon": 124.6118,
          "alt_m": 0
+        },
+        {
+         "lat": 37.97093,
+         "lon": 124.60522,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98047,
+         "lon": 124.6118,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.97692,
+         "lon": 124.62122,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.97056,
+         "lon": 124.63679,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.9756,
+         "lon": 124.64615,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98001,
+         "lon": 124.65638,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98337,
+         "lon": 124.66832,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98407,
+         "lon": 124.68076,
+         "alt_m": 0
         }
        ]
       }
      },
-     "on": [],
+     "on": [
+      {
+       "cond": {
+        "kind": "target_found",
+        "params": {}
+       },
+       "go_step": "report"
+      }
+     ],
      "report": null,
+     "ui": {}
+    },
+    {
+     "id": "report",
+     "name": "발견·감시·보고",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "nearest",
+       "distance_m": 150
+      }
+     },
+     "on": [],
+     "report": {
+      "text": "미식별 선박 접근",
+      "choices": [],
+      "auto_choices": true
+     },
      "ui": {}
     }
    ],
@@ -378,21 +404,6 @@
       "params": {
        "route": [
         {
-         "lat": 37.96147,
-         "lon": 124.75156,
-         "alt_m": 0
-        },
-        {
-         "lat": 37.958,
-         "lon": 124.74127,
-         "alt_m": 0
-        },
-        {
-         "lat": 37.94986,
-         "lon": 124.73431,
-         "alt_m": 0
-        },
-        {
          "lat": 37.94315,
          "lon": 124.72037,
          "alt_m": 0
@@ -516,12 +527,53 @@
          "lat": 37.958,
          "lon": 124.74127,
          "alt_m": 0
+        },
+        {
+         "lat": 37.96147,
+         "lon": 124.75156,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.958,
+         "lon": 124.74127,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.94986,
+         "lon": 124.73431,
+         "alt_m": 0
         }
        ]
       }
      },
-     "on": [],
+     "on": [
+      {
+       "cond": {
+        "kind": "target_found",
+        "params": {}
+       },
+       "go_step": "report"
+      }
+     ],
      "report": null,
+     "ui": {}
+    },
+    {
+     "id": "report",
+     "name": "발견·감시·보고",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "nearest",
+       "distance_m": 150
+      }
+     },
+     "on": [],
+     "report": {
+      "text": "미식별 선박 접근",
+      "choices": [],
+      "auto_choices": true
+     },
      "ui": {}
     }
    ],
@@ -584,6 +636,60 @@
     }
    ],
    "entry": "return",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "watch",
+   "name": "표적 감시",
+   "domains": [
+    "air"
+   ],
+   "steps": [
+    {
+     "id": "watch",
+     "name": "선회 감시",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 150
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "battery_below",
+        "params": {
+         "pct": 30.0
+        }
+       },
+       "go_step": "return"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "return",
+     "name": "귀환",
+     "do": {
+      "kind": "return_home",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "watch",
    "emergency": {
     "battery_low_pct": 30.0,
     "link_lost_step": null,

@@ -24,7 +24,7 @@ OUT = ROOT / "demo" / "scenarios" / "baengnyeong_24h.json"
 OFFSHORE_M, SPACING_M = 400, 900
 
 
-def coast_routes(land) -> tuple[list[dict], list[dict]]:
+def coast_routes(land, home: GeoPoint) -> tuple[list[dict], list[dict]]:
     pts = land[0].points
     c = GeoPoint(lat=sum(p.lat for p in pts) / len(pts), lon=sum(p.lon for p in pts) / len(pts))
 
@@ -52,7 +52,10 @@ def coast_routes(land) -> tuple[list[dict], list[dict]]:
                 keep.append(p)
         keep.append(seq[-1])
         there = [{"lat": round(p.lat, 5), "lon": round(p.lon, 5), "alt_m": 0} for p in keep]
-        return there + there[-2:0:-1]  # end to end and back
+        loop = there + there[-2:0:-1]  # end to end and back
+        # start at the coast point nearest the base, so a drone reaches its coast in minutes
+        k = min(range(len(there)), key=lambda i: dist_m(home, GeoPoint(**there[i])))
+        return loop[k:] + loop[:k]
 
     one, two = walk(w, e), walk(e, w)
     mean = lambda s: sum(p.lat for p in s) / len(s)  # noqa: E731
@@ -62,15 +65,20 @@ def coast_routes(land) -> tuple[list[dict], list[dict]]:
 
 def patrol(pid: str, name: str, route: list[dict]) -> dict:
     step = {"id": "patrol", "name": "해안 순찰", "do": {"kind": "patrol_route", "params": {"route": route}},
-            "on": [], "report": None, "ui": {}}  # fmt: skip
-    return {"id": pid, "name": name, "domains": ["air"], "steps": [step], "entry": "patrol",
+            "on": [{"cond": {"kind": "target_found", "params": {}}, "go_step": "report"}],
+            "report": None, "ui": {}}  # fmt: skip
+    found = {"id": "report", "name": "발견·감시·보고",
+             "do": {"kind": "watch_target", "params": {"target": "nearest", "distance_m": 150}},
+             "on": [], "report": {"text": "미식별 선박 접근", "choices": [], "auto_choices": True},
+             "ui": {}}  # fmt: skip
+    return {"id": pid, "name": name, "domains": ["air"], "steps": [step, found], "entry": "patrol",
             "origin": "human", "approved": True, "template": False}  # fmt: skip
 
 
 def main() -> None:
     night = json.loads(NIGHT.read_text(encoding="utf-8"))
     sc = Scenario.model_validate(night)
-    a, b = coast_routes(sc.land)
+    a, b = coast_routes(sc.land, sc.vehicles[0].home)
     plain = ("kind", "kind_path")  # the 24h scenario has no ontology; same drones as the demo
     resolved = load_scenario_json(str(NIGHT)).vehicles  # capabilities filled from the ontology
     drones = [
@@ -100,6 +108,7 @@ def main() -> None:
             patrol("coast_b", "해안 순찰 B · 남", b),
             plays["standby"],
             plays["go_home"],
+            plays["watch"],
         ],  # fmt: skip
         "events": [],
         "enemies": [],

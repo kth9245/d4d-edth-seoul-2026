@@ -45,5 +45,5 @@ def test_the_plays_own_issue_is_listed_once():
 
 
 def test_battery_comes_from_the_plays_own_check():
-    chk = check_saved_play(PATROL_A, SCENARIO)
-    assert set(chk.est_return_battery) == {"d1", "d3"}
+    chk = check_saved_play(PATROL_A, SCENARIO)  # demo starts on the coasts: nobody starts patrol_a
+    assert set(chk.est_return_battery) == {"d1", "d2", "d3", "d4"}

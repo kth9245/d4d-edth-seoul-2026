@@ -146,7 +146,7 @@
    "id": "d4",
    "t_ms": 1791634270000,
    "pos": {
-    "lat": 37.94,
+    "lat": 37.96,
     "lon": 124.7,
     "alt_m": 0.0
    },
@@ -211,7 +211,8 @@
       "d1": "watch",
       "usv": "approach",
       "ugv": "landing"
-     }
+     },
+     "target_by_vehicle": {}
     }
    ],
    "resolved_ms": null,

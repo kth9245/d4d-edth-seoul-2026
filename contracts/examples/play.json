@@ -58,9 +58,11 @@
        "d1": "watch",
        "usv": "approach",
        "ugv": "landing"
-      }
+      },
+      "target_by_vehicle": {}
      }
-    ]
+    ],
+    "auto_choices": false
    },
    "ui": {}
   }

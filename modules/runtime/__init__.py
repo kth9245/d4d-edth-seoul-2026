@@ -3,6 +3,8 @@ from modules.runtime.actions.apply_direct import apply_direct
 from modules.runtime.actions.apply_emergency import apply_emergency
 from modules.runtime.actions.apply_injection import apply_injection
 from modules.runtime.actions.apply_reserves import apply_reserves
+from modules.runtime.actions.fleet_choices import fleet_choices
+from modules.runtime.actions.relieve_hover import relieve_hover
 from modules.runtime.actions.rotate_patrols import rotate_patrols
 from modules.runtime.actions.step_vehicle import step_vehicle
 from modules.runtime.actions.update_metrics import update_metrics
@@ -13,6 +15,8 @@ __all__ = [
     "apply_emergency",
     "apply_injection",
     "apply_reserves",
+    "fleet_choices",
+    "relieve_hover",
     "rotate_patrols",
     "step_vehicle",
     "update_metrics",

@@ -11,12 +11,13 @@ const summary = (o: Operation, p: Play[]) =>
 describe("vehicleColumns", () => {
   it("lists each vehicle's start play then the plays its report choices lead to", () => {
     expect(summary(op, plays)).toEqual([
-      ["d1", [], [["patrol_a", null], ["watch", "근접 확인"]]],
-      ["d2", [], [["patrol_b", null]]], // decision 0036: d2 patrols from the start
-      ["d3", ["d1"], [["standby", null]]],
-      ["d4", [], [["standby", null]]], // coast pair partner of d2
-      ["usv", [], [["standby", null], ["approach", "근접 확인"]]],
-      ["ugv", [], [["standby", null], ["landing", "근접 확인"]]],
+      // demo starts on the coast patrol (user, 10/10); coast cards build their choices at run time
+      ["d1", [], [["coast_a", null]]],
+      ["d2", [], [["coast_b", null]]],
+      ["d3", [], [["standby", null]]],
+      ["d4", [], [["standby", null]]],
+      ["usv", [], [["standby", null]]],
+      ["ugv", [], [["standby", null]]],
     ]);
   });
   it("keeps switches out of the columns", () => {

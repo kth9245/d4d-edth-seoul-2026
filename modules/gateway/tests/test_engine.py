@@ -36,17 +36,18 @@ def test_boat_event_gives_target_detected_card_from_d1():
     assert rep.t_ms - SC.operation.started_ms >= 11 * MIN
 
 
-def test_one_decision_switches_four_vehicles():
+def test_fleet_choice_sends_a_drone_to_watch_with_the_finder():  # coast patrol finds -> card
     es, _ = _until(init_engine(SC), lambda e: any(r.kind == "target_detected" for r in e.reports))
     rep = next(r for r in es.reports if r.kind == "target_detected")
-    dec = Decision(id="dec-1", t_ms=es.t_ms + SC.tick_ms, report_id=rep.id,
-                   choice_id=rep.choices[0].id)  # fmt: skip
+    join = next(c for c in rep.choices if c.id == "join_d3_d1")
+    dec = Decision(id="dec-1", t_ms=es.t_ms + SC.tick_ms, report_id=rep.id, choice_id=join.id)
     es, fr = tick(es, TickInputs(decisions=[dec]))
     for _ in range(5):
         es, fr = tick(es, TickInputs())
-    plays = {v.id: v.play_id for v in fr.vehicles}
-    want = {"d1": "watch", "usv": "approach", "ugv": "landing", "d2": "patrol_b"}
-    assert {k: plays[k] for k in want} == want
+    by = {v.id: v for v in fr.vehicles}
+    assert (by["d3"].play_id, by["d3"].target_id) == ("watch", rep.target_id)
+    assert (by["d1"].play_id, by["d1"].step_id) == ("coast_a", "report")  # still over the boat
+    assert [c.id for c in rep.choices][-1] == "keep"
     assert any(a.reason == "결정 dec-1" for a in fr.assignments)
 
 

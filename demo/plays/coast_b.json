@@ -13,21 +13,6 @@
     "params": {
      "route": [
       {
-       "lat": 37.96147,
-       "lon": 124.75156,
-       "alt_m": 0
-      },
-      {
-       "lat": 37.958,
-       "lon": 124.74127,
-       "alt_m": 0
-      },
-      {
-       "lat": 37.94986,
-       "lon": 124.73431,
-       "alt_m": 0
-      },
-      {
        "lat": 37.94315,
        "lon": 124.72037,
        "alt_m": 0
@@ -151,12 +136,53 @@
        "lat": 37.958,
        "lon": 124.74127,
        "alt_m": 0
+      },
+      {
+       "lat": 37.96147,
+       "lon": 124.75156,
+       "alt_m": 0
+      },
+      {
+       "lat": 37.958,
+       "lon": 124.74127,
+       "alt_m": 0
+      },
+      {
+       "lat": 37.94986,
+       "lon": 124.73431,
+       "alt_m": 0
       }
      ]
     }
    },
-   "on": [],
+   "on": [
+    {
+     "cond": {
+      "kind": "target_found",
+      "params": {}
+     },
+     "go_step": "report"
+    }
+   ],
    "report": null,
+   "ui": {}
+  },
+  {
+   "id": "report",
+   "name": "발견·감시·보고",
+   "do": {
+    "kind": "watch_target",
+    "params": {
+     "target": "nearest",
+     "distance_m": 150
+    }
+   },
+   "on": [],
+   "report": {
+    "text": "미식별 선박 접근",
+    "choices": [],
+    "auto_choices": true
+   },
    "ui": {}
   }
  ],

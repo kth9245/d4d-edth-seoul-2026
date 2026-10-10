@@ -13,7 +13,8 @@
     "d1": "watch",
     "usv": "approach",
     "ugv": "landing"
-   }
+   },
+   "target_by_vehicle": {}
   }
  ],
  "resolved_ms": null,

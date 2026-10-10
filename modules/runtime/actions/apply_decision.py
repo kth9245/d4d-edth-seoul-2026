@@ -27,7 +27,8 @@ def apply_decision(
             )
         elif s.id in moved:  # decision 0033: the strike step needs who approved and what
             s = switch_play(s, plays[ch.play_by_vehicle[s.id]])
-            s = s.model_copy(update={"decision_id": decision.id, "target_id": rep.target_id})
+            tid = ch.target_by_vehicle.get(s.id, rep.target_id)  # fleet choice: whose target
+            s = s.model_copy(update={"decision_id": decision.id, "target_id": tid})
         elif s.id == rep.vehicle_id:
             ex = _choice_exit(s, plays, ch.id)  # an exit taken on this decision carries its id
             s = s.model_copy(

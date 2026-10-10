@@ -28,6 +28,7 @@ class Choice(BaseModel):
     id: str
     label: str
     play_by_vehicle: dict[str, str] = {}  # vehicle id -> play it starts (from that play's entry)
+    target_by_vehicle: dict[str, str] = {}  # vehicle id -> target it watches (fleet choices)
 
 
 class Switch(BaseModel):  # an operation-wide switch button, previewed then approved
@@ -39,6 +40,7 @@ class Switch(BaseModel):  # an operation-wide switch button, previewed then appr
 class ReportSpec(BaseModel):
     text: str
     choices: list[Choice] = []  # with choices the vehicle waits for a Decision
+    auto_choices: bool = False  # runtime fleet_choices builds the choices from the fleet
 
 
 class Step(BaseModel):

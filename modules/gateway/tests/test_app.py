@@ -135,7 +135,12 @@ def test_plays_check_and_save():
     assert "해안 순찰 A2" not in names()  # check only, nothing saved
     body = client.post("/plays", json=renamed).json()
     assert (body["ok"], body["issues"]) == (True, [])
-    assert set(body["est_return_battery"]) == {"d1", "d3"}  # values belong to the play module
+    assert set(body["est_return_battery"]) == {
+        "d1",
+        "d2",
+        "d3",
+        "d4",
+    }  # unassigned: every air drone
     assert "해안 순찰 A2" in names()
 
 
@@ -233,7 +238,7 @@ def test_ontology_view_from_the_scenario():  # decision 0038
 
 def test_check_shows_the_kind_path_when_d1_gets_a_strike_step():  # editor demo beat (0038)
     client, _ = fake_app()
-    patrol = next(p for p in client.get("/plays").json() if p["id"] == "patrol_a")
+    patrol = next(p for p in client.get("/plays").json() if p["id"] == "coast_a")  # d1 starts on it
     strike = {"kind": "strike_target", "params": {"target": "nearest"}}
     patrol["steps"].append({"id": "hit", "name": "타격", "do": strike})
     chk = client.post("/plays/check", json=patrol).json()

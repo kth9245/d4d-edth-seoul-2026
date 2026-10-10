@@ -15,6 +15,14 @@
       "default": {},
       "title": "Play By Vehicle",
       "type": "object"
+    },
+    "target_by_vehicle": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "default": {},
+      "title": "Target By Vehicle",
+      "type": "object"
     }
   },
   "required": [

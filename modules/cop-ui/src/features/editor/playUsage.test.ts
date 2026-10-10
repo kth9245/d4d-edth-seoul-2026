@@ -9,12 +9,12 @@ const plays = scenario.plays as unknown as Play[];
 describe("playUsage", () => {
   const u = playUsage(op, plays);
   it("names the operation start", () => {
-    expect(u["patrol_a"]).toEqual([{ vehicle_id: "d1", how: "작전 시작" }]);
+    expect(u["coast_a"]).toContainEqual({ vehicle_id: "d1", how: "작전 시작" }); // coast patrol (user, 10/10)
     expect(u["standby"].map((x) => x.vehicle_id)).toEqual(["d3", "usv", "ugv", "d4"]);
   });
   it("names the play and choice that lead here", () => {
-    expect(u["watch"]).toEqual([{ vehicle_id: "d1", how: "해안 순찰 A의 '근접 확인' 뒤" }]);
-    expect(u["patrol_b"]).toEqual([{ vehicle_id: "d2", how: "작전 시작" }]); // decision 0036
+    expect(u["coast_b"]).toContainEqual({ vehicle_id: "d2", how: "작전 시작" });
+    expect(u["watch"]).toEqual([{ vehicle_id: "d1", how: "해안 순찰 A의 '근접 확인' 뒤" }]); // patrol_a stays in the library
   });
   it("names the operation switch", () => {
     expect(u["go_home"]).toHaveLength(8); // all home 6 + d3·d4 by '전 기체 순찰' (coast pairs)

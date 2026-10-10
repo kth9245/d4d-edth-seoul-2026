@@ -259,7 +259,7 @@
    "id": "d4",
    "t_ms": 1791635190000,
    "pos": {
-    "lat": 37.94,
+    "lat": 37.96,
     "lon": 124.7,
     "alt_m": 0.0
    },
@@ -352,7 +352,8 @@
       "d1": "watch",
       "usv": "approach",
       "ugv": "landing"
-     }
+     },
+     "target_by_vehicle": {}
     }
    ],
    "resolved_ms": 1791634290000,
@@ -413,12 +414,14 @@
     {
      "id": "fast1",
      "label": "fast1 fast_boat",
-     "play_by_vehicle": {}
+     "play_by_vehicle": {},
+     "target_by_vehicle": {}
     },
     {
      "id": "boat1",
      "label": "boat1 boat",
-     "play_by_vehicle": {}
+     "play_by_vehicle": {},
+     "target_by_vehicle": {}
     }
    ],
    "resolved_ms": 1791635050000,
@@ -435,12 +438,14 @@
     {
      "id": "fast1",
      "label": "fast1 fast_boat",
-     "play_by_vehicle": {}
+     "play_by_vehicle": {},
+     "target_by_vehicle": {}
     },
     {
      "id": "boat1",
      "label": "boat1 boat",
-     "play_by_vehicle": {}
+     "play_by_vehicle": {},
+     "target_by_vehicle": {}
     }
    ],
    "resolved_ms": 1791635055000,
@@ -459,7 +464,8 @@
      "label": "이 기체로 타격",
      "play_by_vehicle": {
       "d2": "strike"
-     }
+     },
+     "target_by_vehicle": {}
     },
     {
      "id": "strike_both",
@@ -467,7 +473,8 @@
      "play_by_vehicle": {
       "d2": "strike",
       "usv": "strike"
-     }
+     },
+     "target_by_vehicle": {}
     }
    ],
    "resolved_ms": 1791635150000,
@@ -486,7 +493,8 @@
      "label": "이 기체로 타격",
      "play_by_vehicle": {
       "usv": "strike"
-     }
+     },
+     "target_by_vehicle": {}
     },
     {
      "id": "strike_both",
@@ -494,7 +502,8 @@
      "play_by_vehicle": {
       "d2": "strike",
       "usv": "strike"
-     }
+     },
+     "target_by_vehicle": {}
     }
    ],
    "resolved_ms": 1791635150000,

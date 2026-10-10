@@ -125,4 +125,6 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 - `VehicleSpec.recharge_min`(0 = 충전 없음): 기지에서 `maintenance`인 동안 배터리가 `100/recharge_min`%/분씩 차고 100%면 `ready`.
 - `Operation.rotation`(교대 기체)·`rotation_plays`(늘 지키는 순찰 플레이): 비면 교대 없음.
 - `Operation.rotation_pools`(순찰 플레이 → 그 해안을 서로 교대하는 드론들, 예: 북 d1·d3 / 남 d2·d4): 있으면 교대·빈 해안 채우기는 그 짝 안에서만. 비면 `rotation` 전체에서.
+- `ReportSpec.auto_choices`: 해안 순찰 발견 카드는 runtime `fleet_choices`가 그때 함대로 선택지를 만든다(다른 드론마다 발생 지역 순찰·감시 드론과 함께 감시, 그리고 유지). `Choice.target_by_vehicle`: 그 선택으로 옮긴 기체가 감시할 표적.
+- 틱 순서 4.6: `rotate_patrols` 다음 `relieve_hover`(감시 드론 교대). 5.2: `step_vehicle`이 만든 카드에 `fleet_choices`.
 - 틱 순서 4.5: `apply_emergency`(4) 다음, `step_vehicle`(5) 전에 runtime `rotate_patrols`.

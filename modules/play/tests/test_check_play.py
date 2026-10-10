@@ -10,6 +10,9 @@ from modules.sim import load_scenario_json
 DEMO = Path(__file__).resolve().parents[3] / "demo"
 SC = json.loads((DEMO / "scenarios" / "baengnyeong_night.json").read_text(encoding="utf-8"))
 OP = Operation.model_validate(SC["operation"])
+# demo start is the coast patrol (user, 10/10); patrol_a/patrol_b and the d1 -> d3 reserve are checked here
+PATROL_OP = OP.model_copy(update={"assign": {**OP.assign, "d1": "patrol_a", "d2": "patrol_b"},
+                                  "reserve": {"d1": ["d3"]}})  # fmt: skip
 # capabilities come from the ontology through the loader (decision 0038)
 LOADED = load_scenario_json(DEMO / "scenarios" / "baengnyeong_night.json")
 SPECS = {v.id: v for v in LOADED.vehicles}
@@ -27,7 +30,7 @@ def test_every_template_passes_for_the_demo_vehicles(pid):
 
 
 def test_assigned_vehicle_and_its_reserve_get_a_battery_estimate():
-    chk = check_play(PLAYS["patrol_a"], OP, SPECS)
+    chk = check_play(PLAYS["patrol_a"], PATROL_OP, SPECS)
     assert chk.ok and set(chk.est_return_battery) == {"d1", "d3"}
     assert all(30 <= b <= 100 for b in chk.est_return_battery.values())
 

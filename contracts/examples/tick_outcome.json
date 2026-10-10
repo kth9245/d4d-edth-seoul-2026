@@ -486,7 +486,7 @@
    "id": "d4",
    "t_ms": 1791634290000,
    "pos": {
-    "lat": 37.94,
+    "lat": 37.96,
     "lon": 124.7,
     "alt_m": 0.0
    },
@@ -628,9 +628,11 @@
          "d1": "watch",
          "usv": "approach",
          "ugv": "landing"
-        }
+        },
+        "target_by_vehicle": {}
        }
-      ]
+      ],
+      "auto_choices": false
      },
      "ui": {}
     }
@@ -837,9 +839,11 @@
         "label": "수상정 인계",
         "play_by_vehicle": {
          "usv": "approach"
-        }
+        },
+        "target_by_vehicle": {}
        }
-      ]
+      ],
+      "auto_choices": false
      },
      "ui": {}
     },
@@ -902,9 +906,11 @@
        {
         "id": "keep",
         "label": "감시 유지",
-        "play_by_vehicle": {}
+        "play_by_vehicle": {},
+        "target_by_vehicle": {}
        }
-      ]
+      ],
+      "auto_choices": false
      },
      "ui": {}
     },
@@ -982,7 +988,8 @@
         "label": "이 기체로 타격",
         "play_by_vehicle": {
          "d2": "strike"
-        }
+        },
+        "target_by_vehicle": {}
        },
        {
         "id": "strike_both",
@@ -990,9 +997,11 @@
         "play_by_vehicle": {
          "d2": "strike",
          "usv": "strike"
-        }
+        },
+        "target_by_vehicle": {}
        }
-      ]
+      ],
+      "auto_choices": false
      },
      "ui": {}
     }
@@ -1088,7 +1097,8 @@
         "label": "이 기체로 타격",
         "play_by_vehicle": {
          "usv": "strike"
-        }
+        },
+        "target_by_vehicle": {}
        },
        {
         "id": "strike_both",
@@ -1096,9 +1106,11 @@
         "play_by_vehicle": {
          "d2": "strike",
          "usv": "strike"
-        }
+        },
+        "target_by_vehicle": {}
        }
-      ]
+      ],
+      "auto_choices": false
      },
      "ui": {}
     }
@@ -1298,46 +1310,6 @@
       "params": {
        "route": [
         {
-         "lat": 37.97093,
-         "lon": 124.60522,
-         "alt_m": 0
-        },
-        {
-         "lat": 37.98047,
-         "lon": 124.6118,
-         "alt_m": 0
-        },
-        {
-         "lat": 37.97692,
-         "lon": 124.62122,
-         "alt_m": 0
-        },
-        {
-         "lat": 37.97056,
-         "lon": 124.63679,
-         "alt_m": 0
-        },
-        {
-         "lat": 37.9756,
-         "lon": 124.64615,
-         "alt_m": 0
-        },
-        {
-         "lat": 37.98001,
-         "lon": 124.65638,
-         "alt_m": 0
-        },
-        {
-         "lat": 37.98337,
-         "lon": 124.66832,
-         "alt_m": 0
-        },
-        {
-         "lat": 37.98407,
-         "lon": 124.68076,
-         "alt_m": 0
-        },
-        {
          "lat": 37.98375,
          "lon": 124.69246,
          "alt_m": 0
@@ -1436,12 +1408,78 @@
          "lat": 37.98047,
          "lon": 124.6118,
          "alt_m": 0
+        },
+        {
+         "lat": 37.97093,
+         "lon": 124.60522,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98047,
+         "lon": 124.6118,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.97692,
+         "lon": 124.62122,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.97056,
+         "lon": 124.63679,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.9756,
+         "lon": 124.64615,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98001,
+         "lon": 124.65638,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98337,
+         "lon": 124.66832,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98407,
+         "lon": 124.68076,
+         "alt_m": 0
         }
        ]
       }
      },
-     "on": [],
+     "on": [
+      {
+       "cond": {
+        "kind": "target_found",
+        "params": {}
+       },
+       "go_step": "report"
+      }
+     ],
      "report": null,
+     "ui": {}
+    },
+    {
+     "id": "report",
+     "name": "발견·감시·보고",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "nearest",
+       "distance_m": 150
+      }
+     },
+     "on": [],
+     "report": {
+      "text": "미식별 선박 접근",
+      "choices": [],
+      "auto_choices": true
+     },
      "ui": {}
     }
    ],
@@ -1471,21 +1509,6 @@
       "params": {
        "route": [
         {
-         "lat": 37.96147,
-         "lon": 124.75156,
-         "alt_m": 0
-        },
-        {
-         "lat": 37.958,
-         "lon": 124.74127,
-         "alt_m": 0
-        },
-        {
-         "lat": 37.94986,
-         "lon": 124.73431,
-         "alt_m": 0
-        },
-        {
          "lat": 37.94315,
          "lon": 124.72037,
          "alt_m": 0
@@ -1609,12 +1632,53 @@
          "lat": 37.958,
          "lon": 124.74127,
          "alt_m": 0
+        },
+        {
+         "lat": 37.96147,
+         "lon": 124.75156,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.958,
+         "lon": 124.74127,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.94986,
+         "lon": 124.73431,
+         "alt_m": 0
         }
        ]
       }
      },
-     "on": [],
+     "on": [
+      {
+       "cond": {
+        "kind": "target_found",
+        "params": {}
+       },
+       "go_step": "report"
+      }
+     ],
      "report": null,
+     "ui": {}
+    },
+    {
+     "id": "report",
+     "name": "발견·감시·보고",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "nearest",
+       "distance_m": 150
+      }
+     },
+     "on": [],
+     "report": {
+      "text": "미식별 선박 접근",
+      "choices": [],
+      "auto_choices": true
+     },
      "ui": {}
     }
    ],

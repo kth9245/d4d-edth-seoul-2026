@@ -13,3 +13,5 @@
 | RT-08 | enter_step | VehicleState, VehicleSpec, Play, Step, targets, t_ms | (state, Command/None, Report/None) | nearest·operator·고정 표적 각 1테스트, move_to의 target 좌표는 그대로, 귀환 step이면 returning. 원본: 스파이크 port/modules/runtime/actions/enter_step.py · 결정 0033: 출처 decision_id, strike면 params target(표적 위치), 카드 표적은 정해진 표적 우선 | 황승주 | 완료 |
 | RT-09 | switch_play | VehicleState, Play | VehicleState | play_id·step_id=entry·entered_step False·target·pending·resume 비움 1테스트. 원본: 스파이크 port · decision_id도 지움(결정 0033) | 황승주 | 완료 |
 | RT-10 | rotate_patrols | states, specs, Operation, plays, assignments, t_ms | (states, assignments) | 출발·만남·인계·대기 없음·하한선·기록 없는 쌍 테스트 | 황승주 | 완료 |
+| RT-11 | fleet_choices |  |  |  | 황승주 | 완료 |
+| RT-12 | relieve_hover |  |  |  | 황승주 | 완료 |
