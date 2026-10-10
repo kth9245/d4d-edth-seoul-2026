@@ -12,7 +12,7 @@ import { RunBar } from "./features/run/RunBar";
 export function Screen({ frame, zone, status, ok }:
   { frame: Frame | null; zone: Polygon | null; status: string; ok: boolean }) {
   const [tiles, setTiles] = useState<boolean | null>(null);
-  const direct = useDirectControl();
+  const direct = useDirectControl(frame?.t_ms ?? 0);
   useEffect(() => {
     tilesExist().then(setTiles);
   }, []);

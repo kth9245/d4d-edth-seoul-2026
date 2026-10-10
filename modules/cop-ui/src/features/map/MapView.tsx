@@ -4,6 +4,7 @@ import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import { useEffect, useRef } from "react";
 import type { Frame, GeoPoint, Polygon } from "../../contracts.gen";
 import { basemapStyle, TILE_BOUNDS } from "./basemap";
+import { directAims, type PendingAim } from "./directAims";
 import { frameMarkers } from "./frameMarkers";
 import { clearMarkers, type MarkerStore, syncAim, syncTargets, syncVehicles } from "./markers";
 import { zoneGeoJSON } from "./zoneGeoJSON";
@@ -15,14 +16,13 @@ setWorkerUrl(workerUrl);
 const [W, S, E, N] = TILE_BOUNDS;
 const PAD = 0.2; // degrees of panning room beyond the fetched tiles (plain background there)
 
-export type Aim = GeoPoint & { label: string };
 export interface DirectProps {
   selected: string | null;
-  aim: Aim | null;
+  pending: PendingAim | null; // the order just sent; the crosses come from the frame (directAims)
   onVehicleClick: (id: string) => void;
   onMapClick: (p: GeoPoint) => void;
 }
-const NO_DIRECT: DirectProps = { selected: null, aim: null, onVehicleClick: () => {}, onMapClick: () => {} };
+const NO_DIRECT: DirectProps = { selected: null, pending: null, onVehicleClick: () => {}, onMapClick: () => {} };
 
 export function MapView({ frame, zone, tilesAvailable, direct = NO_DIRECT }:
   { frame: Frame | null; zone: Polygon | null; tilesAvailable: boolean; direct?: DirectProps }) {
@@ -43,7 +43,7 @@ export function MapView({ frame, zone, tilesAvailable, direct = NO_DIRECT }:
     const { vehicles: vs, targets: ts } = f ? frameMarkers(f) : { vehicles: [], targets: [] };
     syncVehicles(m, vehicles.current, vs, d.selected, onVehicleClick);
     syncTargets(m, targets.current, ts);
-    syncAim(m, aims.current, d.aim);
+    syncAim(m, aims.current, directAims(f, d.pending));
     m.getCanvas().style.cursor = d.selected ? "crosshair" : "";
   };
 
@@ -77,7 +77,7 @@ export function MapView({ frame, zone, tilesAvailable, direct = NO_DIRECT }:
   useEffect(() => {
     latest.current.frame = frame;
     if (map.current) draw(map.current);
-  }, [frame, direct.selected, direct.aim]);
+  }, [frame, direct.selected, direct.pending]);
 
   useEffect(() => {
     latest.current.zone = zone;

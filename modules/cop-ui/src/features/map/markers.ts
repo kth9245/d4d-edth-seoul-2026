@@ -1,5 +1,5 @@
 import { type Map as MapLibreMap, Marker } from "maplibre-gl";
-import type { GeoPoint } from "../../contracts.gen";
+import type { Aim } from "./directAims";
 import type { TargetMarker, VehicleMarker } from "./frameMarkers";
 
 export type MarkerStore = Map<string, Marker>;
@@ -49,9 +49,9 @@ export function syncTargets(map: MapLibreMap, store: MarkerStore, items: TargetM
   sync(map, store, items, (t) => `mk target ${t.kind}${t.seen ? "" : " unseen"}`);
 }
 
-// Where the last direct-control order was sent (a cross), so the operator sees the order land.
-export function syncAim(map: MapLibreMap, store: MarkerStore, aim: (GeoPoint & { label: string }) | null): void {
-  sync(map, store, aim ? [{ id: aim.label, lat: aim.lat, lon: aim.lon }] : [], () => "mk aim");
+// Where direct-control orders are heading (a cross per vehicle), so the operator sees the order land.
+export function syncAim(map: MapLibreMap, store: MarkerStore, aims: Aim[]): void {
+  sync(map, store, aims.map((a) => ({ id: a.label, lat: a.lat, lon: a.lon })), () => "mk aim");
 }
 
 export function clearMarkers(store: MarkerStore): void {

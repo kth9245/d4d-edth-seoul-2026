@@ -121,6 +121,8 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .vehicle.lost i { background: transparent; border: 2px dashed var(--warn); box-shadow: none; }
 .target i, .target.boat i { background: var(--unknown); border-color: var(--bg); box-shadow: 0 0 10px rgba(250, 204, 21, 0.45); }
 .target.fast_boat i { background: var(--hostile); box-shadow: 0 0 12px rgba(239, 68, 68, 0.6); }
+/* A target's label sits above it: the vehicle watching it stays beside it (either side) and labels to its right. */
+.target span { top: auto; bottom: 16px; left: 50%; transform: translateX(-50%); }
 .target.unseen { opacity: 0.5; }
 .target.unseen i { border-style: dashed; border-color: var(--text); box-shadow: none; }
 
