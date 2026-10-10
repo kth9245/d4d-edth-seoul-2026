@@ -2,11 +2,11 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 10:41 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 10:44 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part1-10** 상황판 카드 열 + 결정 버튼 — kth9245, 10/10 10:40부터
-- **Part3-6** play `check_play` — 황승주, 10/10 10:20부터 · 하위 0/1 완료 · PLY-06
+- **Part3-6** play `check_play` — 황승주, 10/10 10:20부터 · 하위 1/1 완료 · PLY-06
 - **Part3-10** 편집기: 카드 열(읽기 전용) — kth9245, 10/10 10:25부터
 - ⚠ kth9245 진행중 2개
 
@@ -29,7 +29,6 @@
 - **Part3-15.1** mavlink compile_mavlink · MAV-01 (리드, 결정 0025, 통합 2 뒤)
 
 ### 황승주
-- **Part3-6.1** play check_operation · PLY-11 (통합 2, PLY-03~05 뒤)
 - **Part3-9** play `draft_play` · PLY-09
 
 ### 최동호
@@ -59,6 +58,7 @@
 - 10/9 23:14 kth9245 · Part1-1 · 결정 0015·0016·0017·0018 참조(두 층 구조, contracts 세부, API 규약)
 
 ## 완료
+- **Part3-6.1** play check_operation · PLY-11 (통합 2, PLY-03~05 뒤) — 황승주, 10/10 10:44
 - **Part1-7** gateway REST + WS — kth9245, 10/10 10:39
 - **Part1-9.1** 드론 출발 위치 떼어 놓기(지도에서 겹침) — kth9245, 10/10 10:35
 - **Part1-9** 지도: 위성 raster + 기체·표적·구역 — kth9245, 10/10 10:28 · 하위 1/1 완료
