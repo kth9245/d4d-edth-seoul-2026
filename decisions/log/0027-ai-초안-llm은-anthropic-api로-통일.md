@@ -1,13 +1,15 @@
 ---
 id: 0027
 title: AI 초안 LLM은 Anthropic API로 통일
-status: 확정
+status: 폐기
 decided_by: 황승주
 date: 2026-10-10
 modules: [play, infra]
 supersedes: null
 ---
 ## 결정
+> 폐기: 결정 0028으로 대체(AI 해석 오류. 원래 발언은 팀원 작업 세션이 Claude라는 뜻이었다).
+
 2026-10-10 오전, PLY-09 draft_play와 Part1-5(AI 초안 프롬프트·캐시)의 선행 관계를 설명받던 중 사람이 말한 것을 그대로 적는다.
 
 사람(황승주): "팀원 모두 Anthropic로 통일"
