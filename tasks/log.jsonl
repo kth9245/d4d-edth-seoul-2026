@@ -177,3 +177,4 @@
 {"at": "2026-10-10T11:16:26+09:00", "by": "최동호", "op": "done", "id": "Part2-6", "take": false}
 {"at": "2026-10-10T11:16:52+09:00", "by": "kth9245", "op": "note", "id": "Part1-14", "text": "통합 2(00:00) 전 스텁 제거 목록에 편집기 예시 데이터 대체(cop-ui UI-15 loadEditorData, demo/scenarios 번들)를 넣을 것. 결정: Part3-11에서 '통합 2 직전까지 둠'. 이 메모는 완료된 Part3-11에 있던 것을 옮김"}
 {"at": "2026-10-10T11:17:31+09:00", "by": "최동호", "op": "start", "id": "Part2-17.1", "take": false, "from": null}
+{"at": "2026-10-10T11:19:15+09:00", "by": "kth9245", "op": "done", "id": "Part1-9.3", "take": false}
