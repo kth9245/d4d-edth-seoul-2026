@@ -4,13 +4,13 @@ import { basemapStyle, TILE_BOUNDS, tilesExist } from "./basemap";
 
 describe("basemapStyle", () => {
   it("returns background-only style when tiles missing", () => {
-    const s = basemapStyle(false);
+    const s = basemapStyle(false, false);
     expect(Object.keys(s.sources)).toHaveLength(0);
     expect(s.layers.map((l) => l.type)).toEqual(["background"]);
   });
 
   it("uses the local Baengnyeong raster tiles z8-14 inside the fetched bounds", () => {
-    const s = basemapStyle(true);
+    const s = basemapStyle(true, false);
     const src = s.sources.sat as RasterSourceSpecification;
     expect(src.type).toBe("raster");
     expect(src.tiles).toEqual(["http://localhost/tiles/baengnyeong/{z}/{x}/{y}.jpg"]);
@@ -22,8 +22,26 @@ describe("basemapStyle", () => {
   });
 
   it("dims the raster for the night scene", () => {
-    const sat = basemapStyle(true).layers[1] as RasterLayerSpecification;
+    const sat = basemapStyle(true, false).layers[1] as RasterLayerSpecification;
     expect(sat.paint?.["raster-brightness-max"]).toBeLessThan(1);
+  });
+});
+
+describe("high-resolution Esri layer (user 10/11)", () => {
+  it("streams Esri z8-18 over the local EOX tiles, dimmed the same, inside the same bounds", () => {
+    const s = basemapStyle(true, true);
+    expect(s.layers.map((l) => l.id)).toEqual(["bg", "sat", "hires"]);
+    const src = s.sources.hires as RasterSourceSpecification;
+    expect(src.tiles?.[0]).toContain("server.arcgisonline.com/ArcGIS/rest/services/World_Imagery");
+    expect([src.minzoom, src.maxzoom, src.bounds]).toEqual([8, 18, TILE_BOUNDS]);
+    expect(src.attribution).toContain("Esri");
+    const hires = s.layers[2] as RasterLayerSpecification;
+    expect(hires.paint?.["raster-brightness-max"]).toBe(0.6);
+  });
+
+  it("shows Esri alone when the local tiles are missing, and nothing of it when switched off", () => {
+    expect(basemapStyle(false, true).layers.map((l) => l.id)).toEqual(["bg", "hires"]);
+    expect(Object.keys(basemapStyle(true, false).sources)).toEqual(["sat"]);
   });
 });
 
