@@ -15,13 +15,20 @@ WARMUP_S, DAY_S = 30 * 60, 24 * 3600
 
 
 @pytest.fixture(scope="module")
-def day():
+def day():  # checks each frame as it comes: keeping 432,000 frames (200 ms ticks) ran WSL out of memory
     sc = load_scenario_json(str(SCENARIO))
-    es, frames = init_engine(sc), []
+    home = {v.id: v.home for v in sc.vehicles}
+    es, gaps, landed, prev = init_engine(sc), [], [], {}
     for _ in range(DAY_S * 1000 // sc.tick_ms):
         es, f = tick(es, TickInputs())
-        frames.append(f)
-    return sc, frames
+        s = (f.t_ms - sc.operation.started_ms) // 1000
+        if s >= WARMUP_S:
+            gaps += [(s, role) for role in ("coast_a", "coast_b") if not _patrolling(f, role)]
+        for v in f.vehicles:
+            if v.status.value == "maintenance" and prev.get(v.id) != "maintenance":
+                landed.append((v.id, round(v.battery_pct, 1), round(dist_m(v.pos, home[v.id]))))
+            prev[v.id] = v.status.value
+    return gaps, landed
 
 
 def _patrolling(f, role):
@@ -29,25 +36,11 @@ def _patrolling(f, role):
 
 
 def test_both_coasts_always_covered_for_24h(day):
-    sc, frames = day
-    gaps = [
-        ((f.t_ms - sc.operation.started_ms) // 1000, role)
-        for f in frames
-        if f.t_ms - sc.operation.started_ms >= WARMUP_S * 1000
-        for role in ("coast_a", "coast_b")
-        if not _patrolling(f, role)
-    ]
+    gaps, _ = day
     assert gaps == []
 
 
 def test_landings_keep_30_percent(day):
-    sc, frames = day
-    home = {v.id: v.home for v in sc.vehicles}
-    landed, prev = [], {}
-    for f in frames:
-        for v in f.vehicles:
-            if v.status.value == "maintenance" and prev.get(v.id) != "maintenance":
-                landed.append((v.id, round(v.battery_pct, 1), round(dist_m(v.pos, home[v.id]))))
-            prev[v.id] = v.status.value
+    _, landed = day
     print("landings:", len(landed), "lowest:", min(landed, key=lambda x: x[1]) if landed else None)
     assert landed and all(pct >= 30 for _, pct, _ in landed)
