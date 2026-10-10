@@ -15,6 +15,7 @@ import { SwitchPanel } from "./features/cards/SwitchPanel";
 import { ObjectGraphView } from "./features/graph/ObjectGraphView";
 import { tilesExist } from "./features/map/basemap";
 import { MapView } from "./features/map/MapView";
+import { MavlinkButton } from "./features/mavlink/MavlinkLog";
 import { useDirectControl } from "./features/map/useDirectControl";
 import { RunBar } from "./features/run/RunBar";
 
@@ -39,6 +40,7 @@ export function Screen({ frame, zone, status, ok }:
         <>
           {board && <SituationBar situation={board.situation} />}
           <LoadBar metrics={frame?.metrics ?? null} />
+          <MavlinkButton />
           <div className={ok ? "status ok" : "status down"}>{status}</div>
         </>, slot)}
       {frame && board ? (

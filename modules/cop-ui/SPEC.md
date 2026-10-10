@@ -86,3 +86,4 @@
 | UI-94 | RosterPanel | VehicleRow[], Target[], Stage | 왼쪽 열 | 아군 줄(하는 일·표적·배터리·결정 대기), 적 줄 위험도 순(무력화·미탐 아래), 단계 표시, 줄 누르면 기체 선택 | 리드 | 완료 |
 | UI-95 | DecisionQueue·QueueCard | Frame, Queue | 오른쪽 열 | 한 장 펼침(나머지 한 줄), 정해진 선택지 먼저·드론 요청 묶음, 표적 선택 위험도 순 칩, 타격 빨강, 승인·거부, 대안 지점, 보내기 잠금(UI-20), 결정 없으면 할 일 없음·무력화 결과, 알림 2분 | 리드 | 완료 |
 | UI-96 | PointMenu·지목(useDirectControl) | 선택 기체, 표적 | Role 메뉴 | 기체를 고른 동안만 살아 있는 표적이 클릭을 받음(기체 위), 표적 옆 메뉴에 targetRoles 버튼("지금 → 새 · 표적"), 누르면 postPoint(승인된 전환, 조작 1번), 메뉴가 열린 채 지도 클릭은 메뉴만 닫음, Esc 취소, 목록의 적 줄로도 지목, 타격 없음(결정 0048·0049) | 리드 | 완료 |
+| UI-97 | MavlinkLog·MavlinkButton·fetchMavlink | GET /mavlink | 새 창 로그 | 헤더 MAVLink 버튼이 #mavlink를 이름 붙은 새 창 하나로 열고, 그 창은 탭 없이 1초마다 GET /mavlink 줄을 그려 마지막 줄을 보인다, 조회 실패면 직전 줄 유지. 탭 이름 상황판 → 시뮬레이션(결정 0063) | 리드 | 완료 |

@@ -507,3 +507,10 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .board .pickpop button.x { border-color: var(--line2); background: transparent; color: var(--text2); }
 .board .pickpop .pn { color: var(--muted); font-size: 11px; line-height: 1.45; }
 .map.picking .mk.target:hover i { outline: 2px solid var(--live); outline-offset: 4px; }
+/* MAVLink log window and its header button (decision 0063) */
+.mavlink-log { background: var(--bg); color: var(--text2); }
+.mavlink-log h1 { color: var(--muted); font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: var(--ls); }
+.mavlink-log pre { font-family: var(--font-mono); font-size: 12px; line-height: 1.6; }
+.header-slot .mavlink-open { border: 1px solid var(--line2); border-radius: var(--r); background: transparent; color: var(--text2);
+  font-family: var(--font-mono); font-size: 11px; }
+.header-slot .mavlink-open:hover { border-color: var(--text); color: var(--text); }
