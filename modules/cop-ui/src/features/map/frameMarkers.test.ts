@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import s1 from "../../../../../contracts/examples/frames/s1_report_wait.json";
 import s3 from "../../../../../contracts/examples/frames/s3_takeover.json";
+import s8 from "../../../../../contracts/examples/frames/s8_neutralized.json";
 import type { Frame } from "../../contracts.gen";
 import { frameMarkers } from "./frameMarkers";
 
@@ -18,12 +19,20 @@ describe("frameMarkers", () => {
 
   it("makes one marker per target, seen when some vehicle sees it", () => {
     const { targets } = frameMarkers(s1 as Frame);
-    expect(targets).toEqual([{ id: "boat1", kind: "boat", lon: 124.7, lat: 37.98437, seen: true }]);
+    expect(targets).toEqual([
+      { id: "boat1", kind: "boat", lon: 124.7, lat: 37.98437, seen: true, neutralized: false, label: "boat1" },
+    ]);
   });
 
   it("marks a target nobody sees as not seen", () => {
     const f = s1 as Frame;
     const unseen = { ...f, targets: [{ ...f.targets[0], seen_by: [] }] };
     expect(frameMarkers(unseen).targets[0].seen).toBe(false);
+  });
+
+  it("marks a struck target neutralized and says so in its label", () => {
+    const { targets } = frameMarkers(s8 as Frame);
+    expect(targets.find((t) => t.id === "fast1")).toMatchObject({ neutralized: true, label: "fast1 · 무력화" });
+    expect(targets.find((t) => t.id === "boat1")).toMatchObject({ neutralized: false, label: "boat1" });
   });
 });

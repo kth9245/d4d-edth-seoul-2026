@@ -13,7 +13,6 @@ describe("metricView", () => {
         ["차단된 명령", "0"],
         ["기체 공백", "0:00"],
         ["동시 미결 카드 최대", "1"],
-        ["임무", "판정 전"],
       ],
     });
   });
@@ -25,8 +24,7 @@ describe("metricView", () => {
     expect([v.operator, v.manual]).toEqual([0, 0]);
     expect(v.rows[0]).toEqual(["결정", "0"]);
   });
-  it("names the mission result", () => {
-    expect(metricView({ mission_success: true }).rows).toContainEqual(["임무", "성공"]);
-    expect(metricView({ mission_success: false }).rows).toContainEqual(["임무", "실패"]);
+  it("does not judge the mission: the strike result is on its card (Part1-20)", () => {
+    expect(metricView({ mission_success: true }).rows.map(([k]) => k)).not.toContain("임무");
   });
 });

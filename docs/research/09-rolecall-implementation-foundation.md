@@ -326,7 +326,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | Part1-15 | 3분 대본·BUILT_HERE·제출 설명 | — | 리허설 1회, 사전 준비분(스파이크·contracts) 명시 | 동결 | 뒤 |
 | Part1-18 | 타격 계약(결정 0033, `docs/superpowers/specs/2026-10-10-strike-phase-design.md` 3절) | `ActionKind.strike_target`, `CommandKind.strike`, `ReportKind.target_neutralized`, `VehicleState.decision_id`, `Target.neutralized_ms` + play 대응표 행 + `describe.ts` 이름표 + API.md → TS·예시 재생성 | 한 커밋으로 pytest·smoke·TS 검사 통과(대응표 테스트가 ActionKind 전부를 요구) | Part1-1 | 2(지금) |
 | Part1-19 | 타격 시나리오·플레이(spec 5절·10.1) | 구조만: boat1·fast1을 enemies로(결정 0032), fast1 동쪽 해안 우회, 전환 버튼 '고속 보트 추적'(d2·usv), `track_fast` 수정·`track_fast_sea`·`strike`, 기체 capabilities. 숫자(등장 시각·경로점·속도)는 대략값, 맞추기는 Part2-19 | `check_operation` 통과, 틱 루프가 오류 없이 돌고 fast1이 나타나 움직임. s7·s8까지 가는 것은 Part2-19 완료 기준 | Part1-18, Part2-21~23, Part2-25 | 2 |
-| Part1-20 | 타격 화면(spec 6절) | 무력화 표적 회색 X, 결과 카드, 작전 성공, 예시 장면 s7·s8 추가·s5·s6 수정 | s7·s8이 화면 조작만으로 남 | Part1-18 | 2 |
+| Part1-20 | 타격 화면(spec 6절) | 무력화 표적 회색 X, 결과 카드에 승인 근거 한 줄(작전 성공 판정은 띄우지 않음, 지표 '임무' 행 제거), 예시 장면 s7·s8 추가·s5·s6을 타격 단계 순서로 | 예시 장면 s7·s8 화면 점검(scripts/qa/scenes.json) 통과. 실제 실행의 s7·s8은 통합 2 화면 점검에서 | Part1-18 | 2 |
 | Part1-21 | 편집기 적 열 + `GET /enemies`(결정 0032, spec 10.3) | Scenario.enemies → 작전 개요 적 열(등장 시각·위치·속도 + 플레이 카드, 읽기 전용) | 백령도 시나리오의 boat1·fast1이 편집기에 보임 | Part1-18 | 2 |
 
 ### Part 2 — 엔진 (sim, sensing, safety, runtime). 원본: `knowledge/spikes/rolecall_engine_proto/port/modules/` (저장소 `modules/`와 같은 경로·파일 하나 = SPEC 행 하나, 포맷 끝난 상태. 2026-10-10 devil-advocate 검토 뒤 재배치)

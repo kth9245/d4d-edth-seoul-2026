@@ -18,6 +18,13 @@
  {"nav": "/?scene=s6#live", "wait": 5000},
  {"layout": "S6 scene s6"},
  {"label": "S6 two block cards", "eval": "document.querySelectorAll('.card.block').length", "expect": 2},
+ {"nav": "/?scene=s7#live", "wait": 5000},
+ {"layout": "S7 scene s7"},
+ {"label": "S7 a strike approval card per tracker with its two choices", "eval": "[...document.querySelectorAll('.card')].filter(c => c.querySelector('.text').textContent.startsWith('타격 승인 요청') && c.querySelector('button')).map(c => [...c.querySelectorAll('button')].map(b => b.firstChild.textContent))", "expect": [["이 기체로 타격", "함께 타격"], ["이 기체로 타격", "함께 타격"]]},
+ {"nav": "/?scene=s8#live", "wait": 5000},
+ {"layout": "S8 scene s8"},
+ {"label": "S8 struck fast1 is a grey X named 무력화", "eval": "document.querySelector('.mk.target.neutralized span')?.textContent", "expect": "fast1 · 무력화"},
+ {"label": "S8 result card says which decision sent whom and the checks passed", "eval": "[...document.querySelectorAll('.card .preview')].map(p => p.textContent).find(t => t.startsWith('운용자 결정'))", "expect": "운용자 결정 dec-4 '함께 타격' → d2·usv 타격 · 출처·구역·배터리 검사 통과"},
  {"nav": "/?scene=s9#live", "wait": 4000},
  {"label": "S9 unknown scene says so", "eval": "document.querySelector('.status')?.innerText", "match": "^없는 장면 S9 "}
 ]

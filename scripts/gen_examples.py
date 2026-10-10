@@ -1,7 +1,7 @@
-"""Write contracts/examples/*.json (one per model) and contracts/examples/frames/*.json (six scenes),
-and the demo scenario demo/scenarios/baengnyeong_night.json with its plays in demo/plays/ (Part1-4).
+"""Write contracts/examples/*.json (one per model) and contracts/examples/frames/*.json (eight scenes).
 
-All examples come from one world (example_world.py) so ids match across files. Legacy T1-3 examples
+All examples come from one world (example_world.py, which reads the demo scenario JSON: decision 0035)
+so ids match across files. It never writes demo/: the demo JSON is edited by hand. Legacy T1-3 examples
 (detection, track, assessment, response, legacy_frame) are hand-written and left alone.
 Usage: uv run python scripts/gen_examples.py [--root DIR]
 """
@@ -45,7 +45,7 @@ def examples() -> dict[str, object]:
         message="표적 발견 뒤 선택지 있는 보고 없이 접근 step에 닿습니다",
     )
     direct = DirectControl(
-        id="dir-1", vehicle_id="d2", target=BLK1.alternative.params["target"], t_ms=at(31)
+        id="dir-1", vehicle_id="d2", target=BLK1.alternative.params["target"], t_ms=at(20, 5)
     )
     inputs = TickInputs(decisions=[{"id": "dec-1", "t_ms": T2, **decision.model_dump()}])
     outcome = TickOutcome(
@@ -117,9 +117,6 @@ def main(argv: list[str] | None = None) -> None:
     ap.add_argument("--root", default=str(ROOT))
     root = Path(ap.parse_args(argv).root)
     out = root / "contracts" / "examples"
-    _write(root / "demo" / "scenarios" / f"{SCENARIO.id}.json", SCENARIO)
-    for play in SCENARIO.plays:
-        _write(root / "demo" / "plays" / f"{play.id}.json", play)
     ex = examples()
     missing = set(ALL_MODELS) - LEGACY - set(ex)
     if missing:

@@ -103,7 +103,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 
 ## 6. 예시와 스텁
 
-- `contracts/examples/<모델 snake_case>.json`: 모델마다 하나씩 있다. `contracts/examples/frames/`에는 3분 대본의 6장면이 있다(`s1_report_wait`, `s2_after_decision`, `s3_takeover`, `s4_switch_pending`, `s5_zone_block`, `s6_battery_block`). `frame.json`은 s1과 같다. 모두 한 세계(기체 d1·d2·d3·usv·ugv, 작전 op1, 표적 boat1·fast1)에서 나왔다.
-- 다시 만드는 명령은 `uv run python scripts/gen_examples.py`이다. 세계 데이터는 `scripts/example_world.py`, 장면은 `scripts/example_scenes.py`에 있다. 위치는 손으로 계산한 근사값이다.
+- `contracts/examples/<모델 snake_case>.json`: 모델마다 하나씩 있다. `contracts/examples/frames/`에는 3분 대본의 8장면이 있다(`s1_report_wait`, `s2_after_decision`, `s3_takeover`, `s4_switch_pending`, `s5_zone_block`, `s6_battery_block`, `s7_strike_approval`, `s8_neutralized`; 시각 순서는 s1 s2 s3 s5 s6 s4 s7 s8, 결정 0033). `frame.json`은 s1과 같다. 모두 한 세계(기체 d1·d2·d3·usv·ugv, 작전 op1, 표적 boat1·fast1)에서 나왔다.
+- 다시 만드는 명령은 `uv run python scripts/gen_examples.py`이다. 세계는 시연 시나리오 `demo/scenarios/baengnyeong_night.json`을 `scripts/example_world.py`가 읽은 것이고(결정 0035, 시나리오는 JSON을 손으로 고친다), 장면은 `scripts/example_scenes.py`에 있다. 위치는 손으로 계산한 근사값이다. `gen_examples.py`는 `demo/`를 쓰지 않는다.
 - 아직 없는 함수의 스텁은 이 예시를 돌려준다(09 4.5). 통합 2(00:00) 전에 걷어낸다.
 - 레거시 T1-3 모델(`Detection`·`Track`·`Assessment`·`Response`·`LegacyFrame`)은 지금 gateway·smoke가 쓰고 있다. 통합 1 뒤 smoke를 새 엔진으로 바꿀 때 뺀다(Part1-14).

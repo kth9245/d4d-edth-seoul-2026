@@ -1,0 +1,576 @@
+{
+ "t_ms": 1791635140000,
+ "run": {
+  "status": "running",
+  "speed": 1.0
+ },
+ "vehicles": [
+  {
+   "id": "d1",
+   "t_ms": 1791635140000,
+   "pos": {
+    "lat": 37.95,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "heading_deg": 0.0,
+   "battery_pct": 11.2,
+   "status": "maintenance",
+   "play_id": "watch",
+   "step_id": "return",
+   "entered_step": true,
+   "waypoint_idx": -1,
+   "active": {
+    "command": {
+     "id": "cmd-d1-1791634740000",
+     "vehicle_id": "d1",
+     "kind": "return_home",
+     "params": {},
+     "provenance": {
+      "source": "play_step",
+      "play_id": "watch",
+      "step_id": "return",
+      "decision_id": null,
+      "injection_id": null,
+      "operator_id": null,
+      "issued_ms": 1791634740000
+     }
+    },
+    "checks": [
+     "no_provenance",
+     "outside_zone",
+     "battery_insufficient"
+    ],
+    "passed_ms": 1791634740000
+   },
+   "pending_report_id": null,
+   "target_id": null,
+   "decision_id": null,
+   "emergency": null,
+   "resume_play_id": null,
+   "resume_step_id": null
+  },
+  {
+   "id": "d2",
+   "t_ms": 1791635140000,
+   "pos": {
+    "lat": 37.9839,
+    "lon": 124.7128,
+    "alt_m": 0.0
+   },
+   "heading_deg": 0.0,
+   "battery_pct": 66.0,
+   "status": "active",
+   "play_id": "track_fast",
+   "step_id": "ask",
+   "entered_step": true,
+   "waypoint_idx": 0,
+   "active": {
+    "command": {
+     "id": "cmd-d2-1791635100000",
+     "vehicle_id": "d2",
+     "kind": "orbit",
+     "params": {
+      "target_id": "fast1",
+      "distance_m": 300
+     },
+     "provenance": {
+      "source": "play_step",
+      "play_id": "track_fast",
+      "step_id": "ask",
+      "decision_id": null,
+      "injection_id": null,
+      "operator_id": null,
+      "issued_ms": 1791635100000
+     }
+    },
+    "checks": [
+     "no_provenance",
+     "outside_zone",
+     "battery_insufficient"
+    ],
+    "passed_ms": 1791635100000
+   },
+   "pending_report_id": "rep-d2-1791635100000",
+   "target_id": "fast1",
+   "decision_id": null,
+   "emergency": null,
+   "resume_play_id": null,
+   "resume_step_id": null
+  },
+  {
+   "id": "d3",
+   "t_ms": 1791635140000,
+   "pos": {
+    "lat": 37.979,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "heading_deg": 0.0,
+   "battery_pct": 88.8,
+   "status": "active",
+   "play_id": "watch",
+   "step_id": "watch",
+   "entered_step": true,
+   "waypoint_idx": 0,
+   "active": {
+    "command": {
+     "id": "cmd-d3-1791634740000",
+     "vehicle_id": "d3",
+     "kind": "orbit",
+     "params": {
+      "target_id": "boat1",
+      "distance_m": 150
+     },
+     "provenance": {
+      "source": "play_step",
+      "play_id": "watch",
+      "step_id": "watch",
+      "decision_id": null,
+      "injection_id": null,
+      "operator_id": null,
+      "issued_ms": 1791634740000
+     }
+    },
+    "checks": [
+     "no_provenance",
+     "outside_zone",
+     "battery_insufficient"
+    ],
+    "passed_ms": 1791634740000
+   },
+   "pending_report_id": null,
+   "target_id": "boat1",
+   "decision_id": null,
+   "emergency": null,
+   "resume_play_id": null,
+   "resume_step_id": null
+  },
+  {
+   "id": "usv",
+   "t_ms": 1791635140000,
+   "pos": {
+    "lat": 37.979,
+    "lon": 124.7088,
+    "alt_m": 0.0
+   },
+   "heading_deg": 0.0,
+   "battery_pct": 96.1,
+   "status": "active",
+   "play_id": "track_fast_sea",
+   "step_id": "ask",
+   "entered_step": true,
+   "waypoint_idx": 0,
+   "active": {
+    "command": {
+     "id": "cmd-usv-1791635120000",
+     "vehicle_id": "usv",
+     "kind": "keep_distance",
+     "params": {
+      "target_id": "fast1",
+      "distance_m": 300
+     },
+     "provenance": {
+      "source": "play_step",
+      "play_id": "track_fast_sea",
+      "step_id": "ask",
+      "decision_id": null,
+      "injection_id": null,
+      "operator_id": null,
+      "issued_ms": 1791635120000
+     }
+    },
+    "checks": [
+     "no_provenance",
+     "outside_zone",
+     "battery_insufficient"
+    ],
+    "passed_ms": 1791635120000
+   },
+   "pending_report_id": "rep-usv-1791635120000",
+   "target_id": "fast1",
+   "decision_id": null,
+   "emergency": null,
+   "resume_play_id": null,
+   "resume_step_id": null
+  },
+  {
+   "id": "ugv",
+   "t_ms": 1791635140000,
+   "pos": {
+    "lat": 37.978,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "heading_deg": 0.0,
+   "battery_pct": 95.4,
+   "status": "active",
+   "play_id": "landing",
+   "step_id": "move",
+   "entered_step": true,
+   "waypoint_idx": -1,
+   "active": {
+    "command": {
+     "id": "cmd-ugv-1791634290000",
+     "vehicle_id": "ugv",
+     "kind": "move",
+     "params": {
+      "target": {
+       "lat": 37.978,
+       "lon": 124.7,
+       "alt_m": 0.0
+      }
+     },
+     "provenance": {
+      "source": "play_step",
+      "play_id": "landing",
+      "step_id": "move",
+      "decision_id": null,
+      "injection_id": null,
+      "operator_id": null,
+      "issued_ms": 1791634290000
+     }
+    },
+    "checks": [
+     "no_provenance",
+     "outside_zone",
+     "battery_insufficient"
+    ],
+    "passed_ms": 1791634290000
+   },
+   "pending_report_id": null,
+   "target_id": null,
+   "decision_id": null,
+   "emergency": null,
+   "resume_play_id": null,
+   "resume_step_id": null
+  }
+ ],
+ "targets": [
+  {
+   "id": "boat1",
+   "kind": "boat",
+   "pos": {
+    "lat": 37.97335,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "vel_east_mps": 0.0,
+   "vel_north_mps": -1.0,
+   "first_seen_ms": 1791634270000,
+   "last_seen_ms": 1791635140000,
+   "seen_by": [
+    "d3"
+   ],
+   "neutralized_ms": null,
+   "play_id": null,
+   "step_id": null,
+   "waypoint_idx": 0,
+   "step_since_ms": null
+  },
+  {
+   "id": "fast1",
+   "kind": "fast_boat",
+   "pos": {
+    "lat": 37.9812,
+    "lon": 124.7135,
+    "alt_m": 0.0
+   },
+   "vel_east_mps": 6.3,
+   "vel_north_mps": 0.0,
+   "first_seen_ms": 1791634980000,
+   "last_seen_ms": 1791635140000,
+   "seen_by": [
+    "d2",
+    "usv"
+   ],
+   "neutralized_ms": null,
+   "play_id": null,
+   "step_id": null,
+   "waypoint_idx": 0,
+   "step_since_ms": null
+  }
+ ],
+ "reports": [
+  {
+   "id": "rep-d1-1791634270000",
+   "t_ms": 1791634270000,
+   "kind": "target_detected",
+   "vehicle_id": "d1",
+   "target_id": "boat1",
+   "text": "미식별 선박 접근",
+   "choices": [
+    {
+     "id": "approach",
+     "label": "근접 확인",
+     "play_by_vehicle": {
+      "d1": "watch",
+      "usv": "approach",
+      "ugv": "landing",
+      "d2": "patrol_b"
+     }
+    }
+   ],
+   "resolved_ms": 1791634290000,
+   "decision_id": "dec-1"
+  },
+  {
+   "id": "rep-d3-1791634740000",
+   "t_ms": 1791634740000,
+   "kind": "vehicle_gap",
+   "vehicle_id": "d3",
+   "target_id": null,
+   "text": "d1 귀환, 예비 d3 투입: 감시 공백",
+   "choices": [],
+   "resolved_ms": 1791634980000,
+   "decision_id": null
+  },
+  {
+   "id": "rep-d2-1791634800000",
+   "t_ms": 1791634800000,
+   "kind": "command_blocked",
+   "vehicle_id": "d2",
+   "target_id": null,
+   "text": "구역 밖 차단: d2 → 38.0500, 124.6600",
+   "choices": [],
+   "resolved_ms": null,
+   "decision_id": null
+  },
+  {
+   "id": "rep-d2-1791634830000",
+   "t_ms": 1791634830000,
+   "kind": "command_blocked",
+   "vehicle_id": "d2",
+   "target_id": null,
+   "text": "배터리 차단: d2 → 37.9050, 124.8350",
+   "choices": [],
+   "resolved_ms": null,
+   "decision_id": null
+  },
+  {
+   "id": "rep-d2-1791635000000-i",
+   "t_ms": 1791635000000,
+   "kind": "injection_pending",
+   "vehicle_id": "d2",
+   "target_id": null,
+   "text": "전환 승인 대기: 고속 보트 추적",
+   "choices": [],
+   "resolved_ms": 1791635040000,
+   "decision_id": null
+  },
+  {
+   "id": "rep-d2-1791635040000",
+   "t_ms": 1791635040000,
+   "kind": "target_select",
+   "vehicle_id": "d2",
+   "target_id": null,
+   "text": "추적할 표적 선택(d2)",
+   "choices": [
+    {
+     "id": "fast1",
+     "label": "fast1 fast_boat",
+     "play_by_vehicle": {}
+    },
+    {
+     "id": "boat1",
+     "label": "boat1 boat",
+     "play_by_vehicle": {}
+    }
+   ],
+   "resolved_ms": 1791635050000,
+   "decision_id": "dec-2"
+  },
+  {
+   "id": "rep-usv-1791635040000",
+   "t_ms": 1791635040000,
+   "kind": "target_select",
+   "vehicle_id": "usv",
+   "target_id": null,
+   "text": "추적할 표적 선택(usv)",
+   "choices": [
+    {
+     "id": "fast1",
+     "label": "fast1 fast_boat",
+     "play_by_vehicle": {}
+    },
+    {
+     "id": "boat1",
+     "label": "boat1 boat",
+     "play_by_vehicle": {}
+    }
+   ],
+   "resolved_ms": 1791635055000,
+   "decision_id": "dec-3"
+  },
+  {
+   "id": "rep-d2-1791635100000",
+   "t_ms": 1791635100000,
+   "kind": "target_detected",
+   "vehicle_id": "d2",
+   "target_id": "fast1",
+   "text": "타격 승인 요청 · d2 센서 탐지 · fast1(고속정) · 300 m",
+   "choices": [
+    {
+     "id": "strike_d2",
+     "label": "이 기체로 타격",
+     "play_by_vehicle": {
+      "d2": "strike"
+     }
+    },
+    {
+     "id": "strike_both",
+     "label": "함께 타격",
+     "play_by_vehicle": {
+      "d2": "strike",
+      "usv": "strike"
+     }
+    }
+   ],
+   "resolved_ms": null,
+   "decision_id": null
+  },
+  {
+   "id": "rep-usv-1791635120000",
+   "t_ms": 1791635120000,
+   "kind": "target_detected",
+   "vehicle_id": "usv",
+   "target_id": "fast1",
+   "text": "타격 승인 요청 · usv 센서 탐지 · fast1(고속정) · 420 m",
+   "choices": [
+    {
+     "id": "strike_usv",
+     "label": "이 기체로 타격",
+     "play_by_vehicle": {
+      "usv": "strike"
+     }
+    },
+    {
+     "id": "strike_both",
+     "label": "함께 타격",
+     "play_by_vehicle": {
+      "d2": "strike",
+      "usv": "strike"
+     }
+    }
+   ],
+   "resolved_ms": null,
+   "decision_id": null
+  }
+ ],
+ "assignments": [
+  {
+   "vehicle_id": "d1",
+   "play_id": "watch",
+   "since_ms": 1791634290000,
+   "reason": "결정 dec-1"
+  },
+  {
+   "vehicle_id": "usv",
+   "play_id": "track_fast_sea",
+   "since_ms": 1791635040000,
+   "reason": "전환 inj-1"
+  },
+  {
+   "vehicle_id": "ugv",
+   "play_id": "landing",
+   "since_ms": 1791634290000,
+   "reason": "결정 dec-1"
+  },
+  {
+   "vehicle_id": "d2",
+   "play_id": "track_fast",
+   "since_ms": 1791635040000,
+   "reason": "전환 inj-1"
+  },
+  {
+   "vehicle_id": "d3",
+   "play_id": "watch",
+   "since_ms": 1791634740000,
+   "reason": "예비 투입: d1 대신"
+  }
+ ],
+ "blocks": [
+  {
+   "command_id": "cmd-d2-1791634800000",
+   "vehicle_id": "d2",
+   "reason": "outside_zone",
+   "detail": "작전 구역 밖(38.0500, 124.6600)",
+   "alternative": {
+    "id": "cmd-d2-1791634800000",
+    "vehicle_id": "d2",
+    "kind": "move",
+    "params": {
+     "target": {
+      "lat": 37.9995,
+      "lon": 124.6768,
+      "alt_m": 0
+     }
+    },
+    "provenance": {
+     "source": "operator_direct",
+     "play_id": null,
+     "step_id": null,
+     "decision_id": null,
+     "injection_id": null,
+     "operator_id": "op1",
+     "issued_ms": 1791634800000
+    }
+   },
+   "t_ms": 1791634800000
+  },
+  {
+   "command_id": "cmd-d2-1791634830000",
+   "vehicle_id": "d2",
+   "reason": "battery_insufficient",
+   "detail": "필요 2210s > 가용 1490s",
+   "alternative": {
+    "id": "cmd-d2-1791634830000",
+    "vehicle_id": "d2",
+    "kind": "move",
+    "params": {
+     "target": {
+      "lat": 37.9196,
+      "lon": 124.7652,
+      "alt_m": 0
+     }
+    },
+    "provenance": {
+     "source": "operator_direct",
+     "play_id": null,
+     "step_id": null,
+     "decision_id": null,
+     "injection_id": null,
+     "operator_id": "op1",
+     "issued_ms": 1791634830000
+    }
+   },
+   "t_ms": 1791634830000
+  }
+ ],
+ "injections": [
+  {
+   "id": "inj-1",
+   "t_ms": 1791635000000,
+   "label": "고속 보트 추적",
+   "play_by_vehicle": {
+    "d2": "track_fast",
+    "usv": "track_fast_sea"
+   },
+   "switch_id": "track_fast",
+   "status": "approved"
+  }
+ ],
+ "metrics": {
+  "operator_actions": 8,
+  "manual_baseline_actions": 21,
+  "open_reports_max": 2,
+  "vehicle_gap_ms": 240000,
+  "blocked_commands": 2,
+  "decisions": 3,
+  "commands_sent": 13,
+  "mission_success": null
+ },
+ "log": [
+  "[계산] 21:25:20 결정 dec-3 → fast1"
+ ]
+}

@@ -36,8 +36,15 @@ def test_scene_frames_are_frames(path):
     Frame.model_validate(_load(path))
 
 
-def test_six_scene_frames_exist():
-    assert len(list((EXAMPLES / "frames").glob("*.json"))) == 6
+def test_eight_scene_frames_exist():
+    assert len(list((EXAMPLES / "frames").glob("*.json"))) == 8
+
+
+def test_example_scenario_is_the_demo_scenario():  # decision 0035: the demo JSON is the source
+    demo = EXAMPLES.parent.parent / "demo" / "scenarios" / "baengnyeong_night.json"
+    assert Scenario.model_validate(_load(EXAMPLES / "scenario.json")) == Scenario.model_validate(
+        _load(demo)
+    )
 
 
 def test_examples_share_one_world():
@@ -113,8 +120,8 @@ def test_strike_and_enemy_fields_default_to_empty():
     assert (tg.neutralized_ms, tg.play_id, tg.step_id, tg.waypoint_idx, tg.step_since_ms) == (
         None, None, None, 0, None,
     )  # fmt: skip
-    sc = Scenario.model_validate(_load(EXAMPLES / "scenario.json"))
-    assert sc.enemies == []
+    sc = Scenario.model_validate(_load(EXAMPLES / "scenario.json"))  # the demo world (0035)
+    assert {e.id for e in sc.enemies} == {"boat1", "fast1"}
 
 
 def test_enemy_appears_at_a_point_or_from_another_enemy():

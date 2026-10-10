@@ -1,5 +1,5 @@
 {
- "t_ms": 1791635460000,
+ "t_ms": 1791634800000,
  "run": {
   "status": "running",
   "speed": 1.0
@@ -7,7 +7,7 @@
  "vehicles": [
   {
    "id": "d1",
-   "t_ms": 1791635010000,
+   "t_ms": 1791634800000,
    "pos": {
     "lat": 37.95,
     "lon": 124.7,
@@ -52,36 +52,46 @@
   },
   {
    "id": "d2",
-   "t_ms": 1791635460000,
+   "t_ms": 1791634800000,
    "pos": {
-    "lat": 37.998,
-    "lon": 124.69,
+    "lat": 37.93,
+    "lon": 124.7,
     "alt_m": 0.0
    },
    "heading_deg": 0.0,
-   "battery_pct": 51.3,
+   "battery_pct": 79.0,
    "status": "active",
-   "play_id": "track_fast",
-   "step_id": "track",
+   "play_id": "patrol_b",
+   "step_id": "patrol",
    "entered_step": true,
-   "waypoint_idx": 0,
+   "waypoint_idx": 1,
    "active": {
     "command": {
-     "id": "cmd-d2-1791635050000",
+     "id": "cmd-d2-1791634290000",
      "vehicle_id": "d2",
-     "kind": "orbit",
+     "kind": "follow_route",
      "params": {
-      "target_id": "fast1",
-      "distance_m": 300
+      "route": [
+       {
+        "lat": 37.93,
+        "lon": 124.64,
+        "alt_m": 0
+       },
+       {
+        "lat": 37.93,
+        "lon": 124.76,
+        "alt_m": 0
+       }
+      ]
      },
      "provenance": {
       "source": "play_step",
-      "play_id": "track_fast",
-      "step_id": "track",
+      "play_id": "patrol_b",
+      "step_id": "patrol",
       "decision_id": null,
       "injection_id": null,
       "operator_id": null,
-      "issued_ms": 1791635050000
+      "issued_ms": 1791634290000
      }
     },
     "checks": [
@@ -89,10 +99,10 @@
      "outside_zone",
      "battery_insufficient"
     ],
-    "passed_ms": 1791635050000
+    "passed_ms": 1791634290000
    },
    "pending_report_id": null,
-   "target_id": "fast1",
+   "target_id": null,
    "decision_id": null,
    "emergency": null,
    "resume_play_id": null,
@@ -100,9 +110,9 @@
   },
   {
    "id": "d3",
-   "t_ms": 1791635010000,
+   "t_ms": 1791634800000,
    "pos": {
-    "lat": 37.9796,
+    "lat": 37.9655,
     "lon": 124.7,
     "alt_m": 0.0
    },
@@ -148,14 +158,14 @@
   },
   {
    "id": "usv",
-   "t_ms": 1791635010000,
+   "t_ms": 1791634800000,
    "pos": {
-    "lat": 37.9802,
+    "lat": 37.979,
     "lon": 124.7012,
     "alt_m": 0.0
    },
    "heading_deg": 0.0,
-   "battery_pct": 96.8,
+   "battery_pct": 96.9,
    "status": "active",
    "play_id": "approach",
    "step_id": "approach",
@@ -196,14 +206,14 @@
   },
   {
    "id": "ugv",
-   "t_ms": 1791635010000,
+   "t_ms": 1791634800000,
    "pos": {
-    "lat": 37.975,
+    "lat": 37.978,
     "lon": 124.7,
     "alt_m": 0.0
    },
    "heading_deg": 0.0,
-   "battery_pct": 95.1,
+   "battery_pct": 95.4,
    "status": "active",
    "play_id": "landing",
    "step_id": "move",
@@ -216,9 +226,9 @@
      "kind": "move",
      "params": {
       "target": {
-       "lat": 37.975,
+       "lat": 37.978,
        "lon": 124.7,
-       "alt_m": 0
+       "alt_m": 0.0
       }
      },
      "provenance": {
@@ -251,38 +261,16 @@
    "id": "boat1",
    "kind": "boat",
    "pos": {
-    "lat": 37.97375,
+    "lat": 37.97675,
     "lon": 124.7,
     "alt_m": 0.0
    },
    "vel_east_mps": 0.0,
    "vel_north_mps": -1.0,
    "first_seen_ms": 1791634270000,
-   "last_seen_ms": 1791635460000,
+   "last_seen_ms": 1791634800000,
    "seen_by": [
-    "d3",
     "usv"
-   ],
-   "neutralized_ms": null,
-   "play_id": null,
-   "step_id": null,
-   "waypoint_idx": 0,
-   "step_since_ms": null
-  },
-  {
-   "id": "fast1",
-   "kind": "fast_boat",
-   "pos": {
-    "lat": 38.0055,
-    "lon": 124.6993,
-    "alt_m": 0.0
-   },
-   "vel_east_mps": -2.0,
-   "vel_north_mps": 6.0,
-   "first_seen_ms": 1791634980000,
-   "last_seen_ms": 1791635460000,
-   "seen_by": [
-    "d2"
    ],
    "neutralized_ms": null,
    "play_id": null,
@@ -322,49 +310,16 @@
    "target_id": null,
    "text": "d1 귀환, 예비 d3 투입: 감시 공백",
    "choices": [],
-   "resolved_ms": 1791634980000,
+   "resolved_ms": null,
    "decision_id": null
   },
   {
-   "id": "rep-d2-1791635000000",
-   "t_ms": 1791635000000,
-   "kind": "injection_pending",
-   "vehicle_id": "d2",
-   "target_id": "fast1",
-   "text": "전환 승인 대기: 고속 보트 추적(d2)",
-   "choices": [],
-   "resolved_ms": 1791635040000,
-   "decision_id": null
-  },
-  {
-   "id": "rep-d2-1791635040000",
-   "t_ms": 1791635040000,
-   "kind": "target_select",
-   "vehicle_id": "d2",
-   "target_id": null,
-   "text": "추적할 표적 선택(d2)",
-   "choices": [
-    {
-     "id": "fast1",
-     "label": "fast1 고속 보트",
-     "play_by_vehicle": {}
-    },
-    {
-     "id": "boat1",
-     "label": "boat1 선박",
-     "play_by_vehicle": {}
-    }
-   ],
-   "resolved_ms": 1791635050000,
-   "decision_id": "dec-2"
-  },
-  {
-   "id": "rep-d2-1791635460000",
-   "t_ms": 1791635460000,
+   "id": "rep-d2-1791634800000",
+   "t_ms": 1791634800000,
    "kind": "command_blocked",
    "vehicle_id": "d2",
    "target_id": null,
-   "text": "구역 밖 차단: d2 → 38.0500, 124.7000",
+   "text": "구역 밖 차단: d2 → 38.0500, 124.6600",
    "choices": [],
    "resolved_ms": null,
    "decision_id": null
@@ -391,9 +346,9 @@
   },
   {
    "vehicle_id": "d2",
-   "play_id": "track_fast",
-   "since_ms": 1791635040000,
-   "reason": "전환 inj-1"
+   "play_id": "patrol_b",
+   "since_ms": 1791634290000,
+   "reason": "결정 dec-1"
   },
   {
    "vehicle_id": "d3",
@@ -404,18 +359,18 @@
  ],
  "blocks": [
   {
-   "command_id": "cmd-d2-1791635460000",
+   "command_id": "cmd-d2-1791634800000",
    "vehicle_id": "d2",
    "reason": "outside_zone",
-   "detail": "작전 구역 밖(38.0500, 124.7000)",
+   "detail": "작전 구역 밖(38.0500, 124.6600)",
    "alternative": {
-    "id": "cmd-d2-1791635460000",
+    "id": "cmd-d2-1791634800000",
     "vehicle_id": "d2",
     "kind": "move",
     "params": {
      "target": {
-      "lat": 37.99955,
-      "lon": 124.6903,
+      "lat": 37.9995,
+      "lon": 124.6768,
       "alt_m": 0
      }
     },
@@ -426,36 +381,25 @@
      "decision_id": null,
      "injection_id": null,
      "operator_id": "op1",
-     "issued_ms": 1791635460000
+     "issued_ms": 1791634800000
     }
    },
-   "t_ms": 1791635460000
+   "t_ms": 1791634800000
   }
  ],
- "injections": [
-  {
-   "id": "inj-1",
-   "t_ms": 1791635000000,
-   "label": "고속 보트 추적: d2",
-   "play_by_vehicle": {
-    "d2": "track_fast"
-   },
-   "switch_id": null,
-   "status": "approved"
-  }
- ],
+ "injections": [],
  "metrics": {
-  "operator_actions": 5,
-  "manual_baseline_actions": 14,
+  "operator_actions": 2,
+  "manual_baseline_actions": 11,
   "open_reports_max": 1,
-  "vehicle_gap_ms": 240000,
+  "vehicle_gap_ms": 60000,
   "blocked_commands": 1,
-  "decisions": 2,
-  "commands_sent": 9,
+  "decisions": 1,
+  "commands_sent": 8,
   "mission_success": null
  },
  "log": [
-  "[계산] 21:31 직접 조종 dir-1 d2 → 38.0500, 124.7000",
-  "[계산] 21:31 차단 outside_zone, 대안 37.9996, 124.6903"
+  "[계산] 21:20:00 직접 조종 dir-1 d2",
+  "[계산] 21:20:00 차단 d2 outside_zone"
  ]
 }

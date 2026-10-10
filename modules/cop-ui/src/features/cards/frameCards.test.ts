@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import s1 from "../../../../../contracts/examples/frames/s1_report_wait.json";
 import s4 from "../../../../../contracts/examples/frames/s4_switch_pending.json";
 import s6 from "../../../../../contracts/examples/frames/s6_battery_block.json";
+import s7 from "../../../../../contracts/examples/frames/s7_strike_approval.json";
+import s8 from "../../../../../contracts/examples/frames/s8_neutralized.json";
 import type { Frame } from "../../contracts.gen";
 import { frameCards } from "./frameCards";
 
@@ -18,8 +20,8 @@ describe("frameCards", () => {
     const cards = frameCards(s4 as Frame);
     expect(cards.filter((c) => c.kind === "injection_pending")).toEqual([]);
     const inj = cards.find((c) => c.source === "injection")!;
-    expect(inj).toMatchObject({ id: "inj-1", vehicle: "d2", text: "고속 보트 추적: d2", done: null, choices: [],
-      preview: "d2→track_fast" });
+    expect(inj).toMatchObject({ id: "inj-1", vehicle: "d2·usv", text: "고속 보트 추적", done: null, choices: [],
+      preview: "d2→track_fast · usv→track_fast_sea" });
   });
 
   it("shows each block from Frame.blocks with its reason and detail, not the command_blocked reports", () => {
@@ -27,14 +29,14 @@ describe("frameCards", () => {
     expect(cards.filter((c) => c.kind === "command_blocked")).toEqual([]);
     const blocks = cards.filter((c) => c.source === "block");
     expect(blocks.map((b) => [b.id, b.kind, b.text])).toEqual([
-      ["cmd-d2-1791635490000", "battery_insufficient", "필요 1873s > 가용 960s · 대안 지점 있음"],
-      ["cmd-d2-1791635460000", "outside_zone", "작전 구역 밖(38.0500, 124.7000) · 대안 지점 있음"],
+      ["cmd-d2-1791634830000", "battery_insufficient", "필요 2210s > 가용 1490s · 대안 지점 있음"],
+      ["cmd-d2-1791634800000", "outside_zone", "작전 구역 밖(38.0500, 124.6600) · 대안 지점 있음"],
     ]);
   });
 
   it("carries the alternative point a block offers, for the same vehicle", () => {
-    const battery = frameCards(s6 as Frame).find((c) => c.id === "cmd-d2-1791635490000")!;
-    expect(battery.alternative).toEqual({ lat: 37.9509, lon: 124.6255 });
+    const battery = frameCards(s6 as Frame).find((c) => c.id === "cmd-d2-1791634830000")!;
+    expect(battery.alternative).toEqual({ lat: 37.9196, lon: 124.7652 });
     const noAlt = { ...(s6 as Frame), blocks: [{ ...(s6 as Frame).blocks[0], alternative: null }] };
     expect(frameCards(noAlt).find((c) => c.source === "block")!.alternative).toBeNull();
   });
@@ -45,9 +47,15 @@ describe("frameCards", () => {
   });
 
   it("marks resolved reports and settled injections done, with no choices", () => {
-    const cards = frameCards(s6 as Frame);
+    const cards = frameCards(s7 as Frame);
     const detected = cards.find((c) => c.id === "rep-d1-1791634270000")!;
     expect(detected).toMatchObject({ done: "처리됨 21:11:30", choices: [] });
     expect(cards.find((c) => c.id === "inj-1")!.done).toBe("승인됨");
+  });
+
+  it("says on the result card which operator decision and checks the strike went through", () => {
+    const hit = frameCards(s8 as Frame).find((c) => c.kind === "target_neutralized")!;
+    expect(hit).toMatchObject({ vehicle: "d2", text: "fast1 무력화(d2)", choices: [], done: null,
+      preview: "운용자 결정 dec-4 '함께 타격' → d2·usv 타격 · 출처·구역·배터리 검사 통과" });
   });
 });

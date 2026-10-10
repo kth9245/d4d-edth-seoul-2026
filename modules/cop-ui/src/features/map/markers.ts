@@ -7,7 +7,8 @@ export type MarkerStore = Map<string, Marker>;
 // Keep one HTML marker per id: create new ones, move existing ones, remove the ones that left the frame.
 // MapLibre owns the classes of the outer element, so the style classes go on an inner element.
 // A marker with onClick swallows its own mouse events so the click never reaches the map as a map click.
-function sync<T extends { id: string; lon: number; lat: number }>(
+// The label is the item's label (or its id) and is rewritten every frame, e.g. "fast1 · 무력화" once struck.
+function sync<T extends { id: string; lon: number; lat: number; label?: string }>(
   map: MapLibreMap, store: MarkerStore, items: T[], cls: (item: T) => string, onClick?: (id: string) => void,
 ): void {
   const ids = new Set(items.map((i) => i.id));
@@ -23,7 +24,7 @@ function sync<T extends { id: string; lon: number; lat: number }>(
       const outer = document.createElement("div");
       const inner = outer.appendChild(document.createElement("div"));
       inner.appendChild(document.createElement("i"));
-      inner.appendChild(document.createElement("span")).textContent = item.id;
+      inner.appendChild(document.createElement("span"));
       if (onClick) {
         const id = item.id;
         for (const type of ["mousedown", "mouseup", "dblclick"]) outer.addEventListener(type, (e) => e.stopPropagation());
@@ -36,7 +37,9 @@ function sync<T extends { id: string; lon: number; lat: number }>(
       store.set(item.id, mk);
     }
     mk.setLngLat([item.lon, item.lat]);
-    (mk.getElement().firstChild as HTMLElement).className = cls(item);
+    const inner = mk.getElement().firstChild as HTMLElement;
+    inner.className = cls(item);
+    inner.lastChild!.textContent = item.label ?? item.id;
   }
 }
 
@@ -46,7 +49,7 @@ export function syncVehicles(map: MapLibreMap, store: MarkerStore, items: Vehicl
 }
 
 export function syncTargets(map: MapLibreMap, store: MarkerStore, items: TargetMarker[]): void {
-  sync(map, store, items, (t) => `mk target ${t.kind}${t.seen ? "" : " unseen"}`);
+  sync(map, store, items, (t) => `mk target ${t.kind}${t.seen ? "" : " unseen"}${t.neutralized ? " neutralized" : ""}`);
 }
 
 // Where direct-control orders are heading (a cross per vehicle), so the operator sees the order land.

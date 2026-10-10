@@ -226,9 +226,9 @@
      "kind": "move",
      "params": {
       "target": {
-       "lat": 37.975,
+       "lat": 37.978,
        "lon": 124.7,
-       "alt_m": 0
+       "alt_m": 0.0
       }
      },
      "provenance": {

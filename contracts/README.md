@@ -3,7 +3,7 @@
 - 데이터 형식의 정본: `contracts/models/` 패키지(pydantic). `from contracts.models import X`로만 쓴다.
 - 규약(개념, 함수 서명, 틱 순서, REST·WS, id·시간): `contracts/API.md`.
 - 자동 생성(직접 수정 금지): `contracts/schema/*.json`, `modules/cop-ui/src/contracts.gen.ts` ← `scripts/gen_contracts.py`.
-- 예시: `contracts/examples/<모델 snake_case>.json`, 3분 대본 6장면 `contracts/examples/frames/` ← `scripts/gen_examples.py`(레거시 T1-3 예시 5개는 손으로 쓴 것).
+- 예시: `contracts/examples/<모델 snake_case>.json`, 3분 대본 8장면 `contracts/examples/frames/` ← `scripts/gen_examples.py`(세계는 시연 시나리오 JSON, 결정 0035. 레거시 T1-3 예시 5개는 손으로 쓴 것).
 
 | 파일 | 모델 |
 |---|---|

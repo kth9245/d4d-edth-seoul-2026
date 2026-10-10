@@ -11,9 +11,9 @@ describe("groupPlays", () => {
     const groups = groupPlays(plays);
     expect(groups.map((g) => [g.label, ids(g)])).toEqual([
       ["드론", ["patrol_a", "watch", "patrol_b", "track_fast"]],
-      ["수상정", ["approach"]],
+      ["수상정", ["approach", "track_fast_sea", "enemy_boat1", "enemy_fast1"]],
       ["지상", ["landing"]],
-      ["공통", ["standby", "go_home"]],
+      ["공통", ["standby", "go_home", "strike"]],
     ]);
   });
   it("puts a play without domains into common and drops empty groups", () => {

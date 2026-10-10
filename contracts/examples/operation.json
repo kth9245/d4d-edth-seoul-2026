@@ -81,6 +81,14 @@
     "usv": "go_home",
     "ugv": "go_home"
    }
+  },
+  {
+   "id": "track_fast",
+   "label": "고속 보트 추적",
+   "play_by_vehicle": {
+    "d2": "track_fast",
+    "usv": "track_fast_sea"
+   }
   }
  ]
 }

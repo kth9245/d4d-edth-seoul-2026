@@ -34,10 +34,10 @@ def test_fast_boat_tracking_lets_the_operator_pick_the_target():
     assert track.steps[0].do.params["target"] == "operator"
 
 
-def test_switch_scene_shows_the_target_select_card():
-    s5 = Frame.model_validate(_load(ROOT / "contracts/examples/frames/s5_zone_block.json"))
-    picks = [r for r in s5.reports if r.kind == "target_select"]
-    assert picks and picks[0].decision_id == "dec-2"
+def test_strike_approval_scene_follows_a_target_select_card_per_tracker():
+    s7 = Frame.model_validate(_load(ROOT / "contracts/examples/frames/s7_strike_approval.json"))
+    picks = [r for r in s7.reports if r.kind == "target_select"]
+    assert [(p.vehicle_id, p.decision_id) for p in picks] == [("d2", "dec-2"), ("usv", "dec-3")]
 
 
 def test_vehicle_homes_are_apart_on_the_map():

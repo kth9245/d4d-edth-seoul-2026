@@ -54,8 +54,8 @@
    "id": "d2",
    "t_ms": 1791635010000,
    "pos": {
-    "lat": 37.93,
-    "lon": 124.62,
+    "lat": 37.9612,
+    "lon": 124.6893,
     "alt_m": 0.0
    },
    "heading_deg": 0.0,
@@ -64,34 +64,27 @@
    "play_id": "patrol_b",
    "step_id": "patrol",
    "entered_step": true,
-   "waypoint_idx": 2,
+   "waypoint_idx": 0,
    "active": {
     "command": {
-     "id": "cmd-d2-1791634290000",
+     "id": "cmd-d2-1791634805000",
      "vehicle_id": "d2",
-     "kind": "follow_route",
+     "kind": "move",
      "params": {
-      "route": [
-       {
-        "lat": 37.93,
-        "lon": 124.64,
-        "alt_m": 0
-       },
-       {
-        "lat": 37.93,
-        "lon": 124.76,
-        "alt_m": 0
-       }
-      ]
+      "target": {
+       "lat": 37.9995,
+       "lon": 124.6768,
+       "alt_m": 0
+      }
      },
      "provenance": {
-      "source": "play_step",
-      "play_id": "patrol_b",
-      "step_id": "patrol",
+      "source": "operator_direct",
+      "play_id": null,
+      "step_id": null,
       "decision_id": null,
       "injection_id": null,
-      "operator_id": null,
-      "issued_ms": 1791634290000
+      "operator_id": "op1",
+      "issued_ms": 1791634805000
      }
     },
     "checks": [
@@ -99,14 +92,14 @@
      "outside_zone",
      "battery_insufficient"
     ],
-    "passed_ms": 1791634290000
+    "passed_ms": 1791634805000
    },
    "pending_report_id": null,
    "target_id": null,
    "decision_id": null,
    "emergency": null,
-   "resume_play_id": null,
-   "resume_step_id": null
+   "resume_play_id": "patrol_b",
+   "resume_step_id": "patrol"
   },
   {
    "id": "d3",
@@ -160,12 +153,12 @@
    "id": "usv",
    "t_ms": 1791635010000,
    "pos": {
-    "lat": 37.9802,
+    "lat": 37.9768,
     "lon": 124.7012,
     "alt_m": 0.0
    },
    "heading_deg": 0.0,
-   "battery_pct": 96.8,
+   "battery_pct": 96.9,
    "status": "active",
    "play_id": "approach",
    "step_id": "approach",
@@ -208,12 +201,12 @@
    "id": "ugv",
    "t_ms": 1791635010000,
    "pos": {
-    "lat": 37.975,
+    "lat": 37.978,
     "lon": 124.7,
     "alt_m": 0.0
    },
    "heading_deg": 0.0,
-   "battery_pct": 95.1,
+   "battery_pct": 95.4,
    "status": "active",
    "play_id": "landing",
    "step_id": "move",
@@ -226,9 +219,9 @@
      "kind": "move",
      "params": {
       "target": {
-       "lat": 37.975,
+       "lat": 37.978,
        "lon": 124.7,
-       "alt_m": 0
+       "alt_m": 0.0
       }
      },
      "provenance": {
@@ -261,7 +254,7 @@
    "id": "boat1",
    "kind": "boat",
    "pos": {
-    "lat": 37.97825,
+    "lat": 37.97465,
     "lon": 124.7,
     "alt_m": 0.0
    },
@@ -283,12 +276,12 @@
    "id": "fast1",
    "kind": "fast_boat",
    "pos": {
-    "lat": 37.9799,
-    "lon": 124.6993,
+    "lat": 37.979,
+    "lon": 124.702,
     "alt_m": 0.0
    },
-   "vel_east_mps": -2.0,
-   "vel_north_mps": 6.0,
+   "vel_east_mps": 6.3,
+   "vel_north_mps": 0.0,
    "first_seen_ms": 1791634980000,
    "last_seen_ms": 1791635010000,
    "seen_by": [
@@ -337,12 +330,34 @@
    "decision_id": null
   },
   {
-   "id": "rep-d2-1791635000000",
+   "id": "rep-d2-1791634800000",
+   "t_ms": 1791634800000,
+   "kind": "command_blocked",
+   "vehicle_id": "d2",
+   "target_id": null,
+   "text": "구역 밖 차단: d2 → 38.0500, 124.6600",
+   "choices": [],
+   "resolved_ms": null,
+   "decision_id": null
+  },
+  {
+   "id": "rep-d2-1791634830000",
+   "t_ms": 1791634830000,
+   "kind": "command_blocked",
+   "vehicle_id": "d2",
+   "target_id": null,
+   "text": "배터리 차단: d2 → 37.9050, 124.8350",
+   "choices": [],
+   "resolved_ms": null,
+   "decision_id": null
+  },
+  {
+   "id": "rep-d2-1791635000000-i",
    "t_ms": 1791635000000,
    "kind": "injection_pending",
    "vehicle_id": "d2",
-   "target_id": "fast1",
-   "text": "전환 승인 대기: 고속 보트 추적(d2)",
+   "target_id": null,
+   "text": "전환 승인 대기: 고속 보트 추적",
    "choices": [],
    "resolved_ms": null,
    "decision_id": null
@@ -380,32 +395,89 @@
    "reason": "예비 투입: d1 대신"
   }
  ],
- "blocks": [],
+ "blocks": [
+  {
+   "command_id": "cmd-d2-1791634800000",
+   "vehicle_id": "d2",
+   "reason": "outside_zone",
+   "detail": "작전 구역 밖(38.0500, 124.6600)",
+   "alternative": {
+    "id": "cmd-d2-1791634800000",
+    "vehicle_id": "d2",
+    "kind": "move",
+    "params": {
+     "target": {
+      "lat": 37.9995,
+      "lon": 124.6768,
+      "alt_m": 0
+     }
+    },
+    "provenance": {
+     "source": "operator_direct",
+     "play_id": null,
+     "step_id": null,
+     "decision_id": null,
+     "injection_id": null,
+     "operator_id": "op1",
+     "issued_ms": 1791634800000
+    }
+   },
+   "t_ms": 1791634800000
+  },
+  {
+   "command_id": "cmd-d2-1791634830000",
+   "vehicle_id": "d2",
+   "reason": "battery_insufficient",
+   "detail": "필요 2210s > 가용 1490s",
+   "alternative": {
+    "id": "cmd-d2-1791634830000",
+    "vehicle_id": "d2",
+    "kind": "move",
+    "params": {
+     "target": {
+      "lat": 37.9196,
+      "lon": 124.7652,
+      "alt_m": 0
+     }
+    },
+    "provenance": {
+     "source": "operator_direct",
+     "play_id": null,
+     "step_id": null,
+     "decision_id": null,
+     "injection_id": null,
+     "operator_id": "op1",
+     "issued_ms": 1791634830000
+    }
+   },
+   "t_ms": 1791634830000
+  }
+ ],
  "injections": [
   {
    "id": "inj-1",
    "t_ms": 1791635000000,
-   "label": "고속 보트 추적: d2",
+   "label": "고속 보트 추적",
    "play_by_vehicle": {
-    "d2": "track_fast"
+    "d2": "track_fast",
+    "usv": "track_fast_sea"
    },
-   "switch_id": null,
+   "switch_id": "track_fast",
    "status": "pending"
   }
  ],
  "metrics": {
-  "operator_actions": 2,
-  "manual_baseline_actions": 11,
+  "operator_actions": 5,
+  "manual_baseline_actions": 13,
   "open_reports_max": 1,
   "vehicle_gap_ms": 240000,
-  "blocked_commands": 0,
+  "blocked_commands": 2,
   "decisions": 1,
-  "commands_sent": 8,
+  "commands_sent": 9,
   "mission_success": null
  },
  "log": [
-  "[대본] 21:23 split_target boat1 → fast1",
-  "[계산] 21:23 d3 표적 도달, 기체 공백 4분 0초",
-  "[계산] 21:23 전환 요청 inj-1 승인 대기"
+  "[대본] 21:23:00 적 등장 fast1",
+  "[계산] 21:23:20 전환 inj-1 pending"
  ]
 }

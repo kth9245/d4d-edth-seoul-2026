@@ -20,6 +20,6 @@ describe("playUsage", () => {
     expect(u["go_home"][0]).toEqual({ vehicle_id: "d1", how: "전체 전환 '전 기체 귀환'" });
   });
   it("has no entry for an unused play", () => {
-    expect(u["track_fast"]).toBeUndefined();
+    expect(u["enemy_boat1"]).toBeUndefined(); // enemy plays run on enemies, not on vehicles (decision 0032)
   });
 });

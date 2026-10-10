@@ -7,6 +7,6 @@
 - 로컬 타일 우선, 온라인 허용(결정 0001). 지도 배경은 `public/tiles/baengnyeong/{z}/{x}/{y}.jpg`(scripts/fetch_tiles_baengnyeong.sh, EOX Sentinel-2, 출처 표기). 옛 서울 벡터 타일(seoul.pmtiles)은 쓰지 않음.
 - 색·글꼴은 `src/theme.css`의 토큰(`var(--friend)` 등)만 쓴다. 새 CSS에 hex 색을 직접 쓰지 않는다. 기능 CSS는 배치만, theme.css가 색·글꼴을 덮어쓴다(마지막에 불러옴).
 - 지도에 글자 레이어(symbol) 금지: 오프라인이라 글꼴(glyphs)이 없다. 이름표는 HTML Marker(`features/map/markers.ts`).
-- 게이트웨이 없이 화면 개발: `npm run dev` 뒤 `?scene=s1`~`s6`(contracts/examples/frames, 개발 서버 전용).
+- 게이트웨이 없이 화면 개발: `npm run dev` 뒤 `?scene=s1`~`s8`(contracts/examples/frames, 개발 서버 전용).
 - 실행: `npm run dev` (5173, /ws는 8000 proxy) / 테스트: `npm test`
 - 담당: map·live·replay 리드 kth9245, editor·setup도 리드(결정 0009: React 경험자가 없어 읽기 전용 카드 + "보고 카드 끼워 넣기" 버튼으로 고정). 작업은 자기 worktree에서 main으로(결정 0010·0014).

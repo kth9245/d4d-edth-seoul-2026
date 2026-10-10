@@ -1,16 +1,16 @@
 {
- "command_id": "cmd-d2-1791635460000",
+ "command_id": "cmd-d2-1791634800000",
  "vehicle_id": "d2",
  "reason": "outside_zone",
- "detail": "작전 구역 밖(38.0500, 124.7000)",
+ "detail": "작전 구역 밖(38.0500, 124.6600)",
  "alternative": {
-  "id": "cmd-d2-1791635460000",
+  "id": "cmd-d2-1791634800000",
   "vehicle_id": "d2",
   "kind": "move",
   "params": {
    "target": {
-    "lat": 37.99955,
-    "lon": 124.6903,
+    "lat": 37.9995,
+    "lon": 124.6768,
     "alt_m": 0
    }
   },
@@ -21,8 +21,8 @@
    "decision_id": null,
    "injection_id": null,
    "operator_id": "op1",
-   "issued_ms": 1791635460000
+   "issued_ms": 1791634800000
   }
  },
- "t_ms": 1791635460000
+ "t_ms": 1791634800000
 }
