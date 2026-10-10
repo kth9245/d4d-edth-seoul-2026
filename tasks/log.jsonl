@@ -624,3 +624,4 @@
 {"at": "2026-10-11T03:58:49+09:00", "by": "kth9245", "op": "decide", "id": "Part1-15.4", "text": "타격 Role id를 point_strike로(이름 '표적 타격' 유지): strike Role이 없으면 GW-13이 거점 카드에 타격 버튼을 붙이지 않아 파괴 뒤 버튼이 남지 않고, 기체 메뉴는 strike_target 단계로 타격을 띄움. 발견 신호는 카드가 아니라 지도(정찰 드론 정지·감시선, 표적 목록 추적). 리드 답 '타격 Role id 바꾸기 (추천)', '지도 신호로 (추천)'"}
 {"at": "2026-10-11T03:59:34+09:00", "by": "kth9245", "op": "done", "id": "Part1-15.4", "take": false}
 {"at": "2026-10-11T04:10:33+09:00", "by": "kth9245", "op": "add", "id": "Part1-15.5", "title": "공격 작전: r2도 남쪽 뒤 동쪽 해안으로 이어서 정찰", "parent": "Part1-15", "assign": null, "slot": "뒤", "spec": null}
+{"at": "2026-10-11T04:10:48+09:00", "by": "kth9245", "op": "start", "id": "Part1-15.5", "take": false, "from": null}
