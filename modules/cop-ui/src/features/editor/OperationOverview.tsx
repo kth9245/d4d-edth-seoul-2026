@@ -12,6 +12,8 @@ type Props = {
   roleName: (id: string) => string | null;
   onOpen: (roleId: string) => void;
   onSimulate?: () => void; // decision 0042
+  startOptions?: (vehicleId: string) => { id: string; name: string }[]; // decision 0053
+  onStartRole?: (vehicleId: string, roleId: string | null) => void;
 };
 
 type CardsProps = { roleId: string; role: Role | null; roleName: (id: string) => string | null; onOpen: (roleId: string) => void };
@@ -32,10 +34,11 @@ function RoleCards({ roleId, role, roleName, onOpen }: CardsProps) {
 }
 
 // Friendly vehicle columns, then the enemies under them (Part1-21): what each enemy does comes from the scenario.
-export function OperationOverview({ op, vehicles, columns, enemies, roleName, onOpen, onSimulate }: Props) {
+export function OperationOverview({ op, vehicles, columns, enemies, roleName, onOpen, onSimulate, startOptions, onStartRole }: Props) {
   return (
     <section className="overview">
-      <OperationPanel op={op} vehicles={vehicles} roleName={roleName} onOpen={onOpen} onSimulate={onSimulate} />
+      <OperationPanel op={op} vehicles={vehicles} roleName={roleName} onOpen={onOpen} onSimulate={onSimulate}
+        startOptions={startOptions} onStartRole={onStartRole} />
       <h3 className="ov-section">아군</h3>
       <div className="columns friend-columns">
         {columns.map((col) => (

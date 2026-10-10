@@ -444,3 +444,6 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .board .fold .switchpanel::before { content: none; }
 .board .hist-row { color: var(--muted); font-size: 12px; }
 .board .hist-row time { font-family: var(--font-mono); }
+/* Start role per vehicle on the overview (decision 0053): same look as the other editor selects, one width */
+.op-vehicles select.start-role { width: 100%; max-width: 220px; padding: 4px 6px; border: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); color: var(--text); font-family: var(--font); }
+.op-vehicles select.start-role:hover, .op-vehicles select.start-role:focus { border-color: var(--live); outline: none; }

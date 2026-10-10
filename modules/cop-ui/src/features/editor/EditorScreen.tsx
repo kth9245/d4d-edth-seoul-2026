@@ -11,7 +11,12 @@ import { zoneCentre } from "./editStep";
 import { enemyRows } from "./enemyRows";
 import { insertReportStep } from "./insertReportStep";
 import { type EditorData, loadEditorData } from "./loadEditorData";
+import { createOperation } from "./createOperation";
+import { NewOperationMenu } from "./NewOperationMenu";
 import { NewRoleMenu } from "./NewRoleMenu";
+import { postOperation } from "./postOperation";
+import { setStartRole } from "./setStartRole";
+import { startRoleOptions } from "./startRoleOptions";
 import { OntologyPanel } from "./OntologyPanel";
 import { OperationOverview } from "./OperationOverview";
 import { ONTOLOGY, OVERVIEW, RoleSidebar } from "./RoleSidebar";
@@ -127,9 +132,12 @@ export function EditorScreen() {
   };
   // Picking another operation makes it the gateway's running one, paused at its start; the editor reads it
   // again and drops what belonged to the old one (unsaved edits, check results, view history).
-  const pickScenario = (id: string) => {
+  const pickScenario = (id: string) => switchTo(activateScenario(id));
+  // "＋ 작전 새로 만들기" (decision 0053): the new empty operation runs and its overview opens like a picked one.
+  const newOperation = (name: string, purpose: string) => switchTo(createOperation(name, purpose));
+  const switchTo = (started: Promise<unknown>) => {
     setOpError(null);
-    activateScenario(id)
+    started
       .then(() => Promise.all([loadEditorData(), fetchScenarios()]))
       .then(
         ([d, list]) => {
@@ -146,6 +154,22 @@ export function EditorScreen() {
         },
       );
   };
+  // The overview's start role per vehicle (decision 0053): the server's operation changes and the run resets.
+  const startOptions = (vehicleId: string) => {
+    const v = data?.vehicles.find((x) => x.id === vehicleId);
+    return v && data ? startRoleOptions(data.roles, v, data.enemies.map((e) => e.role_id)) : [];
+  };
+  const startRole = (vehicleId: string, roleId: string | null) => {
+    if (!data) return;
+    setOpError(null);
+    postOperation(setStartRole(data.operation, vehicleId, roleId)).then(
+      (op) => setData((d) => d && { ...d, operation: op }),
+      (e) => {
+        console.warn("editor: start role failed", e);
+        setOpError(`시작 Role을 바꾸지 못했습니다 (${String(e)})`);
+      },
+    );
+  };
   // "▶ 시뮬레이션": the run goes back to the operation's start, paused, and the live tab opens (no auto start).
   const simulate = () => {
     setOpError(null);
@@ -157,7 +181,7 @@ export function EditorScreen() {
   return (
     <div className="editor">
       <RoleSidebar groups={view.groups} selected={role ? role.id : selected === ONTOLOGY ? ONTOLOGY : OVERVIEW} showOverview onSelect={open}
-        top={<NewRoleMenu existingIds={data.roles.map((p) => p.id)} onCreated={created} />}
+        top={<><NewOperationMenu onCreate={newOperation} /><NewRoleMenu existingIds={data.roles.map((p) => p.id)} onCreated={created} /></>}
         scenarios={scenarios} onPickScenario={pickScenario} />
       <main className="editor-main">
         {opError && <div className="issue">⚠ {opError}</div>}
@@ -186,7 +210,8 @@ export function EditorScreen() {
         ) : selected === ONTOLOGY ? (
           <OntologyPanel op={data.operation} roles={data.roles} vehicles={data.vehicles} />
         ) : (
-          <OperationOverview op={data.operation} vehicles={data.vehicles} columns={view.columns} enemies={view.enemies} roleName={roleName} onOpen={open} onSimulate={simulate} />
+          <OperationOverview op={data.operation} vehicles={data.vehicles} columns={view.columns} enemies={view.enemies} roleName={roleName} onOpen={open} onSimulate={simulate}
+            startOptions={startOptions} onStartRole={startRole} />
         )}
       </main>
     </div>

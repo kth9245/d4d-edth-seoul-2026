@@ -6,7 +6,7 @@ import { DraftBox } from "./DraftBox";
 
 type Mode = "ai" | "manual" | null;
 
-// Top of the editor sidebar (Part3-13.1): one "새로 만들기" button; it opens a choice between an AI draft
+// Top of the editor sidebar under "＋ 작전 새로 만들기" (Part3-13.1, decision 0053): one "Role 새로 만들기" button; it opens a choice between an AI draft
 // (sentence → POST /roles/draft) and a role written by hand (one start card). Either one opens unsaved.
 // The AI box stays open after a draft so its note (time, or "대기 템플릿으로 대체") stays readable.
 export function NewRoleMenu({ existingIds, onCreated }: { existingIds: string[]; onCreated: (role: Role) => void }) {
@@ -24,7 +24,7 @@ export function NewRoleMenu({ existingIds, onCreated }: { existingIds: string[];
     <section className="newrole">
       <button className={open ? "newrole-toggle on" : "newrole-toggle"} aria-expanded={open}
         onClick={() => (open ? close() : setOpen(true))}>
-        {open ? "× 닫기" : "＋ 새로 만들기"}
+        {open ? "× 닫기" : "＋ Role 새로 만들기"}
       </button>
       {open && mode === null && (
         <div className="newrole-pick">

@@ -58,6 +58,10 @@
 | UI-53 | describeAction·describeCondition(경로·T+) | Action/Condition | 카드 문구 | "경로 비행 · 이름|경로 N곳 · 한 번|반복 · 기체 위치 기준", at_time은 T+m:ss | 리드 | 완료 |
 | UI-54 | deleteRole | Role id | 서버에 있었나(bool) | DELETE /roles/{id}(결정 0050, 실행 작전에서 지우고 시작 전으로), 404는 저장 전 새 Role이라 false, 그 밖의 실패는 오류. Role 화면 "삭제"는 두 번 누르기, 지운 뒤 작전 개요 | 리드 | 완료 |
 | UI-55 | fetchOntology | — | OntologyView | GET /ontology(결정 0038), 실패하면 서버 detail("이 시나리오에는 온톨로지가 없습니다")을 담은 오류, 온톨로지 화면이 그 문구를 보임(결정 0051) | 리드 | 완료 |
+| UI-56 | createOperation | 이름, 목적 | ScenarioInfo[] | POST /scenarios(결정 0053): 실행 작전과 같은 지도·기체·Role로 빈 작전을 만들어 실행 작전으로. 사이드바 맨 위 "＋ 작전 새로 만들기", 그 아래 "＋ Role 새로 만들기" | 리드 | 완료 |
+| UI-57 | postOperation | Operation | Operation | POST /operation(실행 작전 바꾸고 시작 전으로), 작전 개요의 시작 Role 고르기가 씀(결정 0053) | 리드 | 완료 |
+| UI-58 | startRoleOptions | Role[], VehicleSpec, 적 Role id[] | {id, name}[] | 작전 개요 "처음 Role" 드롭다운: 그 기체 영역의 Role, 적이 쓰는 Role은 뺌(결정 0053) | 리드 | 완료 |
+| UI-59 | setStartRole | Operation, 기체 id, Role id 또는 null | Operation | 한 기체의 시작 Role만 바꾸거나 지움(null = 기지 대기), 다른 배정은 그대로(결정 0053) | 리드 | 완료 |
 | UI-80 | decisionQueue | Card[], t_ms | {action, alerts, history} | 선택지 있는 미처리 보고·대기 전환·대안 있는 차단(그 기체에 차단 뒤 새 명령이 나갈 때까지, 최대 2분)이 대기열, 같은 전환의 표적 선택 여러 장은 한 항목, 순서 타격 허락 > 차단 > 전환 > 위험도(표적 선택은 0.55, 같으면 최신), 2분 안의 무력화·공백·배터리·차단은 알림, 나머지 최신 위(Part1-32) | 리드 | 완료 |
 | UI-81 | choiceGroups | CardChoice[] | {planned, requests} | 정해진 선택지 먼저 엔진 순서(결정 0046), "X → 무엇" 한 기체 선택지는 무엇별 묶음(발생 지역 순찰 → "… 이어받기", 함께 감시 → "Y와 함께 T 감시") | 리드 | 완료 |
 | UI-82 | trackState | Target, t_ms, 기준점 | {k, pos, est?, agoMs?, dir?, speed?} | seen·rf·lost·never·gone, lost는 마지막으로 본 위치(없으면 실제 위치), 0.3 m/s 미만 정지, 기준점 쪽 접근·반대 이탈(기준점 없으면 접근), 추정 위치 = 마지막 위치 + 속도 × 지난 시간(결정 0047) | 리드 | 완료 |

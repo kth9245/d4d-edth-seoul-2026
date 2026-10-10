@@ -1,0 +1,22 @@
+[
+ {"viewport": [1366, 768]},
+ {"nav": "/?qa=newop#editor", "wait": 6000},
+ {"label": "N1 two buttons on top of the sidebar: operation first, then role (decision 0053)", "eval": "[...document.querySelectorAll('.role-sidebar .newrole-toggle')].map(b => b.innerText)", "expect": ["＋ 작전 새로 만들기", "＋ Role 새로 만들기"]},
+ {"label": "N1 the night operation's start roles are picked on the overview", "eval": "document.querySelector(\"select[aria-label='d1 처음 Role']\")?.value", "expect": "patrol_a"},
+ {"click": "작전 새로 만들기", "wait": 300},
+ {"type": ["input[aria-label='작전 이름']", "QA 새 작전"]},
+ {"type": ["input[aria-label='작전 목적']", "시작 Role 시험"]},
+ {"clickSel": ".newop .make", "wait": 3000},
+ {"label": "N2 the new operation runs and its overview opens with no start roles and no enemies", "eval": "({ title: document.querySelector('.op-head h2')?.innerText, active: document.querySelector('.role-sidebar .item.op.active')?.innerText.trim(), starts: [...document.querySelectorAll('select.start-role')].map(s => s.value), enemies: !!document.querySelector('.enemy-columns') })", "expect": {"title": "QA 새 작전", "active": "QA 새 작전", "starts": ["", "", "", "", "", ""], "enemies": false}},
+ {"label": "N3 d1 is offered air roles only, usv sea roles only, and no enemy roles", "eval": "({ d1: [...document.querySelector(\"select[aria-label='d1 처음 Role']\").options].map(o => o.value), usv: [...document.querySelector(\"select[aria-label='usv 처음 Role']\").options].map(o => o.value) })", "expect": {"d1": ["", "standby", "patrol_a", "watch", "patrol_b", "track_fast", "go_home", "strike", "coast_a", "coast_b"], "usv": ["", "standby", "approach", "go_home", "track_fast_sea", "strike"]}},
+ {"layout": "N3 layout editor new operation 1366x768"},
+ {"select": ["select[aria-label='d1 처음 Role']", "patrol_a"], "wait": 1500},
+ {"label": "N4 d1 starts on 해안 순찰 A: the select and d1's column show it", "eval": "({ value: document.querySelector(\"select[aria-label='d1 처음 Role']\").value, column: [...document.querySelectorAll('.friend-columns .column')].find(c => c.querySelector('.column-head')?.innerText.startsWith('d1'))?.querySelector('.role-title')?.innerText })", "expect": {"value": "patrol_a", "column": "해안 순찰 A"}},
+ {"shot": "new-operation-editor.png"},
+ {"nav": "/?qa=newop-reload#editor", "wait": 5000},
+ {"label": "N5 after a reload the server still runs the new operation with d1 on 해안 순찰 A", "eval": "({ title: document.querySelector('.op-head h2')?.innerText, d1: document.querySelector(\"select[aria-label='d1 처음 Role']\")?.value })", "expect": {"title": "QA 새 작전", "d1": "patrol_a"}},
+ {"click": "▶ 시뮬레이션", "wait": 4000},
+ {"click": "×30", "wait": 3000},
+ {"label": "N6 the new operation runs on the live tab", "eval": "({ status: document.querySelector('.status')?.innerText, moved: document.querySelector('.runbar .clock')?.innerText !== 'T+0:00' })", "expect": {"status": "LIVE", "moved": true}},
+ {"shot": "new-operation-live.png"}
+]
