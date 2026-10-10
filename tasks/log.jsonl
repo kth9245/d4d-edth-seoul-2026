@@ -276,3 +276,4 @@
 {"at": "2026-10-10T13:42:01+09:00", "by": "황승주", "op": "add", "id": "Part2-26", "title": "runtime enter_step 카드 근거 표시(탐지 기체·표적·거리, 투명성 SAT 2단계)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T13:42:04+09:00", "by": "황승주", "op": "start", "id": "Part2-26", "take": false, "from": null}
 {"at": "2026-10-10T13:42:53+09:00", "by": "황승주", "op": "done", "id": "Part2-26", "take": false}
+{"at": "2026-10-10T13:46:27+09:00", "by": "kth9245", "op": "decide", "id": "Part2-19.1", "text": "우회 방식 1안: Scenario.land(list[Polygon], 로컬 위성 타일에서 추출) + sim 새 액션 sea_aim(직선이 막히면 섬 모서리를 바다 쪽 100 m 밀어낸 점들의 최단 경로 첫 점, 목표가 육지면 가장 가까운 바다 점). 수상정 이동·귀환·순찰·거리 유지·타격 접근과 적 배(steer_enemies) 모두. 지상 기체 반대 방향·편집기 저장 검사는 범위 밖. 리드 답 '1안, 적 배 포함'"}
