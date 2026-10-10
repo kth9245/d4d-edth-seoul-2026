@@ -5,7 +5,7 @@ SPEC: modules/runtime/SPEC.md#RT-10
 import re
 
 from contracts.models import Assignment, GeoPoint, Operation, Role, VehicleSpec, VehicleState
-from modules.runtime.actions.raid_idle import raid_held
+from modules.runtime.actions.raid_auto import raid_held
 from modules.runtime.actions.relief_due import FLOOR, _back, relief_due
 from modules.runtime.actions.switch_role import switch_role
 from shared.geo import dist_m

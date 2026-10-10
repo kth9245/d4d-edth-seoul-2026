@@ -25,6 +25,7 @@ from modules.runtime import (
     apply_injection,
     apply_reserves,
     auto_watch,
+    done_return,
     fleet_choices,
     raid_idle,
     raid_next,
@@ -88,6 +89,11 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
         before_direct[cmd.id] = pre
         cmds.append(cmd)
     states = apply_emergency(states, roles)  # 4
+    before = {s.id: s.role_id for s in states}
+    states = done_return(
+        states, targets, roles
+    )  # 4.1 strikers home after the hit (not the 24h raid)
+    assigns = track_assignments(assigns, before, states, t, "임무 완료 귀환")
     states, assigns = rotate_patrols(states, specs, sc.operation, roles, assigns, t)  # 4.5 (0037)
     states, assigns = relieve_hover(states, specs, sc.operation, roles, assigns, t)  # 4.6
     stepped = []

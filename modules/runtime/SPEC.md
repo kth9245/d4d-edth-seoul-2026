@@ -23,3 +23,4 @@
 | RT-18 | raid_cards | v, tid, states, specs, targets, op, exclude | list[Choice] / list[VehicleState] | 멸공 단계별 카드: 격추/관찰, 추적(어떤 적도 안 본 기체)·집중 순찰·대체 순찰(특정 임무 없는 기체) 1대씩 + 대기(추적은 전체 대기도), 기지 복귀/현재 위치에서 대기 | 황승주 | 완료 |
 | RT-19 | raid_flow | reports, decisions, states, targets, op, roles, specs, t_ms | Report / None | raid_next: 멸공 적 대응 질문 하나씩: 위협 높은 적부터(같으면 본 순) ① 발견 기체 격추/관찰 → ② 추적 1대씩(고를 때마다 ②' 그 기체 격추/관찰, 전체 대기) → ③ 집중 순찰 → ④ 대체 순찰 → ⑤ 개요. 상태는 raid 카드와 결정으로 매 틱 계산 | 황승주 | 완료 |
 | RT-20 | raid_idle | reports, states, targets, specs, land, roles, t_ms | list[Report] | 멸공에서 임무가 사라진 기체(표적 무력화, USV 적 지상·UGV 적 해상, 드론 배터리 편도 기준)에 기지 복귀/현재 위치에서 대기 카드, 열린 카드 있으면 안 만듦. auto_watch: 공중의 대기·복귀 기체가 아무도 안 맡은 적을 보면 바로 감시(USV 해상·UGV 지상만, 사용자 10/11) | 황승주 | 완료 |
+| RT-21 | raid_auto | states, targets, specs, land, roles, op, assignments | list[VehicleState] / bool | auto_watch(멸공 자동 감시)·raid_held(멸공 빈 순찰은 ④까지)·done_return(다른 작전: 표적 무력화한 타격 기체는 스스로 귀환, 카드 없음) | 황승주 | 완료 |

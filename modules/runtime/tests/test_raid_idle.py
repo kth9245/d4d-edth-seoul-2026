@@ -49,7 +49,7 @@ def test_night_operation_gets_nothing():
 
 
 def test_an_idle_vehicle_in_the_air_takes_the_enemy_it_sees():  # user 10/11: the original auto job
-    from modules.runtime.actions.raid_idle import auto_watch
+    from modules.runtime.actions.raid_auto import auto_watch
 
     roles = RAID | {"watch": _role("watch", "air")}
     boat = tg("boat1", "usv", SEA.pos, 10, seen=("d2", "d3", "usv", "ugv"))
@@ -71,7 +71,7 @@ def test_an_idle_vehicle_in_the_air_takes_the_enemy_it_sees():  # user 10/11: th
 
 def test_a_returning_vehicle_taken_by_auto_watch_flies_again():  # brute force 10/11: it landed and lost its track
     from contracts.models import VehicleStatus
-    from modules.runtime.actions.raid_idle import auto_watch
+    from modules.runtime.actions.raid_auto import auto_watch
 
     roles = RAID | {"watch": _role("watch", "air")}
     boat = tg("boat1", "usv", SEA.pos, 10, seen=("d2",))
