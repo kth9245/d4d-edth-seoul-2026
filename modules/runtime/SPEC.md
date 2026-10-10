@@ -20,3 +20,4 @@
 | RT-15 | target_domain | Target, land | air/ground/sea | drone이면 공중, 아니면 지금 위치가 섬 안이면 지상·밖이면 해상(결정 0055) | 황승주 | 완료 |
 | RT-16 | raid_choices | others, hover, states, targets, land, specs, rotation | list[Choice] | 적기 번호(본 순서), 적기당 드론 1대 집중 순찰, usv는 해상·ugv는 지상 적기 추적, 대기(결정 0055). raid_spot: 결정 0057 카드도 멸공에선 이 선택지 | 황승주 | 완료 |
 | RT-17 | spot_reports | states, targets, roles, op, specs, land, t_ms | list[Report] | 순찰 보고 흐름 밖 기체가 아직 카드 없고 아무도 표적으로 삼지 않은 적을 위협 누적 4.5 넘게 보면 그 기체 이름으로 발견 카드 한 장("새 적 탐지 · 근거"), 그 기체는 하던 일 계속. 선택지: 표적용 전환(첫 단계가 표적 operator인 Role로만 된 전환, 올린 기체를 옮기지 않고 기체마다 그 적의 영역을 맡을 수 있을 때, 표적 지정) → 기지 대기 드론 감시 → 없으면 유지(결정 0057) | kth9245 | 완료 |
+| RT-18 | raid_cards | v, tid, states, specs, targets, op, exclude | list[Choice] / list[VehicleState] | 멸공 단계별 카드: 격추/관찰, 추적(어떤 적도 안 본 기체)·집중 순찰·대체 순찰(특정 임무 없는 기체) 1대씩 + 대기(추적은 전체 대기도), 기지 복귀/현재 위치에서 대기 | 황승주 | 완료 |
