@@ -304,6 +304,9 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .mk.vehicle.batt-low span { color: #ff5a5a; }
 /* the battery label is half the default label size so four drones fit at the start zoom (user, 10/10) */
 .mk.vehicle span { font-size: 7px; line-height: 1; padding: 1px 3px; left: 16px; letter-spacing: 0; }
+/* the label is faded and lets clicks through (targets, the map, other drones come first); the selected drone's is full (user, 10/10) */
+.mk.vehicle span { opacity: 0.4; pointer-events: none; }
+.mk.vehicle.selected span { opacity: 1; }
 /* Live board (Part1-32): white = your turn, yellow/amber/red = risk only, cyan = ours, green = system. Type floor 11px. */
 .header-slot .situation .lbl { color: var(--text2); font-size: 13px; font-weight: 600; }
 .header-slot .situation .c { color: var(--text2); font-size: 13px; }
@@ -461,3 +464,5 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .target.never { opacity: 0.45; }
 .target.never i { background: none; border: 1.5px dotted var(--text2); box-shadow: none; }
 .target.never span { border-style: dotted; color: var(--text2); }
+/* A struck target keeps only its grey X: the tone fill above must not come back under it (review of Task 7). */
+.target.neutralized i { background: none; box-shadow: none; }

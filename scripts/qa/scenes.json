@@ -25,6 +25,7 @@
  {"layout": "S8 scene s8"},
  {"label": "S8 struck fast1 is a grey X named 무력화", "eval": "document.querySelector('.mk.target.neutralized span')?.textContent", "expect": "fast1 · 무력화"},
  {"label": "S8 result says which decision sent whom and the checks passed", "eval": "[...document.querySelectorAll('.alert .why')].map(p => p.textContent).find(t => t.startsWith('운용자 결정'))", "expect": "운용자 결정 dec-4 '함께 타격' → d2·usv 타격 · 출처·구역·배터리 검사 통과"},
+ {"label": "S8 the struck target is a grey X with no risk fill (review of Task 7)", "eval": "(() => { const t = [...document.querySelectorAll('.mk.target')].find(x => x.querySelector('span').innerText.startsWith('fast1')); if (!t) return 'missing'; const c = getComputedStyle(t.querySelector('i')); return { cls: t.classList.contains('neutralized'), bg: c.backgroundColor, shadow: c.boxShadow }; })()", "expect": {"cls": true, "bg": "rgba(0, 0, 0, 0)", "shadow": "none"}},
  {"nav": "/?scene=s9#live", "wait": 4000},
  {"label": "S9 unknown scene says so", "eval": "document.querySelector('.status')?.innerText", "match": "^없는 장면 S9 "}
 ]

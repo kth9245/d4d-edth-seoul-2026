@@ -49,7 +49,7 @@ export function syncVehicles(map: MapLibreMap, store: MarkerStore, items: Vehicl
 }
 
 // Target classes carry what our side knows (track: seen, rf, lost, never, gone) and the risk tone (Part1-32).
-// onClick is for pointing (decision 0048); targets only take clicks while a vehicle is selected (theme.css).
+// onClick is for pointing (decision 0048); target markers ignore the mouse otherwise (index.css).
 export function syncTargets(map: MapLibreMap, store: MarkerStore, items: TargetMarker[], onClick?: (id: string) => void): void {
   sync(map, store, items,
     (t) => `mk target ${t.kind} ${t.track} ${t.tone}${t.seen ? "" : " unseen"}${t.neutralized ? " neutralized" : ""}${t.rf ? " rf" : ""}`,

@@ -19,6 +19,7 @@
  {"label": "L5 mark d1's roster row (Part1-32: a row selects like its map dot)", "eval": "(() => { const r = [...document.querySelectorAll('.roster .ro')].find(x => x.innerText.startsWith('d1')); if (!r) return 'no d1 row'; r.id = 'qa-d1'; return 'marked'; })()", "expect": "marked"},
  {"clickSel": "#qa-d1", "wait": 500},
  {"label": "L5 d1 selected for direct control", "eval": "document.querySelector('.direct-hint')?.innerText ?? null", "match": "^d1 선택"},
+ {"label": "L5 the selected drone's label is full, the rest faded; labels let clicks through, percent only (user, 10/10)", "eval": "(() => { const ls = [...document.querySelectorAll('.mk.vehicle')].map(v => { const s = v.querySelector('span'); const c = getComputedStyle(s); return { id: s.innerText.split(' ')[0], sel: v.classList.contains('selected'), op: c.opacity, pe: c.pointerEvents, ok: /^\\S+ \\d+%$/.test(s.innerText) }; }); return { selected: ls.filter(l => l.sel).map(l => l.id + ' ' + l.op), faded: ls.filter(l => !l.sel).every(l => l.op === '0.4'), through: ls.every(l => l.pe === 'none'), percent: ls.every(l => l.ok) }; })()", "expect": {"selected": ["d1 1"], "faded": true, "through": true, "percent": true}},
  {"clickAt": [500, 62], "wait": 1200},
  {"label": "L6 order sent to a point north of the zone", "eval": "document.querySelector('.direct-hint')?.innerText ?? null", "match": "^보냄 dir-\\d+ · d1 → "},
  {"label": "L6 cross shows the order just sent (paused)", "eval": "[...document.querySelectorAll('.mk.aim')].map(a => a.querySelector('span').innerText)", "expect": ["d1"]},

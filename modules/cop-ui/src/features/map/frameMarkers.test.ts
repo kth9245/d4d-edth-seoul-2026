@@ -13,13 +13,13 @@ describe("frameMarkers", () => {
     expect(vehicles[1].status).toBe("ready");
   });
 
-  it("shows the battery right of each vehicle: a 4-block bar and the percent, coloured by level (user, 10/10)", () => {
+  it("shows the battery right of each vehicle as the percent only, coloured by level (user, 10/10)", () => {
     const f = s1 as Frame;
     const at = (pct: number) => frameMarkers({ ...f, vehicles: [{ ...f.vehicles[0], battery_pct: pct }] }).vehicles[0];
-    expect([at(78.4).label, at(78.4).battery]).toEqual(["d1 ▮▮▮▮ 78%", "ok"]);
-    expect([at(50).label, at(50).battery]).toEqual(["d1 ▮▮▯▯ 50%", "mid"]);
-    expect([at(30).label, at(30).battery]).toEqual(["d1 ▮▮▯▯ 30%", "low"]);
-    expect([at(0).label, at(100).label]).toEqual(["d1 ▯▯▯▯ 0%", "d1 ▮▮▮▮ 100%"]);
+    expect([at(78.4).label, at(78.4).battery]).toEqual(["d1 78%", "ok"]);
+    expect([at(50).label, at(50).battery]).toEqual(["d1 50%", "mid"]);
+    expect([at(30).label, at(30).battery]).toEqual(["d1 30%", "low"]);
+    expect([at(0).label, at(100).label]).toEqual(["d1 0%", "d1 100%"]);
   });
 
   it("follows the vehicle status between frames", () => {
