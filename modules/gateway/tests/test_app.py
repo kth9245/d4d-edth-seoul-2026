@@ -72,6 +72,14 @@ def test_activate_an_unknown_scenario_is_404():
     assert client.get("/operation").json()["name"] == "백령도 야간 해안 경계"
 
 
+def test_a_broken_catalog_file_is_skipped_and_the_running_operation_still_starts():
+    # the night demo must not depend on another operation's file (decision 0042 review)
+    land = str(ROOT / "demo/scenarios/baengnyeong_land.json")  # polygons, not a Scenario
+    client, _ = fake_app(scenario_paths=[SCENARIO, land])
+    assert [s["id"] for s in client.get("/scenarios").json()] == ["baengnyeong_night"]
+    assert client.get("/operation").json()["name"] == "백령도 야간 해안 경계"
+
+
 def test_scenario_paths_replace_the_demo_list():
     client, _ = fake_app(scenario_paths=[SCENARIO])
     assert [s["id"] for s in client.get("/scenarios").json()] == ["baengnyeong_night"]

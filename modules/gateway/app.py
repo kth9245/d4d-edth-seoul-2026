@@ -55,8 +55,12 @@ def create_app(
     setup_logging("gateway")  # decision 0010: always log (stderr + logs/gateway.log)
     eng = engine or default_engine()
     path = scenario_path or os.environ.get("KDTH_SCENARIO", DEFAULT_SCENARIO)
-    paths = DEMO_SCENARIOS if scenario_paths is None else scenario_paths
-    catalog = [eng.load_scenario_json(p) for p in paths]
+    catalog = []
+    for p in DEMO_SCENARIOS if scenario_paths is None else scenario_paths:
+        try:
+            catalog.append(eng.load_scenario_json(p))
+        except Exception:  # another operation's broken file must not stop this one (decision 0042)
+            log.exception("scenario %s skipped from the operation list: it does not load", p)
     live = Live(eng.load_scenario_json(path), eng.init_engine, eng.tick, catalog)
     log.info("scenario %s loaded; %d operations to pick", path, len(live.scenarios))
 
