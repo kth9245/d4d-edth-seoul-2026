@@ -83,7 +83,7 @@
    "kind": "move",
    "params": {
     "target": {
-     "lat": 37.978,
+     "lat": 37.982,
      "lon": 124.7,
      "alt_m": 0.0
     }
@@ -195,7 +195,7 @@
     "kind": "move",
     "params": {
      "target": {
-      "lat": 37.978,
+      "lat": 37.982,
       "lon": 124.7,
       "alt_m": 0.0
      }
@@ -453,7 +453,7 @@
      "kind": "move",
      "params": {
       "target": {
-       "lat": 37.978,
+       "lat": 37.982,
        "lon": 124.7,
        "alt_m": 0.0
       }
@@ -716,7 +716,7 @@
       "kind": "move_to",
       "params": {
        "target": {
-        "lat": 37.978,
+        "lat": 37.982,
         "lon": 124.7,
         "alt_m": 0
        }
