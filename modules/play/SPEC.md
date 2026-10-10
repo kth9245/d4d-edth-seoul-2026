@@ -7,7 +7,7 @@
 | PLY-02 | check_links | Play | list[ValidationIssue] | 없는 step을 가리키는 go_step·entry, entry에서 닿을 수 없는 step | 황승주 | 완료 |
 | PLY-03 | check_report_points | Play | list[ValidationIssue] | target_found 탈출 뒤 choices 있는 report 없이 approach_target에 닿으면 오류 | 황승주 | 완료 |
 | PLY-04 | check_return_battery | Play, specs | (list[ValidationIssue], est_return_battery) | 역할별 경로 길이로 추정, 30% 미만이면 오류. safety.return_feasible 재사용 가능 | 황승주 | 완료 |
-| PLY-05 | check_zone | Play, Operation | list[ValidationIssue] | 경로점·목적지가 zone 밖이면 오류 (safety.point_in_polygon) | 황승주 | 예정 |
+| PLY-05 | check_zone | Play, Operation | list[ValidationIssue] | 경로점·목적지가 zone 밖이면 오류 (safety.point_in_polygon) | 황승주 | 완료 |
 | PLY-06 | check_play | Play, Operation, specs | PlayCheck | 플레이 하나 검사: 3-2 + 그 플레이를 받는 기체의 영역·능력(domains, capabilities). 기체별 템플릿 통과 | 황승주 | 예정 |
 | PLY-07 | expand_action | Action, Domain | CommandKind/None | expand_table.json 9×3 전부 테스트(표 초안은 09 6절), None이면 후보 제외 | 황승주 | 완료 |
 | PLY-08 | list_templates | — | list[Play] | demo/plays/*.json 중 template=True | 황승주 | 완료 |
