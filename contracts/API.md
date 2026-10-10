@@ -93,6 +93,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 |---|---|---|
 | `GET /plays` · `POST /plays` | — · `Play` | `Play[]` · `PlayCheck` |
 | `GET /enemies` | — | `EnemySpec[]`(시나리오의 적, Part1-21) |
+| `GET /routes` | — | `RouteDef[]`(실행 작전의 경로 목록, 결정 0044) |
 | `GET /ontology` | — | `OntologyView`(계층 + 기체마다 행동 10개의 판정과 경로, 결정 0038). 시나리오에 온톨로지가 없으면 404 |
 | `GET /graph?focus=` | — | `ObjectGraph`(그 객체에서 링크를 따라 모은 객체. 기체와 focus가 아닌 표적은 더 펼치지 않음, 결정 0038). 없는 id는 404 |
 | `POST /plays/check` | `Play` | `PlayCheck` |

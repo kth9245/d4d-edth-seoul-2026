@@ -85,6 +85,15 @@ def test_scenario_paths_replace_the_demo_list():
     assert [s["id"] for s in client.get("/scenarios").json()] == ["baengnyeong_night"]
 
 
+def test_routes_come_from_the_running_operation():  # decision 0044
+    client, _ = fake_app()
+    night = {r["id"] for r in client.get("/routes").json()}
+    assert {"patrol_a", "square_300"} <= night
+    client.post("/scenarios/baengnyeong_24h/activate")
+    day = {r["id"] for r in client.get("/routes").json()}
+    assert "patrol_a" not in day and "square_300" in day
+
+
 def test_run_live_then_ws_streams_running_frames():
     client, _ = fake_app()
     with client:

@@ -135,6 +135,10 @@ def create_app(
     async def enemies():
         return live.scenario.enemies
 
+    @app.get("/routes")
+    async def routes():  # decision 0044: routes the editor offers for route-flying cards
+        return live.scenario.routes
+
     @app.get("/ontology")
     async def ontology():  # decision 0038: the same inference the play check uses
         if live.scenario.ontology is None:

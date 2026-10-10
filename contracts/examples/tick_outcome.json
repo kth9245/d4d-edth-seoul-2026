@@ -47,7 +47,8 @@
       "lon": 124.785,
       "alt_m": 0
      }
-    ]
+    ],
+    "route_name": "북동 순찰"
    },
    "provenance": {
     "source": "play_step",
@@ -143,7 +144,8 @@
        "lon": 124.785,
        "alt_m": 0
       }
-     ]
+     ],
+     "route_name": "북동 순찰"
     },
     "provenance": {
      "source": "play_step",
@@ -334,7 +336,8 @@
         "lon": 124.785,
         "alt_m": 0
        }
-      ]
+      ],
+      "route_name": "북동 순찰"
      },
      "provenance": {
       "source": "play_step",
@@ -592,7 +595,8 @@
          "lon": 124.74,
          "alt_m": 0
         }
-       ]
+       ],
+       "route_name": "순찰 A"
       }
      },
      "on": [
@@ -795,7 +799,8 @@
          "lon": 124.785,
          "alt_m": 0
         }
-       ]
+       ],
+       "route_name": "북동 순찰"
       }
      },
      "on": [
@@ -864,7 +869,8 @@
          "lon": 124.785,
          "alt_m": 0
         }
-       ]
+       ],
+       "route_name": "북동 순찰"
       }
      },
      "on": [
@@ -1449,7 +1455,8 @@
          "lon": 124.68076,
          "alt_m": 0
         }
-       ]
+       ],
+       "route_name": "해안 A(북)"
       }
      },
      "on": [
@@ -1648,7 +1655,8 @@
          "lon": 124.73431,
          "alt_m": 0
         }
-       ]
+       ],
+       "route_name": "해안 B(남)"
       }
      },
      "on": [
