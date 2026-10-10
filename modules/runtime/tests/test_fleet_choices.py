@@ -104,13 +104,13 @@ def test_planned_choices_stay_first_and_the_fleet_choices_follow_without_keep():
     assert labels(rep) == ["approach", "take_d3", "join_d3_d1"]  # no 'keep': the card has its own
 
 
-def test_choices_are_the_same_when_made_again_for_an_open_card():  # decision 0044: rebuilt every tick
+def test_choices_are_the_same_when_made_again_for_an_open_card():  # decision 0046: rebuilt every tick
     states = [vs("d1", "coast_a", "report", target="boat1"), vs("d3", None, None, "ready")]
     once = fleet_choices(CARD, states, OP, STATIC_PLAYS)
     assert labels(fleet_choices(once, states, OP, STATIC_PLAYS)) == labels(once)
 
 
-def test_a_drone_with_its_own_open_card_is_not_asked():  # decision 0044: never drop a card
+def test_a_drone_with_its_own_open_card_is_not_asked():  # decision 0046: never drop a card
     states = [vs("d1", "coast_a", "report", target="boat1"), vs("d3", None, None, "ready"),
               vs("d4", None, None, "ready").model_copy(update={"pending_report_id": "rep-d4-1"})]  # fmt: skip
     rep = fleet_choices(CARD, states, OP, STATIC_PLAYS)

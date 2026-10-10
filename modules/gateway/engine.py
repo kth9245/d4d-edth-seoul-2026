@@ -88,7 +88,7 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
         if r.kind == "target_detected" and not r.resolved_ms
         else r
         for r in reports
-    ]  # 5.3 open cards follow the fleet (decision 0044)
+    ]  # 5.3 open cards follow the fleet (decision 0046)
     states, assigns, gap = apply_reserves(stepped, sc.operation, plays, assigns, t)  # 6
     new_reports += [gap] if gap else []
     states, passed, blocks, cards = run_checks(  # 7

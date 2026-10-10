@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python, pydantic 계약, pytest(`uv run pytest modules/<m>`, 디버깅 `-n 0`).
 
-**Spec:** `docs/superpowers/specs/2026-10-10-card-per-drone-design.md`, 결정 0044.
+**Spec:** `docs/superpowers/specs/2026-10-10-card-per-drone-design.md`, 결정 0046.
 
 ## Global Constraints
 
@@ -60,13 +60,13 @@ def test_planned_choices_stay_first_and_the_fleet_choices_follow_without_keep():
     assert labels(rep) == ["approach", "take_d3", "join_d3_d1"]  # no 'keep': the card has its own
 
 
-def test_choices_are_the_same_when_made_again_for_an_open_card():  # decision 0044: rebuilt every tick
+def test_choices_are_the_same_when_made_again_for_an_open_card():  # decision 0046: rebuilt every tick
     states = [vs("d1", "coast_a", "report", target="boat1"), vs("d3", None, None, "ready")]
     once = fleet_choices(CARD, states, OP, STATIC_PLAYS)
     assert labels(fleet_choices(once, states, OP, STATIC_PLAYS)) == labels(once)
 
 
-def test_a_drone_with_its_own_open_card_is_not_asked():  # decision 0044: never drop a card
+def test_a_drone_with_its_own_open_card_is_not_asked():  # decision 0046: never drop a card
     states = [vs("d1", "coast_a", "report", target="boat1"), vs("d3", None, None, "ready"),
               vs("d4", None, None, "ready").model_copy(update={"pending_report_id": "rep-d4-1"})]  # fmt: skip
     rep = fleet_choices(CARD, states, OP, STATIC_PLAYS)
@@ -81,7 +81,7 @@ def test_a_drone_with_its_own_open_card_is_not_asked():  # decision 0044: never 
         s
         for s in crew
         if s.id not in busy
-        and s.pending_report_id is None  # decision 0044: its own card stays; apply_decision would close it
+        and s.pending_report_id is None  # decision 0046: its own card stays; apply_decision would close it
         and s.play_id != coast.id
         and (
             (s.status.value == "active" and s.play_id in op.rotation_plays)
@@ -113,7 +113,7 @@ def test_a_drone_with_its_own_open_card_is_not_asked():  # decision 0044: never 
 - [ ] **Step 1: 실패하는 테스트**
 
 ```python
-"""Decision 0044: the choices of an open contact card follow the fleet every tick."""
+"""Decision 0046: the choices of an open contact card follow the fleet every tick."""
 
 from dataclasses import replace
 
@@ -157,9 +157,9 @@ def test_a_drone_that_opens_its_own_card_leaves_the_open_cards_choices_next_tick
         if r.kind == "target_detected" and not r.resolved_ms
         else r
         for r in reports
-    ]  # 5.3 open cards follow the fleet (decision 0044)
+    ]  # 5.3 open cards follow the fleet (decision 0046)
 ```
-  `contracts/API.md` §3 표에 `| 5.3 | runtime | 열려 있는 \`target_detected\` 카드 선택지를 \`fleet_choices\`로 다시 만든다(결정 0044) |`를 5.2 아래에 추가한다(5.2 줄이 있으면 그 아래).
+  `contracts/API.md` §3 표에 `| 5.3 | runtime | 열려 있는 \`target_detected\` 카드 선택지를 \`fleet_choices\`로 다시 만든다(결정 0046) |`를 5.2 아래에 추가한다(5.2 줄이 있으면 그 아래).
 - [ ] **Step 4: 통과 확인** — 같은 명령과 `uv run pytest modules/gateway -q`.
 - [ ] **Step 5: 커밋.**
 
@@ -196,7 +196,7 @@ git checkout 88992a3^ -- modules/gateway/tests/test_engine.py
   파일에 추가:
 
 ```python
-def test_fleet_choice_sends_a_standby_drone_to_watch_with_the_finder():  # decision 0044
+def test_fleet_choice_sends_a_standby_drone_to_watch_with_the_finder():  # decision 0046
     es, _ = _until(init_engine(SC), lambda e: any(r.kind == "target_detected" for r in e.reports))
     rep = next(r for r in es.reports if r.kind == "target_detected")
     ids = [c.id for c in rep.choices]
@@ -255,7 +255,7 @@ for pid in ("patrol_a", "patrol_b"):
 
 - [ ] **Step 1: 전체 검증**(각각 실제 출력을 읽는다) — `uv run pytest`, `uv run python scripts/smoke.py`, `scripts/check.sh --all`, cop-ui는 **수정 없이** `npx tsc -b`, `npx vitest run`, `npx oxlint`가 통과해야 한다(`git diff --stat`에 `modules/cop-ui`가 없는지도 확인).
 - [ ] **Step 2: 실제 서버 확인** — UI 빌드 후 서버를 띄우고 점프로 16:35에 카드 두 장(d1 boat1: `approach`+덧붙인 선택지, d2 boat2: `handoff`+덧붙인 선택지), 17:05에 boat2 0.72를 WebSocket Frame으로 확인한다. 선택지에 `take_d3`, `join_d3_d1`이 있고 `keep`이 없는지 본다.
-- [ ] **Step 3: 기록** — `demo/BUILT_HERE.md`에 한 줄(결정 0044, 이전 흐름 복원과 이어받기·함께 감시 덧붙이기), `modules/runtime/SPEC.md` RT-11 설명을 "정해진 선택지 뒤에 덧붙이고 자기 카드가 열린 드론은 제외"로 갱신, 설계 문서 상태를 "구현됨"으로 고친다.
+- [ ] **Step 3: 기록** — `demo/BUILT_HERE.md`에 한 줄(결정 0046, 이전 흐름 복원과 이어받기·함께 감시 덧붙이기), `modules/runtime/SPEC.md` RT-11 설명을 "정해진 선택지 뒤에 덧붙이고 자기 카드가 열린 드론은 제외"로 갱신, 설계 문서 상태를 "구현됨"으로 고친다.
 - [ ] **Step 4: ship** — `scripts/ship.sh`. rebase 충돌이 `BUILT_HERE.md`뿐이면 양쪽 줄을 모두 살린다.
 - [ ] **Step 5: 알림** — 황승주에게: `fleet_choices` 덧붙이기·열린 카드 제외, 야간 시나리오 `assign` 복원, `test_demo_timeline`·`test_engine` 등 되돌린 테스트 목록. 리드에게: 카드 시각이 `runStops.ts`·QA 기대값과 일치하는지(UI는 수정하지 않았다).
 

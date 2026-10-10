@@ -1,4 +1,4 @@
-"""Decision 0044: the choices of an open contact card follow the fleet every tick."""
+"""Decision 0046: the choices of an open contact card follow the fleet every tick."""
 
 from dataclasses import replace
 

@@ -94,7 +94,7 @@ def test_three_boats_each_get_one_card_from_the_drone_that_found_it(run):  # dec
     ]  # fmt: skip
     assert found[1].t_ms < found[0].resolved_ms  # two cards open at once
     assert all(r.resolved_ms - START < 20 * MIN for r in found)  # before d2 is sent past the NLL
-    # planned choices come first (usv takes boat2 over, d2 keeps boat3), decision 0044
+    # planned choices come first (usv takes boat2 over, d2 keeps boat3), decision 0046
     assert [r.choices[0].id for r in found[1:]] == ["handoff", "keep"]
     extra = {c.id for r in found for c in r.choices[1:]}  # what the fleet choices add
     assert extra and all(i.split("_")[1] in ("d3", "d4") for i in extra)  # only standby drones

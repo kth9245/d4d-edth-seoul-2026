@@ -50,7 +50,7 @@ def test_one_decision_switches_four_vehicles():
     assert any(a.reason == "결정 dec-1" for a in fr.assignments)
 
 
-def test_fleet_choice_sends_a_standby_drone_to_watch_with_the_finder():  # decision 0044
+def test_fleet_choice_sends_a_standby_drone_to_watch_with_the_finder():  # decision 0046
     es, _ = _until(init_engine(SC), lambda e: any(r.kind == "target_detected" for r in e.reports))
     rep = next(r for r in es.reports if r.kind == "target_detected")
     ids = [c.id for c in rep.choices]
