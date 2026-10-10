@@ -17,8 +17,7 @@ type Props = {
   edited?: boolean;
   freshStep?: string;
   onInsertReport?: (stepId: string) => void;
-  onBack?: () => void;
-  backLabel?: string;
+  onHome?: () => void; // "← 작전 개요": always the overview (Part1-33)
   // Card editing (Part3-12.1): the changed play goes up unsaved; freshStep marks a card just added.
   onEdit?: (next: Play, freshStep?: string) => void;
   vehicleIds?: string[];
@@ -46,14 +45,14 @@ function SaveStatus({ result }: { result?: SaveResult }) {
   );
 }
 
-export function PlayWorkflow({ play, usage, playName, onOpen, result, onSave, edited, freshStep, onInsertReport, onBack, backLabel,
+export function PlayWorkflow({ play, usage, playName, onOpen, result, onSave, edited, freshStep, onInsertReport, onHome,
   onEdit, vehicleIds = [], plays = [], fallbackPoint = null, routes = [], enemy = false }: Props) {
   const view = result?.state === "done" ? issuesByStep(result.check, play) : null;
   const [picked, setPicked] = useState<string | null>(null);
   const step = onEdit ? play.steps.find((s) => s.id === picked) : undefined;
   return (
     <section className="workflow">
-      {onBack && <button className="back" onClick={onBack}>← 뒤로 · {backLabel}</button>}
+      {onHome && <button className="back" onClick={onHome}>← 작전 개요</button>}
       <h2>
         {play.name} <small>{play.domains.map((d) => DOMAIN_LABEL[d]).join("·") || "영역 없음"}</small>
         {play.origin === "ai_draft" && !play.approved && <span className="ai-badge">AI 초안 · 승인 전</span>}

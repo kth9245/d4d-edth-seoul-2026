@@ -18,16 +18,15 @@ import { playUsage } from "./playUsage";
 import { PlayWorkflow } from "./PlayWorkflow";
 import { savePlay } from "./savePlay";
 import { vehicleColumns } from "./vehicleColumns";
-import { backFrom, openView, type ViewHistory, viewLabel } from "./viewHistory";
 
 export function EditorScreen() {
   const [data, setData] = useState<EditorData | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
-  // Which view is open and the ones opened before it, so "뒤로" returns along the same path (sidebar, play links).
-  const [nav, setNav] = useState<ViewHistory>({ current: OVERVIEW, stack: [] });
-  const selected = nav.current;
-  const open = (id: string) => setNav((h) => openView(h, id));
-  const back = () => setNav((h) => backFrom(h, OVERVIEW));
+  // The open view: the overview, the ontology or a play. "← 작전 개요" on a play always goes home (Part1-33),
+  // not back along the plays opened before it.
+  const [selected, setSelected] = useState<string>(OVERVIEW);
+  const open = (id: string) => setSelected(id);
+  const home = () => setSelected(OVERVIEW);
   const [results, setResults] = useState<Record<string, SaveResult>>({});
   // Part3-12: plays changed on screen but not saved yet, and the step each change added (to highlight it).
   const [edits, setEdits] = useState<Record<string, Play>>({});
@@ -53,8 +52,6 @@ export function EditorScreen() {
   if (loadError) return <div className="editor load-error">서버에 연결하지 못했습니다 ({loadError}). scripts/dev.sh로 gateway(8000)를 띄운 뒤 새로고침하세요.</div>;
   if (!data || !view) return <div className="editor">불러오는 중…</div>;
   const playName = (id: string) => view.byId.get(id)?.name ?? null;
-  const prev = nav.stack[nav.stack.length - 1] ?? OVERVIEW;
-  const backLabel = viewLabel(prev, { [OVERVIEW]: "작전 개요", [ONTOLOGY]: "온톨로지" }, playName);
   const play = edits[selected] ?? view.byId.get(selected);
   // Results are kept per play id so they survive switching plays. An edit drops the old result (its issues
   // no longer match the cards); a save that passes puts the edited play into the list.
@@ -109,7 +106,7 @@ export function EditorScreen() {
           setEdits({});
           setResults({});
           setFresh({});
-          setNav({ current: OVERVIEW, stack: [] });
+          setSelected(OVERVIEW);
         },
         (e) => {
           console.warn("editor: operation switch failed", e);
@@ -139,8 +136,7 @@ export function EditorScreen() {
             usage={view.usage[play.id] ?? []}
             playName={playName}
             onOpen={open}
-            onBack={back}
-            backLabel={backLabel}
+            onHome={home}
             result={results[play.id]}
             onSave={() => save(play)}
             edited={!!edits[play.id]}
