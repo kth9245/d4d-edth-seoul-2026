@@ -2,10 +2,9 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 11:26 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 11:28 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- **Part1-12** 주입 승인 카드 — kth9245, 10/10 11:19부터
 - **Part2-18** gateway `build_frame` 재작성 — 최동호, 10/10 11:26부터
 
 ## 막힘
@@ -42,6 +41,7 @@
 - 10/10 10:25 kth9245 · Part1-7 · 다음 사건으로(/run/jump)는 계약 그대로 offset_ms 필수, 멈출 시각은 화면(Part1-13)이 적는다. 리드 답 '계약 그대로'. 구현은 직접, ship 전 subagent 리뷰
 
 ## 완료
+- **Part1-12** 주입 승인 카드 — kth9245, 10/10 11:28
 - **Part2-17.1** gateway init_engine · GW-02 (묶음 A, engine_state.py 먼저) — 최동호, 10/10 11:23
 - **Part3-9** play `draft_play` — 황승주, 10/10 11:22 · PLY-09
 - **Part1-9.3** 디자인 v2: D4D 톤, Pretendard·Orbitron·JetBrains Mono 번들 — kth9245, 10/10 11:19
