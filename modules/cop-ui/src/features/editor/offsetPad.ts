@@ -5,7 +5,8 @@ export type OffsetPad = {
   grid: number; // metres between grid lines
   toXY: (o: RouteOffset) => [number, number];
   fromXY: (x: number, y: number) => RouteOffset;
-  labels: { at: [number, number]; text: string }[]; // one per spot: points on one spot read "1·2" (Part1-41)
+  labels: { at: [number, number]; text: string; textAt: [number, number] }[]; // one per spot: "1·2" (Part1-41)
+  north: [number, number]; // where the "북" mark goes: left of the vertical axis, clear of point numbers (QA finding 4)
 };
 
 // The relative route's drawing pad (Part1-40): a square of `size` px with the vehicle at the centre, north up.
@@ -28,6 +29,10 @@ export function offsetPad(offsets: RouteOffset[], size: number): OffsetPad {
     grid,
     toXY,
     fromXY: (x, y) => ({ north_m: snap(((c - y) / c) * half), east_m: snap(((x - c) / c) * half) }),
-    labels: [...spots.values()].map((s) => ({ at: s.at, text: s.numbers.join("·") })),
+    // A number sits above and right of its dot; near the top edge it goes below, where it stays readable.
+    labels: [...spots.values()].map((s) => ({
+      at: s.at, text: s.numbers.join("·"), textAt: [s.at[0] + 7, s.at[1] < 30 ? s.at[1] + 16 : s.at[1] - 7] as [number, number],
+    })),
+    north: [c - 16, 12],
   };
 }

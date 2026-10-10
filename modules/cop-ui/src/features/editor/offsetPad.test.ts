@@ -21,3 +21,15 @@ describe("offsetPad: the relative route drawing pad (Part1-40)", () => {
     expect(pad.toXY({ north_m: 2500, east_m: -2500 })).toEqual([0, 0]);
   });
 });
+
+describe("offsetPad labels stay clear of the north mark (QA finding 4)", () => {
+  it("a point near the top edge has its number below it; elsewhere above and right", () => {
+    const pad = offsetPad([{ north_m: 900, east_m: 0 }, { north_m: 0, east_m: 500 }], 400); // 900 m: y = 20 px, no growth
+    const [top, mid] = pad.labels;
+    expect(top.textAt[1]).toBeGreaterThan(top.at[1]);
+    expect(mid.textAt).toEqual([mid.at[0] + 7, mid.at[1] - 7]);
+  });
+  it("the north mark sits left of the vertical axis, not on it", () => {
+    expect(offsetPad([], 400).north[0]).toBeLessThan(200);
+  });
+});

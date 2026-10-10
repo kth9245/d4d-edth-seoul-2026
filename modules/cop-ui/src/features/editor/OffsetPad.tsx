@@ -31,7 +31,7 @@ export function OffsetPad({ offsets, onAdd }: { offsets: RouteOffset[]; onAdd: (
             </g>
           );
         })}
-        <text x={cx + 4} y={12} className="pad-label">북</text>
+        <text x={pad.north[0]} y={pad.north[1]} className="pad-label">북</text>
         <text x={SIZE - 14} y={cy - 4} className="pad-label">동</text>
         {pts.length > 0 && <polyline className="pad-route" points={[[cx, cy], ...pts].map((p) => p.join(",")).join(" ")} />}
         {pts.map(([x, y], i) => (
@@ -40,7 +40,7 @@ export function OffsetPad({ offsets, onAdd }: { offsets: RouteOffset[]; onAdd: (
           </g>
         ))}
         {pad.labels.map((l) => (
-          <text key={l.text} className="pad-number" x={l.at[0] + 7} y={l.at[1] - 7}>{l.text}</text>
+          <text key={l.text} className="pad-number" x={l.textAt[0]} y={l.textAt[1]}>{l.text}</text>
         ))}
         <circle className="pad-origin" cx={cx} cy={cy} r={6} />
         <text x={cx + 8} y={cy + 16} className="pad-label">기체 위치</text>

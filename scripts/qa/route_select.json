@@ -11,7 +11,7 @@
  {"label": "R0 a hold card has no route select or 반복", "eval": "({ route: !!document.querySelector(\"select[aria-label='경로']\"), loop: !!document.querySelector(\"input[aria-label='반복']\") })", "expect": {"route": false, "loop": false}},
  {"click": "+ 뒤에 카드 추가", "wait": 1200},
  {"select": ["select[aria-label='행동']", "route"], "wait": 400},
- {"label": "R1 route flying shows 반복 and the route list (fixed and relative groups)", "eval": "({ loop: document.querySelector(\"input[aria-label='반복']\")?.checked, groups: [...document.querySelectorAll(\"select[aria-label='경로'] optgroup\")].map(g => g.label), relative: [...document.querySelectorAll(\"select[aria-label='경로'] optgroup:last-of-type option\")].map(o => o.innerText) })", "expect": {"loop": true, "groups": ["고정 경로", "상대 경로 (기체 위치 기준)"], "relative": ["사각형 수색 300m", "지그재그 수색 600m", "원 선회 200m", "북쪽으로 1km"]}},
+ {"label": "R1 route flying shows 반복 and the route list (fixed and relative groups)", "eval": "({ loop: document.querySelector(\"input[aria-label='반복']\")?.checked, groups: [...document.querySelectorAll(\"select[aria-label='경로'] optgroup\")].map(g => g.label), relative: [...document.querySelectorAll(\"select[aria-label='경로'] optgroup:last-of-type option\")].map(o => o.innerText) })", "expect": {"loop": true, "groups": ["고정 경로", "상대 경로 (기체 위치 기준)"], "relative": ["발견 지점 집중 순찰(800 m)", "사각형 수색 300m", "지그재그 수색 600m", "원 선회 200m", "북쪽으로 1km"]}},
  {"select": ["select[aria-label='경로']", "square_300"], "wait": 400},
  {"label": "R2 the card names the relative route", "eval": "document.querySelector(\".react-flow__node[data-id='step-1'] .sn-text\")?.innerText", "expect": "경로 비행 · 사각형 수색 300m · 반복 · 기체 위치 기준"},
  {"clickSel": ".react-flow__node", "wait": 500},
@@ -24,11 +24,11 @@
  {"label": "R5 saved", "eval": "document.querySelector('.save-ok')?.innerText ?? document.querySelector('.save-bad')?.innerText", "match": "저장됨"},
  {"click": "작전 개요", "wait": 1500},
  {"click": "▶ 시뮬레이션", "wait": 4000},
- {"label": "R6 live, paused at the start; remember d3 and d4", "eval": "(window.__before = Object.fromEntries([...document.querySelectorAll('.mk.vehicle')].map(i => [i.querySelector('span').innerText, i.parentElement.style.transform])), document.querySelector('.runbar .clock')?.innerText)", "match": "T\\+0:0"},
+ {"label": "R6 live, paused at the start; remember d3 and d4", "eval": "(window.__before = Object.fromEntries([...document.querySelectorAll('.mk.vehicle')].map(i => [i.querySelector('span').innerText.split(' ')[0], i.parentElement.style.transform])), document.querySelector('.runbar .clock')?.innerText)", "match": "T\\+0:0"},
  {"click": "×30", "wait": 200},
  {"label": "R6 x30 while paused only picks the speed (QA finding 3)", "eval": "({ run: document.querySelector('.runbar .run-toggle')?.innerText, picked: [...document.querySelectorAll('.runbar .speeds button')].find(b => b.classList.contains('on'))?.innerText, dim: !!document.querySelector('.runbar .speeds button.on.dim') })", "expect": {"run": "▶ 재생", "picked": "×30", "dim": true}},
  {"click": "▶ 재생", "wait": 3000},
  {"click": "⏸ 일시정지", "wait": 600},
- {"label": "R7 past T+0:30 d3 and d4 have left the base on the square", "eval": "(() => { const now = Object.fromEntries([...document.querySelectorAll('.mk.vehicle')].map(i => [i.querySelector('span').innerText, i.parentElement.style.transform])); return ['d3', 'd4'].every(k => now[k] !== window.__before[k]); })()", "expect": true},
+ {"label": "R7 past T+0:30 d3 and d4 have left the base on the square", "eval": "(() => { const now = Object.fromEntries([...document.querySelectorAll('.mk.vehicle')].map(i => [i.querySelector('span').innerText.split(' ')[0], i.parentElement.style.transform])); return ['d3', 'd4'].every(k => now[k] !== window.__before[k]); })()", "expect": true},
  {"shot": "routes-live-24h.png"}
 ]

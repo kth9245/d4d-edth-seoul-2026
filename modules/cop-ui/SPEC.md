@@ -65,7 +65,7 @@
 | UI-60 | newRoute | 이름, 고정/상대, 점, 거리, 있는 id | RouteDef | 경로 비행 드롭다운 "＋ 경로 추가" 창(결정 0054): 고정은 지도에서 찍은 점(소수 5자리), 상대는 북·동 m(정수), id new_route[-n] | 리드 | 완료 |
 | UI-61 | postRoute | RouteDef | RouteDef[] | POST /routes(결정 0054): 실행 작전 경로 목록에 더함, 실행은 되돌리지 않음 | 리드 | 완료 |
 | UI-62 | routeGeoJSON | GeoPoint[] | GeoJSON | 경로 추가 창 지도: 찍은 점을 잇는 선(2개부터)과 점(찍은 순서 n, 첫 점은 크게)(결정 0054) | 리드 | 완료 |
-| UI-63 | offsetPad | RouteOffset[], 크기(px) | {half, grid, toXY, fromXY} | 경로 추가 창의 상대 경로 격자판(Part1-40): 가운데 = 기체 위치, 북쪽 위, 최소 1 km(넘는 점이 있으면 500 m 단위로 넓힘), 격자 100/250/500 m, 누른 곳은 10 m 단위 북·동 거리 | 리드 | 완료 |
+| UI-63 | offsetPad | RouteOffset[], 크기(px) | {half, grid, toXY, fromXY} | 경로 추가 창의 상대 경로 격자판(Part1-40): 가운데 = 기체 위치, 북쪽 위, 최소 1 km(넘는 점이 있으면 500 m 단위로 넓힘), 격자 100/250/500 m, 누른 곳은 10 m 단위 북·동 거리 · 점 번호는 한 자리에 "1·2"로 모으고 위쪽 끝(30 px 안) 점은 번호를 점 아래에, "북" 표시는 세로축 왼쪽(QA 발견 4) | 리드 | 완료 |
 | UI-64 | addUnlessSame | 목록, 새 항목, 비교 키 | 목록 | 경로 추가 창(Part1-41): 바로 앞 점과 같은 자리(두 번 누르기·더블클릭)는 더하지 않음. 상대 격자판은 같은 자리 점 번호를 "1·2"로 함께 표시(offsetPad.labels), 고정 지도는 더블클릭 확대를 끔 | 리드 | 완료 |
 | UI-65 | switchRoleOptions | Role[], VehicleSpec[], EnemySpec[], 기체 id | {id, name}[] | 상황판 작전 전환의 새 Role 목록(QA 발견 2): 고른 기체 영역의 Role, 적 Role 제외(startRoleOptions와 같은 규칙), 기체를 안 골랐으면 빈 목록 | 리드 | 완료 |
 | UI-66 | speedPress·playRequest | 재생 중 여부, 누른 배속 / 기억한 배속 | 요청 또는 기억 / 요청 주소 | 상황판 배속 버튼(QA 발견 3): 재생 중엔 바로 바꿈, 멈춘 상태에선 속도만 기억(흐린 강조), ▶ 재생이 그 속도로 시작, ⏸는 0 | 리드 | 완료 |
