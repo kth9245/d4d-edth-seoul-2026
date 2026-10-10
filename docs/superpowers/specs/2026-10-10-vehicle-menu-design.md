@@ -53,7 +53,7 @@
 ## 테스트
 - runtime `apply_injection`: `target_by_vehicle`에 있는 기체는 `decision_id == injection.id`·`target_id == 표적`, 표적 없이 옮긴 기체는 `decision_id is None`. 지목으로 `strike` Role에 든 기체가 `step_vehicle`을 거쳐 낸 `strike` 명령의 `provenance.decision_id == inj-n`이고 `check_command`가 통과(출처 규칙만 본다, 구역·배터리는 시나리오 위치로).
 - cop-ui `vehicleMenuRoles`: 야간 시나리오 Role로 d2(무장 드론)는 표적 Role에 감시·고속 보트 추적·표적 타격, d1(정찰 드론)은 타격 없음, usv는 해상 Role만, 적 Role(`enemy_*`) 없음, 표적 없는 Role에 지금 Role 없음, `capabilities` 없는 기체는 능력 조건 건너뜀.
-- cop-ui `seenTargets`: s7 예시 장면에서 보이는 적만(놓침·미탐·무력화 제외), 위험도 순, 기체에서 거리(m, 정수).
+- cop-ui `seenTargets`: 손으로 만든 표적·표적 상태로 보이는 적만(놓침·RF만·미탐·무력화 제외), 위험도 순, 기체에서 거리(m, 정수).
 - cop-ui `postRole`: 경로·본문(`approve: true`, `target_by_vehicle` 없음), 실패 시 `{ok: false}`.
 - cop-ui `fetchBoardData`: 적 Role id와 switches, 하나가 실패해도 나머지.
 - 화면(dev 서버, 야간 작전): d2 줄 누름 → 펼친 줄에 이동 안내·'귀환' 등 버튼·표적 Role 버튼 '표적 감시'·'고속 보트 추적'·'표적 타격'(빨강) → '귀환' 누름 → 승인 카드 없이 d2가 귀환, 운용자 조작 +1. d2 다시 고름 → 펼친 줄의 '표적 타격'(빨강) 누름 → 그 아래 포착 목록에 fast1(보일 때) → 누름 → d2가 fast1로 가 무력화, 결과 카드 근거 줄 "운용자 결정 inj-n". d1 고름 → 펼친 줄에 '표적 타격' 없음, 지도에서 fast1을 눌러도 지목 메뉴에 타격 없음. 오른쪽 열에 '작전 전환' 없음, 아군 머리줄 '전 기체 귀환' → 승인 카드. 스크린샷은 CDP로 실제 대기 뒤 촬영(가상 시간 스크린샷은 지도 구역 레이어를 놓침).
