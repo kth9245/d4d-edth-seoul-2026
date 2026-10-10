@@ -6,6 +6,7 @@ from modules.sim.actions.resolve_strikes import resolve_strikes
 from modules.sim.actions.sea_aim import sea_aim
 from modules.sim.actions.spawn_enemies import spawn_enemies
 from modules.sim.actions.steer_enemies import steer_enemies
+from modules.sim.actions.update_emission import update_emission
 from modules.sim.pipeline import simulate
 from modules.sim.types import Scenario
 
@@ -18,6 +19,7 @@ __all__ = [
     "sea_aim",
     "spawn_enemies",
     "steer_enemies",
+    "update_emission",
     "simulate",
     "Scenario",
 ]
