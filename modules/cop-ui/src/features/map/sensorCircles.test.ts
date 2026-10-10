@@ -3,9 +3,9 @@ import type { Domain, VehicleSpec } from "../../contracts.gen";
 import { at, mkFrame, mkVehicle } from "../board/boardFixtures";
 import { sensorCircles } from "./sensorCircles";
 
-const spec = (id: string, domain: Domain, sensor_range_m: number, rf_range_m = 0) =>
-  ({ id, name: id, domain, speed_mps: 10, endurance_min: 60, sensor_range_m, rf_range_m, home: at(37.95, 124.7) }) as VehicleSpec;
-const SPECS = [spec("d1", "air", 800, 2000), spec("usv", "sea", 500), spec("ugv", "ground", 300)];
+const spec = (id: string, domain: Domain, sensor_range_m: number) =>
+  ({ id, name: id, domain, speed_mps: 10, endurance_min: 60, sensor_range_m, home: at(37.95, 124.7) }) as VehicleSpec;
+const SPECS = [spec("d1", "air", 800), spec("usv", "sea", 500), spec("ugv", "ground", 300)];
 
 describe("sensorCircles", () => {
   it("rings each live vehicle (drone, boat, robot) at its sensor range around where it is now", () => {
@@ -28,16 +28,6 @@ describe("sensorCircles", () => {
       mkVehicle({ id: "ugv", status: "maintenance" }),
     ] });
     expect(sensorCircles(f, SPECS).features).toEqual([]);
-  });
-
-  it("rings the RF receive range only for live vehicles that can receive (score_target: r > 0)", () => {
-    const f = mkFrame({ vehicles: [
-      mkVehicle({ id: "d1", pos: at(37.98, 124.69), status: "active" }),
-      mkVehicle({ id: "usv", status: "ready" }),
-    ] });
-    const fc = sensorCircles(f, SPECS, "rf_range_m");
-    expect(fc.features.map((ft) => ft.properties.id)).toEqual(["d1"]);
-    expect(fc.features[0].geometry.coordinates[0][16][1]).toBeCloseTo(37.98 + 2000 / 111_320, 6);
   });
 
   it("draws nothing before the specs arrive", () => {

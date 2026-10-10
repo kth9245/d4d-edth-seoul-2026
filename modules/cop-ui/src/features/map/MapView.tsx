@@ -79,7 +79,6 @@ export function MapView({ frame, zone, tilesAvailable, direct = NO_DIRECT, board
     (m.getSource("links") as GeoJSONSource | undefined)?.setData(f && b ? linkLines(f, b.tracks, b.queue) : EMPTY);
     (m.getSource("watch") as GeoJSONSource | undefined)?.setData(watchCircles(latest.current.watch));
     (m.getSource("sensor") as GeoJSONSource | undefined)?.setData(f ? sensorCircles(f, latest.current.specs) : EMPTY);
-    (m.getSource("rf") as GeoJSONSource | undefined)?.setData(f ? sensorCircles(f, latest.current.specs, "rf_range_m") : EMPTY);
   };
 
   useEffect(() => {
@@ -99,10 +98,6 @@ export function MapView({ frame, zone, tilesAvailable, direct = NO_DIRECT, board
       m.addLayer({ id: "zone-fill", type: "fill", source: "zone", paint: { "fill-color": "#80e0ff", "fill-opacity": 0.05 } });
       m.addLayer({ id: "zone-line", type: "line", source: "zone",
         paint: { "line-color": "#80e0ff", "line-opacity": 0.7, "line-width": 1.5, "line-dasharray": [4, 3] } });
-      // RF receive range of the vehicles that can receive (Part1-32.3): --friend, dotted outline only, under the discs.
-      m.addSource("rf", { type: "geojson", data: EMPTY });
-      m.addLayer({ id: "rf-line", type: "line", source: "rf",
-        paint: { "line-color": "#80e0ff", "line-opacity": 0.6, "line-width": 1.2, "line-dasharray": [2, 3] } });
       // Each live vehicle's detection area (Part1-32.2): --friend, faint fill and a thin solid edge under the rest.
       m.addSource("sensor", { type: "geojson", data: EMPTY });
       m.addLayer({ id: "sensor-fill", type: "fill", source: "sensor", paint: { "fill-color": "#80e0ff", "fill-opacity": 0.07 } });
