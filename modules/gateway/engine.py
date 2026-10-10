@@ -116,8 +116,13 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
     ]  # 5.3 open cards follow the fleet (decision 0046)
     decs = es.decisions + list(inputs.decisions)  # 5.4 24h step-by-step raid cards (RT-19, RT-20)
     new_reports += raid_idle(reports + new_reports, stepped, targets, specs, sc.land, roles, t)
-    ask = raid_next(reports + new_reports, decs, stepped, targets, sc.operation, roles, specs, t)
-    new_reports += [ask] if ask else []
+    ask = raid_next(
+        reports + new_reports, decs, stepped, targets, sc.operation, roles, specs, sc.land, t
+    )
+    if ask and any(r.id == ask.id for r in reports):  # an open question rebuilt
+        reports = [ask if r.id == ask.id else r for r in reports]
+    elif ask:
+        new_reports.append(ask)
     states, assigns, gap = apply_reserves(stepped, sc.operation, roles, assigns, t)  # 6
     new_reports += [gap] if gap else []
     states, passed, blocks, cards = run_checks(  # 7

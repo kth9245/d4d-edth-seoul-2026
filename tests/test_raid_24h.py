@@ -33,14 +33,16 @@ def _answer(
 
 def test_24h_raid_asks_one_question_at_a_time_in_order():  # user 10/10: step-by-step raid cards
     day = load_scenario_json(DAY)
-    es, asked, n, prev = init_engine(day), [], 0, {}
+    es, asked, n = init_engine(day), [], 0
     while es.t_ms < day.operation.started_ms + 30 * 60_000:
         open_q = [
             r for r in es.reports if r.id.startswith("raid-e") and r.choices and not r.resolved_ms
         ]
         assert len(open_q) <= 1, [r.id for r in open_q]
-        for r in open_q:  # 5.3 must not rebuild a raid card
-            assert prev.setdefault(r.id, [c.id for c in r.choices]) == [c.id for c in r.choices]
+        for r in open_q:  # 5.3 must not rebuild a raid card with the fleet choices
+            assert not [c.id for c in r.choices if c.id.startswith(("take_", "join_", "keep"))], (
+                r.id
+            )
         todo = [
             r for r in es.reports if r.id.startswith("raid-") and r.choices and not r.resolved_ms
         ]

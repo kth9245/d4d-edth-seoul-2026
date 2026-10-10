@@ -16,7 +16,10 @@ def apply_decision(
     moved = set(ch.role_by_vehicle)
 
     def closes(r: Report) -> bool:  # this card, and cards the moved vehicles were waiting on
-        return r.id == rep.id or (r.vehicle_id in moved and bool(r.choices) and not r.resolved_ms)
+        waiting = r.vehicle_id in moved and bool(r.choices) and not r.resolved_ms
+        return r.id == rep.id or (
+            waiting and not r.id.startswith("raid-")
+        )  # 24h raid cards stay (RT-19)
 
     reports = [r.model_copy(update=done) if closes(r) else r for r in reports]
     focused = {
