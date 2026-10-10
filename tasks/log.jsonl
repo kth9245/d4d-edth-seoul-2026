@@ -640,3 +640,4 @@
 {"at": "2026-10-11T06:54:05+09:00", "by": "황승주", "op": "start", "id": "Part2-75", "take": false, "from": null}
 {"at": "2026-10-11T06:57:53+09:00", "by": "황승주", "op": "done", "id": "Part2-75", "take": false}
 {"at": "2026-10-11T07:16:19+09:00", "by": "kth9245", "op": "add", "id": "Part1-15.6", "title": "공격 작전: 거점 발견 알림을 상황판 알림 칸에 띄움", "parent": "Part1-15", "assign": null, "slot": "뒤", "spec": null}
+{"at": "2026-10-11T07:16:37+09:00", "by": "kth9245", "op": "start", "id": "Part1-15.6", "take": false, "from": null}
