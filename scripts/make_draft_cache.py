@@ -1,7 +1,7 @@
 """Part1-5: AI draft cache for the demo sentences (decision 0028). Needs GROK_KEY in .env and internet.
 
 For each sentence in demo/draft_sentences.json: build_draft_prompt with the demo operation, one Grok call,
-the reply's "role" saved as demo/roles/cache/<draft_cache_key(text, op)>.json (decision 0057) (origin=ai_draft, approved=False).
+the reply's "role" saved as demo/roles/cache/<draft_cache_key(text, op)>.json (decision 0062) (origin=ai_draft, approved=False).
 The demo only reads these files (policy 1); this script is not on the demo path.
 tests/test_draft_cache.py checks the files and each sentence's expected check result.
 

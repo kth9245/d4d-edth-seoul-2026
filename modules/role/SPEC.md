@@ -14,4 +14,4 @@
 | PLY-09 | draft_role | 문장, Operation | Role(origin=ai_draft) | 캐시 hit면 호출 없음, miss면 1회 호출·스키마 밖이면 재요청 1회, 실패 시 템플릿 반환 | 황승주 | 완료 |
 | PLY-11 | check_operation | Operation, roles, specs | RoleCheck | 예시 작전 통과, 보고 지점 뺀 작전 실패 | 황승주 | 완료 |
 | PLY-12 | build_draft_prompt | 문장, Operation | str | 같은 입력이면 같은 문자열, 문장·ActionKind 9·ConditionKind 6·zone 좌표 포함, started_ms·assign 등을 바꿔도 같음, 남은 자리표시 없음 | kth9245 | 완료 |
-| PLY-13 | draft_cache_key | 문장, Operation | str(sha256 hex) | AI 초안 캐시 키 = 문장(앞뒤 공백 제외)·작전 지역·작전 구역. 작전 이름·목적·배정·시각은 안 넣음, 같은 구역의 새 작전·24시간 작전도 시연 캐시를 씀(결정 0057) | kth9245 | 완료 |
+| PLY-13 | draft_cache_key | 문장, Operation | str(sha256 hex) | AI 초안 캐시 키 = 문장(앞뒤 공백 제외)·작전 지역·작전 구역. 작전 이름·목적·배정·시각은 안 넣음, 같은 구역의 새 작전·24시간 작전도 시연 캐시를 씀(결정 0062) | kth9245 | 완료 |

@@ -77,7 +77,7 @@
 | 10/10 20:55 | demo·scripts | 멸공에 야간 작전의 '전 기체 귀환' 버튼(6대 귀환, strike Role은 Part2-45가 먼저 넣음)(사용자) | 황승주 |
 | 10/10 21:58 | infra, tests | Part1-42 ship이 24시간 교대 테스트를 건너뜀(결정 0056): 테스트에 slow 표시, ship.sh는 `-m "not slow"`, 교대·24시간 시나리오를 바꾸면 `uv run pytest -m slow`. 리드 ship 테스트 단계 67초 → 13초 | kth9245 |
 | 10/10 22:40 | runtime·gateway·cop-ui·scripts | 새 적 발견 카드(결정 0057): 순찰 중이 아닌 기체(예: boat1 감시 중인 d3)가 새 적을 보면 하던 일은 그대로 두고 '누구를 보낼까요?' 카드(선택지: 고속 보트 추적 같은 표적용 전환 → 기지 대기 드론 감시). 시연 23:04 fast1 카드에서 '고속 보트 추적' 한 번으로 표적 지정까지(운용자 조작 12→8번). '처음으로' 뒤 지난번에 연 카드가 먼저 열리던 문제 수정, 3분 대본 화면 점검표 scripts/qa/script.json | 리드 |
-| 10/10 22:34 | role, demo, scripts | Part1-43 AI 초안 캐시 키를 문장·작전 지역·구역으로(결정 0057): 새 작전·24시간 작전에서도 시연 문장이 캐시 초안을 받아 인터넷 호출 없음(QA E2E 발견 1). 캐시 파일 이름 옮김 | kth9245 |
+| 10/10 22:34 | role, demo, scripts | Part1-43 AI 초안 캐시 키를 문장·작전 지역·구역으로(결정 0062): 새 작전·24시간 작전에서도 시연 문장이 캐시 초안을 받아 인터넷 호출 없음(QA E2E 발견 1). 캐시 파일 이름 옮김 | kth9245 |
 | 10/10 22:38 | cop-ui | Part1-44 상황판 작전 전환의 새 Role 목록을 고른 기체 영역의 Role만, 적 Role 제외로(QA E2E 발견 2, 편집기 시작 Role과 같은 규칙) | kth9245 |
 | 10/10 22:40 | contracts·sensing·gateway·demo | 공격 작전 2단계 식별·신뢰도(결정 0056 초안): Target에 ident_state·ident_confidence·ident_reasons·ident_observed_ms, sensing identify_target(SNS-04: RF·스캔·두 기체 관측·관측 지속을 합쳐 0.70이면 식별됨), gateway identify_targets(GW-12)·refresh_strike_cards(GW-13: 카드 문구에 식별 줄, 식별된 거점에만 타격 승인 선택지)·decision_applicable(GW-14: 사라진 선택지의 클릭은 건너뛰어 실행이 멈추지 않음), baengnyeong_strike에 strike Role | 최동호 |
 | 10/10 22:43 | cop-ui | Part1-45 상황판 배속 버튼: 멈춘 상태에서는 속도만 기억(흐리게 표시)하고 ▶ 재생이 그 속도로 시작, 재생 중에는 바로 바뀜(QA E2E 발견 3) | kth9245 |

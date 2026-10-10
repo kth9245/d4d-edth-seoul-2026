@@ -22,7 +22,7 @@ def op(**kw) -> Operation:
     return Operation(**(base | kw))
 
 
-def test_a_new_operation_on_the_same_zone_shares_the_key():  # decision 0057
+def test_a_new_operation_on_the_same_zone_shares_the_key():  # decision 0062
     key = draft_cache_key(TEXT, op())
     assert len(key) == 64 and all(c in "0123456789abcdef" for c in key)
     renamed = op(id="new_op_1", name="QA 새 작전", purpose="", assign={"d1": "x"}, started_ms=99)

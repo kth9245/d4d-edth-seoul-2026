@@ -303,7 +303,7 @@ def test_post_routes_adds_a_route_the_editor_can_offer():  # decision 0054
         assert client.get("/routes").json()[-1]["id"] == "new_route"
 
 
-def test_draft_hits_the_cache_on_a_new_and_the_24h_operation():  # decision 0057, policy 1
+def test_draft_hits_the_cache_on_a_new_and_the_24h_operation():  # decision 0062, policy 1
     import json
 
     text = json.loads((ROOT / "demo/draft_sentences.json").read_text("utf-8"))[0]["text"]

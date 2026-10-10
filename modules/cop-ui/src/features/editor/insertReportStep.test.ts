@@ -3,7 +3,7 @@ import type { Role } from "../../contracts.gen";
 import { insertReportStep } from "./insertReportStep";
 
 // Same shape as the cached AI draft "북쪽 해안 순찰 및 고속정 접근" (patrol --target_found--> approach, no report).
-// Written here, not imported: cache files are named by draft_cache_key (decision 0057) and are renamed when the key changes.
+// Written here, not imported: cache files are named by draft_cache_key (decision 0062) and are renamed when the key changes.
 const role: Role = {
   id: "north_coast_patrol_follow", name: "북쪽 해안 순찰 및 고속정 접근", domains: ["air"], entry: "patrol_north_coast",
   steps: [

@@ -1,5 +1,5 @@
 """PLY-09 draft_role: 문장 → AI Role 초안(결정 0028 Grok). 캐시 우선, 미스면 1회 호출·스키마 밖이면 1회 재요청, 실패 시 standby 템플릿
-캐시 키는 draft_cache_key(문장·작전 지역·구역, 결정 0057): 같은 구역의 새 작전·24시간 작전도 캐시를 쓴다.
+캐시 키는 draft_cache_key(문장·작전 지역·구역, 결정 0062): 같은 구역의 새 작전·24시간 작전도 캐시를 쓴다.
 프롬프트는 리드의 build_draft_prompt(PLY-12), 호출 규약은 tasks Part3-9 리드 메모.
 SPEC: modules/role/SPEC.md#PLY-09
 """
