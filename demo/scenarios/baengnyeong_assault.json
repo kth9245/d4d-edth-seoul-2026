@@ -3,7 +3,7 @@
  "operation": {
   "id": "op_assault",
   "name": "해안 거점·무인장비 무력화",
-  "purpose": "정찰 드론이 RF 거점을 직접 조종으로 보고 식별·타격하고, 적 무인 수상정이 지상 로봇을 내리면 결정 한 번에 공격 드론·수상정이 타격하고 지상 로봇이 상륙 지점으로 이동해 관측한다(가상 상황).",
+  "purpose": "정찰 드론 편대가 서쪽 해변을 지나고 수상정이 해변에 상륙한다. 정찰 드론이 북쪽·남쪽·숲속 거점을 차례로 찾고, 운용자가 공격 드론 2대를 표적 타격으로 보내 거점 3곳을 파괴한다(가상 상황).",
   "area": {
    "points": [
     {
@@ -62,9 +62,9 @@
   ],
   "started_ms": 1791633600000,
   "assign": {
-   "usv": "sea_patrol",
-   "r1": "site_recon",
-   "r2": "site_recon",
+   "usv": "standby",
+   "r1": "recon_r1",
+   "r2": "recon_r2",
    "a1": "standby",
    "a2": "standby",
    "ugv": "standby"
@@ -78,19 +78,19 @@
  "vehicles": [
   {
    "id": "usv",
-   "name": "무장 수상정",
+   "name": "수상정",
    "domain": "sea",
    "speed_mps": 8.0,
    "endurance_min": 720.0,
    "sensor_range_m": 500.0,
    "home": {
-    "lat": 37.955,
-    "lon": 124.6,
+    "lat": 37.95,
+    "lon": 124.588,
     "alt_m": 0.0
    },
    "recharge_min": 0.0,
    "rf_range_m": 0.0,
-   "kind": "armed_usv"
+   "kind": "sea_vehicle"
   },
   {
    "id": "r1",
@@ -101,7 +101,7 @@
    "sensor_range_m": 800.0,
    "home": {
     "lat": 37.955,
-    "lon": 124.6,
+    "lon": 124.592,
     "alt_m": 0.0
    },
    "recharge_min": 5.0,
@@ -117,7 +117,7 @@
    "sensor_range_m": 800.0,
    "home": {
     "lat": 37.955,
-    "lon": 124.6,
+    "lon": 124.592,
     "alt_m": 0.0
    },
    "recharge_min": 5.0,
@@ -128,12 +128,12 @@
    "id": "a1",
    "name": "공격 드론1",
    "domain": "air",
-   "speed_mps": 15.0,
+   "speed_mps": 30.0,
    "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "home": {
     "lat": 37.955,
-    "lon": 124.6,
+    "lon": 124.592,
     "alt_m": 0.0
    },
    "recharge_min": 5.0,
@@ -144,12 +144,12 @@
    "id": "a2",
    "name": "공격 드론2",
    "domain": "air",
-   "speed_mps": 15.0,
+   "speed_mps": 30.0,
    "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "home": {
     "lat": 37.955,
-    "lon": 124.6,
+    "lon": 124.592,
     "alt_m": 0.0
    },
    "recharge_min": 5.0,
@@ -164,8 +164,8 @@
    "endurance_min": 480.0,
    "sensor_range_m": 300.0,
    "home": {
-    "lat": 37.955,
-    "lon": 124.72,
+    "lat": 37.957,
+    "lon": 124.63,
     "alt_m": 0.0
    },
    "recharge_min": 0.0,
@@ -175,41 +175,69 @@
  ],
  "roles": [
   {
-   "id": "site_recon",
-   "name": "거점 탐색 순찰",
+   "id": "recon_r1",
+   "name": "정찰 · r1",
    "domains": [
     "air"
    ],
    "steps": [
     {
-     "id": "patrol",
-     "name": "해안 순찰",
+     "id": "formation",
+     "name": "편대 · 서쪽 해변",
+     "do": {
+      "kind": "move_to",
+      "params": {
+       "route": [
+        {
+         "lat": 37.957,
+         "lon": 124.6,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.957,
+         "lon": 124.615,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.957,
+         "lon": 124.63,
+         "alt_m": 0.0
+        }
+       ],
+       "route_name": "편대 · 서쪽 해변"
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "arrived",
+        "params": {}
+       },
+       "go_step": "search_n"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "search_n",
+     "name": "거점 탐색 · 북쪽",
      "do": {
       "kind": "patrol_route",
       "params": {
        "route": [
         {
-         "lat": 37.98,
-         "lon": 124.62,
-         "alt_m": 0.0
-        },
-        {
-         "lat": 37.98,
-         "lon": 124.66,
+         "lat": 37.967,
+         "lon": 124.64,
          "alt_m": 0.0
         },
         {
          "lat": 37.975,
-         "lon": 124.69,
-         "alt_m": 0.0
-        },
-        {
-         "lat": 37.98,
-         "lon": 124.66,
+         "lon": 124.652,
          "alt_m": 0.0
         }
        ],
-       "route_name": "서·북 해안"
+       "route_name": "북쪽"
       }
      },
      "on": [
@@ -218,15 +246,15 @@
         "kind": "target_found",
         "params": {}
        },
-       "go_step": "report"
+       "go_step": "watch_n"
       }
      ],
      "report": null,
      "ui": {}
     },
     {
-     "id": "report",
-     "name": "발견·감시·보고",
+     "id": "watch_n",
+     "name": "감시 · 북쪽",
      "do": {
       "kind": "watch_target",
       "params": {
@@ -237,119 +265,38 @@
      "on": [
       {
        "cond": {
-        "kind": "operator_choice",
-        "params": {
-         "choice": "resume"
-        }
-       },
-       "go_step": "patrol"
-      },
-      {
-       "cond": {
         "kind": "target_neutralized",
         "params": {}
        },
-       "go_step": "after_strike"
+       "go_step": "search_f"
       }
      ],
      "report": {
-      "text": "미식별 거점 감지",
-      "choices": [
-       {
-        "id": "resume",
-        "label": "이 거점은 두고 계속 정찰",
-        "role_by_vehicle": {},
-        "target_by_vehicle": {}
-       }
-      ],
-      "auto_choices": true
+      "text": "거점 발견",
+      "choices": [],
+      "auto_choices": false
      },
      "ui": {}
     },
     {
-     "id": "after_strike",
-     "name": "무력화 뒤",
-     "do": {
-      "kind": "hold",
-      "params": {}
-     },
-     "on": [
-      {
-       "cond": {
-        "kind": "operator_choice",
-        "params": {
-         "choice": "more"
-        }
-       },
-       "go_step": "patrol"
-      }
-     ],
-     "report": {
-      "text": "거점 무력화됨. 이어서 어떻게 할까요?",
-      "choices": [
-       {
-        "id": "more",
-        "label": "더 정찰",
-        "role_by_vehicle": {},
-        "target_by_vehicle": {}
-       },
-       {
-        "id": "home",
-        "label": "수상정으로 복귀",
-        "role_by_vehicle": {
-         "r1": "go_home",
-         "r2": "go_home"
-        },
-        "target_by_vehicle": {}
-       }
-      ],
-      "auto_choices": false
-     },
-     "ui": {}
-    }
-   ],
-   "entry": "patrol",
-   "origin": "human",
-   "approved": true,
-   "template": false,
-   "emergency": {
-    "battery_low_pct": 30.0,
-    "link_lost_step": null,
-    "battery_low_step": null,
-    "operator_call_step": null
-   }
-  },
-  {
-   "id": "sea_patrol",
-   "name": "해상 순찰",
-   "domains": [
-    "sea"
-   ],
-   "steps": [
-    {
-     "id": "patrol",
-     "name": "서쪽 항로 순찰",
+     "id": "search_f",
+     "name": "거점 탐색 · 숲속",
      "do": {
       "kind": "patrol_route",
       "params": {
        "route": [
         {
-         "lat": 37.945,
-         "lon": 124.61,
+         "lat": 37.965,
+         "lon": 124.672,
          "alt_m": 0.0
         },
         {
-         "lat": 37.935,
-         "lon": 124.65,
-         "alt_m": 0.0
-        },
-        {
-         "lat": 37.945,
-         "lon": 124.61,
+         "lat": 37.955,
+         "lon": 124.688,
          "alt_m": 0.0
         }
        ],
-       "route_name": "서쪽 항로"
+       "route_name": "숲속"
       }
      },
      "on": [
@@ -358,64 +305,51 @@
         "kind": "target_found",
         "params": {}
        },
-       "go_step": "report"
+       "go_step": "watch_f"
       }
      ],
      "report": null,
      "ui": {}
     },
     {
-     "id": "report",
-     "name": "발견·보고",
+     "id": "watch_f",
+     "name": "감시 · 숲속",
      "do": {
       "kind": "watch_target",
       "params": {
        "target": "nearest",
-       "distance_m": 200
+       "distance_m": 150
       }
      },
      "on": [
       {
        "cond": {
-        "kind": "operator_choice",
-        "params": {
-         "choice": "watch_usv"
-        }
+        "kind": "target_neutralized",
+        "params": {}
        },
-       "go_step": "patrol"
+       "go_step": "home"
       }
      ],
      "report": {
-      "text": "미식별 수상정 접근",
-      "choices": [
-       {
-        "id": "strike_all_domains",
-        "label": "함께 타격(공격 드론·수상정) · 지상 로봇 상륙 지점으로",
-        "role_by_vehicle": {
-         "a1": "strike",
-         "a2": "strike",
-         "usv": "strike",
-         "ugv": "watch_landing"
-        },
-        "target_by_vehicle": {
-         "a1": "e_usv",
-         "a2": "e_usv",
-         "usv": "e_usv"
-        }
-       },
-       {
-        "id": "watch_usv",
-        "label": "수상정만 계속 감시",
-        "role_by_vehicle": {},
-        "target_by_vehicle": {}
-       }
-      ],
+      "text": "거점 발견",
+      "choices": [],
       "auto_choices": false
      },
      "ui": {}
+    },
+    {
+     "id": "home",
+     "name": "귀환",
+     "do": {
+      "kind": "return_home",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
     }
    ],
-   "entry": "patrol",
+   "entry": "formation",
    "origin": "human",
    "approved": true,
    "template": false,
@@ -427,31 +361,122 @@
    }
   },
   {
-   "id": "watch_landing",
-   "name": "상륙 지점 관측",
+   "id": "recon_r2",
+   "name": "정찰 · r2",
    "domains": [
-    "ground"
+    "air"
    ],
    "steps": [
     {
-     "id": "move",
-     "name": "상륙 지점으로",
+     "id": "formation",
+     "name": "편대 · 서쪽 해변",
      "do": {
       "kind": "move_to",
       "params": {
-       "target": {
-        "lat": 37.942,
-        "lon": 124.66,
-        "alt_m": 0.0
-       }
+       "route": [
+        {
+         "lat": 37.953,
+         "lon": 124.6,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.953,
+         "lon": 124.615,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.953,
+         "lon": 124.63,
+         "alt_m": 0.0
+        }
+       ],
+       "route_name": "편대 · 서쪽 해변"
       }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "arrived",
+        "params": {}
+       },
+       "go_step": "search_s"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "search_s",
+     "name": "거점 탐색 · 남쪽",
+     "do": {
+      "kind": "patrol_route",
+      "params": {
+       "route": [
+        {
+         "lat": 37.943,
+         "lon": 124.64,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.934,
+         "lon": 124.652,
+         "alt_m": 0.0
+        }
+       ],
+       "route_name": "남쪽"
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "target_found",
+        "params": {}
+       },
+       "go_step": "watch_s"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "watch_s",
+     "name": "감시 · 남쪽",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "nearest",
+       "distance_m": 150
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "target_neutralized",
+        "params": {}
+       },
+       "go_step": "home"
+      }
+     ],
+     "report": {
+      "text": "거점 발견",
+      "choices": [],
+      "auto_choices": false
+     },
+     "ui": {}
+    },
+    {
+     "id": "home",
+     "name": "귀환",
+     "do": {
+      "kind": "return_home",
+      "params": {}
      },
      "on": [],
      "report": null,
      "ui": {}
     }
    ],
-   "entry": "move",
+   "entry": "formation",
    "origin": "human",
    "approved": true,
    "template": false,
@@ -676,141 +701,50 @@
     "battery_low_step": null,
     "operator_call_step": null
    }
-  },
-  {
-   "id": "enemy_usv_run",
-   "name": "적: 상륙 침투",
-   "domains": [
-    "sea"
-   ],
-   "steps": [
-    {
-     "id": "go",
-     "name": "상륙 지점으로",
-     "do": {
-      "kind": "move_to",
-      "params": {
-       "target": {
-        "lat": 37.942,
-        "lon": 124.66,
-        "alt_m": 0.0
-       }
-      }
-     },
-     "on": [
-      {
-       "cond": {
-        "kind": "arrived",
-        "params": {}
-       },
-       "go_step": "land"
-      }
-     ],
-     "report": null,
-     "ui": {}
-    },
-    {
-     "id": "land",
-     "name": "하선 대기",
-     "do": {
-      "kind": "hold",
-      "params": {}
-     },
-     "on": [],
-     "report": null,
-     "ui": {}
-    }
-   ],
-   "entry": "go",
-   "origin": "human",
-   "approved": true,
-   "template": false,
-   "emergency": {
-    "battery_low_pct": 30.0,
-    "link_lost_step": null,
-    "battery_low_step": null,
-    "operator_call_step": null
-   }
-  },
-  {
-   "id": "enemy_hold",
-   "name": "적: 지상 대기",
-   "domains": [
-    "ground"
-   ],
-   "steps": [
-    {
-     "id": "hold",
-     "name": "대기",
-     "do": {
-      "kind": "hold",
-      "params": {}
-     },
-     "on": [],
-     "report": null,
-     "ui": {}
-    }
-   ],
-   "entry": "hold",
-   "origin": "human",
-   "approved": true,
-   "template": false,
-   "emergency": {
-    "battery_low_pct": 30.0,
-    "link_lost_step": null,
-    "battery_low_step": null,
-    "operator_call_step": null
-   }
   }
  ],
  "events": [],
  "enemies": [
   {
-   "id": "site_rf",
+   "id": "site_n",
    "kind": "unknown",
    "speed_mps": 0.0,
    "appear_offset_ms": 1000,
    "pos": {
-    "lat": 37.969,
+    "lat": 37.972,
     "lon": 124.655,
     "alt_m": 0.0
    },
    "from_enemy": null,
    "role_id": "site_hold",
-   "emit_start_offset_ms": 0
+   "emit_start_offset_ms": null
   },
   {
-   "id": "e_usv",
-   "kind": "usv",
-   "speed_mps": 6.0,
-   "appear_offset_ms": 240000,
+   "id": "site_s",
+   "kind": "unknown",
+   "speed_mps": 0.0,
+   "appear_offset_ms": 1000,
    "pos": {
-    "lat": 37.93,
+    "lat": 37.932,
+    "lon": 124.655,
+    "alt_m": 0.0
+   },
+   "from_enemy": null,
+   "role_id": "site_hold",
+   "emit_start_offset_ms": null
+  },
+  {
+   "id": "site_f",
+   "kind": "unknown",
+   "speed_mps": 0.0,
+   "appear_offset_ms": 1000,
+   "pos": {
+    "lat": 37.952,
     "lon": 124.69,
     "alt_m": 0.0
    },
    "from_enemy": null,
-   "role_id": "enemy_usv_run",
-   "emit_start_offset_ms": null
-  },
-  {
-   "id": "e_ugv1",
-   "kind": "ugv",
-   "speed_mps": 0.0,
-   "appear_offset_ms": 360000,
-   "pos": null,
-   "from_enemy": "e_usv",
-   "role_id": "enemy_hold",
-   "emit_start_offset_ms": null
-  },
-  {
-   "id": "e_ugv2",
-   "kind": "ugv",
-   "speed_mps": 0.0,
-   "appear_offset_ms": 361000,
-   "pos": null,
-   "from_enemy": "e_usv",
-   "role_id": "enemy_hold",
+   "role_id": "site_hold",
    "emit_start_offset_ms": null
   }
  ],
@@ -819,8 +753,8 @@
    "id": "target_area",
    "name": "목표 지역 중심",
    "pos": {
-    "lat": 37.978,
-    "lon": 124.7,
+    "lat": 37.955,
+    "lon": 124.665,
     "alt_m": 0.0
    },
    "radius_m": 2000.0
