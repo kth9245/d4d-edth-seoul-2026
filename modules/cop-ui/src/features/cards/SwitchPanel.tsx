@@ -53,7 +53,7 @@ export function SwitchPanel({ frame }: { frame: Frame | null }) {
           전환 요청
         </button>
       </div>
-      {last?.ok && <div className="note">요청됨 {last.id} · 아래 카드에서 승인</div>}
+      {last?.ok && <div className="note">요청됨 {last.id} · 위 결정 대기에서 승인</div>}
       {last && !last.ok && <div className="note error">요청 실패: {last.error}</div>}
     </section>
   );

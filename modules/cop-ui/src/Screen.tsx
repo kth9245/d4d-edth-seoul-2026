@@ -58,7 +58,9 @@ export function Screen({ frame, zone, status, ok }:
           <details className="fold sw"><summary>작전 전환 <small>전 기체 · 기체 하나만</small></summary><SwitchPanel frame={frame} /></details>
           <details className="fold hist"><summary>지난 기록 <b>{board?.queue.history.length ?? 0}</b></summary>
             {board?.queue.history.map((c) => (
-              <div key={`${c.source}-${c.id}`} className="hist-row"><time>{c.time}</time><span>{c.text}{c.done ? ` · ${c.done}` : ""}</span></div>
+              <div key={`${c.source}-${c.id}`} className="hist-row"><time>{c.time}</time><span>{c.text}{c.done ? ` · ${c.done}` : ""}</span>
+                {c.target && (c.kind === "target_detected" || c.kind === "target_neutralized") &&
+                  <button className="graph-open" onClick={() => setGraph(c.target!)}>연결 보기</button>}</div>
             ))}
           </details>
         </div>

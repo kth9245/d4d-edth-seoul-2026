@@ -37,7 +37,7 @@
  {"select": ["select[aria-label='전환할 기체']", "d2"]},
  {"select": ["select[aria-label='새 플레이']", "track_fast"], "wait": 200},
  {"click": "전환 요청", "wait": 800},
- {"label": "L7 switch requested", "eval": "document.querySelector('.switchpanel .note')?.innerText ?? null", "match": "^요청됨 inj-\\d+ · 아래 카드에서 승인$"},
+ {"label": "L7 switch requested", "eval": "document.querySelector('.switchpanel .note')?.innerText ?? null", "match": "^요청됨 inj-\\d+ · 위 결정 대기에서 승인$"},
  {"click": "재생", "wait": 2500},
  {"click": "일시정지", "wait": 800},
  {"label": "L7 pending card with approve and reject", "eval": "[...document.querySelectorAll('.card')].filter(c => c.innerText.includes('전환 승인')).map(c => c.innerText.replace(/\\n/g, ' | '))", "match": "전환 승인 · .*d2→track_fast.*승인.*거부"},

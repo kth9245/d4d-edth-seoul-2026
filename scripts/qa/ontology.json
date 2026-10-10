@@ -14,7 +14,7 @@
  {"label": "O2 answer the contact card with its first choice", "eval": "(() => { const b = document.querySelector('.card button:not(.graph-open)'); if (!b) return 'no choice'; b.click(); return 'clicked'; })()", "expect": "clicked"},
  {"click": "재생", "wait": 3000},
  {"click": "일시정지", "wait": 800},
- {"label": "O2 open the answered contact card's connections (a newer card for the next boat sits on top)", "eval": "(() => { const b = document.querySelector('.card.done .graph-open'); if (!b) return 'no button'; b.click(); return 'clicked'; })()", "expect": "clicked"},
+ {"label": "O2 open the answered contact card's connections from the history fold", "eval": "(() => { document.querySelector('.fold.hist')?.setAttribute('open', ''); const b = document.querySelector('.fold.hist .graph-open'); if (!b) return 'no button'; b.click(); return 'clicked'; })()", "expect": "clicked"},
  {"wait": 2500},
  {"label": "O2 graph: target, card, decision, its commands and vehicles", "eval": "['vehicle', 'report', 'decision', 'command', 'target'].filter(t => document.querySelector('.object-graph .og-' + t))", "expect": ["vehicle", "report", "decision", "command", "target"]},
  {"shot": "live-object-graph.png"},

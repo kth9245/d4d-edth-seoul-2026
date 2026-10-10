@@ -22,12 +22,16 @@ function Row({ item, onOpen }: { item: QueueItem; onOpen: () => void }) {
   );
 }
 
-function Idle({ frame, alerts }: { frame: Frame; alerts: Card[] }) {
-  const win = alerts.find((c) => c.kind === "target_neutralized");
+// The strike result stays as the answer to "what now" after its alert ages out (review of Task 6: at ×10 a
+// 2-minute alert lasts 12 s, and the strike is the last scene).
+function Idle({ frame, seen, onGraph }: { frame: Frame; seen: Card[]; onGraph?: (target: string) => void }) {
+  const win = seen.find((c) => c.kind === "target_neutralized");
   const m = frame.metrics;
   return win ? (
     <div className="next-act done"><div className="k">작전 결과</div><div className="t">{win.target} 무력화 — 사람 허락 뒤 타격</div>
-      <div className="s">운용자 조작 {m.operator_actions ?? 0}번 (기체별 직접 명령이었다면 {m.manual_baseline_actions ?? 0}번)</div></div>
+      <div className="s">운용자 조작 {m.operator_actions ?? 0}번 (기체별 직접 명령이었다면 {m.manual_baseline_actions ?? 0}번)</div>
+      {win.preview && <div className="s why">{win.preview}</div>}
+      {onGraph && win.target && <button className="graph-open" onClick={() => onGraph(win.target!)}>연결 보기</button>}</div>
   ) : (
     <div className="next-act"><div className="k">할 일 없음</div><div className="t">지금 결정할 것이 없습니다</div>
       <div className="s">▶ 재생하거나 다음 사건으로 넘어가세요.</div></div>
@@ -54,7 +58,9 @@ export function DecisionQueue({ frame, queue, onGraph }: { frame: Frame; queue: 
     const r = await request();
     setSent((m) => ({ ...m, [cardId]: r.ok ? { state: "sent", id: r.id } : { state: "error", error: r.error } }));
   };
-  const open = queue.action.find((i) => i.key === openKey) ?? queue.action[0];
+  // A merged target pick changes key when one of its picks is answered; keep it open by the cards it still holds.
+  const opened = (openKey ?? "").split("+");
+  const open = queue.action.find((i) => i.key === openKey || i.cards.some((c) => opened.includes(c.id))) ?? queue.action[0];
   const decisions = queue.action.reduce((n, i) => n + i.cards.length, 0);
   return (
     <div className="queue">
@@ -65,7 +71,7 @@ export function DecisionQueue({ frame, queue, onGraph }: { frame: Frame; queue: 
             ? <QueueCard key={item.key} frame={frame} item={item} sent={sent} send={send} onGraph={onGraph} />
             : <Row key={item.key} item={item} onOpen={() => setOpenKey(item.key)} />))}
         </>
-      ) : <Idle frame={frame} alerts={queue.alerts} />}
+      ) : <Idle frame={frame} seen={[...queue.alerts, ...queue.history]} onGraph={onGraph} />}
       {queue.alerts.length > 0 && <div className="sec">알림</div>}
       {queue.alerts.map((c) => (
         <div key={`${c.source}-${c.id}`} className={`alert${c.kind === "target_neutralized" ? " win" : c.source === "block" ? " blk" : ""}`}>

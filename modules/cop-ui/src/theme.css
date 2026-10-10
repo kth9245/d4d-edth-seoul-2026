@@ -65,40 +65,10 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .status.down { color: var(--hostile); }
 @keyframes live-pulse { 50% { opacity: 0.35; } }
 @media (prefers-reduced-motion: reduce) { .status.ok::before { animation: none; } }
-.cards::before, .metrics::before, .switchpanel::before { display: block; margin-bottom: 8px; font-family: var(--font-mono); font-size: 10px;
+.switchpanel::before { display: block; margin-bottom: 8px; font-family: var(--font-mono); font-size: 10px;
   letter-spacing: var(--ls); color: var(--dim); }
-.cards::before { content: "EVENT LOG"; }
-.metrics::before { content: "OPERATOR LOAD"; }
 .switchpanel::before { content: "PLAY SWITCH"; }
 
-/* Cards: code and left rule say what kind of event it is */
-.card { padding: 12px 14px; border: 1px solid var(--line); border-left: 2px solid var(--live); border-radius: var(--r); background: var(--s2); }
-.card.warn { border-left-color: var(--warn); }
-.card.pending { border-left-color: var(--unknown); }
-.card.block { border-left-color: var(--hostile); background: linear-gradient(90deg, var(--hostile-soft), transparent 60%), var(--s2); }
-.card.done { opacity: 0.5; }
-.card .head { gap: 8px; font-size: 13px; }
-.card .head .code { font-family: var(--font-mono); font-size: 10px; font-style: normal; font-weight: 700; letter-spacing: var(--ls); color: var(--live); }
-.card.warn .head .code { color: var(--warn); }
-.card.pending .head .code { color: var(--unknown); }
-.card.block .head .code { color: var(--hostile); }
-.card .head b { font-weight: 600; color: var(--text); }
-.card .head span, .card .head time { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
-.card .head time { opacity: 1; }
-.card .text { margin: 6px 0 2px; color: var(--text2); font-size: 14px; line-height: 1.5; }
-/* Observed risk of a contact card's target (decision 0040); red once our vehicles picked up its emission. */
-.card .threat { margin-top: 4px; font-family: var(--font-mono); font-size: 11px; line-height: 1.5; color: var(--warn); }
-.card .threat.rf { color: var(--hostile); }
-.card button { margin-top: 10px; padding: 10px 12px; border: 1px solid var(--text); border-radius: var(--r);
-  background: var(--text); color: var(--bg); font-size: 14px; font-weight: 700; }
-.card button:hover:not(:disabled) { background: var(--live); border-color: var(--live); }
-.card button:disabled { border-color: var(--line2); background: var(--s3); color: var(--muted); }
-.card button small { margin-top: 3px; font-family: var(--font-mono); font-size: 11px; font-weight: 500; opacity: 0.7; }
-.card button.secondary { border-color: var(--line2); background: transparent; color: var(--text2); }
-.card button.secondary:hover:not(:disabled) { border-color: var(--hostile); background: transparent; color: var(--hostile); }
-.card .preview { color: var(--unknown); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; }
-.card .note { margin-top: 8px; color: var(--muted); font-family: var(--font-mono); font-size: 11px; opacity: 1; }
-.card .note.error { color: var(--hostile); }
 
 /* Switch request panel (Part1-12): whole-operation switches are big moves, so amber; the request is the primary button */
 .switchpanel select { border: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); color: var(--text); font-family: var(--font); }
