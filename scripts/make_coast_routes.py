@@ -101,15 +101,14 @@ def _off(p: GeoPoint, east_m: float, north_m: float) -> GeoPoint:
     return GeoPoint(lat=lat, lon=lon)
 
 
-def _go(eid: str, name: str, dom: str, target: dict) -> dict:  # enemy role: go there, then hold
-    go = {
-        "id": "go",
-        "name": name,
-        "do": {"kind": "move_to", "params": {"target": target}},
-        "on": [{"cond": {"kind": "arrived", "params": {}}, "go_step": "wait"}],
-        "report": None,
-        "ui": {},
-    }
+def _step(sid: str, name: str, target: dict, then: str) -> dict:
+    return {"id": sid, "name": name, "do": {"kind": "move_to", "params": {"target": target}},
+            "on": [{"cond": {"kind": "arrived", "params": {}}, "go_step": then}], "report": None, "ui": {}}  # fmt: skip
+
+
+def _go(
+    eid: str, name: str, dom: str, target: dict, via: dict | None = None
+) -> dict:  # (via a point,) go, hold
     wait = {
         "id": "wait",
         "name": "대기",
@@ -118,7 +117,9 @@ def _go(eid: str, name: str, dom: str, target: dict) -> dict:  # enemy role: go 
         "report": None,
         "ui": {},
     }
-    return {"id": f"enemy_{eid}", "name": f"적: {name}", "domains": [dom], "steps": [go, wait], "entry": "go",
+    steps = [_step("go", name, target, "wait"), wait]
+    steps = [_step("cross", "해안 경계선 통과", via, "go"), *steps] if via else steps
+    return {"id": f"enemy_{eid}", "name": f"적: {name}", "domains": [dom], "steps": steps, "entry": steps[0]["id"],
             "origin": "human", "approved": True, "template": False}  # fmt: skip
 
 
@@ -164,14 +165,57 @@ def scout_route(land, landing: GeoPoint) -> list[dict]:
     return [_pt(p) for p in keep]
 
 
-def raid(land, base: GeoPoint) -> tuple[list[dict], list[dict]]:
+CROSS_MS = 17 * 60_000  # the raiders cross the coast patrol at T+17:00 (user 10/10, plan A)
+LEAD_S = (CROSS_MS - 660_000) / 1000  # from appearing at T+11:00
+
+
+def _outward(c: GeoPoint, p: GeoPoint, m: float) -> GeoPoint:  # m metres further from c, through p
+    e, n = enu_delta_m(c.lat, c.lon, p.lat, p.lon)
+    k = math.hypot(e, n) or 1.0
+    return _off(p, e / k * m, n / k * m)
+
+
+def patrol_spots(out: dict) -> dict[str, GeoPoint]:
+    """Where the active coast_a / coast_b patrol drones are at T+17:00 with no enemies (the tick loop is deterministic)."""
+    from contracts.models import TickInputs
+    from modules.gateway.engine import init_engine, tick
+    from modules.ontology import fill_vehicle_kinds
+
+    sc = fill_vehicle_kinds(Scenario.model_validate(out | {"enemies": []}))
+    es, f = init_engine(sc), None
+    while es.t_ms < sc.operation.started_ms + CROSS_MS:
+        es, f = tick(es, TickInputs())
+    return {
+        v.role_id: v.pos
+        for v in f.vehicles
+        if v.role_id in ("coast_a", "coast_b") and v.status.value == "active"
+    }
+
+
+def raid(
+    land, base: GeoPoint, spots: dict[str, GeoPoint] | None = None
+) -> tuple[list[dict], list[dict]]:
     """The 24h two-pronged raid (decision 0055): a suicide drone from the north at T+11:00 to the drone base,
     an enemy usv from the south at T+11:00 that stops at the coast, and its two ugvs at T+23:00 (one to the
     base, one scouting the coast clockwise). Returns (enemies, enemy roles + our response roles)."""
     pts = land[0].points
-    north = max(pts, key=lambda p: p.lat)
-    landing = to_sea(min(pts, key=lambda p: p.lat), land)
-    drone0, usv0 = _off(north, 0, 5000), _off(landing, 0, -3000)
+    c = GeoPoint(lat=sum(p.lat for p in pts) / len(pts), lon=sum(p.lon for p in pts) / len(pts))
+    spots = spots or {
+        "coast_a": max(pts, key=lambda p: p.lat),
+        "coast_b": min(pts, key=lambda p: p.lat),
+    }
+    cross_a, cross_b = (
+        spots["coast_a"],
+        spots["coast_b"],
+    )  # where each coast's patrol drone is at T+17:00
+    shore = min(pts, key=lambda p: dist_m(p, cross_b))
+    landing = to_sea(
+        _outward(c, shore, -100), land
+    )  # from 100 m inland: on the outline to_sea has no way out
+    drone0 = _outward(
+        base, cross_a, 8.0 * LEAD_S
+    )  # straight in from the north, over the patrol at T+17:00
+    usv0 = _outward(c, cross_b, 5.0 * LEAD_S)
     enemies = [
         {"id": "e_drone", "kind": "drone", "speed_mps": 8.0, "appear_offset_ms": 660_000, "pos": _pt(drone0), "role_id": "enemy_e_drone"},
         {"id": "e_usv", "kind": "usv", "speed_mps": 5.0, "appear_offset_ms": 660_000, "pos": _pt(usv0), "role_id": "enemy_e_usv"},
@@ -185,8 +229,8 @@ def raid(land, base: GeoPoint) -> tuple[list[dict], list[dict]]:
               for i in range(12)]  # fmt: skip
     watch = {"kind": "watch_target", "params": {"target": "operator", "distance_m": 200}}
     roles = [
-        _go("e_drone", "드론 기지로 자폭 돌진", "air", _pt(base)),
-        _go("e_usv", "남쪽 해안 상륙", "sea", _pt(landing)),
+        _go("e_drone", "드론 기지로 자폭 돌진", "air", _pt(base), _pt(cross_a)),
+        _go("e_usv", "남쪽 해안 상륙", "sea", _pt(landing), _pt(cross_b)),
         _go("e_ugv1", "드론 기지로", "ground", _pt(base)),
         scout,
         _ours("focus_orbit", "발견 지점 집중 순찰", "air", {"kind": "patrol_route", "params": {
@@ -200,7 +244,7 @@ def raid(land, base: GeoPoint) -> tuple[list[dict], list[dict]]:
 FOCUS_ROUTE = "발견 지점 집중 순찰(800 m)"
 
 
-def build() -> dict:
+def build(spots: dict[str, GeoPoint] | None = None) -> dict:
     night = json.loads(NIGHT.read_text(encoding="utf-8"))
     sc = Scenario.model_validate(night)
     a, b = coast_routes(sc.land, sc.vehicles[0].home)
@@ -226,7 +270,7 @@ def build() -> dict:
         v for v in night["vehicles"] if v["domain"] != "air"
     ]  # usv, ugv at their night spots (user, 10/10)
     roles = {p["id"]: p for p in night["roles"]}
-    enemies, raid_roles = raid(sc.land, base)
+    enemies, raid_roles = raid(sc.land, base, spots)
     ontology = json.loads(
         json.dumps(night["ontology"])
     )  # 24h only: ground robots can track (decision 0055)
@@ -296,7 +340,7 @@ def build() -> dict:
         "speed": 1.0,
     }
     Scenario.model_validate(out)
-    return out
+    return out if spots else build(patrol_spots(out))  # second pass aims the raiders at the patrols
 
 
 def main() -> None:

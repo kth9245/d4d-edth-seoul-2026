@@ -109,8 +109,7 @@ def test_24h_raid_enemies():  # decision 0055, user 10/10
     assert {i: (e.kind.value, e.appear_offset_ms, e.from_enemy) for i, e in en.items()} == {
         "e_drone": ("drone", 660_000, None), "e_usv": ("usv", 660_000, None),
         "e_ugv1": ("ugv", 1_380_000, "e_usv"), "e_ugv2": ("ugv", 1_380_000, "e_usv")}  # fmt: skip
-    north = max(p.lat for p in day.land[0].points)
-    assert not inside(en["e_drone"].pos, day.land) and en["e_drone"].pos.lat > north
+    assert not inside(en["e_drone"].pos, day.land) and not inside(en["e_usv"].pos, day.land)
     roles = {r.id: r for r in day.roles}
     assert all(e.role_id in roles for e in en.values())
 
@@ -127,10 +126,10 @@ def test_24h_ugv2_route_is_clockwise_on_land():
 def test_24h_usv_lands_before_the_ugvs():
     day = load_scenario_json(DAY)
     usv = next(e for e in day.enemies if e.id == "e_usv")
-    goal = GeoPoint(
-        **next(r for r in day.roles if r.id == "enemy_e_usv").steps[0].do.params["target"]
-    )
-    assert dist_m(usv.pos, goal) / usv.speed_mps < 720
+    legs = [GeoPoint(**s.do.params["target"]) for s in next(r for r in day.roles if r.id == "enemy_e_usv").steps
+            if s.do.kind.value == "move_to"]  # fmt: skip
+    path = sum(dist_m(a, b) for a, b in zip([usv.pos, *legs], legs, strict=False))
+    assert path / usv.speed_mps < 720
 
 
 def test_24h_ground_robot_can_watch_and_raid_roles_exist():
@@ -152,3 +151,10 @@ def test_24h_ugv2_route_legs_stay_on_land():  # straight legs must not cut acros
                 lat=a.lat + (b.lat - a.lat) * k / 10, lon=a.lon + (b.lon - a.lon) * k / 10
             )
             assert inside(mid, day.land), (a, b)
+
+
+def test_24h_usv_stops_at_sea():  # judged sea where it waits, so only the usv is offered to track it
+    day = load_scenario_json(DAY)
+    for s in next(r for r in day.roles if r.id == "enemy_e_usv").steps:
+        if s.do.kind.value == "move_to":
+            assert not inside(GeoPoint(**s.do.params["target"]), day.land), s.id
