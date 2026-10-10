@@ -45,3 +45,4 @@
 | UI-40 | DraftBox | — | AI 초안 칸 | 시연 문장 버튼(demo/draft_sentences.json) + 입력칸 → 초안이 미저장 플레이로 열림, 대기 템플릿 대체 알림 | 리드 | 완료 |
 | UI-41 | layoutSteps·stepEdges·exitText | Play | 카드 위치 / 연결선 / 조건 문구 | 시작 step 왼쪽부터 탈출 깊이로 열 배치(겹침 없음, 닿지 않는 step은 다음 열), 탈출마다 연결선(운용자 선택·오류 step 구분), 없는 step은 선 없음 | 리드 | 완료 |
 | UI-42 | PlayGraph·StepNode | Play, 검사 결과 | 그래프 화면 | React Flow 카드(행동·보고·연결 칸, 연결 줄마다 연결점, 변경 표시) + 점선 곡선 연결선과 조건 이름 | 리드 | 완료 |
+| UI-43 | blankPlay·NewPlayMenu | 이름, 영역 | Play / 새로 만들기 메뉴 | '새로 만들기' → 'AI로 생성'(초안 칸) 또는 '직접 생성'(시작 카드 하나, 겹치지 않는 id, 사람 작성이라 승인됨), 둘 다 미저장으로 열림 | 리드 | 완료 |

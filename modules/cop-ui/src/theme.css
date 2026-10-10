@@ -177,6 +177,20 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .step-card { border: 1px solid var(--line); border-left: 2px solid var(--friend); border-radius: var(--r); background: var(--s2); }
 .step-report { border: 1px solid var(--line); border-radius: var(--r); background: var(--s1); }
 .switch { border: 1px solid rgba(245, 158, 11, 0.4); border-radius: var(--r); background: var(--warn-soft); color: var(--warn); }
+.newplay-toggle { border: 1px solid var(--text); border-radius: var(--r); background: var(--text); color: var(--bg); font-weight: 700; }
+.newplay-toggle:hover { border-color: var(--live); background: var(--live); }
+.newplay-toggle.on { border-color: var(--line2); background: transparent; color: var(--muted); }
+.newplay-toggle.on:hover { border-color: var(--text); background: transparent; color: var(--text); }
+.newplay-pick button { border: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); color: var(--text); }
+.newplay-pick button:hover { border-color: var(--live); }
+.newplay-pick b { font-weight: 700; }
+.newplay-pick small { color: var(--muted); }
+.newplay-manual input, .newplay-manual select { border: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); color: var(--text); }
+.newplay-manual input:focus, .newplay-manual select:focus { border-color: var(--live); outline: none; }
+.newplay-manual .make { border: 1px solid var(--text); border-radius: var(--r); background: var(--text); color: var(--bg); font-weight: 700; }
+.newplay-manual .make:hover { border-color: var(--live); background: var(--live); }
+.newplay-back { border: 0; background: none; color: var(--muted); font-family: var(--font-mono); }
+.newplay-back:hover { color: var(--text); }
 .draftbox textarea { border: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); color: var(--text); }
 .draftbox textarea:focus { border-color: var(--live); outline: none; }
 .draftbox .examples button { border: 1px solid var(--line); border-radius: var(--r); background: transparent; color: var(--muted); font-family: var(--font-mono); font-size: 11px; }

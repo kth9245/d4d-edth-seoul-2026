@@ -68,6 +68,17 @@ aside { overflow-y: auto; padding: 12px; border-left: 1px solid #22304a; }
 .draftbox button { padding: 6px 8px; font-size: 12px; text-align: left; cursor: pointer; }
 .draftbox button:disabled { cursor: default; }
 .draftbox .note { font-size: 11px; }
+/* New play menu at the top of the editor sidebar (Part3-13.1). */
+.newplay { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.newplay .draftbox { margin-bottom: 0; }
+.newplay-toggle { padding: 8px 10px; font-size: 13px; text-align: center; cursor: pointer; }
+.newplay-pick { display: flex; flex-direction: column; gap: 6px; }
+.newplay-pick button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 9px 10px; text-align: left; cursor: pointer; }
+.newplay-pick small { font-size: 11px; }
+.newplay-manual { display: flex; flex-direction: column; gap: 6px; }
+.newplay-manual input, .newplay-manual select { padding: 7px 8px; font: inherit; font-size: 12px; }
+.newplay-manual .make { padding: 7px; cursor: pointer; }
+.newplay-back { padding: 2px 0; font-size: 11px; text-align: left; cursor: pointer; }
 /* Workflow graph (Part3-10.1): the play view fills the editor; cards are fixed width, sections stacked. */
 .editor-main:has(.workflow-graph) { display: flex; flex-direction: column; overflow: hidden; }
 .workflow:has(.workflow-graph) { display: flex; flex-direction: column; flex: 1; min-height: 0; max-width: none; }
