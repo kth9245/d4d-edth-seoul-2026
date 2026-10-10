@@ -62,6 +62,31 @@ def test_after_the_last_waypoint_it_goes_back_to_the_first():
     assert dist_m(nxt.pos, A) < dist_m(at_b.pos, A)  # heading to the first waypoint again
 
 
+ONCE = ROUTE.model_copy(
+    update={
+        "command": ROUTE.command.model_copy(
+            update={"params": {**ROUTE.command.params, "loop": False}}
+        )
+    }
+)
+
+
+def test_one_way_route_stops_at_the_end_and_arrives():  # decision 0045
+    st = follow_route(_state(_at(east_m=495, north_m=500), 1), SPEC, ONCE, 1000)
+    assert dist_m(st.pos, B) < 1
+    assert st.waypoint_idx == -1  # runtime reads this as "arrived"
+
+
+def test_one_way_route_stays_after_arriving():
+    at_b = _state(B, -1)
+    assert follow_route(at_b, SPEC, ONCE, 1000).pos == B
+
+
+def test_one_way_route_still_passes_its_middle_points():
+    st = follow_route(_state(_at(north_m=495), 0), SPEC, ONCE, 1000)
+    assert st.waypoint_idx == 1
+
+
 ISLAND = [Polygon(points=[_at(-500, -500), _at(500, -500), _at(500, 500), _at(-500, 500)])]
 
 
