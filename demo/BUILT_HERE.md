@@ -64,3 +64,4 @@
 | 10/10 19:45 | demo·scripts·cop-ui | 멸공 기지 정사각형을 2.4 km로(시작 화면에서 4대가 따로 보이게), 지도 드론 배터리 칸을 절반 크기로(사용자) | 황승주 |
 | 10/10 19:50 | demo·scripts | 멸공 기지 정사각형을 600 m로(2.4 km의 1/4, 사용자) | 황승주 |
 | 10/10 19:55 | runtime | 교대 시점 판단을 relief_due(RT-14)로 분리하고 교대 드론 이동 시간을 봄: 하한선 위 여유 ≤ 이동 중 순찰기 소모+5%면 일찍 출발(2.4 km 기지 240분: 하한선 귀환 4→0, 600 m는 그대로)(사용자) | 황승주 |
+| 10/10 19:51 | 전체 | Part1-36 play→role 이름 변경(결정 0052): 계약 Role·RoleCheck, REST /roles, JSON 키 role_id·role_by_vehicle·rotation_roles, 모듈 modules/role, 데이터 demo/roles, 화면 표기 Role. 변환 스크립트 scripts/rename_play_role.py(팀원은 rebase 뒤 실행), AI 초안 캐시는 새 해시로 옮겨 인터넷 없이 그대로 | kth9245 |
