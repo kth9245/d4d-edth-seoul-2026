@@ -83,3 +83,4 @@
 | 10/10 22:43 | cop-ui | Part1-45 상황판 배속 버튼: 멈춘 상태에서는 속도만 기억(흐리게 표시)하고 ▶ 재생이 그 속도로 시작, 재생 중에는 바로 바뀜(QA E2E 발견 3) | kth9245 |
 | 10/10 22:50 | cop-ui, scripts | Part1-46 상대 경로 격자판의 '북' 표시를 세로축 왼쪽으로, 위쪽 끝 점 번호는 점 아래로(QA E2E 발견 4), 색은 테마 토큰. 화면 점검 기대값을 팀원 변경에 맞춤(작전 3개, 멸공 기체 6대, 새 상대 경로, 기체 표시를 id로 찾음) | kth9245 |
 | 10/10 23:08 | mavlink, gateway, contracts, cop-ui | Part1-47 탭 이름 상황판 → 시뮬레이션, 헤더 MAVLink 버튼이 새 창에 MAVLink 명령 로그(결정 0063): GET /mavlink가 이번 실행에 통과한 명령을 MISSION_ITEM_INT·COMMAND_LONG 줄로(mavlink MAV-02 mavlink_lines, 대응표는 compile_mavlink과 같은 mav_cmd.py) | kth9245 |
+| 10/10 23:10 | demo·scripts·contracts·tests | 결정 0060·0061 데이터·대본 쪽: 야간·24시간 작전에서 '고속 보트 추적'·'전 기체 순찰' 전환 버튼 삭제(24시간은 make_coast_routes.py 재생성, 계약 예시 재생성), 대본 테스트·scripts/qa/script.json은 23:04 fast1 카드('유지')에 답한 뒤 d2·usv를 fast1에 지목, 편집기 E1·역할 사용처 테스트 갱신 | 리드 |

@@ -17,7 +17,7 @@ describe("roleUsage", () => {
     expect(u["patrol_b"]).toEqual([{ vehicle_id: "d2", how: "작전 시작" }]); // decision 0036
   });
   it("names the operation switch", () => {
-    expect(u["go_home"]).toHaveLength(8); // all home 6 + d3·d4 by '전 기체 순찰' (coast pairs)
+    expect(u["go_home"]).toHaveLength(6); // all home 6 ('전 기체 순찰' left the data, decision 0060)
     expect(u["go_home"][0]).toEqual({ vehicle_id: "d1", how: "전체 전환 '전 기체 귀환'" });
   });
   it("has no entry for an unused role", () => {

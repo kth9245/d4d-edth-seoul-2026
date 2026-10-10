@@ -4,12 +4,12 @@
 The operator is scripted here: cards answered 20 s after they appear (target picks 10 s, fast1;
 strike approval: '함께 타격'), d2 sent past the NLL at 20:00, the block's alternative applied at
 20:05, d2 sent to the far south-east corner at 20:30. Decision 0057: fast1's card (raised by d3, which keeps
-watching boat1) is answered with its first choice, the '고속 보트 추적' switch, so s4 is that card.
+watching boat1) is s4 and is answered (it only keeps, 0061); d2 and usv are pointed at fast1 at 23:20 (0060).
 """
 
 import pytest
 
-from contracts.models import Decision, DirectControl, GeoPoint, TickInputs
+from contracts.models import Decision, DirectControl, GeoPoint, Injection, TickInputs
 from modules.gateway.engine import init_engine, tick
 from modules.role import check_operation, load_role
 from modules.sim import load_scenario_json
@@ -34,6 +34,12 @@ def _inputs(es, t: int, n: dict) -> TickInputs:
         if r.choices and not r.resolved_ms and t == r.t_ms + wait:
             n["dec"] += 1
             decs.append(Decision(id=f"dec-{n['dec']}", t_ms=t, report_id=r.id, choice_id=_pick(r)))
+    if (
+        t - START == 23 * MIN + 20_000
+    ):  # decision 0060: d2 and usv pointed at fast1 from the vehicle menu
+        for n_, (vid, role) in enumerate((("d2", "track_fast"), ("usv", "track_fast_sea")), 1):
+            inj.append(Injection(id=f"inj-{n_}", t_ms=t, label=f"{role}: {vid} → fast1", status="approved",
+                                 role_by_vehicle={vid: role}, target_by_vehicle={vid: "fast1"}))  # fmt: skip
     goal = {20 * MIN: PAST_NLL, 20 * MIN + 30_000: FAR_SE}.get(t - START)
     if t - START == 20 * MIN + 5_000 and es.blocks and es.blocks[-1].alternative:
         goal = GeoPoint(**es.blocks[-1].alternative.params["target"])
@@ -95,19 +101,22 @@ def test_three_boats_each_get_one_card_from_the_drone_that_found_it(run):  # dec
     assert extra and all(i.split("_")[1] in ("d3", "d4") for i in extra)  # only standby drones
 
 
-def test_fast1_card_comes_from_the_drone_watching_boat1_and_offers_the_track_switch_first(run):
-    # decision 0057: a drone that is not patrolling raises the new-enemy card and keeps its own job
+def test_fast1_card_comes_from_the_drone_watching_boat1_and_the_trackers_are_pointed(run):
+    # decision 0057: a drone that is not patrolling raises the new-enemy card and keeps its own job;
+    # 0060-0061: no target switch is left, so the card only keeps, and d2·usv are pointed at fast1
     es, _ = run
     (card,) = [r for r in es.reports if r.text.startswith("새 적 탐지")]
-    assert (card.vehicle_id, card.target_id, card.choices[0].id) == (
+    assert (card.vehicle_id, card.target_id, [c.id for c in card.choices]) == (
         "d3",
         "fast1",
-        "switch_track_fast",
+        ["keep"],
     )
-    assert card.choices[0].target_by_vehicle == {"d2": "fast1", "usv": "fast1"}
-    assert not [
-        r for r in es.reports if r.kind == "target_select"
-    ]  # the pick already set the target
+    pointed = [i for i in es.injections if i.target_by_vehicle]
+    assert [(i.role_by_vehicle, i.target_by_vehicle, i.status) for i in pointed] == [
+        ({"d2": "track_fast"}, {"d2": "fast1"}, "approved"),
+        ({"usv": "track_fast_sea"}, {"usv": "fast1"}, "approved"),
+    ]
+    assert not [r for r in es.reports if r.kind == "target_select"]  # the pointing set the target
 
 
 def test_alternative_after_zone_block_is_not_blocked(scenes):
@@ -156,12 +165,8 @@ def test_fast1_appears_from_boat1_and_moves():
     assert dist_m(at, fast.pos) > 1000
 
 
-def test_track_fast_switch_sends_d2_and_usv():
-    sw = next(s for s in SC.operation.switches if s.id == "track_fast")
-    assert (sw.label, sw.role_by_vehicle) == (
-        "고속 보트 추적",
-        {"d2": "track_fast", "usv": "track_fast_sea"},
-    )
+def test_only_the_all_home_switch_is_left():  # decision 0060: tracking is pointed from the vehicle menu
+    assert [s.id for s in SC.operation.switches] == ["all_home"]
 
 
 def test_track_roles_ask_strike_approval_with_three_choices():

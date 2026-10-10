@@ -92,28 +92,23 @@ def test_nothing_at_sea_crosses_the_island():
     assert any(t.id == "fast1" for t in frame.targets)
 
 
-def test_patrol_all_switch_rotates_the_three_drones():  # decision 0037: "전 기체 순찰" button
+def test_the_patrol_assignment_rotates_the_three_drones():  # decision 0037; the button is gone (0060)
     from contracts.models import Injection, TickInputs
     from modules.gateway.engine import init_engine, tick
     from modules.role import check_operation
 
     sc = load_scenario_json(str(SCENARIO))
-    sw = next(s for s in sc.operation.switches if s.id == "patrol_all")
-    assert sw.label == "전 기체 순찰"
-    assert sw.role_by_vehicle == {
-        "d1": "coast_a",
-        "d2": "coast_b",
-        "d3": "go_home",
-        "d4": "go_home",
-    }
+    assert [s.id for s in sc.operation.switches] == [
+        "all_home"
+    ]  # track_fast, patrol_all removed (0060)
+    roles_by = {"d1": "coast_a", "d2": "coast_b", "d3": "go_home", "d4": "go_home"}
     assert sc.operation.rotation == ["d1", "d2", "d3", "d4"]
     assert sc.operation.rotation_pools == {"coast_a": ["d1", "d3"], "coast_b": ["d2", "d4"]}
     assert sc.operation.rotation_roles == ["coast_a", "coast_b"]
     specs = {v.id: v for v in sc.vehicles}
     assert check_operation(sc.operation, {p.id: p for p in sc.roles}, specs).ok
     es, t = init_engine(sc), sc.operation.started_ms
-    inj = Injection(id="inj-1", t_ms=t + sc.tick_ms, label=sw.label,
-                    role_by_vehicle=sw.role_by_vehicle, switch_id=sw.id)  # fmt: skip
+    inj = Injection(id="inj-1", t_ms=t + sc.tick_ms, label="순찰 배정", role_by_vehicle=roles_by)  # fmt: skip
     es, _ = tick(es, TickInputs(injections=[inj]))
     es, f = tick(es, TickInputs(injections=[inj.model_copy(update={"status": "approved"})]))
     roles = {v.id: v.role_id for v in f.vehicles}

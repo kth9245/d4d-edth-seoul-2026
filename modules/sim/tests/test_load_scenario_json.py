@@ -94,10 +94,7 @@ def test_the_24h_keeps_the_night_usv_ugv_roles_and_live_coast_choices():  # user
         assert (
             card.choices == [] and card.auto_choices
         )  # raid choices are built live (decision 0055)
-    track = next(
-        s for s in day.operation.switches if s.id == "track_fast"
-    )  # after all_home (Part2-46)
-    assert track.role_by_vehicle == {"usv": "track_fast_sea"}
+    assert [s.id for s in day.operation.switches] == ["all_home"]  # tracking is pointed now (0060)
 
 
 DAY = ROOT / "demo" / "scenarios" / "baengnyeong_24h.json"
