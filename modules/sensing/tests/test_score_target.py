@@ -60,3 +60,60 @@ def test_boat_beyond_three_times_the_radius_gets_no_watch_point_score():
 def test_approaching_boat_outside_the_radius_still_reaches_the_threshold():
     r = score(pos=NEAR_5KM, speed=1.5)  # 20 + 15 + 7 = 42 >= 40
     assert r.score == 42 and r.accum == 42 * 200
+
+
+def sig(**kw):  # an unknown silent site observed in the watch radius, plus the new signals; no RF
+    return score_target("unknown", INSIDE, 0.0, True, False, [], WATCH, 0, 200, **kw)
+
+
+def test_heat_in_infrared_range_adds_ten_with_its_reason_in_order():  # decision 0069
+    plain = sig()
+    r = sig(heat=True, ir_receivers=[(INSIDE, 800.0)])
+    assert (r.score, r.ir_detected) == (plain.score + 10, True)
+    assert r.reasons == [*plain.reasons, "ir_signature"]
+
+
+def test_noise_in_acoustic_range_adds_ten_and_the_reasons_keep_their_order():
+    r = sig(
+        heat=True, noise=True, ir_receivers=[(INSIDE, 800.0)], sound_receivers=[(INSIDE, 500.0)]
+    )
+    assert r.reasons[-2:] == ["ir_signature", "sound"] and (r.ir_detected, r.sound_detected) == (
+        True,
+        True,
+    )
+    moving = score_target("unknown", INSIDE, 1.0, True, True, [(INSIDE, 2000.0)], WATCH, 0, 200,
+                          heat=True, noise=True, ir_receivers=[(INSIDE, 800.0)],
+                          sound_receivers=[(INSIDE, 500.0)])  # fmt: skip
+    order = [moving.reasons.index(x) for x in ("rf_emission", "ir_signature", "sound", "speed")]
+    assert order == sorted(order)
+
+
+def test_the_range_edge_counts_and_one_metre_less_does_not():
+    from shared.geo import dist_m
+
+    far = GeoPoint(lat=INSIDE.lat + 0.004, lon=INSIDE.lon)
+    d = dist_m(INSIDE, far)
+    assert sig(heat=True, ir_receivers=[(far, d)]).ir_detected  # exactly at the edge
+    assert not sig(heat=True, ir_receivers=[(far, d - 1)]).ir_detected
+    assert sig(noise=True, sound_receivers=[(far, d)]).sound_detected
+    assert not sig(noise=True, sound_receivers=[(far, d - 1)]).sound_detected
+
+
+def test_no_signal_no_receiver_or_range_zero_gives_nothing():
+    base = sig()
+    assert sig(heat=False, ir_receivers=[(INSIDE, 800.0)]) == base
+    assert sig(heat=True) == base  # nobody listens
+    assert sig(heat=True, ir_receivers=[(INSIDE, 0.0)]) == base  # range 0 = cannot
+    assert sig(noise=True, sound_receivers=[(INSIDE, 0.0)]) == base
+
+
+def test_every_signal_together_is_still_capped_at_100():
+    r = score_target("fast_boat", INSIDE, 6.3, True, True, [(INSIDE, 2000.0)], WATCH, 0, 200,
+                     heat=True, noise=True, ir_receivers=[(INSIDE, 800.0)],
+                     sound_receivers=[(INSIDE, 500.0)])  # fmt: skip
+    assert r.score == 100
+
+
+def test_calling_it_the_old_way_still_works_and_reports_no_new_signals():
+    r = score()
+    assert (r.ir_detected, r.sound_detected) == (False, False)
