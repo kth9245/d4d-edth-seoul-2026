@@ -447,3 +447,4 @@
 {"at": "2026-10-10T20:42:17+09:00", "by": "황승주", "op": "add", "id": "Part2-45", "title": "멸공 작전에 야간 작전의 USV·UGV 역할(접근·상륙 감시·해상 추적·타격)과 해안 카드 선택지·추적 버튼 가져오기 (사용자 지시)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T20:42:20+09:00", "by": "황승주", "op": "start", "id": "Part2-45", "take": false, "from": null}
 {"at": "2026-10-10T20:44:56+09:00", "by": "황승주", "op": "done", "id": "Part2-44", "take": false}
+{"at": "2026-10-10T20:45:30+09:00", "by": "황승주", "op": "add", "id": "Part2-46", "title": "멸공에 야간 작전의 strike Role과 '전 기체 귀환' 버튼", "parent": null, "assign": "황승주", "slot": null, "spec": null}
