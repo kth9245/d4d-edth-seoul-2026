@@ -124,7 +124,7 @@ def build() -> dict:
         "land": night["land"],
         "ontology": night["ontology"],  # decision 0051: same drones, same kinds
         "seed": 0,
-        "tick_ms": 1000,
+        "tick_ms": 200,
         "speed": 1.0,
     }
     Scenario.model_validate(out)
