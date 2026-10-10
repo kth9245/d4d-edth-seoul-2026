@@ -1,10 +1,18 @@
 import { describe, expect, it } from "vitest";
-import draft from "../../../../../demo/plays/cache/81cd9c681d4e492f8a0f162a02149ac5372516496c757508afb14505d253b793.json";
 import type { Play } from "../../contracts.gen";
 import { insertReportStep } from "./insertReportStep";
 
-// The cached AI draft "북쪽 해안 순찰 및 고속정 접근": patrol --target_found--> approach_and_follow (no report).
-const play = draft as Play;
+// Same shape as the cached AI draft "북쪽 해안 순찰 및 고속정 접근" (patrol --target_found--> approach, no report).
+// Written here, not imported: cache files are named by sha256(prompt) and get renamed whenever the prompt changes.
+const play: Play = {
+  id: "north_coast_patrol_follow", name: "북쪽 해안 순찰 및 고속정 접근", domains: ["air"], entry: "patrol_north_coast",
+  steps: [
+    { id: "patrol_north_coast", name: "북쪽 해안 순찰",
+      do: { kind: "patrol_route", params: { route: [{ lat: 37.985, lon: 124.62 }, { lat: 37.985, lon: 124.78 }] } },
+      on: [{ cond: { kind: "target_found", params: {} }, go_step: "approach_and_follow" }] },
+    { id: "approach_and_follow", name: "고속정 접근 추적", do: { kind: "approach_target", params: { target: "nearest" } }, on: [] },
+  ],
+};
 
 describe("insertReportStep", () => {
   it("puts a hold step with a one-choice report right before the approach step", () => {
