@@ -450,3 +450,4 @@
 {"at": "2026-10-10T20:45:30+09:00", "by": "황승주", "op": "add", "id": "Part2-46", "title": "멸공에 야간 작전의 strike Role과 '전 기체 귀환' 버튼", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T20:45:47+09:00", "by": "황승주", "op": "start", "id": "Part2-46", "take": false, "from": null}
 {"at": "2026-10-10T20:49:03+09:00", "by": "kth9245", "op": "done", "id": "Part1-40", "take": false}
+{"at": "2026-10-10T20:54:16+09:00", "by": "kth9245", "op": "add", "id": "Part1-41", "title": "경로 추가 창: 같은 자리를 두 번 누르면 점을 더하지 않고, 같은 자리 점은 번호를 '1·2'처럼 함께 표시(상대 격자판·고정 지도)", "parent": null, "assign": null, "slot": null, "spec": null}
