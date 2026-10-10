@@ -413,3 +413,4 @@
 {"at": "2026-10-10T19:28:13+09:00", "by": "황승주", "op": "done", "id": "Part2-37", "take": false}
 {"at": "2026-10-10T19:37:26+09:00", "by": "황승주", "op": "add", "id": "Part2-38", "title": "멸공 기지 정사각형 2.4 km로(시작 화면에서 보이게), 배터리 칸 절반 크기", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T19:37:29+09:00", "by": "황승주", "op": "start", "id": "Part2-38", "take": false, "from": null}
+{"at": "2026-10-10T19:40:09+09:00", "by": "황승주", "op": "done", "id": "Part2-38", "take": false}
