@@ -74,7 +74,7 @@ aside { overflow-y: auto; padding: 12px; border-left: 1px solid #22304a; }
 .draftbox button { padding: 6px 8px; font-size: 12px; text-align: left; cursor: pointer; }
 .draftbox button:disabled { cursor: default; }
 .draftbox .note { font-size: 11px; }
-/* "← 뒤로" above a play's title: back along the views opened before (sidebar and play links). */
+/* "← 작전 개요" above a play's title: always back to the operation overview (Part1-33). */
 .workflow .back { align-self: flex-start; margin-bottom: 6px; padding: 5px 10px; font-size: 12px; cursor: pointer; }
 /* New play menu at the top of the editor sidebar (Part3-13.1). */
 .newplay { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
