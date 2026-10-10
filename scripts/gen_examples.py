@@ -29,6 +29,7 @@ from contracts.models import (  # noqa: E402
     TickInputs,
     TickOutcome,
     ValidationIssue,
+    WatchPoint,
 )
 
 LEGACY = {"detection", "track", "assessment", "response", "legacy_frame"}
@@ -71,6 +72,9 @@ def examples() -> dict[str, object]:
             pos=gp(37.985, 124.70),
             play_id="enemy_boat1",
         ),  # fmt: skip
+        "watch_point": WatchPoint(
+            id="landing", name="상륙 예상 지점", pos=gp(37.978, 124.70), radius_m=2000
+        ),
         "condition": watch.on[0].cond,
         "action": watch.do,
         "exit": watch.on[0],

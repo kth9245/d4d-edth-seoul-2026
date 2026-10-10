@@ -22,5 +22,6 @@
   "lon": 124.7,
   "alt_m": 0.0
  },
- "recharge_min": 10.0
+ "recharge_min": 10.0,
+ "rf_range_m": 0.0
 }

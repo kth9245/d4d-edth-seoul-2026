@@ -1,0 +1,52 @@
+{
+  "$defs": {
+    "GeoPoint": {
+      "properties": {
+        "lat": {
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "title": "Lon",
+          "type": "number"
+        },
+        "alt_m": {
+          "default": 0,
+          "title": "Alt M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ],
+      "title": "GeoPoint",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "pos": {
+      "$ref": "#/$defs/GeoPoint"
+    },
+    "radius_m": {
+      "title": "Radius M",
+      "type": "number"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "pos",
+    "radius_m"
+  ],
+  "title": "WatchPoint",
+  "type": "object"
+}

@@ -137,7 +137,8 @@
     "lon": 124.7,
     "alt_m": 0.0
    },
-   "recharge_min": 10.0
+   "recharge_min": 10.0,
+   "rf_range_m": 0.0
   },
   {
    "id": "d2",
@@ -163,7 +164,8 @@
     "lon": 124.7,
     "alt_m": 0.0
    },
-   "recharge_min": 10.0
+   "recharge_min": 10.0,
+   "rf_range_m": 0.0
   },
   {
    "id": "d3",
@@ -189,7 +191,8 @@
     "lon": 124.7,
     "alt_m": 0.0
    },
-   "recharge_min": 10.0
+   "recharge_min": 10.0,
+   "rf_range_m": 0.0
   },
   {
    "id": "usv",
@@ -215,7 +218,8 @@
     "lon": 124.691,
     "alt_m": 0.0
    },
-   "recharge_min": 0.0
+   "recharge_min": 0.0,
+   "rf_range_m": 0.0
   },
   {
    "id": "ugv",
@@ -241,7 +245,8 @@
     "lon": 124.72,
     "alt_m": 0.0
    },
-   "recharge_min": 0.0
+   "recharge_min": 0.0,
+   "rf_range_m": 0.0
   }
  ],
  "plays": [
@@ -1237,7 +1242,8 @@
     "alt_m": 0.0
    },
    "from_enemy": null,
-   "play_id": "enemy_boat1"
+   "play_id": "enemy_boat1",
+   "emit_start_offset_ms": null
   },
   {
    "id": "fast1",
@@ -1246,9 +1252,11 @@
    "appear_offset_ms": 1380000,
    "pos": null,
    "from_enemy": "boat1",
-   "play_id": "enemy_fast1"
+   "play_id": "enemy_fast1",
+   "emit_start_offset_ms": null
   }
  ],
+ "watch_points": [],
  "land": [
   {
    "points": [

@@ -8,7 +8,7 @@ from .command import Block, Command, PassedCommand
 from .enums import RunStatus
 from .events import Assignment, Decision, DirectControl, Injection, Report, Target
 from .play import Play
-from .world import EnemySpec, Operation, Polygon, VehicleSpec, VehicleState
+from .world import EnemySpec, Operation, Polygon, VehicleSpec, VehicleState, WatchPoint
 
 
 class Metrics(BaseModel):  # definitions: docs/research/09 2.3
@@ -55,6 +55,7 @@ class Scenario(BaseModel):
     plays: list[Play]
     events: list[ScenarioEvent] = []
     enemies: list[EnemySpec] = []  # decision 0032
+    watch_points: list[WatchPoint] = []  # decision 0039: places to guard
     land: list[Polygon] = []  # decision 0034: islands that sea vehicles and enemy boats go round
     seed: int = 0
     tick_ms: int = 200

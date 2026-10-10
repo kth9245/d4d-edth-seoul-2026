@@ -632,6 +632,34 @@
           ],
           "default": null,
           "title": "Step Since Ms"
+        },
+        "emitting": {
+          "default": false,
+          "title": "Emitting",
+          "type": "boolean"
+        },
+        "rf_detected": {
+          "default": false,
+          "title": "Rf Detected",
+          "type": "boolean"
+        },
+        "threat": {
+          "default": 0,
+          "title": "Threat",
+          "type": "integer"
+        },
+        "threat_reasons": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Threat Reasons",
+          "type": "array"
+        },
+        "threat_accum": {
+          "default": 0,
+          "title": "Threat Accum",
+          "type": "integer"
         }
       },
       "required": [

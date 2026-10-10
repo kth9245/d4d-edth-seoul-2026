@@ -48,10 +48,18 @@ from .play import (
     Switch,
     ValidationIssue,
 )
-from .world import EnemySpec, GeoPoint, Operation, Polygon, VehicleSpec, VehicleState
+from .world import (
+    EnemySpec,
+    GeoPoint,
+    Operation,
+    Polygon,
+    VehicleSpec,
+    VehicleState,
+    WatchPoint,
+)
 
 _MODELS: list[type[BaseModel]] = [
-    GeoPoint, Polygon, VehicleSpec, VehicleState, Operation, EnemySpec,
+    GeoPoint, Polygon, VehicleSpec, VehicleState, Operation, EnemySpec, WatchPoint,
     Condition, Action, Exit, Choice, Switch, ReportSpec, Step, EmergencyRules, Play,
     ValidationIssue, PlayCheck,
     Provenance, Command, PassedCommand, Block,

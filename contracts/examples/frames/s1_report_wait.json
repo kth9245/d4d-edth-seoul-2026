@@ -164,7 +164,12 @@
    "play_id": null,
    "step_id": null,
    "waypoint_idx": 0,
-   "step_since_ms": null
+   "step_since_ms": null,
+   "emitting": false,
+   "rf_detected": false,
+   "threat": 0,
+   "threat_reasons": [],
+   "threat_accum": 0
   }
  ],
  "reports": [

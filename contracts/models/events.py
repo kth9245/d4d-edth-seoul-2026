@@ -24,6 +24,11 @@ class Target(BaseModel):
     step_id: str | None = None
     waypoint_idx: int = 0  # -1 = arrived at the move_to destination
     step_since_ms: int | None = None  # when this step began (time_elapsed)
+    emitting: bool = False  # sim: it is emitting (the truth, not shown on screen; decision 0040)
+    rf_detected: bool = False  # sensing: emitting and a live vehicle's RF range covers it
+    threat: int = 0  # sensing: score in 0.01 units, 0..100 (decision 0039)
+    threat_reasons: list[str] = []
+    threat_accum: int = 0  # score (0.01) x ms while at or above the threshold and observed
 
 
 class Report(BaseModel):

@@ -87,6 +87,11 @@
       "default": 0,
       "title": "Recharge Min",
       "type": "number"
+    },
+    "rf_range_m": {
+      "default": 0,
+      "title": "Rf Range M",
+      "type": "number"
     }
   },
   "required": [

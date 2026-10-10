@@ -76,6 +76,18 @@
     "play_id": {
       "title": "Play Id",
       "type": "string"
+    },
+    "emit_start_offset_ms": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Emit Start Offset Ms"
     }
   },
   "required": [

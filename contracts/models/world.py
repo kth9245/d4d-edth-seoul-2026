@@ -27,6 +27,7 @@ class VehicleSpec(BaseModel):
     capabilities: list[ActionKind]
     home: GeoPoint
     recharge_min: float = 0  # battery swap/charge at home (decision 0037); 0 = no recharge
+    rf_range_m: float = 0  # RF receive range (decision 0039); 0 = cannot receive
 
 
 class EnemySpec(BaseModel):  # decision 0032: an enemy follows its own play, no safety checks
@@ -37,6 +38,16 @@ class EnemySpec(BaseModel):  # decision 0032: an enemy follows its own play, no 
     pos: GeoPoint | None = None  # where it appears, or
     from_enemy: str | None = None  # at that enemy's current position
     play_id: str
+    emit_start_offset_ms: int | None = (
+        None  # emits from this long after it appears; None = silent (0039)
+    )
+
+
+class WatchPoint(BaseModel):  # a place to guard; inside its radius adds to a target's threat (0039)
+    id: str
+    name: str
+    pos: GeoPoint
+    radius_m: float
 
 
 class VehicleState(BaseModel):

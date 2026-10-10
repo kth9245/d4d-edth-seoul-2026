@@ -198,6 +198,18 @@
         "play_id": {
           "title": "Play Id",
           "type": "string"
+        },
+        "emit_start_offset_ms": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Emit Start Offset Ms"
         }
       },
       "required": [
@@ -602,6 +614,11 @@
           "default": 0,
           "title": "Recharge Min",
           "type": "number"
+        },
+        "rf_range_m": {
+          "default": 0,
+          "title": "Rf Range M",
+          "type": "number"
         }
       },
       "required": [
@@ -615,6 +632,33 @@
         "home"
       ],
       "title": "VehicleSpec",
+      "type": "object"
+    },
+    "WatchPoint": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "pos": {
+          "$ref": "#/$defs/GeoPoint"
+        },
+        "radius_m": {
+          "title": "Radius M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "pos",
+        "radius_m"
+      ],
+      "title": "WatchPoint",
       "type": "object"
     }
   },
@@ -654,6 +698,14 @@
         "$ref": "#/$defs/EnemySpec"
       },
       "title": "Enemies",
+      "type": "array"
+    },
+    "watch_points": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/WatchPoint"
+      },
+      "title": "Watch Points",
       "type": "array"
     },
     "land": {

@@ -9,5 +9,6 @@
   "alt_m": 0.0
  },
  "from_enemy": null,
- "play_id": "enemy_boat1"
+ "play_id": "enemy_boat1",
+ "emit_start_offset_ms": null
 }

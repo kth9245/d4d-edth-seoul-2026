@@ -23,6 +23,7 @@ export interface VehicleSpec {
   capabilities: ActionKind[];
   home: GeoPoint;
   recharge_min?: number;
+  rf_range_m?: number;
 }
 
 export interface Command {
@@ -108,6 +109,14 @@ export interface EnemySpec {
   pos?: GeoPoint | null;
   from_enemy?: string | null;
   play_id: string;
+  emit_start_offset_ms?: number | null;
+}
+
+export interface WatchPoint {
+  id: string;
+  name: string;
+  pos: GeoPoint;
+  radius_m: number;
 }
 
 export type ConditionKind = "target_found" | "arrived" | "time_elapsed" | "battery_below" | "operator_choice" | "signal_received";
@@ -204,6 +213,11 @@ export interface Target {
   step_id?: string | null;
   waypoint_idx?: number;
   step_since_ms?: number | null;
+  emitting?: boolean;
+  rf_detected?: boolean;
+  threat?: number;
+  threat_reasons?: string[];
+  threat_accum?: number;
 }
 
 export type ReportKind = "target_detected" | "target_select" | "vehicle_gap" | "vehicle_lost" | "battery_low" | "injection_pending" | "command_blocked" | "target_neutralized";
@@ -295,6 +309,7 @@ export interface Scenario {
   plays: Play[];
   events?: ScenarioEvent[];
   enemies?: EnemySpec[];
+  watch_points?: WatchPoint[];
   land?: Polygon[];
   seed?: number;
   tick_ms?: number;
