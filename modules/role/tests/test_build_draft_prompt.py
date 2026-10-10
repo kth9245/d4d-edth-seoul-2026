@@ -38,10 +38,13 @@ def test_same_input_gives_same_prompt():
 def test_prompt_has_text_vocabulary_operation_and_output_keys():
     p = build_draft_prompt(TEXT, OP)
     assert TEXT in p and OP.name in p and OP.purpose in p
-    # at_time (decision 0045) is set by the operator in the editor, so the AI draft vocabulary leaves it out.
-    for kind in [*ActionKind, *(k for k in ConditionKind if k != ConditionKind.at_time), *Domain]:
+    # at_time (decision 0045) is set by the operator in the editor, and target_neutralized (decision 0058)
+    # by the scenario's strike operation, so the AI draft vocabulary leaves both out.
+    not_drafted = (ConditionKind.at_time, ConditionKind.target_neutralized)
+    for kind in [*ActionKind, *(k for k in ConditionKind if k not in not_drafted), *Domain]:
         assert kind.value in p
-    assert ConditionKind.at_time.value not in p
+    for kind in not_drafted:
+        assert kind.value not in p
     assert "124.56" in p and "124.57" in p  # area and zone corners
     for key in ["situation", "domain_reasoning", "step_plan", "not_in_text", "role"]:
         assert f'"{key}"' in p
