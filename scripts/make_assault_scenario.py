@@ -1,7 +1,7 @@
 """Assault operation "해안 거점·무인장비 무력화" (virtual): demo/scenarios/baengnyeong_assault.json.
-발표 라이브 시연의 유일한 작전(결정 0069). 1막: RF 거점(site_rf, unknown)을 직접 조종으로 보고 식별·타격.
+발표 라이브 시연의 유일한 작전(결정 0074). 1막: RF 거점(site_rf, unknown)을 직접 조종으로 보고 식별·타격.
 2막: 적 무인 수상정(e_usv)이 상륙 지점으로 가며 지상 로봇 둘(e_ugv1/2)을 내리고, 우리 수상정의 발견 카드
-'함께 타격'으로 공격 드론·수상정이 타격하고 지상 로봇이 상륙 지점으로 이동해 관측한다(결정 0070·0073). 엔진 코드 변경 없음.
+'함께 타격'으로 공격 드론·수상정이 타격하고 지상 로봇이 상륙 지점으로 이동해 관측한다(결정 0075·0078). 엔진 코드 변경 없음.
 JSON이 그 뒤로 정본(결정 0035); 다시 만들 때만 실행. Usage: uv run python scripts/make_assault_scenario.py
 """
 
@@ -78,12 +78,18 @@ def site_recon():
                                       {"id": "home", "label": "수상정으로 복귀",
                                        "role_by_vehicle": {"r1": "go_home", "r2": "go_home"}, "target_by_vehicle": {}}],
                           "auto_choices": False})  # fmt: skip
-    return _role("site_recon", "거점 탐색 순찰", ["air"], [patrol, report, after], "patrol",
-                 emergency=EMERGENCY)
+    return _role(
+        "site_recon",
+        "거점 탐색 순찰",
+        ["air"],
+        [patrol, report, after],
+        "patrol",
+        emergency=EMERGENCY,
+    )
 
 
 def sea_patrol():
-    """2막 해상 순찰 Role (usv). 발견 카드의 '함께 타격'이 공중·해상·지상을 한 번에 옮긴다(결정 0070).
+    """2막 해상 순찰 Role (usv). 발견 카드의 '함께 타격'이 공중·해상·지상을 한 번에 옮긴다(결정 0075).
     auto_choices False라 fleet_choices가 선택지를 덮지 않는다(진행 기록 확인)."""
     together = {"id": "strike_all_domains", "label": "함께 타격(공격 드론·수상정) · 지상 로봇 상륙 지점으로",
                 "role_by_vehicle": {"a1": "strike", "a2": "strike", "usv": "strike", "ugv": "watch_landing"},
@@ -95,7 +101,9 @@ def sea_patrol():
     report = _step("report", "발견·보고", "watch_target", {"target": "nearest", "distance_m": 200},
                    [{"cond": {"kind": "operator_choice", "params": {"choice": "watch_usv"}}, "go_step": "patrol"}],
                    report={"text": "미식별 수상정 접근", "choices": [together, watch_only], "auto_choices": False})  # fmt: skip
-    return _role("sea_patrol", "해상 순찰", ["sea"], [patrol, report], "patrol", emergency=EMERGENCY)
+    return _role(
+        "sea_patrol", "해상 순찰", ["sea"], [patrol, report], "patrol", emergency=EMERGENCY
+    )
 
 
 def watch_landing():
@@ -171,8 +179,10 @@ def build():
 def main():
     out = build()
     OUT.write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    print(f"{OUT.name}: {len(out['vehicles'])} vehicles, {len(out['enemies'])} enemies, "
-          f"{len(out['roles'])} roles")
+    print(
+        f"{OUT.name}: {len(out['vehicles'])} vehicles, {len(out['enemies'])} enemies, "
+        f"{len(out['roles'])} roles"
+    )
 
 
 if __name__ == "__main__":

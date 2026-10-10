@@ -1,6 +1,6 @@
 # 발표 라이브 시연 대본 — 공격 작전 "해안 거점·무인장비 무력화"
 
-결정 0069~0073, 설계 `docs/superpowers/specs/2026-10-11-assault-demo-scenario-design.md`.
+결정 0074~0078, 설계 `docs/superpowers/specs/2026-10-11-assault-demo-scenario-design.md`.
 작전 id `baengnyeong_assault`. 라이브 시연은 이 작전 하나로 한다(야간 방어 시연은 발표에서 뺀다).
 
 ## 운용 방법

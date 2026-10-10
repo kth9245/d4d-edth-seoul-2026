@@ -66,7 +66,7 @@ def test_scenarios_lists_the_demo_operations_with_the_running_one_active():
 
 
 def test_assault_operation_is_in_the_pick_list():
-    # Part1-15.1 (decision 0069): the presentation assault operation is pickable
+    # Part1-15.1 (decision 0074): the presentation assault operation is pickable
     client, _ = fake_app()
     ids = [s["id"] for s in client.get("/scenarios").json()]
     assert "baengnyeong_assault" in ids
