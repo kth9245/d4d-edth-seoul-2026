@@ -27,3 +27,10 @@ class DraftIn(BaseModel):  # POST /plays/draft
 class Accepted(BaseModel):  # reply to an operator input; it applies on the next tick
     id: str
     t_ms: int
+
+
+class ScenarioInfo(BaseModel):  # GET /scenarios: an operation the gateway can run (decision 0041)
+    id: str  # Scenario.id
+    name: str  # Operation.name
+    purpose: str = ""  # Operation.purpose
+    active: bool = False  # the running operation

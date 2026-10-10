@@ -8,7 +8,7 @@ import re
 
 from pydantic import BaseModel
 
-from .api import Accepted, DecisionIn, DirectIn, DraftIn, SwitchIn
+from .api import Accepted, DecisionIn, DirectIn, DraftIn, ScenarioInfo, SwitchIn
 from .command import Block, Command, PassedCommand, Provenance
 from .enums import (
     ActionKind,
@@ -78,7 +78,7 @@ _MODELS: list[type[BaseModel]] = [
     Metrics, RunState, Frame, ScenarioEvent, Scenario, TickInputs, TickOutcome,
     ActionGroup, VehicleKind, Ontology, CapabilityReason, VehicleCapabilities, OntologyView,
     ObjectNode, ObjectLink, ObjectGraph,
-    DecisionIn, DirectIn, SwitchIn, DraftIn, Accepted,
+    DecisionIn, DirectIn, SwitchIn, DraftIn, Accepted, ScenarioInfo,
     Detection, Track, Assessment, Response, LegacyFrame,
 ]  # fmt: skip
 

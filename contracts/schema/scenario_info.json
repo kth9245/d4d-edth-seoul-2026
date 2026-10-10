@@ -1,0 +1,28 @@
+{
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "purpose": {
+      "default": "",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "active": {
+      "default": false,
+      "title": "Active",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "id",
+    "name"
+  ],
+  "title": "ScenarioInfo",
+  "type": "object"
+}

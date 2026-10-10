@@ -418,6 +418,13 @@ export interface Accepted {
   t_ms: number;
 }
 
+export interface ScenarioInfo {
+  id: string;
+  name: string;
+  purpose?: string;
+  active?: boolean;
+}
+
 export type SensorType = "rf" | "eoir" | "radar";
 
 export interface Detection {

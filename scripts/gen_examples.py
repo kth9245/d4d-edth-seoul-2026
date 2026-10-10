@@ -30,6 +30,7 @@ from contracts.models import (  # noqa: E402
     ObjectNode,
     OntologyView,
     PlayCheck,
+    ScenarioInfo,
     SwitchIn,
     TickInputs,
     TickOutcome,
@@ -135,6 +136,9 @@ def examples() -> dict[str, object]:
         "switch_in": SwitchIn(play_by_vehicle={"d2": "track_fast"}),
         "draft_in": DraftIn(text="고속 보트가 나타나면 가장 가까운 드론이 300m 거리에서 추적"),
         "accepted": Accepted(id="dec-1", t_ms=T1),
+        "scenario_info": ScenarioInfo(
+            id=SCENARIO.id, name=OPERATION.name, purpose=OPERATION.purpose, active=True
+        ),
     }
 
 

@@ -13,7 +13,7 @@
 | `command.py` | Provenance, Command, PassedCommand, Block |
 | `events.py` | Target, Report, Decision, Assignment, Injection, DirectControl |
 | `frame.py` | Metrics, RunState, Frame, ScenarioEvent, Scenario, TickInputs, TickOutcome |
-| `api.py` | DecisionIn, DirectIn, SwitchIn, DraftIn, Accepted |
+| `api.py` | DecisionIn, DirectIn, SwitchIn, DraftIn, Accepted, ScenarioInfo |
 | `legacy.py` | T1-3 골격(휴면): Detection, Track, Assessment, Response, LegacyFrame |
 
 ## 수정 방법
