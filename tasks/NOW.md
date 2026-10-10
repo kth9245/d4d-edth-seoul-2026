@@ -7,6 +7,7 @@
 ## 진행중
 - **Part1-9** 지도: 위성 raster + 기체·표적·구역 — kth9245, 10/10 10:18부터
 - **Part2-20** sim `load_scenario_json` — 최동호, 10/10 10:11부터 · SIM-04
+- **Part3-4** play `check_return_battery` — 황승주, 10/10 10:19부터 · PLY-04
 
 ## 막힘
 - (없음)
@@ -30,7 +31,6 @@
 - **Part3-15.1** mavlink compile_mavlink · MAV-01 (리드, 결정 0025, 통합 2 뒤)
 
 ### 황승주
-- **Part3-4** play `check_return_battery` · PLY-04
 - **Part3-5** play `check_zone` · PLY-05
 - **Part3-6** play `check_play` · 하위 0/1 완료 · PLY-06
 - **Part3-6.1** play check_operation · PLY-11 (통합 2, PLY-03~05 뒤)
