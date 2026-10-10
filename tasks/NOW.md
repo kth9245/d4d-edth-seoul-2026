@@ -2,7 +2,7 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 13:11 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 13:12 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part1-14** smoke 전환 + 통합 주관 — kth9245, 10/10 12:13부터 · 하위 4/4 완료
