@@ -18,7 +18,7 @@
 | UI-13 | vehicleColumns | Operation, Role[] | Column[] | 기체별 시작 Role + 선택지로 이어지는 Role, 순환 종료, 없는 Role null | 리드 | 완료 |
 | UI-14 | roleUsage | Operation, Role[], EnemySpec[] | Record<roleId, Usage[]> | 작전 시작·선택지·전체 전환으로 쓰는 기체, 적 Role은 그 적과 등장 시각(Part1-21) | 리드 | 완료 |
 | UI-15 | loadEditorData | fetch | EditorData | /operation·/roles·/vehicles·/enemies를 읽음. 실패하면 오류(예시 데이터 대체는 통합 2 전에 제거, 편집기가 연결 실패를 표시) | 리드 | 완료 |
-| UI-16 | EditorScreen | — | 편집기 화면 | 예시 작전이 왼쪽 바·작전 개요·Role 카드로 그려짐(Part3-10), 탭 #editor·#live(tabFromHash) | 리드 | 완료 |
+| UI-16 | EditorScreen | — | 편집기 화면 | 예시 작전이 왼쪽 바·작전 개요·Role 카드로 그려짐(Part3-10), 탭 #editor·#live·#ops(tabFromHash, #ops 결정 0067) | 리드 | 완료 |
 | UI-17 | kstTime | t_ms | "HH:MM:SS" | 기계 시간대와 무관하게 KST(결정 0012) | 리드 | 완료 |
 | UI-18 | postDecision | report_id, choice_id | {ok, id} \| {ok: false, error} | POST /decisions, 실패해도 throw 없이 상태·detail 문구 | 리드 | 완료 |
 | UI-19 | frameCards | Frame | Card[] | 보고(injection_pending·command_blocked 제외)+injections+blocks, 최신이 위, 처리된 것 done, 선택지마다 기체별 전환 줄, 무력화 카드에 근거 줄(운용자 결정 id·선택지 이름 → 타격 기체 · 통과한 검사, Part1-20) | 리드 | 완료 |
@@ -93,3 +93,4 @@
 | UI-101 | VehicleMenu | 지금 Role 이름, MenuRole[]×2, SeenTarget[] | 기체 메뉴 | 고른 아군 줄 아래(결정 0058·0059): 이동 안내, 표적 없는 Role 버튼("지금 → 새", 누르면 바로), 표적 Role 버튼(타격 빨강)을 누르면 그 아래 포착 적 목록(종류·위험도·거리)·없으면 안내, 고르면 바로 지목 | 리드 | 완료 |
 | UI-102 | pointRoles | MenuRole[], 그 표적의 Track | MenuRole[] | 지도·적 줄 지목 메뉴의 Role: 표적 Role 그대로, 타격은 지금 보이는(seen) 표적에만(놓침·RF만·미탐이면 타격 뺌, 결정 0058, 4·5번 작업 검토) | 리드 | 완료 |
 | UI-103 | sensorCircles | Frame, VehicleSpec[] | FeatureCollection | 지도 탐지 영역(Part1-32.2): ready·active 기체(sensing LIVE와 같음)마다 지금 위치 중심 sensor_range_m 원(64칸, 닫힘, 드론 800·수상정 500·지상로봇 300 m), 귀환·두절·정비와 명세 없는 기체는 없음 | 리드 | 완료 |
+| UI-104 | sensedFrame | Frame | Frame | 실작전 탭(결정 0067): targets에서 trackState가 never(미탐)인 적만 뺀 새 Frame. seen·rf·lost·gone과 나머지 칸은 그대로, 입력 Frame은 바꾸지 않음 | 리드 | 완료 |
