@@ -20,8 +20,16 @@ describe("frameMarkers", () => {
   it("makes one marker per target, seen when some vehicle sees it", () => {
     const { targets } = frameMarkers(s1 as Frame);
     expect(targets).toEqual([
-      { id: "boat1", kind: "boat", lon: 124.7, lat: 37.98437, seen: true, neutralized: false, label: "boat1" },
+      { id: "boat1", kind: "boat", lon: 124.7, lat: 37.98437, seen: true, neutralized: false, rf: false, label: "boat1" },
     ]);
+  });
+
+  it("marks a target whose emission our vehicles picked up with RF, never by the truth emitting (decision 0040)", () => {
+    const f = s1 as Frame;
+    const at = (t: object) => frameMarkers({ ...f, targets: [{ ...f.targets[0], ...t }] }).targets[0];
+    expect([at({ rf_detected: true }).rf, at({ rf_detected: true }).label]).toEqual([true, "boat1 · RF"]);
+    expect([at({ emitting: true }).rf, at({ emitting: true }).label]).toEqual([false, "boat1"]);
+    expect(at({ rf_detected: true, neutralized_ms: 1 }).label).toBe("boat1 · 무력화");
   });
 
   it("marks a target nobody sees as not seen", () => {

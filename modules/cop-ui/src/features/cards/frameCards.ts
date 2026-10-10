@@ -1,7 +1,9 @@
-import type { Block, BlockReason, Frame, GeoPoint, Injection, Report, ReportKind } from "../../contracts.gen";
+import type { Block, BlockReason, Frame, GeoPoint, Injection, Report, ReportKind, Target } from "../../contracts.gen";
 import { kstTime } from "./kstTime";
 
 export interface CardChoice { id: string; label: string; preview: string }
+// Decision 0040: what sensing found about a contact card's target (score 0..1, rf = our vehicles picked up its emission).
+export interface CardThreat { score: number; rf: boolean; line: string }
 export interface Card {
   id: string;
   source: "report" | "injection" | "block";
@@ -14,6 +16,7 @@ export interface Card {
   preview?: string; // injections: what approving switches, e.g. "d2→track_fast"; neutralized: the strike's basis
   alternative?: GeoPoint | null; // blocks: the point the safety check offers instead, sent by "대안 지점으로"
   done: string | null; // null = still needs the operator (or a block, which is an event)
+  threat?: CardThreat; // contact cards whose target sensing has scored
 }
 
 // Shown from Frame.injections / Frame.blocks instead: those carry the ids the approve and alternative buttons need,
@@ -42,12 +45,32 @@ function strikeBasis(frame: Frame, r: Report): string | undefined {
   return `운용자 결정 ${dec}${choice ? ` '${choice.label}'` : ""} → ${ids.join("·")} 타격 · ${checks} 검사 통과`;
 }
 
+const KIND_KO: Record<string, string> = { boat: "보트", fast_boat: "고속정", person: "사람", unknown: "미상" };
+
+// Target.threat is in 0.01 units; threat_reasons says what added to it (sensing score_target, decisions 0039/0040).
+function threatOf(t: Target | undefined): CardThreat | undefined {
+  const reasons = t?.threat_reasons ?? [];
+  if (!t || reasons.length === 0) return undefined;
+  const score = (t.threat ?? 0) / 100;
+  const parts = [`관측 위험 ${score.toFixed(2)}`];
+  for (const r of reasons) {
+    if (r.startsWith("kind_")) {
+      const k = r.slice("kind_".length);
+      parts.push(k === "unknown" ? "스캔 전: 미상" : `스캔 판별: ${KIND_KO[k] ?? k}`);
+    } else if (r === "inside_watch_radius") parts.push("기준점 반경 안 +0.30");
+    else if (r === "rf_emission") parts.push("RF 방출 감지 +0.30");
+    else if (r === "speed") parts.push(`속도 ${Math.hypot(t.vel_east_mps, t.vel_north_mps).toFixed(1)} m/s`);
+  }
+  return { score, rf: reasons.includes("rf_emission"), line: parts.join(" · ") };
+}
+
 function fromReport(r: Report, frame: Frame): Card {
   const done = r.resolved_ms == null ? null : `처리됨 ${kstTime(r.resolved_ms)}`;
   const choices = done ? [] : (r.choices ?? []).map((c) => ({ id: c.id, label: c.label, preview: switches(c.play_by_vehicle) }));
   const preview = r.kind === "target_neutralized" ? strikeBasis(frame, r) : undefined;
+  const threat = r.kind === "target_detected" ? threatOf(frame.targets.find((t) => t.id === r.target_id)) : undefined;
   return { id: r.id, source: "report", kind: r.kind, vehicle: r.vehicle_id ?? null, t_ms: r.t_ms,
-    time: kstTime(r.t_ms), text: r.text, choices, done, preview };
+    time: kstTime(r.t_ms), text: r.text, choices, done, preview, ...(threat ? { threat } : {}) };
 }
 
 function fromInjection(i: Injection): Card {
@@ -68,11 +91,15 @@ function fromBlock(b: Block): Card {
     time: kstTime(b.t_ms), text, choices: [], alternative, done: null };
 }
 
-// Frame → the side column cards, newest first.
+const waits = (c: Card) => c.choices.length > 0 || (c.source === "injection" && !c.done);
+const risk = (c: Card) => c.threat?.score ?? 0;
+
+// Frame → the side column cards: the ones waiting for the operator first, riskiest on top (decision 0040, so a
+// boat that starts emitting moves its card up), then the rest newest first.
 export function frameCards(frame: Frame): Card[] {
   return [
     ...frame.reports.filter((r) => !SKIP.includes(r.kind)).map((r) => fromReport(r, frame)),
     ...frame.injections.map(fromInjection),
     ...frame.blocks.map(fromBlock),
-  ].sort((a, b) => b.t_ms - a.t_ms);
+  ].sort((a, b) => Number(waits(b)) - Number(waits(a)) || (waits(a) ? risk(b) - risk(a) : 0) || b.t_ms - a.t_ms);
 }

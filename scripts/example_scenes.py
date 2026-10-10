@@ -26,6 +26,13 @@ from contracts.models import (
 )
 
 CHECKS = ["no_provenance", "outside_zone", "battery_insufficient"]
+# Observed risk in s7 (decisions 0039/0040, sensing fills it in the engine): fast1 scanned, emitting and fast.
+BOAT_RISK = {"threat": 50, "threat_reasons": ["kind_boat", "inside_watch_radius"]}
+FAST_RISK = {
+    "threat": 100,
+    "threat_reasons": ["kind_fast_boat", "rf_emission", "speed"],
+    "rf_detected": True,
+}
 
 
 def at(m: int, s: int = 0) -> int:
@@ -236,7 +243,8 @@ def scenes() -> dict[str, Frame]:
                     d3(T7, 37.9790),
                     vs("usv", T7, gp(37.9790, 124.7088), 96.1, "active", "track_fast_sea", "ask", usv_ask, target_id="fast1", pending_report_id=ASK_USV.id),
                     ugv(T7)],
-               [boat(T7, 37.97335, ["d3"]), fast(T7, 37.9812, 124.7135, ["d2", "usv"])], [*before, *PICKS, ASK_D2, ASK_USV], AFTER_SWITCH,
+               [boat(T7, 37.97335, ["d3"]).model_copy(update=BOAT_RISK),
+                fast(T7, 37.9812, 124.7135, ["d2", "usv"]).model_copy(update=FAST_RISK)], [*before, *PICKS, ASK_D2, ASK_USV], AFTER_SWITCH,
                Metrics(operator_actions=8, decisions=3, manual_baseline_actions=21, open_reports_max=2, commands_sent=13, blocked_commands=2, vehicle_gap_ms=240000),
                ["[계산] 21:25:20 결정 dec-3 → fast1"], blocks=[BLK1, BLK2], injections=approved)
     asked = [r.model_copy(update={"resolved_ms": at(25, 50), "decision_id": "dec-4"}) for r in (ASK_D2, ASK_USV)]

@@ -270,8 +270,11 @@
    "step_since_ms": null,
    "emitting": false,
    "rf_detected": false,
-   "threat": 0,
-   "threat_reasons": [],
+   "threat": 50,
+   "threat_reasons": [
+    "kind_boat",
+    "inside_watch_radius"
+   ],
    "threat_accum": 0
   },
   {
@@ -297,9 +300,13 @@
    "waypoint_idx": 0,
    "step_since_ms": null,
    "emitting": false,
-   "rf_detected": false,
-   "threat": 0,
-   "threat_reasons": [],
+   "rf_detected": true,
+   "threat": 100,
+   "threat_reasons": [
+    "kind_fast_boat",
+    "rf_emission",
+    "speed"
+   ],
    "threat_accum": 0
   }
  ],

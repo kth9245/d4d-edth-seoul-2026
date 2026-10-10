@@ -41,9 +41,40 @@ describe("frameCards", () => {
     expect(frameCards(noAlt).find((c) => c.source === "block")!.alternative).toBeNull();
   });
 
-  it("puts the newest card first", () => {
-    const times = frameCards(s6 as Frame).map((c) => c.t_ms);
+  it("puts the newest card first among cards that wait for nobody", () => {
+    const rest = frameCards(s6 as Frame).filter((c) => c.choices.length === 0);
+    const times = rest.map((c) => c.t_ms);
     expect(times).toEqual([...times].sort((a, b) => b - a));
+  });
+
+  // Decision 0040: the contact card shows the observed risk of its target (Target.threat and threat_reasons,
+  // filled by sensing) and the open cards are ordered by that risk, so a boat that starts emitting jumps up.
+  const f1 = s1 as Frame;
+  const boat = (id: string, threat: number, reasons: string[]) =>
+    ({ ...f1.targets[0], id, threat, threat_reasons: reasons, vel_east_mps: 3, vel_north_mps: -4 });
+  const contact = (id: string, target: string, t_ms: number) => ({ ...f1.reports[0], id, target_id: target, t_ms });
+
+  it("adds the observed risk of the card's target as one line", () => {
+    const f = { ...f1, targets: [boat("boat1", 58, ["kind_boat", "inside_watch_radius", "speed"])] };
+    expect(frameCards(f)[0].threat).toEqual({
+      score: 0.58, rf: false, line: "관측 위험 0.58 · 스캔 판별: 보트 · 기준점 반경 안 +0.30 · 속도 5.0 m/s" });
+  });
+
+  it("says RF when our vehicles picked up its emission and 'before scan' when nobody has seen its kind", () => {
+    const f = { ...f1, targets: [boat("boat1", 60, ["kind_unknown", "rf_emission"])] };
+    expect(frameCards(f)[0].threat).toEqual({ score: 0.6, rf: true, line: "관측 위험 0.60 · 스캔 전: 미상 · RF 방출 감지 +0.30" });
+  });
+
+  it("has no risk line before sensing scored the target", () => {
+    expect(frameCards(f1)[0].threat).toBeUndefined();
+  });
+
+  it("puts the open cards first, riskiest on top, even above newer events", () => {
+    const f = { ...f1,
+      targets: [boat("boat1", 50, ["kind_boat"]), boat("boat2", 80, ["kind_boat", "rf_emission"])],
+      reports: [contact("rep-a", "boat1", 1000), contact("rep-b", "boat2", 900),
+        { ...f1.reports[0], id: "gap", kind: "vehicle_gap" as const, choices: [], t_ms: 2000 }] };
+    expect(frameCards(f).map((c) => c.id)).toEqual(["rep-b", "rep-a", "gap"]);
   });
 
   it("marks resolved reports and settled injections done, with no choices", () => {

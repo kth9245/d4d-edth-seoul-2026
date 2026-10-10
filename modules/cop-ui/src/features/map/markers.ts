@@ -49,7 +49,8 @@ export function syncVehicles(map: MapLibreMap, store: MarkerStore, items: Vehicl
 }
 
 export function syncTargets(map: MapLibreMap, store: MarkerStore, items: TargetMarker[]): void {
-  sync(map, store, items, (t) => `mk target ${t.kind}${t.seen ? "" : " unseen"}${t.neutralized ? " neutralized" : ""}`);
+  sync(map, store, items,
+    (t) => `mk target ${t.kind}${t.seen ? "" : " unseen"}${t.neutralized ? " neutralized" : ""}${t.rf ? " rf" : ""}`);
 }
 
 // Where direct-control orders are heading (a cross per vehicle), so the operator sees the order land.

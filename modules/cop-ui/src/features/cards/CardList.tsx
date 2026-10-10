@@ -69,6 +69,7 @@ export function CardList({ frame }: { frame: Frame | null }) {
               <time>{c.time}</time>
             </div>
             <div className="text">{c.text}</div>
+            {c.threat && <div className={`threat${c.threat.rf ? " rf" : ""}`}>{c.threat.line}</div>}
             {c.preview && <div className="preview">{c.preview}</div>}
             {c.choices.map((ch) => (
               <button key={ch.id} disabled={locked} onClick={() => send(c.id, () => postDecision(c.id, ch.id))}>

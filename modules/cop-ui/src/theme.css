@@ -86,6 +86,9 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .card .head span, .card .head time { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
 .card .head time { opacity: 1; }
 .card .text { margin: 6px 0 2px; color: var(--text2); font-size: 14px; line-height: 1.5; }
+/* Observed risk of a contact card's target (decision 0040); red once our vehicles picked up its emission. */
+.card .threat { margin-top: 4px; font-family: var(--font-mono); font-size: 11px; line-height: 1.5; color: var(--warn); }
+.card .threat.rf { color: var(--hostile); }
 .card button { margin-top: 10px; padding: 10px 12px; border: 1px solid var(--text); border-radius: var(--r);
   background: var(--text); color: var(--bg); font-size: 14px; font-weight: 700; }
 .card button:hover:not(:disabled) { background: var(--live); border-color: var(--live); }
@@ -125,6 +128,12 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .target span { top: auto; bottom: 16px; left: 50%; transform: translateX(-50%); }
 .target.unseen { opacity: 0.5; }
 .target.unseen i { border-style: dashed; border-color: var(--text); box-shadow: none; }
+/* RF (decision 0040): our vehicles picked up this target's emission. A ring pulses out of the marker and the
+   label turns red, so the emission shows on the map as well as on the target's card. */
+.target.rf i::after { content: ""; position: absolute; inset: -7px; border: 2px solid var(--hostile); border-radius: 50%;
+  animation: rf-ring 1.2s ease-out infinite; }
+.target.rf span { color: var(--hostile); }
+@keyframes rf-ring { from { transform: scale(0.6); opacity: 0.9; } to { transform: scale(1.8); opacity: 0; } }
 /* Struck target (Part1-20): a grey X in place of the affiliation diamond, labelled "무력화". The strikers sit on
    it (distance 0), so it is drawn above the vehicles (clicks still pass through) and wider than their circles. */
 .maplibregl-marker:has(> .mk.target.neutralized) { z-index: 4; }
