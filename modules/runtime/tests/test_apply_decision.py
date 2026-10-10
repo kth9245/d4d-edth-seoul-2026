@@ -151,3 +151,14 @@ def test_choice_target_by_vehicle_sets_each_moved_vehicles_target():  # fleet ch
     out, _ = apply_decision([st], {"watch": watch}, Decision(id="dec-9", t_ms=5, report_id="r1",
                             choice_id="join_d3_d2"), [card])  # fmt: skip
     assert (out[0].role_id, out[0].target_id) == ("watch", "boat2")
+
+
+def test_second_focus_on_same_target_is_ignored():  # 24h raid: one drone per spot (decision 0055)
+    roles = ROLES | {"focus_orbit": role("focus_orbit")}
+    ch = Choice(id="focus_d3_b1", label="d3 → 적기 1 발견 지점 집중 순찰",
+                role_by_vehicle={"d3": "focus_orbit"}, target_by_vehicle={"d3": "b1"})  # fmt: skip
+    card = CARD.model_copy(update={"choices": [ch]})
+    states = [vs("d1", "patrol_a"), vs("d2", "focus_orbit", target_id="b1"), vs("d3", "standby")]
+    out, reps = apply_decision(states, roles, decide("focus_d3_b1"), [card])
+    d3 = next(s for s in out if s.id == "d3")
+    assert d3.role_id == "standby" and reps[0].resolved_ms is not None

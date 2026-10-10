@@ -82,9 +82,12 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
         stepped.append(s)
         cmds += [cmd] if cmd else []
         new_reports += [rep] if rep else []
-    new_reports = [fleet_choices(r, stepped, sc.operation, roles) for r in new_reports]  # 5.2
+    raid = (targets, sc.land, specs)  # 24h raid choices (decision 0055)
+    new_reports = [
+        fleet_choices(r, stepped, sc.operation, roles, *raid) for r in new_reports
+    ]  # 5.2
     reports = [
-        fleet_choices(r, stepped, sc.operation, roles)
+        fleet_choices(r, stepped, sc.operation, roles, *raid)
         if r.kind == "target_detected" and not r.resolved_ms
         else r
         for r in reports

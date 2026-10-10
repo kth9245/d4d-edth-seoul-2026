@@ -1,13 +1,23 @@
 """RT-11 fleet_choices: 해안 순찰 발견 카드의 선택지를 그때 함대 상황으로 만든다(사용자 지시, 드론만)
-발견한 드론은 표적 위에서 감시(호버링)를 계속한다. 다른 교대 드론마다 "발생 지역 순찰"(발견한 드론이 비운 해안)과
-"이 카드를 올린 드론과 함께 감시"(표적은 target_by_vehicle, 결정 0048), 그리고 "전 기체 현 임무 유지".
+발견한 드론은 표적 위에서 감시(호버링)를 계속한다. 다른 교대 드론마다 "발생 지역 순찰"(발견한 드론이 비운 해안)과 "이 카드를 올린 드론과 함께 감시"(표적은 target_by_vehicle, 결정 0048), 그리고 "전 기체 현 임무 유지".
 카드에 정해진 선택지(step.report.choices)가 있으면 그것을 맨 앞에 두고 뒤에 덧붙이며 "유지"는 붙이지 않는다(결정 0046).
-자기 카드가 열려 있는 드론(pending_report_id)은 요청 후보에서 뺀다.
-step.report.auto_choices가 아닌 카드는 그대로 돌려준다.
+자기 카드가 열려 있는 드론(pending_report_id)은 요청 후보에서 뺀다. auto_choices가 아닌 카드는 그대로. roles에 focus_orbit이 있고 표적이 오면 멸공 선택지(RT-16, 결정 0055).
 SPEC: modules/runtime/SPEC.md#RT-11
 """
 
-from contracts.models import Choice, Operation, Report, Role, VehicleState
+from collections.abc import Sequence
+
+from contracts.models import (
+    Choice,
+    Operation,
+    Polygon,
+    Report,
+    Role,
+    Target,
+    VehicleSpec,
+    VehicleState,
+)
+from modules.runtime.actions.raid_choices import FOCUS, raid_choices
 
 WATCH_ROLE = "watch"
 
@@ -22,9 +32,9 @@ def watching(s: VehicleState, roles: dict[str, Role]) -> bool:  # hovering over 
     return bool(s.target_id and step and step.do.kind.value == "watch_target")
 
 
-def fleet_choices(
-    rep: Report, states: list[VehicleState], op: Operation, roles: dict[str, Role]
-) -> Report:
+def fleet_choices(rep: Report, states: list[VehicleState], op: Operation, roles: dict[str, Role],
+                  targets: Sequence[Target] = (), land: Sequence[Polygon] = (),
+                  specs: dict[str, VehicleSpec] | None = None) -> Report:  # fmt: skip
     me = next((s for s in states if s.id == rep.vehicle_id), None)
     step = _step(me, roles) if me else None
     if not (step and step.report and step.report.auto_choices):
@@ -46,8 +56,11 @@ def fleet_choices(
             or (s.status.value == "ready" and s.battery_pct >= 99.9)
         )
     ]
+    raid = FOCUS in roles and bool(
+        targets
+    )  # 24h raid (decision 0055); the night operation has no focus_orbit
     take = [
-        Choice(id=f"take_{x.id}", label=f"{x.id} → 발생 지역 순찰({coast.name})",
+        Choice(id=f"take_{x.id}", label=f"{x.id} → {'이탈' if raid else '발생'} 지역 순찰({coast.name})",
                role_by_vehicle={x.id: coast.id})
         for x in others
     ]  # fmt: skip
@@ -60,5 +73,8 @@ def fleet_choices(
     planned = list(
         step.report.choices
     )  # the card's own choices, read from the step every time (0046)
+    if raid:
+        extra = raid_choices(others, hover, states, targets, land, specs or {}, op.rotation)
+        return rep.model_copy(update={"choices": [*planned, *take, *extra]})
     keep = [] if planned else [Choice(id="keep", label="전 기체 현 임무 유지")]
     return rep.model_copy(update={"choices": [*planned, *take, *join, *keep]})

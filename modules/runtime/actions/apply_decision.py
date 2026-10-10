@@ -19,6 +19,9 @@ def apply_decision(
         return r.id == rep.id or (r.vehicle_id in moved and bool(r.choices) and not r.resolved_ms)
 
     reports = [r.model_copy(update=done) if closes(r) else r for r in reports]
+    focused = {
+        s.target_id for s in states if s.role_id == "focus_orbit"
+    }  # 0055: one drone per spot
     out = []
     for s in states:
         if rep.kind == "target_select" and s.id == rep.vehicle_id:
@@ -26,8 +29,11 @@ def apply_decision(
                 update={"target_id": ch.id, "pending_report_id": None, "entered_step": False}
             )
         elif s.id in moved:  # decision 0033: the strike step needs who approved and what
-            s = switch_role(s, roles[ch.role_by_vehicle[s.id]])
             tid = ch.target_by_vehicle.get(s.id, rep.target_id)  # fleet choice: whose target
+            if ch.role_by_vehicle[s.id] == "focus_orbit" and tid in focused:
+                out.append(s)  # another drone already orbits that spot
+                continue
+            s = switch_role(s, roles[ch.role_by_vehicle[s.id]])
             s = s.model_copy(update={"decision_id": decision.id, "target_id": tid})
         elif s.id == rep.vehicle_id:
             ex = _choice_exit(s, roles, ch.id)  # an exit taken on this decision carries its id
