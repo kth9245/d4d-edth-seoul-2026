@@ -460,3 +460,4 @@
 {"at": "2026-10-10T21:23:23+09:00", "by": "황승주", "op": "done", "id": "Part2-47", "take": false}
 {"at": "2026-10-10T21:23:48+09:00", "by": "황승주", "op": "add", "id": "Part2-48", "title": "멸공 적 2/7: sim 적 usv 섬 우회, 드론은 직선 (결정 0055)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T21:23:52+09:00", "by": "황승주", "op": "start", "id": "Part2-48", "take": false, "from": null}
+{"at": "2026-10-10T21:27:46+09:00", "by": "황승주", "op": "done", "id": "Part2-48", "take": false}
