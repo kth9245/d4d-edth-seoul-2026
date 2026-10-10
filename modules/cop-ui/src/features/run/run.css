@@ -1,0 +1,22 @@
+/* Run bar under the map and the metrics panel in the side column (Part1-13). */
+.runbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 12px;
+  border-top: 1px solid #22304a; background: #0e1828; }
+.runbar button { padding: 4px 10px; border: 1px solid #2c3d5e; border-radius: 6px; background: #14213a;
+  color: inherit; font: inherit; cursor: pointer; }
+.runbar button:disabled { opacity: 0.4; cursor: default; }
+.runbar .clock { min-width: 64px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.runbar .speeds { display: inline-flex; gap: 2px; }
+.runbar .speeds button.on { background: #3a6df0; border-color: #3a6df0; color: #fff; }
+.runbar .speeds button.on.dim { background: #1d3157; border-color: #3a6df0; }
+.runbar .next { font-weight: 700; }
+.runbar .error { color: #ff4d4f; font-size: 13px; }
+
+.metrics { margin-bottom: 12px; padding: 10px; border-radius: 8px; background: #14213a; }
+.metrics .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: center; }
+.metrics .pair b { display: block; font-size: 28px; font-variant-numeric: tabular-nums; }
+.metrics .pair .operator b { color: #52c41a; }
+.metrics .pair span { font-size: 12px; opacity: 0.8; }
+.metrics dl { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 12px; margin: 8px 0 0; font-size: 13px; }
+.metrics dl div { display: flex; justify-content: space-between; }
+.metrics dd { margin: 0; font-weight: 700; }
+.metrics .note { margin: 6px 0 0; font-size: 11px; opacity: 0.6; }

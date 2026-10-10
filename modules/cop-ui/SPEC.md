@@ -24,3 +24,10 @@
 | UI-19 | frameCards | Frame | Card[] | 보고(injection_pending·command_blocked 제외)+injections+blocks, 최신이 위, 처리된 것 done, 선택지마다 기체별 전환 줄 | 리드 | 완료 |
 | UI-20 | pruneSent | 보낸 기록, 보고 id, 시각 역행 | 보낸 기록 | reset으로 사라진 보고·시각이 뒤로 가면 잊음(같은 id 카드가 잠기지 않게) | 리드 | 완료 |
 | UI-21 | CardList | frame | 카드 열 | 선택지 버튼 → POST /decisions, 보낸 뒤 처리될 때까지 잠금, 실패 문구 | 리드 | 완료 |
+| UI-22 | mmss | ms | "m:ss" | 1초 미만 버림, 60분 넘어도 분으로, 음수는 0:00 | 리드 | 완료 |
+| UI-23 | nextStop | 작전 시작 후 ms, RUN_STOPS | RunStop \| null | 현재보다 뒤의 첫 정지 시각(정지 시각 위면 다음 것). 정지 시각은 스파이크 엔진 기준, Part1-14에서 engine.py로 재확인 | 리드 | 완료 |
+| UI-24 | postRun·jumpPaused | 경로 / offset_ms | {ok, run} \| {ok: false, error} | POST /run/*, throw 없이 상태·detail 문구. 다음 사건은 speed=0 뒤 jump, 정지 실패면 jump 안 함 | 리드 | 완료 |
+| UI-25 | metricView | Metrics | {operator, manual, rows} | 운용자 조작 대 수동 기준, 기체 공백 m:ss, 빠진 칸 0, 임무 판정 전·성공·실패 | 리드 | 완료 |
+| UI-26 | fetchOperation | — | Partial<Operation> \| null | GET /operation 본문, 오류·JSON 아님·실패는 null(fetchZone·RunBar가 씀) | 리드 | 완료 |
+| UI-27 | RunBar | frame | 지도 아래 재생 막대 | T+시계, 재생/일시정지(직전 배속으로 재개), ×1·5·10·30, 다음 사건(사건 직후 일시정지), 처음으로(확인창) | 리드 | 완료 |
+| UI-28 | MetricsPanel | Metrics | 지표 패널 | 운용자 조작 대 기체별 직접 명령 수 나란히, 나머지 지표, 수동 기준 주석 | 리드 | 완료 |
