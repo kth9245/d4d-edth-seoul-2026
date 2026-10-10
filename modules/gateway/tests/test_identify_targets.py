@@ -36,7 +36,7 @@ def test_other_kinds_and_neutralized_sites_are_left_alone():
     assert out == [boat, dead]
 
 
-def test_the_detected_clues_reach_the_identification():  # decision 0069
+def test_the_detected_clues_reach_the_identification():  # decision 0071
     t = site(seen_by=["d1"], first_seen_ms=9_000, last_seen_ms=10_000, rf_detected=False,
              ir_detected=True, sound_detected=True)  # fmt: skip
     r = identify_targets([t], 10_000, 200)[0]

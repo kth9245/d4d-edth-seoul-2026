@@ -22,7 +22,7 @@ def identify_targets(targets: list[Target], t_ms: int, tick_ms: int) -> list[Tar
             age,
             tg.ident_observed_ms,
             tick_ms,
-            ir_detected=tg.ir_detected,  # decision 0069
+            ir_detected=tg.ir_detected,  # decision 0071
             sound_detected=tg.sound_detected,
         )
         out.append(tg.model_copy(update={"ident_state": r.state, "ident_confidence": r.confidence,

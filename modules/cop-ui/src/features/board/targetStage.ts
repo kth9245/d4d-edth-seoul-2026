@@ -24,7 +24,7 @@ export function targetStage(f: Frame, t: Target, track: Track): Stage {
     const speed = (track.speed ?? 0) >= 0.3 ? ` ${(track.speed ?? 0).toFixed(1)} m/s` : "";
     return st("lost", "놓침", `${mmss(track.agoMs ?? 0)} 전 · ${DIR_KO[track.dir ?? "still"]}${speed}`, track.dir === "away");
   }
-  if (track.k === "rf") {  // radio, heat or sound only (decision 0069): say what was really picked up
+  if (track.k === "rf") {  // radio, heat or sound only (decision 0071): say what was really picked up
     const tags = clueTags(t).join("·");
     return tags === "RF" ? st("rf", "RF 탐지", "무선만 잡힘") : st("rf", `${tags} 탐지`, `${tags}만 잡힘`);
   }

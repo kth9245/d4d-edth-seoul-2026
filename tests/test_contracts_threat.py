@@ -52,7 +52,7 @@ def test_a_condition_can_wait_for_a_site_another_vehicle_reported():  # decision
     assert ConditionKind("target_resighted") is ConditionKind.target_resighted
 
 
-def test_the_sensor_fields_default_to_off():  # decision 0069
+def test_the_sensor_fields_default_to_off():  # decision 0071
     from contracts.models import EnemySpec, GeoPoint, Target, VehicleSpec
 
     home = GeoPoint(lat=37.9, lon=124.7)

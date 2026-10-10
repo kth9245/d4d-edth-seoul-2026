@@ -11,7 +11,7 @@ SUSTAINED_PER_S = 1  # unbroken observation: one point per second, up to SUSTAIN
 IR_PTS, SOUND_PTS = (
     10,
     10,
-)  # decision 0069: a heat or noise clue from an infrared or acoustic receiver
+)  # decision 0071: a heat or noise clue from an infrared or acoustic receiver
 IDENTIFIED_AT = 70
 GRACE_MS = 1000  # a gap shorter than this keeps the sustained time, so one missed tick does not flip the state
 

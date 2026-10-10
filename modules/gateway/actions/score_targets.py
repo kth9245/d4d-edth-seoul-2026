@@ -19,7 +19,7 @@ def score_targets(
     tick_ms: int,
 ) -> list[Target]:
     receivers = [(s.pos, specs[s.id].rf_range_m) for s in states if s.status in LIVE]
-    ir = [(s.pos, specs[s.id].ir_range_m) for s in states if s.status in LIVE]  # decision 0069
+    ir = [(s.pos, specs[s.id].ir_range_m) for s in states if s.status in LIVE]  # decision 0071
     sound = [(s.pos, specs[s.id].acoustic_range_m) for s in states if s.status in LIVE]
     watch = [(w.pos, w.radius_m) for w in watch_points]
     out = []

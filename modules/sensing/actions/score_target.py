@@ -21,7 +21,7 @@ INSIDE, NEAR, RF, SPEED_CAP, SPEED_PER_MPS, CAP, THRESHOLD = 30, 15, 30, 30, 5, 
 IR, SOUND = (
     10,
     10,
-)  # decision 0069: a heat or noise clue picked up by an infrared or acoustic receiver
+)  # decision 0071: a heat or noise clue picked up by an infrared or acoustic receiver
 CARD_ACCUM = 450 * 1000  # threat_accum that lets a contact card go up: score 1.0 for 4.5 s (0043)
 
 
@@ -30,7 +30,7 @@ class ThreatScore(NamedTuple):
     reasons: list[str]
     rf_detected: bool
     accum: int  # 점수(0.01 단위) × ms. 카드 기준은 450 × 1000
-    ir_detected: bool = False  # heat and an infrared receiver in range (decision 0069)
+    ir_detected: bool = False  # heat and an infrared receiver in range (decision 0071)
     sound_detected: bool = False  # noise and an acoustic receiver in range
 
 

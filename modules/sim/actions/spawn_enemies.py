@@ -16,6 +16,6 @@ def spawn_enemies(scenario: Scenario, targets: list[Target], t_ms: int, dt_ms: i
         src = next((t for t in out if t.id == e.from_enemy), None)
         out.append(Target(id=e.id, kind=e.kind, pos=src.pos if src else e.pos,
                           vel_east_mps=0, vel_north_mps=0, first_seen_ms=0, last_seen_ms=0,
-                          heat=e.heat, noise=e.noise,  # decision 0069: what it gives off
+                          heat=e.heat, noise=e.noise,  # decision 0071: what it gives off
                           role_id=e.role_id, step_id=entry[e.role_id], step_since_ms=t_ms))  # fmt: skip
     return out

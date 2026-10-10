@@ -26,7 +26,7 @@ class Target(BaseModel):
     step_since_ms: int | None = None  # when this step began (time_elapsed)
     emitting: bool = False  # sim: it is emitting (the truth, not shown on screen; decision 0040)
     rf_detected: bool = False  # sensing: emitting and a live vehicle's RF range covers it
-    heat: bool = False  # sim: it gives off heat (the truth, not shown on screen; decision 0069)
+    heat: bool = False  # sim: it gives off heat (the truth, not shown on screen; decision 0071)
     noise: bool = False  # sim: it gives off noise (the truth, not shown on screen)
     ir_detected: bool = False  # sensing: heat and a live vehicle's infrared range covers it
     sound_detected: bool = False  # sensing: noise and a live vehicle's acoustic range covers it

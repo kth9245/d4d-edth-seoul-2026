@@ -27,7 +27,7 @@ describe("targetStage", () => {
 
   it("says RF only and never detected", () => {
     expect(stage(mkFrame(), mkTarget({ id: "b", rf_detected: true })).key).toBe("rf");
-    // decision 0069: a heat or sound clue is not "radio only", the stage names what was picked up
+    // decision 0071: a heat or sound clue is not "radio only", the stage names what was picked up
     expect(stage(mkFrame(), mkTarget({ id: "b", rf_detected: true }))).toMatchObject({ label: "RF 탐지", detail: "무선만 잡힘" });
     expect(stage(mkFrame(), mkTarget({ id: "b", sound_detected: true }))).toMatchObject({ key: "rf", label: "소음 탐지", detail: "소음만 잡힘" });
     expect(stage(mkFrame(), mkTarget({ id: "b", rf_detected: true, ir_detected: true }))).toMatchObject({ label: "RF·열 탐지", detail: "RF·열만 잡힘" });

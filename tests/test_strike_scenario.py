@@ -222,7 +222,7 @@ def test_site_a_is_identified_then_approved_then_neutralized(sc):
 
 
 def test_a_silent_site_without_a_clue_never_reaches_identified_with_one_scout(sc):
-    # decision 0069: site_b gives off heat, so one scout's infrared identifies it; site_c is heard only by the
+    # decision 0071: site_b gives off heat, so one scout's infrared identifies it; site_c is heard only by the
     # ground robot, which nobody sent, so the scout alone stays below the threshold
     es = init_engine(sc)
     for _ in range(7500):  # 25 simulated minutes: r2 meets site_c, r3 meets site_b
@@ -470,7 +470,7 @@ def test_two_scouts_on_a_silent_site_identify_it_and_open_the_strike_choices(sc)
     es, _ = tick(es, TickInputs())  # the cards are refreshed at the end of the tick
     site_b = _site(es, "site_b")
     assert set(site_b.seen_by) >= {"r1", "r3"} and site_b.ident_confidence >= 70
-    # decision 0069: r1's infrared had already identified site_b long before r3 arrived; the second observer
+    # decision 0071: r1's infrared had already identified site_b long before r3 arrived; the second observer
     # still counts (+15) once both see it, so the reasons carry both
     assert {"ir_signature", "multi_observer"} <= set(site_b.ident_reasons)
     ids = {c.id for c in _open_card(es, "r3", "site_b").choices}
@@ -491,7 +491,7 @@ def test_the_second_scout_can_keep_watching_or_go_back_to_its_patrol(sc):
     assert (r3.step_id, r3.waypoint_idx) == ("patrol", left)  # continues, not from the start
 
 
-# --- decision 0069: virtual infrared on the scouts, hearing on the ground robot -----------------------------
+# --- decision 0071: virtual infrared on the scouts, hearing on the ground robot -----------------------------
 SITE_C = (37.97272, 124.64615)
 
 

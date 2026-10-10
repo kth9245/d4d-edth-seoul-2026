@@ -66,7 +66,7 @@ def sig(**kw):  # an unknown silent site observed in the watch radius, plus the 
     return score_target("unknown", INSIDE, 0.0, True, False, [], WATCH, 0, 200, **kw)
 
 
-def test_heat_in_infrared_range_adds_ten_with_its_reason_in_order():  # decision 0069
+def test_heat_in_infrared_range_adds_ten_with_its_reason_in_order():  # decision 0071
     plain = sig()
     r = sig(heat=True, ir_receivers=[(INSIDE, 800.0)])
     assert (r.score, r.ir_detected) == (plain.score + 10, True)

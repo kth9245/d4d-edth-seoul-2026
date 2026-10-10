@@ -27,7 +27,7 @@ SITES = [
 ]
 # spawn_enemies needs t - dt < start + offset <= t: an offset of 0 would never spawn the enemy
 APPEAR_MS = 1000
-# decision 0069: virtual infrared on the scouts, virtual hearing on the ground robot, a heat and a noise site
+# decision 0071: virtual infrared on the scouts, virtual hearing on the ground robot, a heat and a noise site
 IR_RANGE_M, ACOUSTIC_RANGE_M = 800.0, 500.0
 # the ground robot waits on land 1500 m south of site_c, outside its 500 m ears: the operator sends it there
 UGV_START = {"lat": 37.95923, "lon": 124.64615, "alt_m": 0.0}

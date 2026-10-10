@@ -57,7 +57,7 @@ def test_a_gap_of_a_second_or_more_resets_it():
     assert (r.state, r.confidence, r.observed_ms) == ("identifying", 62, 0)  # rf 25 + scan 37
 
 
-def test_a_heat_clue_with_a_fresh_scan_reaches_the_threshold_alone():  # decision 0069
+def test_a_heat_clue_with_a_fresh_scan_reaches_the_threshold_alone():  # decision 0071
     r = identify_target(
         False, 1, 0, 19800, TICK, ir_detected=True
     )  # scan 40 + heat 10 + sustained 20

@@ -67,7 +67,7 @@ describe("frameCards", () => {
       "관측 위험 0.72 · 스캔 판별: 보트 · 기준점 근접 +0.15 · RF 방출 감지 +0.30 · 속도 5.0 m/s");
   });
 
-  it("adds the heat and noise clues to the score line (decision 0069)", () => {
+  it("adds the heat and noise clues to the score line (decision 0071)", () => {
     const f = { ...f1, targets: [boat("boat1", 55, ["kind_unknown", "near_watch_radius", "ir_signature", "sound"])] };
     expect(frameCards(f)[0].threat?.line).toBe(
       "관측 위험 0.55 · 스캔 전: 미상 · 기준점 근접 +0.15 · 열 신호 감지 +0.10 · 소음 감지 +0.10");

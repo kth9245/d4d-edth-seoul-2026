@@ -52,7 +52,7 @@ def test_a_target_scanned_once_keeps_its_kind_when_nobody_sees_it_now():  # deci
     assert t.threat == 100  # fast_boat 0.40 + inside the radius 0.30 + RF 0.30, no speed
 
 
-def test_infrared_and_sound_are_heard_only_by_live_vehicles_in_range():  # decision 0069
+def test_infrared_and_sound_are_heard_only_by_live_vehicles_in_range():  # decision 0071
     spec = SPECS["d2"].model_copy(
         update={"ir_range_m": 800.0, "acoustic_range_m": 600.0}
     )  # the target is 500.4 m away: a 500 m ear would just miss it
