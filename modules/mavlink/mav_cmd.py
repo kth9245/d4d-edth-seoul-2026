@@ -1,4 +1,4 @@
-"""Command kind -> MAV_CMD items (decision 0011), one table for compile_mavlink and mavlink_lines (decision 0063)."""
+"""Command kind -> MAV_CMD items (decision 0011), one table for compile_mavlink and mavlink_lines (decision 0064)."""
 
 from contracts.models import CommandKind, Domain
 

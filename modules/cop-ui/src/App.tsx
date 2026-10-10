@@ -30,7 +30,7 @@ export default function App() {
     return () => removeEventListener("hashchange", onHash);
   }, []);
   const tab = tabFromHash(hash);
-  if (tab === "mavlink") return <MavlinkLog />; // decision 0063: the new window opened from the header
+  if (tab === "mavlink") return <MavlinkLog />; // decision 0064: the new window opened from the header
   return (
     <div className="app">
       <header className="tabs">

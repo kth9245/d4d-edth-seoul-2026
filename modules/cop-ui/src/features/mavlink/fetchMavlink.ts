@@ -1,4 +1,4 @@
-// GET /mavlink (decision 0063): this run's passed commands as MAVLink message lines.
+// GET /mavlink (decision 0064): this run's passed commands as MAVLink message lines.
 // null on any failure, so the log window keeps the lines it already shows.
 export async function fetchMavlink(): Promise<string[] | null> {
   try {

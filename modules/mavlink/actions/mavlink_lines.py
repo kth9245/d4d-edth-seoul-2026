@@ -1,4 +1,4 @@
-"""MAV-02 mavlink_lines: 통과한 명령을 시간순 MAVLink 메시지 줄로(GET /mavlink, 결정 0063)
+"""MAV-02 mavlink_lines: 통과한 명령을 시간순 MAVLink 메시지 줄로(GET /mavlink, 결정 0064)
 NAV 명령은 MISSION_ITEM_INT seq 줄들 뒤에 MISSION_START, 나머지는 COMMAND_LONG 한 줄. 대응표가 없는 명령(타격)은 줄 없음.
 대응표는 compile_mavlink과 같은 mav_cmd.py(결정 0011).
 SPEC: modules/mavlink/SPEC.md#MAV-02

@@ -1,5 +1,5 @@
 ---
-id: 0063
+id: 0064
 title: 탭 이름 상황판을 시뮬레이션으로, 헤더 MAVLink 버튼이 새 창에 GET /mavlink 명령 로그(통과한 명령만)
 status: 확정
 decided_by: kth9245

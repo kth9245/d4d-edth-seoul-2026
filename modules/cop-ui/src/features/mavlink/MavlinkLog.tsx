@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { fetchMavlink } from "./fetchMavlink";
 import "./mavlink.css";
 
-// MAVLink log window (decision 0063): the header's MAVLink button opens #mavlink in a new window. It reads
+// MAVLink log window (decision 0064): the header's MAVLink button opens #mavlink in a new window. It reads
 // GET /mavlink every second and keeps the newest line in view.
 export function MavlinkLog() {
   const [lines, setLines] = useState<string[]>([]);

@@ -180,7 +180,7 @@ def create_app(
             raise HTTPException(404, str(e)) from e
 
     @app.get("/mavlink")
-    async def mavlink():  # decision 0063: commands that passed this run, as MAVLink message lines
+    async def mavlink():  # decision 0064: commands that passed this run, as MAVLink message lines
         return mavlink_lines(live.state.passed, live.state.specs)
 
     @app.get("/scenarios")

@@ -1,6 +1,6 @@
 """MAV-01 compile_mavlink: Role을 기체별 QGC .plan + pymavlink 스크립트로(결정 0011, 실제 전송 없음)
 .plan은 entry step의 미션, 스크립트는 step 그래프 전체(틀: modules/mavlink/vehicle_script.py.txt).
-명령 종류 → MAV_CMD 대응표는 mav_cmd.py(mavlink_lines와 같은 표, 결정 0063).
+명령 종류 → MAV_CMD 대응표는 mav_cmd.py(mavlink_lines와 같은 표, 결정 0064).
 SPEC: modules/mavlink/SPEC.md#MAV-01
 """
 

@@ -74,7 +74,7 @@ Role은 다른 기체를 알지 못하지만, 선택지의 `role_by_vehicle`은 
 - sim: `load_scenario_json(path) -> Scenario`. 레거시 `load_scenario`·`simulate`는 통합 1까지 그대로 둔다. `sea_aim(pos, goal, land) -> GeoPoint`(결정 0034): 해상 기체(domain sea)와 적 배(boat·fast_boat)는 직선이 `Scenario.land`를 지나면 섬 모서리(바다 쪽 100 m)를 돌아가고, 목표가 육지 안이면 해안에서 50 m 바다 점까지 간다. 시나리오에 `ontology`가 있으면 `kind`가 있는 기체의 `capabilities`·`kind_path`를 계층에서 채운다(결정 0038).
 - safety: `point_in_polygon(p, poly) -> bool`, `return_feasible(state, spec, dest) -> (bool, GeoPoint | None)`
 - role: `load_role(path) -> Role`, `check_role(role, op, specs) -> RoleCheck`(Role 하나만 본다: step 연결, 보고 지점, 작전 구역, 이 Role을 assign·switches·reserve로 받는 기체의 영역·능력, 귀환 배터리. 다른 Role을 받지 않으므로 선택지가 가리키는 Role의 존재는 보지 않는다), `check_operation(op, roles, specs) -> RoleCheck`(작전 전체: assign·reserve·switches·보고 선택지가 만드는 (기체, Role) 쌍마다 check_role, 없는 Role을 가리키면 `missing_role`. issue 메시지 앞에 `[Role id] `가 붙는다. 결정 0030), `expand_action(action, domain) -> CommandKind | None`, `list_templates() -> list[Role]`, `draft_role(text, op) -> Role`
-- mavlink(리드, 결정 0025): `compile_mavlink(role, op, specs) -> dict[기체 id, (plan dict, script str)]`. role 모듈은 `expand_action`만 공개 API로 쓴다. `mavlink_lines(passed, specs) -> list[str]`(통과한 명령 → MAVLink 메시지 줄, `GET /mavlink`, 결정 0063)
+- mavlink(리드, 결정 0025): `compile_mavlink(role, op, specs) -> dict[기체 id, (plan dict, script str)]`. role 모듈은 `expand_action`만 공개 API로 쓴다. `mavlink_lines(passed, specs) -> list[str]`(통과한 명령 → MAVLink 메시지 줄, `GET /mavlink`, 결정 0064)
 - ontology(리드, 결정 0038): `kind_chain(kind, onto) -> list[VehicleKind]`, `explain_capability(kind, action, onto) -> CapabilityReason`, `infer_capabilities(kind, onto) -> list[ActionKind]`, `fill_vehicle_kinds(scenario) -> Scenario`, `ontology_view(scenario) -> OntologyView`
 - `PassedCommand`는 `safety.check_command`만 만든다.
 
@@ -104,7 +104,7 @@ Role은 다른 기체를 알지 못하지만, 선택지의 `role_by_vehicle`은 
 | `POST /routes` | `RouteDef`(고정이면 `points`, 상대면 `offsets`) | `RouteDef[]`(실행 작전 경로 목록 끝에 더함, 같은 id는 바꿈. 카드는 고를 때 경로를 복사하므로 실행을 되돌리지 않음. gateway 메모리에만, 결정 0054) |
 | `GET /ontology` | — | `OntologyView`(계층 + 기체마다 행동 10개의 판정과 경로, 결정 0038). 시나리오에 온톨로지가 없으면 404 |
 | `GET /graph?focus=` | — | `ObjectGraph`(그 객체에서 링크를 따라 모은 객체. 기체와 focus가 아닌 표적은 더 펼치지 않음, 결정 0038). 없는 id는 404 |
-| `GET /mavlink` | — | `string[]`(이번 실행에 안전 검사를 통과한 명령을 시간순 MAVLink 메시지 줄로: `HH:MM:SS(KST) 기체 메시지 MAV_CMD이름(번호) p1 … p7`. NAV는 `MISSION_ITEM_INT seq<n>` 줄들 + `MISSION_START`, 그 밖은 `COMMAND_LONG`, 대응 명령이 없는 타격은 줄 없음. 헤더 MAVLink 버튼의 새 창이 1초마다 읽음, 결정 0063) |
+| `GET /mavlink` | — | `string[]`(이번 실행에 안전 검사를 통과한 명령을 시간순 MAVLink 메시지 줄로: `HH:MM:SS(KST) 기체 메시지 MAV_CMD이름(번호) p1 … p7`. NAV는 `MISSION_ITEM_INT seq<n>` 줄들 + `MISSION_START`, 그 밖은 `COMMAND_LONG`, 대응 명령이 없는 타격은 줄 없음. 헤더 MAVLink 버튼의 새 창이 1초마다 읽음, 결정 0064) |
 | `POST /roles/check` | `Role` | `RoleCheck` |
 | `POST /roles/draft` | `DraftIn{text}` | `Role`(origin=ai_draft, approved=false) |
 | `GET /operation` · `POST /operation` | — · `Operation` | `Operation` |

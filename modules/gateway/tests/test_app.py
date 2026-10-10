@@ -264,7 +264,7 @@ def test_graph_from_a_vehicle_on_the_real_engine():  # decision 0038
     assert g["focus"] == "d1" and {"vehicle", "command"} <= {n["type"] for n in g["nodes"]}
 
 
-def test_mavlink_lines_on_the_real_engine():  # decision 0063: the first tick sends d1 its patrol route
+def test_mavlink_lines_on_the_real_engine():  # decision 0064: the first tick sends d1 its patrol route
     client = TestClient(create_app(SCENARIO, period_s=0.01))
     lines = client.get("/mavlink").json()
     assert any(line.split()[1:3] == ["d1", "MISSION_ITEM_INT"] for line in lines)
