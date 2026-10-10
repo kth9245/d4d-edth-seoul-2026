@@ -7,7 +7,6 @@
 ## 진행중
 - **Part1-9** 지도: 위성 raster + 기체·표적·구역 — kth9245, 10/10 10:18부터
 - **Part2-20** sim `load_scenario_json` — 최동호, 10/10 10:11부터 · SIM-04
-- **Part3-4** play `check_return_battery` — 황승주, 10/10 10:19부터 · PLY-04
 
 ## 막힘
 - (없음)
@@ -61,6 +60,7 @@
 - 10/9 23:14 kth9245 · Part1-1 · 결정 0015·0016·0017·0018 참조(두 층 구조, contracts 세부, API 규약)
 
 ## 완료
+- **Part3-4** play `check_return_battery` — 황승주, 10/10 10:19 · PLY-04
 - **Part3-3** play `check_report_points` — 황승주, 10/10 10:19 · PLY-03
 - **Part3-8** play `list_templates` — 황승주, 10/10 10:16 · PLY-08
 - **Part2-10** runtime `step_vehicle` — 황승주, 10/10 10:10 · 하위 1/1 완료 · RT-01
