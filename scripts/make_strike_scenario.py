@@ -1,4 +1,4 @@
-"""Strike operation "해안 거점 무력화" (virtual): demo/scenarios/baengnyeong_strike.json.
+"""Strike operation "해안 거점 타격" (virtual): demo/scenarios/baengnyeong_strike.json.
 
 Three fixed enemy sites on the north coast are unknown-kind targets with speed 0, a hold Role and an emission
 start (no contract change, spec 8절). site_a emits from the start and is the first one the north search patrol
@@ -185,7 +185,7 @@ def build() -> dict:
     vehicles = fleet(night["vehicles"])
     op = night["operation"] | {
         "id": "op_strike",
-        "name": "해안 거점 무력화",
+        "name": "해안 거점 타격",
         "purpose": "정찰 드론이 가상 해안 거점을 RF 방출로 먼저 찾고 스캔해서 식별한다. 식별된 거점에만 타격 승인을 연다(2단계). 서쪽 앞바다의 수상정 한 척에서 정찰 드론 3대(북동·북서·남쪽 해안)와 공격 드론 3대가 출발한다",
         "vehicle_ids": [v["id"] for v in vehicles],
         "assign": {v["id"]: RECON.get(v["id"], "standby") for v in vehicles},

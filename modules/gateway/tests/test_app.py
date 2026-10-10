@@ -85,7 +85,7 @@ def test_activate_switches_what_the_editor_endpoints_answer():
 def test_activate_an_unknown_scenario_is_404():
     client, _ = fake_app()
     assert client.post("/scenarios/nope/activate").status_code == 404
-    assert client.get("/operation").json()["name"] == "백령도 야간 해안 경계"
+    assert client.get("/operation").json()["name"] == "야간 상륙 저지"
 
 
 def test_a_broken_catalog_file_is_skipped_and_the_running_operation_still_starts():
@@ -93,7 +93,7 @@ def test_a_broken_catalog_file_is_skipped_and_the_running_operation_still_starts
     land = str(ROOT / "demo/scenarios/baengnyeong_land.json")  # polygons, not a Scenario
     client, _ = fake_app(scenario_paths=[SCENARIO, land])
     assert [s["id"] for s in client.get("/scenarios").json()] == ["baengnyeong_night"]
-    assert client.get("/operation").json()["name"] == "백령도 야간 해안 경계"
+    assert client.get("/operation").json()["name"] == "야간 상륙 저지"
 
 
 def test_scenario_paths_replace_the_demo_list():

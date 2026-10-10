@@ -68,3 +68,9 @@ def test_the_24h_operation_takes_the_night_strike_role_and_all_home_switch():  #
     committed = json.loads((ROOT / "demo/scenarios/baengnyeong_24h.json").read_text("utf-8"))
     assert committed["roles"] == out["roles"]
     assert committed["operation"]["switches"] == out["operation"]["switches"]
+
+
+def test_the_24h_operation_is_named_for_its_mission():  # Part1-15.2, lead 10/11
+    out = _script().build()
+    committed = json.loads((ROOT / "demo/scenarios/baengnyeong_24h.json").read_text("utf-8"))
+    assert out["operation"]["name"] == committed["operation"]["name"] == "24시간 침투 대응"

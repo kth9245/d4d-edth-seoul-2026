@@ -5,7 +5,7 @@
  {"clickSel": ".react-flow__node[data-id='approach']", "wait": 500},
  {"label": "R00 an enemy card keeps its script: no route select, no 반복, no T+ option (decision 0045)", "eval": "({ action: document.querySelector(\"select[aria-label='행동']\")?.value, route: !!document.querySelector(\"select[aria-label='경로']\"), loop: !!document.querySelector(\"input[aria-label='반복']\"), tplus: [...document.querySelectorAll(\"select[aria-label='연결 1 조건'] option\")].some(o => o.value === 'at_time') })", "expect": {"action": "route", "route": false, "loop": false, "tplus": false}},
  {"click": "작전 개요", "wait": 1000},
- {"click": "멸공", "wait": 2500},
+ {"click": "24시간 침투 대응", "wait": 2500},
  {"click": "대기", "wait": 1500},
  {"clickSel": ".react-flow__node", "wait": 500},
  {"label": "R0 a hold card has no route select or 반복", "eval": "({ route: !!document.querySelector(\"select[aria-label='경로']\"), loop: !!document.querySelector(\"input[aria-label='반복']\") })", "expect": {"route": false, "loop": false}},

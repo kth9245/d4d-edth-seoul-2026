@@ -286,7 +286,7 @@ def build(spots: dict[str, GeoPoint] | None = None) -> dict:
         "watch_target"
     )
     op = night["operation"] | {
-        "name": "멸공",
+        "name": "24시간 침투 대응",
         "purpose": "드론 4대가 북(A: d1·d3)·남(B: d2·d4) 해안을 짝끼리 교대로 늘 1대씩 순찰(결정 0037, 0041)",
         "vehicle_ids": [v["id"] for v in drones + ground_sea],
         "assign": {
