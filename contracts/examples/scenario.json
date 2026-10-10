@@ -1525,7 +1525,7 @@
    "kind": "vehicle_battery_set",
    "params": {
     "id": "d2",
-    "pct": 48
+    "pct": 35
    }
   }
  ],

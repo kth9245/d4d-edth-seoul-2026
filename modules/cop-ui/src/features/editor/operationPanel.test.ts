@@ -12,7 +12,7 @@ describe("vehicleRows", () => {
   it("lists the operation's vehicles in order with kind, first play and reserves", () => {
     const rows = vehicleRows(op, vehicles, playName);
     expect(rows.map((r) => r.id)).toEqual(["d1", "d2", "d3", "d4", "usv", "ugv"]);
-    expect(rows[0]).toEqual({ id: "d1", name: "드론1", domain: "드론", playId: "coast_a", playName: "해안 순찰 A · 북", reserves: [] });
+    expect(rows[0]).toEqual({ id: "d1", name: "드론1", domain: "드론", playId: "patrol_a", playName: "해안 순찰 A", reserves: ["d3"] });
     expect(rows[4]).toMatchObject({ id: "usv", domain: "수상정", playName: "대기", reserves: [] });
   });
   it("still shows a vehicle the gateway has no spec for", () => {
