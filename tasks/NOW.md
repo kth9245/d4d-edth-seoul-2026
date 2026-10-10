@@ -2,11 +2,13 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 12:12 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 12:13 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
+- **Part1-14** smoke 전환 + 통합 주관 — kth9245, 10/10 12:13부터
 - **Part2-19** 시나리오 튜닝 — 최동호, 10/10 12:02부터
 - **Part2-23** 타격 sim: advance 타격 분기·resolve_strikes 새 액션·update_metrics 작전 성공 — kth9245, 10/10 12:12부터
+- ⚠ kth9245 진행중 2개
 
 ## 막힘
 - (없음)
@@ -14,7 +16,6 @@
 ## 예정
 
 ### kth9245
-- **Part1-14** smoke 전환 + 통합 주관
 - **Part1-15** 3분 대본·BUILT_HERE·제출 설명
 - **Part3-14** 작전 설정 패널
 
