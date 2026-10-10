@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { defineConfig, searchForWorkspaceRoot } from "vite";
 
 const GATEWAY = "http://localhost:8000";
+const outside = (rel: string) => fileURLToPath(new URL(rel, import.meta.url));
 
 export default defineConfig({
   plugins: [react()],
@@ -12,7 +13,8 @@ export default defineConfig({
       // contracts/API.md section 5 REST endpoints
       "^/(operation|plays|run|decisions|direct|injections)(/|\\?|$)": { target: GATEWAY },
     },
-    // ?scene=s1..s6 reads contracts/examples, which is outside this package.
-    fs: { allow: [searchForWorkspaceRoot(process.cwd()), fileURLToPath(new URL("../../contracts/examples", import.meta.url))] },
+    // ?scene=s1..s6 reads contracts/examples and the editor's offline fallback reads demo/scenarios,
+    // both outside this package.
+    fs: { allow: [searchForWorkspaceRoot(process.cwd()), outside("../../contracts/examples"), outside("../../demo/scenarios")] },
   },
 });
