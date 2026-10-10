@@ -5,7 +5,7 @@
 마지막 기록 10/10 10:09 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- (없음)
+- **Part2-12** runtime `apply_decision` — 황승주, 10/10 10:09부터 · 하위 1/1 완료 · RT-03
 
 ## 막힘
 - (없음)
@@ -32,7 +32,6 @@
 ### 황승주
 - **Part2-10** runtime `step_vehicle` · 하위 1/1 완료 · RT-01
 - **Part2-11** runtime `assign_roles` · RT-02
-- **Part2-12** runtime `apply_decision` · 하위 1/1 완료 · RT-03
 - **Part2-14** runtime `apply_injection` · RT-05
 - **Part3-3** play `check_report_points` · PLY-03
 - **Part3-4** play `check_return_battery` · PLY-04
