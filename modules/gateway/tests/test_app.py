@@ -200,3 +200,14 @@ def test_check_shows_the_kind_path_when_d1_gets_a_strike_step():  # editor demo 
     chk = client.post("/plays/check", json=patrol).json()
     msgs = [i["message"] for i in chk["issues"] if i["code"] == "missing_capability"]
     assert "d1는 strike_target를 못 함: 정찰 드론 → 공중 기체 → 기체 어디에도 이 능력 없음" in msgs
+
+
+def test_graph_from_a_vehicle_on_the_real_engine():  # decision 0038
+    client = TestClient(create_app(SCENARIO, period_s=0.01))
+    g = client.get("/graph?focus=d1").json()
+    assert g["focus"] == "d1" and {"vehicle", "command"} <= {n["type"] for n in g["nodes"]}
+
+
+def test_graph_unknown_focus_is_404():
+    client = TestClient(create_app(SCENARIO, period_s=0.01))
+    assert client.get("/graph?focus=nope").status_code == 404

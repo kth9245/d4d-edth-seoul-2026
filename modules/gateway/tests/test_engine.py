@@ -88,3 +88,18 @@ def test_enemy_appears_and_moves_by_its_play():
     assert first.vel_east_mps > 4.9 and any("적 등장 x" in line for line in fr.log)
     es, fr = tick(es, TickInputs())
     assert next(t for t in fr.targets if t.id == "x").pos.lon > first.pos.lon
+
+
+def test_engine_keeps_decisions_and_commands_for_the_object_graph():  # decision 0038
+    es = init_engine(SC)
+    assert (es.decisions, es.commands, es.passed) == ([], [], [])
+    es, _ = tick(es, TickInputs())
+    assert es.passed and {p.command.id for p in es.passed} <= {c.id for c in es.commands}
+    es, _ = _until(es, lambda e: any(r.kind == "target_detected" for r in e.reports))
+    rep = next(r for r in es.reports if r.kind == "target_detected")
+    d = Decision(id="dec-1", t_ms=es.t_ms, report_id=rep.id, choice_id=rep.choices[0].id)
+    es, _ = tick(es, TickInputs(decisions=[d]))
+    for _ in range(3):
+        es, _ = tick(es, TickInputs())
+    assert es.decisions == [d]
+    assert any(c.provenance and c.provenance.decision_id == "dec-1" for c in es.commands)

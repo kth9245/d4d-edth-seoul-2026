@@ -1,12 +1,15 @@
 """EngineState: the tick loop's whole state (contracts/API.md §3). Not a contract; gateway only."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from contracts.models import (
     Assignment,
     Block,
+    Command,
+    Decision,
     Injection,
     Metrics,
+    PassedCommand,
     Play,
     Report,
     RunState,
@@ -31,3 +34,7 @@ class EngineState:
     injections: list[Injection]
     metrics: Metrics
     run: RunState
+    # history for GET /graph (decision 0038)
+    decisions: list[Decision] = field(default_factory=list)
+    commands: list[Command] = field(default_factory=list)  # every command issued, passed or blocked
+    passed: list[PassedCommand] = field(default_factory=list)

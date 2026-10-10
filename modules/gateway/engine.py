@@ -91,6 +91,8 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
                           targets=targets, plays=plays, reports=reports)  # fmt: skip
     es = replace(es, t_ms=t, states=states, targets=targets, reports=reports, assignments=assigns,
                  blocks=es.blocks + blocks, injections=injections,
+                 decisions=es.decisions + list(inputs.decisions), commands=es.commands + cmds,
+                 passed=es.passed + passed,  # decision 0038: history for the object graph
                  metrics=update_metrics(es.metrics, outcome))  # 9  # fmt: skip
     log.debug("tick t=%d cmds=%d passed=%d blocks=%d new_reports=%d",
               t, len(cmds), len(passed), len(blocks), len(new_reports))  # fmt: skip

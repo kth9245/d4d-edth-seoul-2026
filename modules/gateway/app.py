@@ -18,6 +18,7 @@ from fastapi.staticfiles import StaticFiles
 
 from contracts.models import DecisionIn, DirectIn, DraftIn, Operation, Play, SwitchIn
 from modules import sim
+from modules.gateway.actions.build_object_graph import build_object_graph
 from modules.gateway.live import Live
 from modules.ontology import ontology_view
 from modules.play import draft_play
@@ -125,6 +126,13 @@ def create_app(
         if live.scenario.ontology is None:
             raise HTTPException(404, "이 시나리오에는 온톨로지가 없습니다")
         return ontology_view(live.scenario)
+
+    @app.get("/graph")
+    async def graph(focus: str):  # decision 0038: objects linked to one object in this run
+        try:
+            return build_object_graph(live.state, focus)
+        except ValueError as e:
+            raise HTTPException(404, str(e)) from e
 
     @app.post("/operation")
     async def post_operation(op: Operation):

@@ -42,7 +42,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 
 ## 3. 틱 한 번 (gateway `engine.py`, 호출 순서만)
 
-`tick(state: EngineState, inputs: TickInputs) -> (EngineState, Frame)`. `EngineState`는 `modules/gateway/engine_state.py`의 dataclass로 계약이 아니다. 운용자 입력 기록·하한선 검사 묶음·배정 갱신·기록 줄·Frame 만들기는 gateway 액션 GW-02~07이 하고 `tick`은 호출 순서만 둔다. 동작하는 원본은 `knowledge/spikes/rolecall_engine_proto/port/modules/`. 칸은 t_ms, scenario, specs, plays, states, targets, reports, assignments, blocks, injections, metrics, run이다.
+`tick(state: EngineState, inputs: TickInputs) -> (EngineState, Frame)`. `EngineState`는 `modules/gateway/engine_state.py`의 dataclass로 계약이 아니다. 운용자 입력 기록·하한선 검사 묶음·배정 갱신·기록 줄·Frame 만들기는 gateway 액션 GW-02~07이 하고 `tick`은 호출 순서만 둔다. 동작하는 원본은 `knowledge/spikes/rolecall_engine_proto/port/modules/`. 칸은 t_ms, scenario, specs, plays, states, targets, reports, assignments, blocks, injections, metrics, run이고, `GET /graph`용 기록 decisions·commands(통과·차단 모두)·passed가 틱마다 쌓인다(결정 0038).
 
 | 순서 | 모듈 | 함수 |
 |---|---|---|
