@@ -432,3 +432,4 @@
 {"at": "2026-10-10T20:16:33+09:00", "by": "황승주", "op": "add", "id": "Part2-42", "title": "교대 SPARE 10→7%(여유와 교대 횟수 절충, B안)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T20:16:36+09:00", "by": "황승주", "op": "start", "id": "Part2-42", "take": false, "from": null}
 {"at": "2026-10-10T20:21:03+09:00", "by": "황승주", "op": "add", "id": "Part2-43", "title": "멸공 작전에 USV·UGV를 야간 작전과 같은 위치에 대기로 배치 (사용자 지시)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
+{"at": "2026-10-10T20:21:21+09:00", "by": "황승주", "op": "start", "id": "Part2-43", "take": false, "from": null}
