@@ -11,6 +11,7 @@
 | 10/10 10:40 | cop-ui | Part1-9 지도: 백령도 EOX 위성 raster, 작전 구역(GET /operation), 기체·표적 HTML 마커(상태·종류 색), 개발용 `?scene=s1`~`s6`, MapLibre worker 경로 수정 | kth9245 |
 | 10/10 10:45 | gateway | REST(플레이·작전·실행·결정·직접 조종·전환 요청/승인) + WS Frame 송출, 배속·일시정지·다음 사건 점프, engine.py 전 스텁 (Part1-7) | kth9245 |
 | 10/10 10:40 | cop-ui | Part3-10 편집기 탭: 플레이 목록(영역별), 플레이 하나의 읽기 전용 step 카드, 작전 개요(기체별 시작 + 선택지로 이어지는 플레이), 서버 없으면 예시 데이터 표시 | kth9245 |
+| 10/10 11:20 | play | Part1-5.1 AI 초안 프롬프트 `build_draft_prompt`(PLY-12, change_cot식 절 구조, JSON 출력, 결정 0028 Grok) + 시연 문장 2개 `demo/draft_sentences.json`. grok-4.7로 두 문장 확인: no_report는 `missing_report_point` 하나만, usv_patrol은 검사 통과 | kth9245 |
 | 10/10 10:55 | cop-ui | Part1-10 상황판 카드 열: 보고·승인 대기·차단 카드(KST 시각, 처리됨 표시), 선택지 버튼 → POST /decisions와 기체별 전환 미리 보기 | kth9245 |
 | 10/10 11:00 | cop-ui | Part1-13 상황판 재생 막대(지도 아래: T+시계, 재생/일시정지, 배속 ×1·5·10·30, 다음 사건 → 사건 직후 일시정지, 처음으로)와 지표 패널(운용자 조작 대 기체별 직접 명령 수, 같은 실행에서 센 수동 기준) | kth9245 |
 | 10/10 11:10 | cop-ui | 화면 스타일 정리(theme.css 토큰): 군 표준 소속 색 기호(아군 시안·미식별 노랑·적대 빨강, 상태는 모양), 각진 패널, DIN 계열 숫자 글꼴, 지도 출처 한 줄 | kth9245 |

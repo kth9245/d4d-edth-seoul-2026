@@ -303,7 +303,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | C 동시에 | Part1-11 직접 조종·대안 버튼, Part1-12 전환 승인 카드, Part1-13 지표 패널·배속·다음 사건, Part3-11 저장 → 검사 결과 | 1-10 뒤(화면은 `frames/` 장면으로 먼저). 3-11은 1-7 + 황승주 PLY-06·11 |
 | D | Part3-12 카드 편집, Part3-13 AI 초안 입력 칸 | 3-11 뒤 / 3-10 + 황승주 PLY-09 |
 | 통합 | Part1-14 smoke 전환·통합 주관 | 18:00·00:00 |
-| 통합 2 뒤 | Part1-5 AI 초안 캐시, MAV-01 compile_mavlink(결정 0025), Part1-15 대본·제출 | 1-5는 인터넷 되는 곳, MAV-01 ← 황승주 PLY-07 |
+| 통합 2 뒤 | Part1-5 AI 초안 캐시(Part3-9 뒤, 프롬프트는 Part1-5.1로 먼저), MAV-01 compile_mavlink(결정 0025), Part1-15 대본·제출 | 1-5는 인터넷 되는 곳, MAV-01 ← 황승주 PLY-07 |
 
 ### Part 1 — 리드 kth9245 (contracts, gateway, cop-ui map/live, demo)
 
@@ -313,7 +313,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | Part1-2 | 백령도 타일 커밋 | `fetch_tiles_baengnyeong.sh 14` → `public/tiles/baengnyeong/` 199장 | 파일 199개 + ATTRIBUTION.txt 커밋 | 없음 | 밤 |
 | Part1-3 | play·runtime·safety 뼈대 + SPEC 행 | `new_module.py` ×3 → 디렉터리; **`new_action.py <m> <이름> "<설명>" --planned --inputs .. --outputs .. --done ..`로 Part2·Part3 액션 행을 `예정` 상태로**(파일 없음). 시작하는 사람이 같은 명령을 플래그 없이 돌리면 담당이 그 사람으로 바뀌고 파일이 생긴다 | 세 SPEC.md에 통합 1 액션 행이 전부 `예정`으로 있음. **파일·실패 테스트를 미리 만들지 않는다**(검토에서 재현: 남의 실패 테스트가 같은 모듈에 있으면 `ship.sh`의 pytest가 막혀 아무도 push 못 함) | Part1-1 | 밤 |
 | Part1-4 | 시나리오 JSON + 기체별 플레이 | `scripts/example_world.py`(결정 0015·0016 구조, 예시와 같은 세계) → `demo/scenarios/baengnyeong_night.json`(작전·기체 5·플레이·사건), `demo/plays/*.json`(기체별 플레이) | `Scenario.model_validate`·`Play.model_validate` 통과. 사건 2·3·6의 시각·경로 튜닝은 Part2-19 | Part1-1 | 밤 |
-| Part1-5 | AI 초안 프롬프트·캐시 2개 | 어휘(ActionKind 9·ConditionKind 6)+Play 스키마+시연 문장 2개 → `demo/plays/cache/<sha>.json` ×2 | 캐시 JSON이 `Play.model_validate` 통과 | Part1-4 | 2(밤에서 뺌: 통합 1에 안 쓰이고 Part3-9·3-13만 쓴다. 통합 1 뒤 인터넷 되는 곳에서) |
+| Part1-5 | AI 초안 프롬프트·캐시 2개 | 어휘(ActionKind 9·ConditionKind 6)+Play 스키마+시연 문장 2개 → `demo/plays/cache/<sha>.json` ×2. **결정 0028로 둘로 나눔:** Part1-5.1 = 프롬프트 `build_draft_prompt`(PLY-12, 본문 `modules/play/draft_prompt.md`) + 시연 문장 `demo/draft_sentences.json`(10/10 오전). 캐시 2개는 Part3-9 뒤 `draft_play`를 두 문장으로 한 번씩 돌려 만든다 | 캐시 JSON이 `Play.model_validate` 통과, 문장 no_report는 `missing_report_point` 하나만, usv_patrol은 검사 통과 | Part1-4 (캐시는 Part3-9) | 2(밤에서 뺌: 통합 1에 안 쓰이고 Part3-9·3-13만 쓴다. 통합 1 뒤 인터넷 되는 곳에서) |
 | ~~Part1-6~~ | → **Part2-17**로 이동(틱 루프는 엔진 쪽 사람이 쓴다, 12절 공격 2) | | | | |
 | Part1-7 | gateway REST + WS | `/plays`, `/operation`, `/run/live?speed=`, `/run/reset`, `/decisions`, `/direct` → app.py. **`tick(state, inputs) -> (state, Frame)` 서명에만 의존**: Part2-17이 안 왔으면 예시 Frame을 돌려주는 스텁 tick으로 만든다. 모듈 import 시점에 시나리오를 읽는 지금 `app.py` 끝의 `app = create_app(...)`은 없앤다(`uvicorn --factory`) | `test_app.py`로 `/run/live` 뒤 WS Frame 수신, `/decisions`가 TickInputs에 들어감. 핸들러마다 입력 요약을 INFO, 예외를 ERROR로(`shared/log`, 결정 0010) | Part1-1 | 1 |
 | ~~Part1-8~~ | → **Part2-18**로 이동(틱 결과를 Frame으로 묶는 일은 틱 루프 옆에 있어야 한다) | | | | |
@@ -364,7 +364,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | Part3-6 | play `check_play` + `check_operation` | `check_play(play, op, specs)`, `check_operation(op, plays, specs)` → PlayCheck | check_play = 3-2 + 받는 기체의 영역·능력. check_operation = assign·reserve·switches·선택지 `play_by_vehicle`의 플레이·기체 존재 + 3-3~3-5. 예시 작전 통과, 보고 지점 뺀 작전 실패 | Part3-2~5 | 2 |
 | Part3-7 | play `expand_action` + 표 | Action, Domain → CommandKind\|None; `expand_table.json` | 9×3 표 전부 테스트, None이면 후보 제외. **표 초안(행 = ActionKind, 열 = air/sea/ground):** move_to → move/move/move · patrol_route → follow_route ×3 · search_area → zigzag/zigzag/None · return_home → return_home ×3 · watch_target → orbit/keep_distance/None · watch_point → orbit/hold/hold · approach_target → keep_distance/keep_distance/None · relay_comms → relay ×3 · hold → hold ×3. 템플릿 검사에서 None에 걸리면 표를 고치고 커밋에 적는다 | Part1-1 | 1 |
 | Part3-8 | play `list_templates` | — → list[Play] | `demo/plays/*.json` 중 template=True | Part1-4 | 2 |
-| Part3-9 | play `draft_play` | 문장, Operation → Play(origin=ai_draft) | 캐시 hit면 호출 없음, miss면 1회 호출·스키마 밖이면 재요청 1회, 실패 시 템플릿 반환 | Part1-5 | 2 |
+| Part3-9 | play `draft_play` | 문장, Operation → Play(origin=ai_draft) | 캐시 hit면 호출 없음, miss면 1회 호출·스키마 밖이면 재요청 1회, 실패 시 템플릿 반환. 프롬프트는 `build_draft_prompt`, LLM은 xAI Grok(결정 0028) | Part1-5.1(PLY-12) | 2 |
 | Part3-10 (리드) | 편집기: 카드 열(읽기 전용) | Operation + plays → 기체별 세로 열(그 기체의 플레이 step 카드), 카드 = 행동 + 조건 목록 + 보고 | 예시 작전이 화면에 그려짐 | Part1-1(TS), Part3-1 | 2 |
 | Part3-11 (리드) | 편집기: 저장 → 검사 결과 표시 | 저장 버튼 → `POST /plays/check` → 카드 옆 오류 표시 | 보고 지점 없는 플레이에서 오류 카드가 보임 | Part3-10, Part1-7 | 2 |
 | Part3-12 (리드) | 편집기: 카드 편집 | 행동·조건·갈 step·보고 드롭다운, 카드 추가 | "보고 카드 끼워 넣기" 뒤 저장 통과 | Part3-11 | 2(빼는 순서 6) |
