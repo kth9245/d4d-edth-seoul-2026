@@ -1,4 +1,4 @@
-import type { Block, BlockReason, Frame, Injection, Report, ReportKind } from "../../contracts.gen";
+import type { Block, BlockReason, Frame, GeoPoint, Injection, Report, ReportKind } from "../../contracts.gen";
 import { kstTime } from "./kstTime";
 
 export interface CardChoice { id: string; label: string; preview: string }
@@ -12,6 +12,7 @@ export interface Card {
   text: string;
   choices: CardChoice[]; // only on open reports
   preview?: string; // injections: what approving switches, e.g. "d2→track_fast"
+  alternative?: GeoPoint | null; // blocks: the point the safety check offers instead, sent by "대안 지점으로"
   done: string | null; // null = still needs the operator (or a block, which is an event)
 }
 
@@ -36,10 +37,16 @@ function fromInjection(i: Injection): Card {
     done: SETTLED[i.status ?? "pending"] ?? null };
 }
 
+function alternativeOf(b: Block): GeoPoint | null {
+  const t = b.alternative?.params?.target as Partial<GeoPoint> | undefined;
+  return typeof t?.lat === "number" && typeof t?.lon === "number" ? { lat: t.lat, lon: t.lon } : null;
+}
+
 function fromBlock(b: Block): Card {
-  const text = b.alternative ? `${b.detail} · 대안 지점 있음` : b.detail;
+  const alternative = alternativeOf(b);
+  const text = alternative ? `${b.detail} · 대안 지점 있음` : b.detail;
   return { id: b.command_id, source: "block", kind: b.reason, vehicle: b.vehicle_id, t_ms: b.t_ms,
-    time: kstTime(b.t_ms), text, choices: [], done: null };
+    time: kstTime(b.t_ms), text, choices: [], alternative, done: null };
 }
 
 // Frame → the side column cards, newest first.

@@ -37,3 +37,5 @@
 | UI-32 | postSwitch·postSettle | SwitchIn / injection id, 승인 여부 | {ok, id} \| 오류 | POST /injections, /injections/{id}/approve·reject | 리드 | 완료 |
 | UI-33 | fetchPlays | — | Play[] | GET /plays, 실패·목록 아님이면 [] | 리드 | 완료 |
 | UI-34 | SwitchPanel | frame | 전환 요청 패널 | 작전 전체 전환 버튼 + 일부 전환(기체·플레이) → 승인 대기 생성 | 리드 | 완료 |
+| UI-35 | postDirect | vehicle_id, GeoPoint | {ok, id} \| 오류 | POST /direct {vehicle_id, target} | 리드 | 완료 |
+| UI-36 | useDirectControl | — | 선택·목표·안내 줄 | 기체 클릭 선택, 지도 클릭 → POST /direct 뒤 해제, Esc·같은 기체 다시 누르면 취소, 기체 클릭은 지도 클릭으로 안 샘 | 리드 | 완료 |

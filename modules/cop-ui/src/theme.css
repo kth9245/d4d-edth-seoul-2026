@@ -124,6 +124,14 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .target.unseen { opacity: 0.5; }
 .target.unseen i { border-style: dashed; border-color: var(--text); box-shadow: none; }
 
+/* Direct control (Part1-11): selected vehicle ring, hint line and aim cross are system state (green) */
+.vehicle.selected i { outline: 2px solid var(--live); box-shadow: 0 0 14px rgba(74, 222, 128, 0.7); }
+.direct-hint { border: 1px solid var(--line2); background: rgba(0, 0, 0, 0.82); color: var(--text2); font-family: var(--font-mono); letter-spacing: 0.04em; }
+.direct-hint.on { border-color: var(--live); color: var(--live); }
+.mk.aim i, .target.aim i { border: 0; background: none; box-shadow: none; }
+.mk.aim i::before, .mk.aim i::after { background: var(--live); box-shadow: 0 0 8px rgba(74, 222, 128, 0.8); }
+.mk.aim span { border-color: var(--live); color: var(--live); }
+
 /* Map source line: small and quiet, but always shown (EOX imagery is CC BY-NC-SA, attribution required) */
 .maplibregl-ctrl.maplibregl-ctrl-attrib { margin: 0; padding: 0 10px 6px; background: none; }
 .maplibregl-ctrl-attrib-inner, .maplibregl-ctrl-attrib a { color: var(--dim); font-family: var(--font-mono); font-size: 9px; }

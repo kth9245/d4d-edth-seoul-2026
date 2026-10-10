@@ -3,6 +3,7 @@ import type { Frame } from "../../contracts.gen";
 import "./cards.css";
 import { type Card, frameCards } from "./frameCards";
 import { postSettle } from "./injectionRequests";
+import { postDirect } from "./postDirect";
 import { postDecision } from "./postDecision";
 import type { Sent } from "./postJson";
 import { pruneSent } from "./pruneSent";
@@ -27,7 +28,8 @@ const TONE: Partial<Record<Card["kind"], string>> = {
 type SendState = { state: "sending" } | { state: "sent"; id: string } | { state: "error"; error: string };
 
 // Side column: one card per report / injection / block, newest first.
-// Report choices → POST /decisions; a pending injection gets approve / reject → POST /injections/{id}/...
+// Report choices → POST /decisions; a pending injection gets approve / reject → POST /injections/{id}/...;
+// a block with an alternative point resends that vehicle there → POST /direct.
 export function CardList({ frame }: { frame: Frame | null }) {
   const [sent, setSent] = useState<Record<string, SendState>>({});
   const lastT = useRef(0);
@@ -35,7 +37,8 @@ export function CardList({ frame }: { frame: Frame | null }) {
     if (!frame) return;
     const back = frame.t_ms < lastT.current;
     lastT.current = frame.t_ms;
-    setSent((m) => pruneSent(m, [...frame.reports.map((r) => r.id), ...frame.injections.map((i) => i.id)], back));
+    const ids = [...frame.reports.map((r) => r.id), ...frame.injections.map((i) => i.id), ...frame.blocks.map((b) => b.command_id)];
+    setSent((m) => pruneSent(m, ids, back));
   }, [frame]);
   if (!frame) return null;
   const cards = frameCards(frame);
@@ -72,6 +75,12 @@ export function CardList({ frame }: { frame: Frame | null }) {
                 {ch.preview && <small>{ch.preview}</small>}
               </button>
             ))}
+            {c.source === "block" && c.alternative && c.vehicle && (
+              <button disabled={locked} onClick={() => send(c.id, () => postDirect(c.vehicle!, c.alternative!))}>
+                대안 지점으로
+                <small>{c.vehicle} → {c.alternative.lat.toFixed(4)}, {c.alternative.lon.toFixed(4)}</small>
+              </button>
+            )}
             {c.source === "injection" && !c.done && (
               <div className="settle">
                 <button disabled={locked} onClick={() => send(c.id, () => postSettle(c.id, true))}>승인</button>

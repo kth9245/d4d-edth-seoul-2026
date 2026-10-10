@@ -25,3 +25,15 @@
 .switchpanel select, .switchpanel button { min-width: 0; padding: 8px 10px; font-size: 13px; cursor: pointer; }
 .switchpanel button:disabled { cursor: default; }
 .switchpanel .note { margin-top: 6px; font-size: 11px; }
+
+/* Direct control (Part1-11): hint line over the top-left of the map, selection ring, aim cross. Colors in theme.css. */
+.map-col { position: relative; }
+.direct-hint { position: absolute; top: 12px; left: 12px; z-index: 3; padding: 7px 12px; font-size: 12px; pointer-events: none; }
+.vehicle { cursor: pointer; }
+.vehicle.selected i { outline-offset: 3px; }
+.mk.aim { width: 18px; height: 18px; pointer-events: none; }
+.mk.aim i { border: 0; background: none; }
+.mk.aim i::before, .mk.aim i::after { content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+.mk.aim i::before { width: 18px; height: 2px; }
+.mk.aim i::after { width: 2px; height: 18px; }
+.mk.aim span { left: 22px; }

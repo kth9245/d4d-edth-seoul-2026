@@ -32,6 +32,13 @@ describe("frameCards", () => {
     ]);
   });
 
+  it("carries the alternative point a block offers, for the same vehicle", () => {
+    const battery = frameCards(s6 as Frame).find((c) => c.id === "cmd-d2-1791635490000")!;
+    expect(battery.alternative).toEqual({ lat: 37.9509, lon: 124.6255 });
+    const noAlt = { ...(s6 as Frame), blocks: [{ ...(s6 as Frame).blocks[0], alternative: null }] };
+    expect(frameCards(noAlt).find((c) => c.source === "block")!.alternative).toBeNull();
+  });
+
   it("puts the newest card first", () => {
     const times = frameCards(s6 as Frame).map((c) => c.t_ms);
     expect(times).toEqual([...times].sort((a, b) => b - a));
