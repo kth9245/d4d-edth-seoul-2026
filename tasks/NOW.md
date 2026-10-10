@@ -2,7 +2,7 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 11:00 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 11:02 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part1-5.1** 프롬프트 틀 build_draft_prompt(PLY-12)·시연 문장 2개 — kth9245, 10/10 11:00부터
@@ -40,6 +40,7 @@
 - **Part2-19** 시나리오 튜닝
 
 ### 누구나
+- **Part1-9.2** 화면 스타일 정리(theme.css 토큰, 국방 톤)
 - **Part3-15** play `compile_mavlink` (결정 0011) · 하위 0/1 완료 · PLY-10
 
 ## 최근 결정
@@ -65,7 +66,7 @@
 - **Part3-6.1** play check_operation · PLY-11 (통합 2, PLY-03~05 뒤) — 황승주, 10/10 10:44
 - **Part1-7** gateway REST + WS — kth9245, 10/10 10:39
 - **Part1-9.1** 드론 출발 위치 떼어 놓기(지도에서 겹침) — kth9245, 10/10 10:35
-- **Part1-9** 지도: 위성 raster + 기체·표적·구역 — kth9245, 10/10 10:28 · 하위 1/1 완료
+- **Part1-9** 지도: 위성 raster + 기체·표적·구역 — kth9245, 10/10 10:28 · 하위 1/2 완료
 - **Part2-2** sim `follow_route` — 최동호, 10/10 10:28 · SIM-06
 - **Part2-1** sim `move_straight` — 최동호, 10/10 10:25 · SIM-05
 - **Part2-20** sim `load_scenario_json` — 최동호, 10/10 10:22 · SIM-04
