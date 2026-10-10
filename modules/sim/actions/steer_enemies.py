@@ -1,7 +1,7 @@
 """SIM-12 steer_enemies: 적(결정 0032)의 지금 step 행동대로 속도만 정하고 arrived·time_elapsed로 step을 넘긴다
 위치는 다음 틱 apply_events가 속도로 옮긴다. 이번 틱 안에 닿으면 위치를 목적지로 맞추고 멈춘다.
 행동은 move_to·patrol_route·hold만. runtime·safety를 거치지 않는다. 무력화된 적은 그대로.
-배(boat·fast_boat)는 land를 받아 섬을 돌아가고 육지 위 목적지는 해안 바다 점으로 본다(결정 0034).
+배(boat·fast_boat·usv)는 land를 받아 섬을 돌아가고 육지 위 목적지는 해안 바다 점으로 본다(결정 0034).
 SPEC: modules/sim/SPEC.md#SIM-12
 """
 
@@ -14,7 +14,7 @@ from shared.geo import dist_m, enu_delta_m
 from shared.land import to_sea
 
 STOP = {"vel_east_mps": 0.0, "vel_north_mps": 0.0}
-BOATS = ("boat", "fast_boat")  # TargetKinds that go round islands (decision 0034)
+BOATS = ("boat", "fast_boat", "usv")  # TargetKinds that go round islands (decisions 0034, 0055)
 
 
 def _dest(step: Step, idx: int) -> GeoPoint | None:

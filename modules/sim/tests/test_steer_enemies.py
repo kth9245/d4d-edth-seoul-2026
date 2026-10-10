@@ -96,3 +96,33 @@ def test_boats_steer_round_the_island_and_arrive():
         tg, t = tg.model_copy(update={"pos": GeoPoint(lat=lat, lon=lon)}), t + 1000
         assert not inside(tg.pos, island)
     assert tg.waypoint_idx == -1 and dist_m(tg.pos, goal) < 1
+
+
+def _cross(kind: str) -> tuple[Target, list[Polygon], GeoPoint, bool]:
+    """Run kind from west to east of a square island; return the end state and whether it ever was on land."""
+    island = [Polygon(points=[_at(-500, -500), _at(500, -500), _at(500, 500), _at(-500, 500)])]
+    goal = _at(1000, -200)
+    role = Role(id="enemy_run", name="r", domains=["sea"], entry="run", approved=True, steps=[
+        Step(id="run", name="run", do=Action(kind="move_to", params={"target": goal.model_dump()}))])  # fmt: skip
+    enemies = [EnemySpec(id="fast1", kind=kind, speed_mps=10, appear_offset_ms=0,
+                         pos=_at(-1000, -200), role_id="enemy_run")]  # fmt: skip
+    tg = _fast1(_at(-1000, -200)).model_copy(update={"role_id": "enemy_run", "kind": kind})
+    t, landed = T, False
+    for _ in range(400):
+        (tg,) = steer_enemies(enemies, {"enemy_run": role}, [tg], t, 1000, island)
+        if tg.waypoint_idx == -1:
+            break
+        lat, lon = offset_latlon(tg.pos.lat, tg.pos.lon, tg.vel_east_mps, tg.vel_north_mps)  # 1 s
+        tg, t = tg.model_copy(update={"pos": GeoPoint(lat=lat, lon=lon)}), t + 1000
+        landed = landed or inside(tg.pos, island)
+    return tg, island, goal, landed
+
+
+def test_an_enemy_usv_goes_round_the_island():  # 24h raid (decision 0055)
+    tg, _, goal, landed = _cross("usv")
+    assert not landed and tg.waypoint_idx == -1 and dist_m(tg.pos, goal) < 1
+
+
+def test_an_enemy_drone_flies_straight_over_the_island():
+    tg, _, goal, landed = _cross("drone")
+    assert landed and tg.waypoint_idx == -1 and dist_m(tg.pos, goal) < 1
