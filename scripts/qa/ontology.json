@@ -4,7 +4,7 @@
  {"click": "온톨로지", "wait": 1500},
  {"label": "O1 kind tree: 8 kinds, the root moves", "eval": "({ n: document.querySelectorAll('.onto-tree li').length, root: document.querySelector('.onto-tree li')?.innerText })", "expect": {"n": 8, "root": "기체 [이동]"}},
  {"label": "O1 d1 cannot strike: the path up to the root", "eval": "[...document.querySelectorAll('.onto-reasons li')].find(li => li.innerText.includes('strike_target'))?.innerText.replace(/\\n/g, ' ') ?? null", "match": "✗ strike_target 정찰 드론 → 공중 기체 → 기체, 어디에도 없음"},
- {"label": "O1 reserve line for d3", "eval": "document.querySelector('.onto-reserve')?.innerText ?? null", "match": "^예비 자격: d3는 d1의 예비\\. d1의 플레이가 쓰는 행동 \\d+개를 d3가 모두 할 수 있음\\(같은 정찰 드론\\)$"},
+ {"label": "O1 no reserve line: the coast patrol start (Part2-33) sets no reserves", "eval": "document.querySelectorAll('.onto-reserve').length", "expect": 0},
  {"layout": "O1 layout ontology 1366x768"},
  {"shot": "editor-ontology.png"},
  {"nav": "/?qa=onto#live", "wait": 6000},

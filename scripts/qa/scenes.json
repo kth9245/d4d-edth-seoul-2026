@@ -20,7 +20,7 @@
  {"label": "S6 two block cards", "eval": "document.querySelectorAll('.card.block').length", "expect": 2},
  {"nav": "/?scene=s7#live", "wait": 5000},
  {"layout": "S7 scene s7"},
- {"label": "S7 a strike approval card per tracker with its two choices", "eval": "[...document.querySelectorAll('.card')].filter(c => c.querySelector('.text').textContent.startsWith('타격 승인 요청') && c.querySelector('button')).map(c => [...c.querySelectorAll('button')].map(b => b.firstChild.textContent))", "expect": [["이 기체로 타격", "함께 타격"], ["이 기체로 타격", "함께 타격"]]},
+ {"label": "S7 a strike approval card per tracker with its two choices", "eval": "[...document.querySelectorAll('.card')].filter(c => c.querySelector('.text').textContent.startsWith('타격 승인 요청') && c.querySelector('button:not(.graph-open)')).map(c => [...c.querySelectorAll('button:not(.graph-open)')].map(b => b.firstChild.textContent))", "expect": [["이 기체로 타격", "함께 타격"], ["이 기체로 타격", "함께 타격"]]},
  {"nav": "/?scene=s8#live", "wait": 5000},
  {"layout": "S8 scene s8"},
  {"label": "S8 struck fast1 is a grey X named 무력화", "eval": "document.querySelector('.mk.target.neutralized span')?.textContent", "expect": "fast1 · 무력화"},
