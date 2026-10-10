@@ -57,6 +57,7 @@ Role은 다른 기체를 알지 못하지만, 선택지의 `role_by_vehicle`은 
 | 4 | runtime | `apply_emergency(states, roles) -> states` |
 | 5 | runtime | 기체마다 `step_vehicle(state, specs[id], roles[state.role_id], targets, t_ms, started_ms=op.started_ms) -> (state, Command \| None, Report \| None)` |
 | 5.1 | gateway | 그 기체가 카드를 냈으면 바로 `mark_reported(targets, [report]) -> targets`: `target_detected` 카드의 표적에 `reported_by`(결정 0036). 다음 기체는 같은 틱에도 그 배를 새 접촉으로 보지 않는다 |
+| 5.15 | runtime | 순찰 보고 흐름 밖 기체가 본 새 적: `spot_reports(states, targets, roles, op, t_ms) -> list[Report]`로 그 기체 이름의 발견 카드("새 적 탐지"), 그 기체는 하던 일 계속, 선택지는 표적용 전환 → 기지 대기 드론 감시(결정 0056). 그 카드도 `mark_reported`. |
 | 5.2 | runtime | 새로 나온 `target_detected` 카드의 선택지를 `fleet_choices(report, states, op, roles) -> Report`로 만든다: 카드에 정해진 선택지가 있으면 그것을 앞에 두고 "발생 지역 순찰"·"함께 감시"를 덧붙인다(결정 0046, RT-11) |
 | 5.3 | runtime | 열려 있는(`resolved_ms` 없음) `target_detected` 카드의 선택지를 매 틱 `fleet_choices`로 다시 만든다. 자기 카드가 열린 드론은 후보에서 빠진다(결정 0046) |
 | 6 | runtime | `apply_reserves(states, op, roles, assignments, t_ms) -> (states, assignments, Report \| None)` |

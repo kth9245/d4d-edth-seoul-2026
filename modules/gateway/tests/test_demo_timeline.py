@@ -3,13 +3,13 @@
 
 The operator is scripted here: cards answered 20 s after they appear (target picks 10 s, fast1;
 strike approval: '함께 타격'), d2 sent past the NLL at 20:00, the block's alternative applied at
-20:05, d2 sent to the far south-east corner at 20:30, switch '고속 보트 추적' requested at 23:20
-and approved at 24:00.
+20:05, d2 sent to the far south-east corner at 20:30. Decision 0056: fast1's card (raised by d3, which keeps
+watching boat1) is answered with its first choice, the '고속 보트 추적' switch, so s4 is that card.
 """
 
 import pytest
 
-from contracts.models import Decision, DirectControl, GeoPoint, Injection, TickInputs
+from contracts.models import Decision, DirectControl, GeoPoint, TickInputs
 from modules.gateway.engine import init_engine, tick
 from modules.role import check_operation, load_role
 from modules.sim import load_scenario_json
@@ -34,14 +34,6 @@ def _inputs(es, t: int, n: dict) -> TickInputs:
         if r.choices and not r.resolved_ms and t == r.t_ms + wait:
             n["dec"] += 1
             decs.append(Decision(id=f"dec-{n['dec']}", t_ms=t, report_id=r.id, choice_id=_pick(r)))
-    if t - START == 23 * MIN + 20_000:
-        sw = next(s for s in SC.operation.switches if s.id == "track_fast")
-        inj.append(Injection(id="inj-1", t_ms=t, label=sw.label, switch_id=sw.id,
-                             role_by_vehicle=sw.role_by_vehicle))  # fmt: skip
-    if t - START == 24 * MIN:
-        inj += [
-            i.model_copy(update={"status": "approved"}) for i in es.injections if i.id == "inj-1"
-        ]
     goal = {20 * MIN: PAST_NLL, 20 * MIN + 30_000: FAR_SE}.get(t - START)
     if t - START == 20 * MIN + 5_000 and es.blocks and es.blocks[-1].alternative:
         goal = GeoPoint(**es.blocks[-1].alternative.params["target"])
@@ -69,7 +61,10 @@ def run():
             "s6",
             any(b.vehicle_id == "d2" and b.reason == "battery_insufficient" for b in es.blocks),
         )
-        mark("s4", sum(r.kind == "target_select" for r in es.reports) == 2)
+        mark(
+            "s4",
+            any(r.target_id == "fast1" and r.text.startswith("새 적 탐지") for r in es.reports),
+        )  # 0056
         mark("s7", any(r.text.startswith("타격 승인 요청") for r in es.reports))
         mark("s8", any(t.id == "fast1" and t.neutralized_ms for t in es.targets))
     return es, seen
@@ -98,6 +93,21 @@ def test_three_boats_each_get_one_card_from_the_drone_that_found_it(run):  # dec
     assert [r.choices[0].id for r in found[1:]] == ["handoff", "keep"]
     extra = {c.id for r in found for c in r.choices[1:]}  # what the fleet choices add
     assert extra and all(i.split("_")[1] in ("d3", "d4") for i in extra)  # only standby drones
+
+
+def test_fast1_card_comes_from_the_drone_watching_boat1_and_offers_the_track_switch_first(run):
+    # decision 0056: a drone that is not patrolling raises the new-enemy card and keeps its own job
+    es, _ = run
+    (card,) = [r for r in es.reports if r.text.startswith("새 적 탐지")]
+    assert (card.vehicle_id, card.target_id, card.choices[0].id) == (
+        "d3",
+        "fast1",
+        "switch_track_fast",
+    )
+    assert card.choices[0].target_by_vehicle == {"d2": "fast1", "usv": "fast1"}
+    assert not [
+        r for r in es.reports if r.kind == "target_select"
+    ]  # the pick already set the target
 
 
 def test_alternative_after_zone_block_is_not_blocked(scenes):

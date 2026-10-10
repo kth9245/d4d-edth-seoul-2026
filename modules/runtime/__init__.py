@@ -7,6 +7,7 @@ from modules.runtime.actions.fleet_choices import fleet_choices
 from modules.runtime.actions.relief_due import relief_due
 from modules.runtime.actions.relieve_hover import relieve_hover
 from modules.runtime.actions.rotate_patrols import rotate_patrols
+from modules.runtime.actions.spot_reports import spot_reports
 from modules.runtime.actions.step_vehicle import step_vehicle
 from modules.runtime.actions.update_metrics import update_metrics
 
@@ -20,6 +21,7 @@ __all__ = [
     "relief_due",
     "relieve_hover",
     "rotate_patrols",
+    "spot_reports",
     "step_vehicle",
     "update_metrics",
 ]
