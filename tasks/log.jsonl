@@ -497,3 +497,4 @@
 {"at": "2026-10-10T22:31:38+09:00", "by": "황승주", "op": "add", "id": "Part2-56", "title": "결정 번호 겹침: 멸공 적 침투 결정 0055를 0058로 옮기고 참조 고침", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T22:31:43+09:00", "by": "황승주", "op": "start", "id": "Part2-56", "take": false, "from": null}
 {"at": "2026-10-10T22:33:33+09:00", "by": "kth9245", "op": "start", "id": "Part1-44", "take": false, "from": null}
+{"at": "2026-10-10T22:35:29+09:00", "by": "kth9245", "op": "done", "id": "Part1-43", "take": false}
