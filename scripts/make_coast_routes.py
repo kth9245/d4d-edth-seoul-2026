@@ -128,8 +128,14 @@ def _ours(rid: str, name: str, dom: str, do: dict) -> dict:
             "approved": True, "template": False}  # fmt: skip
 
 
+def _on_land(a: GeoPoint, b: GeoPoint, land) -> bool:  # a straight leg that never leaves the island
+    return all(inside(GeoPoint(lat=a.lat + (b.lat - a.lat) * k / 10, lon=a.lon + (b.lon - a.lon) * k / 10), land)
+               for k in range(11))  # fmt: skip
+
+
 def scout_route(land, landing: GeoPoint) -> list[dict]:
-    """Enemy ugv2: the island outline 200 m inland, about 900 m apart, clockwise from the landing (user, 10/10)."""
+    """Enemy ugv2: the island outline 200 m inland, clockwise from the landing (user, 10/10). Points are kept up to
+    about 900 m apart only while the straight leg stays on land, so it never cuts across a bay."""
     pts = land[0].points
     c = GeoPoint(lat=sum(p.lat for p in pts) / len(pts), lon=sum(p.lon for p in pts) / len(pts))
     ring = []
@@ -137,14 +143,25 @@ def scout_route(land, landing: GeoPoint) -> list[dict]:
         e, n = enu_delta_m(p.lat, p.lon, c.lat, c.lon)
         k = math.hypot(e, n) or 1.0
         q = _off(p, e / k * 200, n / k * 200)
-        if inside(q, land) and (not ring or dist_m(ring[-1], q) >= SPACING_M):
+        if inside(q, land):
             ring.append(q)
     area = sum(
         a.lon * b.lat - b.lon * a.lat for a, b in zip(ring, ring[1:] + ring[:1], strict=True)
     )
     ring = ring[::-1] if area > 0 else ring  # shoelace > 0 is counter-clockwise
     k = min(range(len(ring)), key=lambda i: dist_m(ring[i], landing))
-    return [_pt(p) for p in ring[k:] + ring[:k]]
+    ring = ring[k:] + ring[:k]
+    keep, i = [ring[0]], 0
+    while i < len(ring) - 1:
+        j = next((j for j in range(i + 1, len(ring)) if _on_land(ring[i], ring[j], land)), i + 1)
+        while (j + 1 < len(ring) and dist_m(ring[i], ring[j + 1]) <= SPACING_M
+               and _on_land(ring[i], ring[j + 1], land)):  # fmt: skip
+            j += 1  # skip points a straight leg cannot reach, then go up to 900 m along the outline
+        i = j
+        keep.append(ring[i])
+    while len(keep) > 2 and not _on_land(keep[-1], keep[0], land):
+        keep.pop()  # the loop closes on land
+    return [_pt(p) for p in keep]
 
 
 def raid(land, base: GeoPoint) -> tuple[list[dict], list[dict]]:

@@ -140,3 +140,15 @@ def test_24h_ground_robot_can_watch_and_raid_roles_exist():
     roles = {r.id: r for r in day.roles}
     assert {"focus_orbit", "track_sea", "track_ground"} <= set(roles)
     assert roles["focus_orbit"].steps[0].do.params["anchor"] == "target"
+
+
+def test_24h_ugv2_route_legs_stay_on_land():  # straight legs must not cut across bays
+    day = load_scenario_json(DAY)
+    role = next(r for r in day.roles if r.id == "enemy_e_ugv2")
+    pts = [GeoPoint(**p) for p in role.steps[0].do.params["route"]]
+    for a, b in zip(pts, pts[1:] + pts[:1], strict=True):
+        for k in range(1, 10):
+            mid = GeoPoint(
+                lat=a.lat + (b.lat - a.lat) * k / 10, lon=a.lon + (b.lon - a.lon) * k / 10
+            )
+            assert inside(mid, day.land), (a, b)
