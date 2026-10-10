@@ -121,3 +121,12 @@ def test_enemy_appears_at_a_point_or_from_another_enemy():
     e = EnemySpec(id="fast1", kind="fast_boat", speed_mps=6.3, appear_offset_ms=1_380_000,
                   from_enemy="boat1", play_id="enemy_fast1")  # fmt: skip
     assert e.pos is None and e.from_enemy == "boat1"
+
+
+def test_scenario_land_is_island_polygons_and_defaults_to_none():
+    sc = Scenario.model_validate(_load(EXAMPLES / "scenario.json"))
+    island = Polygon(points=[GeoPoint(lat=37.94, lon=124.68), GeoPoint(lat=37.94, lon=124.72),
+                             GeoPoint(lat=37.97, lon=124.70)])  # fmt: skip
+    data = {k: v for k, v in sc.model_dump().items() if k != "land"}
+    assert Scenario.model_validate(data).land == []
+    assert Scenario.model_validate({**data, "land": [island.model_dump()]}).land == [island]

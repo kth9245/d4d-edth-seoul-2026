@@ -291,6 +291,7 @@ export interface Scenario {
   plays: Play[];
   events?: ScenarioEvent[];
   enemies?: EnemySpec[];
+  land?: Polygon[];
   seed?: number;
   tick_ms?: number;
   speed?: number;

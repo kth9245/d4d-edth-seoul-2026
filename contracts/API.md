@@ -11,7 +11,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | step | 행동 하나(`do`) + 탈출 조건(`on`, 앞에서부터 첫 참) + 들어갈 때 카드 한 장(`report`, 선택) | `Step` |
 | 선택지 | 보고 카드의 버튼. 누르면 `play_by_vehicle`의 기체들이 각자 그 플레이의 첫 step에서 시작 | `Choice` |
 | 오퍼레이션(작전) | 임무 틀(`zone`·`vehicle_ids`·`started_ms`) + 시작 플레이(`assign`) + 예비(`reserve`) + 전체 전환 버튼(`switches`) | `Operation`, `Switch` |
-| 시나리오 | 시연 묶음: 작전 + 기체 제원 + 플레이 목록 + 사건 대본 | `Scenario` |
+| 시나리오 | 시연 묶음: 작전 + 기체 제원 + 플레이 목록 + 사건 대본 + 적 + 섬(육지) 다각형 `land`(결정 0034) | `Scenario` |
 | 적 | 대본에 적은 적 하나: 등장 시각(`appear_offset_ms`)·위치(`pos` 또는 `from_enemy`의 현재 위치)·속도 + 따르는 플레이. 행동은 `move_to`·`patrol_route`·`hold`, 조건은 `arrived`·`time_elapsed`(`params.sec`)만. runtime·safety를 거치지 않고 sim이 움직인다(결정 0032) | `EnemySpec`, `Scenario.enemies` |
 
 플레이는 다른 기체를 알지 못하지만, 선택지의 `play_by_vehicle`은 기체 id를 직접 적는다(결정 0016, 사람이 알고 고름).

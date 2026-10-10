@@ -635,6 +635,14 @@
       "title": "Enemies",
       "type": "array"
     },
+    "land": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Polygon"
+      },
+      "title": "Land",
+      "type": "array"
+    },
     "seed": {
       "default": 0,
       "title": "Seed",
