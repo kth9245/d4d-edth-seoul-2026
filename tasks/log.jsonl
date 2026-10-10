@@ -153,3 +153,4 @@
 {"at": "2026-10-10T10:57:36+09:00", "by": "kth9245", "op": "decide", "id": "Part3-11", "text": "플레이 머리 버튼은 '저장' = POST /plays: 서버가 check_play로 검사해 통과하면 gateway 메모리(live.scenario.plays)에 저장하고 실행을 작전 시작 직전(일시정지)으로 되돌림(POST /operation과 같은 방식), 실패면 저장 안 함. 응답은 항상 PlayCheck. 파일에는 쓰지 않음(리허설 재현). 계약의 POST /plays/check(검사만)도 같이 만듦. 리드 답 '저장으로 할건데', '저장하고 오퍼레이션 시작을 해야 실행되는거 아님?'"}
 {"at": "2026-10-10T10:57:39+09:00", "by": "kth9245", "op": "decide", "id": "Part3-11", "text": "예시 데이터 대체 경로(UI-15)는 통합 2 직전까지 둠. 리드 답 '통합 2 직전까지 둠'"}
 {"at": "2026-10-10T10:59:52+09:00", "by": "kth9245", "op": "add", "id": "Part1-5.1", "title": "프롬프트 틀 build_draft_prompt(PLY-12)·시연 문장 2개", "parent": "Part1-5", "assign": null, "slot": "2", "spec": null}
+{"at": "2026-10-10T11:00:15+09:00", "by": "kth9245", "op": "start", "id": "Part1-5.1", "take": false, "from": null}

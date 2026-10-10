@@ -2,13 +2,14 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 10:59 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 11:00 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
+- **Part1-5.1** 프롬프트 틀 build_draft_prompt(PLY-12)·시연 문장 2개 — kth9245, 10/10 11:00부터
 - **Part1-13** 지표 패널 + 배속 + 다음 사건 — kth9245, 10/10 10:55부터
 - **Part2-5** sim `apply_events` — 최동호, 10/10 10:56부터 · SIM-09
 - **Part3-11** 편집기: 저장 → 검사 결과 표시 — kth9245, 10/10 10:57부터
-- ⚠ kth9245 진행중 2개
+- ⚠ kth9245 진행중 3개
 
 ## 막힘
 - (없음)
@@ -41,7 +42,6 @@
 - **Part2-19** 시나리오 튜닝
 
 ### 누구나
-- **Part1-5.1** 프롬프트 틀 build_draft_prompt(PLY-12)·시연 문장 2개
 - **Part3-15** play `compile_mavlink` (결정 0011) · 하위 0/1 완료 · PLY-10
 
 ## 최근 결정
