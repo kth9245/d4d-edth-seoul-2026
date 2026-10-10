@@ -52,6 +52,15 @@ describe("vehicleMenuRoles", () => {
     expect(m.target).toEqual([]);
   });
 
+  it("treats a patrol around the target's spot (anchor target, 24h focus_orbit) as a target role", () => {
+    // a target-less switch would clear target_id and the drone would circle its own position (decision 0055)
+    const orbit: Role = { id: "focus_orbit", name: "발견 지점 집중 순찰", domains: ["air"], entry: "s",
+      steps: [{ id: "s", name: "s", do: { kind: "patrol_route", params: { offsets: [], anchor: "target" } } }] };
+    const m = vehicleMenuRoles([...ROLES, orbit], spec("d1", "air", AIR), [], null);
+    expect(ids(m.target)).toEqual(["watch", "track_fast", "focus_orbit"]);
+    expect(ids(m.plain)).not.toContain("focus_orbit");
+  });
+
   it("skips the capability rule when the operation has no ontology (no capabilities)", () => {
     expect(ids(vehicleMenuRoles(ROLES, spec("x", "air"), [], null).target)).toEqual(["watch", "track_fast", "strike"]);
   });
