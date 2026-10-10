@@ -2,13 +2,12 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 11:02 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 11:07 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part1-5.1** 프롬프트 틀 build_draft_prompt(PLY-12)·시연 문장 2개 — kth9245, 10/10 11:00부터
-- **Part1-9.2** 화면 스타일 정리(theme.css 토큰, 국방 톤) — kth9245, 10/10 11:02부터
 - **Part3-11** 편집기: 저장 → 검사 결과 표시 — kth9245, 10/10 10:57부터
-- ⚠ kth9245 진행중 3개
+- ⚠ kth9245 진행중 2개
 
 ## 막힘
 - (없음)
@@ -56,6 +55,7 @@
 - 10/9 23:20 kth9245 · Part1-4 · 사건 4 고속 보트 추적 플레이의 표적은 운용자가 고름(target: operator → 승인 뒤 target_select 카드). 리드 답 '운용자가 고름'
 
 ## 완료
+- **Part1-9.2** 화면 스타일 정리(theme.css 토큰, 국방 톤) — kth9245, 10/10 11:07
 - **Part2-5** sim `apply_events` — 최동호, 10/10 11:00 · SIM-09
 - **Part1-13** 지표 패널 + 배속 + 다음 사건 — kth9245, 10/10 11:00
 - **Part2-4** sim `advance_vehicles`(공개 API 이름 `advance`) — 최동호, 10/10 10:54 · SIM-08
@@ -66,7 +66,7 @@
 - **Part3-6.1** play check_operation · PLY-11 (통합 2, PLY-03~05 뒤) — 황승주, 10/10 10:44
 - **Part1-7** gateway REST + WS — kth9245, 10/10 10:39
 - **Part1-9.1** 드론 출발 위치 떼어 놓기(지도에서 겹침) — kth9245, 10/10 10:35
-- **Part1-9** 지도: 위성 raster + 기체·표적·구역 — kth9245, 10/10 10:28 · 하위 1/2 완료
+- **Part1-9** 지도: 위성 raster + 기체·표적·구역 — kth9245, 10/10 10:28 · 하위 2/2 완료
 - **Part2-2** sim `follow_route` — 최동호, 10/10 10:28 · SIM-06
 - **Part2-1** sim `move_straight` — 최동호, 10/10 10:25 · SIM-05
 - **Part2-20** sim `load_scenario_json` — 최동호, 10/10 10:22 · SIM-04
