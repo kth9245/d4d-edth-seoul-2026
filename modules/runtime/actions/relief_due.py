@@ -6,11 +6,9 @@ SPEC: modules/runtime/SPEC.md#RT-14
 from contracts.models import VehicleSpec, VehicleState
 from shared.geo import dist_m
 
-FLOOR, START, SPARE = (
-    31.0,
-    35.0,
-    5.0,
-)  # floor 30% + 1 tick slack, relief %, % spare over the relief flight
+FLOOR = 31.0  # floor 30% + 1 tick slack
+START = 35.0  # relief threshold %
+SPARE = 10.0  # % spare over the relief flight (user, 10/10: 5% left 1.3% over the floor at worst)
 
 
 def _back(st: VehicleState, spec: VehicleSpec) -> float:  # battery % to fly home from here

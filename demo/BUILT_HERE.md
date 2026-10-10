@@ -66,3 +66,4 @@
 | 10/10 19:55 | runtime | 교대 시점 판단을 relief_due(RT-14)로 분리하고 교대 드론 이동 시간을 봄: 하한선 위 여유 ≤ 이동 중 순찰기 소모+5%면 일찍 출발(2.4 km 기지 240분: 하한선 귀환 4→0, 600 m는 그대로)(사용자) | 황승주 |
 | 10/10 19:51 | 전체 | Part1-36 play→role 이름 변경(결정 0052): 계약 Role·RoleCheck, REST /roles, JSON 키 role_id·role_by_vehicle·rotation_roles, 모듈 modules/role, 데이터 demo/roles, 화면 표기 Role. 변환 스크립트 scripts/rename_play_role.py(팀원은 rebase 뒤 실행), AI 초안 캐시는 새 해시로 옮겨 인터넷 없이 그대로 | kth9245 |
 | 10/10 20:05 | cop-ui | Part1-38 Role 화면의 삭제 버튼을 저장 버튼과 같은 크기로(여백·굵기), 화면 점검이 두 버튼 크기를 비교 | kth9245 |
+| 10/10 20:15 | runtime | 교대 SPARE 5→10%: 100사이클(82시간) 하한선 위 최소 여유 1.3%→7.2%, 하한선 귀환·해안 공백 0(사용자) | 황승주 |

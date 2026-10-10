@@ -19,5 +19,7 @@ def test_due_at_the_battery_threshold_whatever_the_relief_flight():
 
 def test_due_early_when_the_relief_flight_eats_the_margin_over_the_floor():
     st = _st(55, 6000)  # 55 - 7.4 - 31 = 16.6% over the floor
-    assert not relief_due(st, SPEC, fly_min=9.4)  # 10.4% + 5% spare < 16.6%
-    assert relief_due(st, SPEC, fly_min=15.6)  # 17.3% + 5% spare >= 16.6%
+    assert not relief_due(st, SPEC, fly_min=4.0)  # 4.4% + 10% spare < 16.6%
+    assert relief_due(
+        st, SPEC, fly_min=6.0
+    )  # 6.7% + 10% spare >= 16.6% (user, 10/10: 5% left 1.3% at worst)
