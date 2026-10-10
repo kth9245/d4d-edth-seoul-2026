@@ -9,7 +9,7 @@ from shared.geo import dist_m
 
 BASE = {"fast_boat": 40, "boat": 20, "person": 30, "unknown": 30}
 INSIDE, NEAR, RF, SPEED_CAP, SPEED_PER_MPS, CAP, THRESHOLD = 30, 15, 30, 30, 5, 100, 40
-CARD_ACCUM = 450 * 1000  # threat_accum that lets a contact card go up: score 1.0 for 4.5 s (0042)
+CARD_ACCUM = 450 * 1000  # threat_accum that lets a contact card go up: score 1.0 for 4.5 s (0043)
 
 
 class ThreatScore(NamedTuple):
@@ -35,7 +35,7 @@ def score_target(
     gaps = [dist_m(c, pos) / radius for c, radius in watch_points]
     if any(g <= 1 for g in gaps):
         score, reasons = score + INSIDE, reasons + ["inside_watch_radius"]
-    elif any(g <= 3 for g in gaps):  # decisions 0041, 0042: approaching boats are not left out
+    elif any(g <= 3 for g in gaps):  # decisions 0041, 0043: approaching boats are not left out
         score, reasons = score + NEAR, reasons + ["near_watch_radius"]
     if rf:
         score, reasons = score + RF, reasons + ["rf_emission"]

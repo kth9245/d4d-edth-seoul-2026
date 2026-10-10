@@ -60,7 +60,7 @@ def test_target_found_and_arrived():
     assert step(vs(waypoint_idx=-1))[0].step_id == "home"
 
 
-def test_target_found_while_patrolling_waits_until_the_threat_has_built_up():  # decision 0042
+def test_target_found_while_patrolling_waits_until_the_threat_has_built_up():  # decision 0043
     assert step(vs(), [boat(["d1"], accum=449_999)])[0].step_id == "patrol"
     assert step(vs(), [boat(["d1"], accum=450_000)])[0].step_id == "watch"
     quiet, ready = boat(["d1"], accum=0), boat(["d1"]).model_copy(update={"id": "boat2"})

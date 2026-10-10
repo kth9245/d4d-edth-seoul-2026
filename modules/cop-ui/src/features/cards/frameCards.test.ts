@@ -60,7 +60,7 @@ describe("frameCards", () => {
       score: 0.58, rf: false, line: "관측 위험 0.58 · 스캔 판별: 보트 · 기준점 반경 안 +0.30 · 속도 5.0 m/s" });
   });
 
-  // Decisions 0041/0042: outside the watch radius but within three times it adds +0.15, so the line adds up.
+  // Decisions 0041/0043: outside the watch radius but within three times it adds +0.15, so the line adds up.
   it("says the boat is near the watch point when it is outside the radius but within three times it", () => {
     const f = { ...f1, targets: [boat("boat1", 72, ["kind_boat", "near_watch_radius", "rf_emission", "speed"])] };
     expect(frameCards(f)[0].threat?.line).toBe(

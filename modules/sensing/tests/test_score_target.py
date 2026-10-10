@@ -43,7 +43,7 @@ def test_accum_resets_below_threshold_or_when_unobserved():
     assert score(observed=False, accum=5000).accum == 0
 
 
-NEAR_5KM = GeoPoint(lat=38.023, lon=124.70)  # ~5 km north: 2.5x the radius (decision 0042: 3x)
+NEAR_5KM = GeoPoint(lat=38.023, lon=124.70)  # ~5 km north: 2.5x the radius (decision 0043: 3x)
 FAR_7KM = GeoPoint(lat=38.041, lon=124.70)  # ~7 km north: beyond 3x
 
 

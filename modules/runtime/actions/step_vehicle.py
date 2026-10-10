@@ -25,7 +25,7 @@ def _true(cond: Condition, st: VehicleState, targets: list[Target], tracking: bo
         return any(
             st.id in tg.seen_by and tg.reported_by is None and tg.threat_accum >= CARD_ACCUM
             for tg in targets
-        )  # decision 0042: the card goes up once the threat has built up
+        )  # decision 0043: the card goes up once the threat has built up
     if cond.kind == ConditionKind.arrived:
         return st.waypoint_idx < 0
     if cond.kind == ConditionKind.battery_below:
