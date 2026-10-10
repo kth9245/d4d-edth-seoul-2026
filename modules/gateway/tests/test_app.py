@@ -148,6 +148,17 @@ def test_default_engine_streams_contract_frames():
             Frame.model_validate(ws.receive_json())
 
 
+def test_default_engine_is_the_real_engine_and_no_stub_is_left():
+    # 09 §4.5: stubs go before integration 2, so the example-frame fallback must not exist any more.
+    import importlib.util
+
+    from modules.gateway import engine
+    from modules.gateway.app import default_engine
+
+    assert default_engine().tick is engine.tick
+    assert importlib.util.find_spec("modules.gateway.stub_engine") is None
+
+
 def test_serves_ui_dist(tmp_path):
     (tmp_path / "index.html").write_text("<html>ui</html>")
     client, _ = fake_app(ui_dist=str(tmp_path))

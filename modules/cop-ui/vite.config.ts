@@ -14,7 +14,7 @@ export default defineConfig({
       // contracts/API.md section 5 REST endpoints
       "^/(operation|plays|run|decisions|direct|injections)(/|\\?|$)": { target: GATEWAY },
     },
-    // ?scene=s1..s6 reads contracts/examples and the editor's offline fallback reads demo/scenarios,
+    // ?scene=s1..s6 reads contracts/examples and the run bar's event stops read demo/scenarios,
     // both outside this package. In a worktree node_modules links to the main checkout, so the bundled
     // font files live outside this package too.
     fs: {

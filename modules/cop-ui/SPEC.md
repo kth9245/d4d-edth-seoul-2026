@@ -17,7 +17,7 @@
 | UI-12 | groupPlays | Play[] | PlayGroup[] | 드론·수상정·지상·공통 묶음, 영역 둘 이상·없음은 공통 | 리드 | 완료 |
 | UI-13 | vehicleColumns | Operation, Play[] | Column[] | 기체별 시작 플레이 + 선택지로 이어지는 플레이, 순환 종료, 없는 플레이 null | 리드 | 완료 |
 | UI-14 | playUsage | Operation, Play[] | Record<playId, Usage[]> | 작전 시작·선택지·전체 전환으로 쓰는 기체 | 리드 | 완료 |
-| UI-15 | loadEditorData | fetch | EditorData | /operation·/plays 실패 시 예시 시나리오 + source=example(통합 2 전 제거) | 리드 | 완료 |
+| UI-15 | loadEditorData | fetch | EditorData | /operation·/plays를 읽음. 실패하면 오류(예시 데이터 대체는 통합 2 전에 제거, 편집기가 연결 실패를 표시) | 리드 | 완료 |
 | UI-16 | EditorScreen | — | 편집기 화면 | 예시 작전이 왼쪽 바·작전 개요·플레이 카드로 그려짐(Part3-10), 탭 #editor·#live(tabFromHash) | 리드 | 완료 |
 | UI-17 | kstTime | t_ms | "HH:MM:SS" | 기계 시간대와 무관하게 KST(결정 0012) | 리드 | 완료 |
 | UI-18 | postDecision | report_id, choice_id | {ok, id} \| {ok: false, error} | POST /decisions, 실패해도 throw 없이 상태·detail 문구 | 리드 | 완료 |

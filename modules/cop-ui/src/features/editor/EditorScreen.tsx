@@ -16,6 +16,7 @@ import { backFrom, openView, type ViewHistory } from "./viewHistory";
 
 export function EditorScreen() {
   const [data, setData] = useState<EditorData | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   // Which view is open and the ones opened before it, so "뒤로" returns along the same path (sidebar, play links).
   const [nav, setNav] = useState<ViewHistory>({ current: OVERVIEW, stack: [] });
   const selected = nav.current;
@@ -26,7 +27,7 @@ export function EditorScreen() {
   const [edits, setEdits] = useState<Record<string, Play>>({});
   const [fresh, setFresh] = useState<Record<string, string>>({});
   useEffect(() => {
-    loadEditorData().then(setData);
+    loadEditorData().then(setData, (e: Error) => setLoadError(e.message));
   }, []);
   const view = useMemo(
     () =>
@@ -38,6 +39,7 @@ export function EditorScreen() {
       },
     [data],
   );
+  if (loadError) return <div className="editor load-error">서버에 연결하지 못했습니다 ({loadError}). scripts/dev.sh로 gateway(8000)를 띄운 뒤 새로고침하세요.</div>;
   if (!data || !view) return <div className="editor">불러오는 중…</div>;
   const playName = (id: string) => view.byId.get(id)?.name ?? null;
   const prev = nav.stack[nav.stack.length - 1] ?? OVERVIEW;
@@ -79,7 +81,7 @@ export function EditorScreen() {
   };
   return (
     <div className="editor">
-      <PlaySidebar groups={view.groups} selected={play ? play.id : OVERVIEW} source={data.source} showOverview onSelect={open}
+      <PlaySidebar groups={view.groups} selected={play ? play.id : OVERVIEW} showOverview onSelect={open}
         top={<NewPlayMenu existingIds={data.plays.map((p) => p.id)} onCreated={created} />} />
       <main className="editor-main">
         {play ? (

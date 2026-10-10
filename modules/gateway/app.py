@@ -18,7 +18,6 @@ from fastapi.staticfiles import StaticFiles
 
 from contracts.models import DecisionIn, DirectIn, DraftIn, Operation, Play, SwitchIn
 from modules import sim
-from modules.gateway import stub_engine
 from modules.gateway.live import Live
 from modules.play import draft_play
 from shared.log import get_logger, setup_logging
@@ -29,16 +28,12 @@ DEFAULT_SCENARIO = str(ROOT / "demo/scenarios/baengnyeong_night.json")
 
 
 def default_engine():
-    """engine.py (Part2-17) when it exists, else the example-frame stub (remove by 통합 2)."""
-    try:
-        from modules.gateway.engine import init_engine, tick
-    except ModuleNotFoundError as e:
-        if e.name != "modules.gateway.engine":
-            raise  # engine.py exists but is broken: fail loudly, never fall back to the stub
-        log.warning("modules/gateway/engine.py 없음: 예시 Frame 스텁으로 돈다")
-        return stub_engine
-    load = getattr(sim, "load_scenario_json", stub_engine.load_scenario_json)
-    return SimpleNamespace(load_scenario_json=load, init_engine=init_engine, tick=tick)
+    """The real tick loop (engine.py, Part2-17) on the sim scenario loader."""
+    from modules.gateway.engine import init_engine, tick
+
+    return SimpleNamespace(
+        load_scenario_json=sim.load_scenario_json, init_engine=init_engine, tick=tick
+    )
 
 
 def create_app(

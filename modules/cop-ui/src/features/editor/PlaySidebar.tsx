@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import type { EditorData } from "./loadEditorData";
 import type { PlayGroup } from "./groupPlays";
 
 export const OVERVIEW = "__overview__";
@@ -7,13 +6,12 @@ export const OVERVIEW = "__overview__";
 type Props = {
   groups: PlayGroup[];
   selected: string;
-  source: EditorData["source"];
   showOverview: boolean;
   onSelect: (id: string) => void;
   top?: ReactNode; // above the list: the AI draft box (Part3-13)
 };
 
-export function PlaySidebar({ groups, selected, source, showOverview, onSelect, top }: Props) {
+export function PlaySidebar({ groups, selected, showOverview, onSelect, top }: Props) {
   const item = (id: string, label: string) => (
     <button key={id} className={selected === id ? "item on" : "item"} onClick={() => onSelect(id)}>
       {label}
@@ -22,7 +20,6 @@ export function PlaySidebar({ groups, selected, source, showOverview, onSelect, 
   return (
     <nav className="play-sidebar">
       {top}
-      {source === "example" && <div className="example-badge">예시 데이터(서버 없음)</div>}
       {showOverview && item(OVERVIEW, "작전 개요")}
       {groups.map((g) => (
         <div key={g.key}>

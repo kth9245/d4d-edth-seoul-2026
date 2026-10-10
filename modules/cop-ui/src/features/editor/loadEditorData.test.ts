@@ -8,27 +8,21 @@ describe("loadEditorData", () => {
   it("uses the gateway when both calls succeed", async () => {
     const op = { ...scenario.operation, id: "op-gw" };
     const d = await loadEditorData((url) => json(url === "/operation" ? op : [scenario.plays[0]]));
-    expect(d.source).toBe("gateway");
     expect(d.operation.id).toBe("op-gw");
     expect(d.plays).toHaveLength(1);
   });
-  it("falls back to the example scenario on a network error", async () => {
-    const d = await loadEditorData(() => Promise.reject(new TypeError("fetch failed")));
-    expect(d.source).toBe("example");
-    expect(d.operation.id).toBe(scenario.operation.id);
-    expect(d.plays).toHaveLength(8);
+  // No example-data fallback any more (09 §4.5): without the gateway the editor says so instead of
+  // showing the scenario file, where saving would fail.
+  it("fails on a network error", async () => {
+    await expect(loadEditorData(() => Promise.reject(new TypeError("fetch failed")))).rejects.toThrow("fetch failed");
   });
-  it("falls back on a non-2xx answer", async () => {
-    const d = await loadEditorData(() => json({ detail: "x" }, 500));
-    expect(d.source).toBe("example");
+  it("fails on a non-2xx answer", async () => {
+    await expect(loadEditorData(() => json({ detail: "x" }, 500))).rejects.toThrow("500");
   });
-  it("falls back when a 200 JSON reply is not an operation and a play list", async () => {
-    const d = await loadEditorData((url) => json(url === "/operation" ? null : {}));
-    expect(d.source).toBe("example");
-    expect(d.plays).toHaveLength(8);
+  it("fails when a 200 JSON reply is not an operation and a play list", async () => {
+    await expect(loadEditorData((url) => json(url === "/operation" ? null : {}))).rejects.toThrow("shape");
   });
-  it("falls back when the dev server answers index.html", async () => {
-    const d = await loadEditorData(() => Promise.resolve(new Response("<!doctype html>", { status: 200 })));
-    expect(d.source).toBe("example");
+  it("fails when the dev server answers index.html", async () => {
+    await expect(loadEditorData(() => Promise.resolve(new Response("<!doctype html>", { status: 200 })))).rejects.toThrow();
   });
 });
