@@ -56,7 +56,7 @@ def build() -> dict:
     op = night["operation"] | {
         "id": "op_strike",
         "name": "해안 거점 무력화(가상)",
-        "purpose": "정찰 드론이 가상 해안 거점을 RF 방출로 먼저 찾고 스캔해서 위협 카드를 올린다(1단계)",
+        "purpose": "정찰 드론이 가상 해안 거점을 RF 방출로 먼저 찾고 스캔해서 식별한다. 식별된 거점에만 타격 승인을 연다(2단계)",
         "assign": {"d1": "site_patrol", "d2": "standby", "d3": "standby", "d4": "standby",
                    "usv": "standby", "ugv": "standby"},
         "reserve": {}, "switches": [], "rotation": [], "rotation_pools": {}, "rotation_roles": [],
@@ -70,7 +70,8 @@ def build() -> dict:
     out = night | {
         "id": "baengnyeong_strike",
         "operation": op,
-        "roles": [patrol, roles["standby"], roles["go_home"], roles["watch"], roles["approach"], site_hold()],
+        "roles": [patrol, roles["standby"], roles["go_home"], roles["watch"], roles["approach"],
+                  roles["strike"], site_hold()],
         "events": [],
         "enemies": enemies,
         "routes": [north, *(r for r in night["routes"] if r["id"] not in skip)],

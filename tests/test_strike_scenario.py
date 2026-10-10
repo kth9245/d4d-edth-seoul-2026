@@ -74,3 +74,10 @@ def test_the_json_is_what_the_script_builds(sc):
         (ROOT / "demo/scenarios/baengnyeong_strike.json").read_text(encoding="utf-8")
     )
     assert build() == on_disk
+
+
+def test_the_strike_role_is_available_to_the_armed_vehicles(sc):
+    roles, specs = {r.id: r for r in sc.roles}, {v.id: v for v in sc.vehicles}
+    assert "strike" in roles
+    armed = [v for v, s in specs.items() if "strike_target" in [c.value for c in s.capabilities]]
+    assert set(armed) == {"d2", "usv"}  # the ontology comes from night
