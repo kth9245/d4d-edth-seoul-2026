@@ -2,10 +2,10 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 11:59 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 12:02 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- (없음)
+- **Part2-19** 시나리오 튜닝 — 최동호, 10/10 12:02부터
 
 ## 막힘
 - (없음)
@@ -23,7 +23,6 @@
 - **Part2-23** 타격 sim: advance 타격 분기·resolve_strikes 새 액션·update_metrics 작전 성공
 
 ### 최동호
-- **Part2-19** 시나리오 튜닝
 - **Part2-24** 타격 engine.py: resolve_strikes 호출 + 타격 통과 기록 줄
 - **Part2-25** sim 적 진행(SIM-11, 결정 0032) + engine.py 호출
 
