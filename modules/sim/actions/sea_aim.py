@@ -7,9 +7,11 @@ SPEC: modules/sim/SPEC.md#SIM-13
 import heapq
 import math
 from collections.abc import Sequence
+from functools import lru_cache
 
 from contracts.models import GeoPoint, Polygon
 from shared.land import (
+    Key,
     blocked_xy,
     corners_xy,
     inside_xy,
@@ -22,32 +24,25 @@ from shared.land import (
 )
 
 
-def _first_corner(p, g, cs, links, rs) -> int | None:
-    """Dijkstra from p over the corners to g; the first corner of the shortest path, or None.
-    A corner within 1 m of p is the one p stands on, so it is not a next step."""
-    dist = {i: math.dist(p, c) for i, c in enumerate(cs)
-            if math.dist(p, c) > 1 and not blocked_xy(p, c, rs)}  # fmt: skip
-    first = {i: i for i in dist}
+@lru_cache(maxsize=64)
+def _via(k: Key, g: tuple[float, float]) -> tuple[float, ...]:
+    """Shortest sea distance from each corner to g over the corner graph (inf if none), per goal."""
+    cs, links, rs = corners_xy(k), links_xy(k), rings(k)
+    dist = {i: math.dist(c, g) for i, c in enumerate(cs) if not blocked_xy(c, g, rs)}
     heap = [(d, i) for i, d in dist.items()]
     heapq.heapify(heap)
     done: set[int] = set()
-    best, best_first = math.inf, None
     while heap:
         d, i = heapq.heappop(heap)
-        if d >= best:
-            break
         if i in done:
             continue
         done.add(i)
-        total = d + math.dist(cs[i], g)
-        if total < best and not blocked_xy(cs[i], g, rs):
-            best, best_first = total, first[i]
         for j in links[i]:
             nd = d + math.dist(cs[i], cs[j])
             if nd < dist.get(j, math.inf):
-                dist[j], first[j] = nd, first[i]
+                dist[j] = nd
                 heapq.heappush(heap, (nd, j))
-    return best_first
+    return tuple(dist.get(i, math.inf) for i in range(len(cs)))
 
 
 def sea_aim(pos: GeoPoint, goal: GeoPoint, land: Sequence[Polygon]) -> GeoPoint:
@@ -59,5 +54,11 @@ def sea_aim(pos: GeoPoint, goal: GeoPoint, land: Sequence[Polygon]) -> GeoPoint:
     p, g = to_xy(pos.lat, pos.lon, ref), to_xy(goal.lat, goal.lon, ref)
     if inside_xy(p, rs) or not blocked_xy(p, g, rs):
         return goal
-    i = _first_corner(p, g, corners_xy(k), links_xy(k), rs)
-    return goal if i is None else to_geo(corners_xy(k)[i], ref)
+    # The first corner is the visible one with the least |p-c| + via[c]. Trying candidates in that
+    # order tests a line or two per tick ('다음 사건' jumps run thousands). A corner within 1 m is
+    # the one p stands on, so it is not a next step.
+    cs, via = corners_xy(k), _via(k, g)
+    order = sorted((math.dist(p, c) + via[i], i) for i, c in enumerate(cs)
+                   if via[i] < math.inf and math.dist(p, c) > 1)  # fmt: skip
+    i = next((i for _, i in order if not blocked_xy(p, cs[i], rs)), None)
+    return goal if i is None else to_geo(cs[i], ref)

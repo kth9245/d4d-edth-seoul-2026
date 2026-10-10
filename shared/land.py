@@ -62,14 +62,23 @@ def inside_xy(p: XY, rs) -> bool:
     return any(_in_ring(p, r) for r in rs)
 
 
+@lru_cache(maxsize=16)
+def _boxed_sides(rs) -> tuple[tuple[XY, XY, float, float, float, float], ...]:
+    return tuple((c, d, min(c[0], d[0]), max(c[0], d[0]), min(c[1], d[1]), max(c[1], d[1]))
+                 for r in rs for c, d in _sides(r))  # fmt: skip
+
+
 def blocked_xy(a: XY, b: XY, rs) -> bool:
-    """The segment a-b goes over land: it crosses a coast side, or its middle is on land."""
+    """The segment a-b goes over land: it crosses a coast side, or its middle is on land.
+    Sides whose bounding box misses the segment's are skipped (most of them, on a long coast)."""
     if inside_xy(((a[0] + b[0]) / 2, (a[1] + b[1]) / 2), rs):
         return True
-    for r in rs:
-        for c, d in _sides(r):
-            if _cross(c, d, a) * _cross(c, d, b) < 0 and _cross(a, b, c) * _cross(a, b, d) < 0:
-                return True
+    x0, x1, y0, y1 = min(a[0], b[0]), max(a[0], b[0]), min(a[1], b[1]), max(a[1], b[1])
+    for c, d, cx0, cx1, cy0, cy1 in _boxed_sides(rs):
+        if cx1 < x0 or cx0 > x1 or cy1 < y0 or cy0 > y1:
+            continue
+        if _cross(c, d, a) * _cross(c, d, b) < 0 and _cross(a, b, c) * _cross(a, b, d) < 0:
+            return True
     return False
 
 

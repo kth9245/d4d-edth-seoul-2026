@@ -1,3 +1,4 @@
+import modules.sim.actions.sea_aim as sea_aim_module
 from contracts.models import GeoPoint, Polygon
 from modules.sim.actions.sea_aim import sea_aim
 from shared.geo import dist_m, offset_latlon
@@ -35,3 +36,14 @@ def test_goal_on_land_becomes_the_sea_point_off_the_coast():
 
 def test_start_on_land_goes_straight():
     assert sea_aim(C, EAST, ISLAND) == EAST
+
+
+def test_next_tick_toward_the_same_goal_checks_only_a_line_or_two(monkeypatch):
+    # '다음 사건' jumps run thousands of ticks; a mover going round must not re-check every corner
+    calls = []
+    real = sea_aim_module.blocked_xy
+    monkeypatch.setattr(sea_aim_module, "blocked_xy", lambda *a: calls.append(a) or real(*a))
+    sea_aim(WEST, EAST, ISLAND)  # the first tick toward this goal may build its table
+    calls.clear()
+    assert dist_m(sea_aim(_at(-990, -210), EAST, ISLAND), SW) < 1
+    assert len(calls) <= 3
