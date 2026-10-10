@@ -12,6 +12,10 @@ from modules.runtime.actions.target_domain import DOMAIN_LABEL, target_domain
 
 FOCUS = "focus_orbit"
 TRACK = {"sea": "track_sea", "ground": "track_ground"}  # own vehicle domain -> role
+NEVER = {
+    "sea": "ugv",
+    "ground": "usv",
+}  # a ugv just off the enemy usv is not chased at sea, nor a beached usv
 
 
 def raid_choices(
@@ -42,5 +46,6 @@ def raid_choices(
         for dom in [target_domain(by[tid], land)]
         for s in crew
         if s.id in specs and specs[s.id].domain.value == dom and s.target_id != tid
+        and NEVER.get(dom) != by[tid].kind.value
     ]  # fmt: skip
     return [*focus, *track, Choice(id="stay", label="대기")]

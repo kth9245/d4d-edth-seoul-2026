@@ -112,3 +112,12 @@ def test_unseen_and_neutralized_targets_get_no_number():
     ]
     labels = [c.label for c in run(base(), targets).choices]
     assert "usv → 적기 1 추적(해상)" in labels and not [x for x in labels if "적기 2" in x]
+
+
+def test_a_ugv_still_at_sea_gets_no_usv_track():  # just landed from the enemy usv: a ugv never needs chasing at sea
+    d2 = vs("d2", "coast_b", "report", target="e_ugv1")
+    states = [s for s in base() if s.id != "d2"] + [d2]
+    labels = [
+        c.label for c in run(states, [tg("e_ugv1", "ugv", _at(0, -2000), 20, ("d2",))]).choices
+    ]
+    assert not [x for x in labels if x.startswith("usv →")]

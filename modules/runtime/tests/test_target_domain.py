@@ -38,3 +38,8 @@ def test_domain_follows_current_position():
 
 def test_labels():
     assert DOMAIN_LABEL == {"air": "공중", "ground": "지상", "sea": "해상"}
+
+
+def test_domain_uses_where_it_was_last_seen():  # not the truth no sensor sees
+    tg = _tg("usv", C).model_copy(update={"last_seen_pos": _at(0, -2000)})
+    assert target_domain(tg, ISLAND) == "sea"
