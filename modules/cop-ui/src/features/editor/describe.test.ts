@@ -11,6 +11,9 @@ describe("describeAction", () => {
   it("names the neutralized-target condition (decision 0066)", () => {
     expect(describeCondition({ kind: "target_neutralized", params: {} })).toBe("표적 무력화");
   });
+  it("names the resighted-target condition (decision 0066)", () => {
+    expect(describeCondition({ kind: "target_resighted", params: {} })).toBe("보고된 거점 재탐지");
+  });
   it("counts route points", () => {
     const route = [{ lat: 37.98, lon: 124.66 }, { lat: 37.98, lon: 124.74 }];
     expect(describeAction({ kind: "patrol_route", params: { route } })).toBe("경로 비행 · 경로 2곳 · 반복");

@@ -36,7 +36,8 @@
         "operator_choice",
         "signal_received",
         "at_time",
-        "target_neutralized"
+        "target_neutralized",
+        "target_resighted"
       ],
       "title": "ConditionKind",
       "type": "string"

@@ -41,6 +41,7 @@ class ConditionKind(str, Enum):
     target_neutralized = (
         "target_neutralized"  # decision 0066: my target (target_id) has been struck
     )
+    target_resighted = "target_resighted"  # decision 0066: I see a site another vehicle reported
 
 
 class CommandKind(str, Enum):  # what goes out to a vehicle

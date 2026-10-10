@@ -44,3 +44,9 @@ def test_a_vehicle_remembers_where_it_left_its_patrol_route():  # decision 0066
     st = VehicleState(id="r1", t_ms=0, pos=GeoPoint(lat=37.9, lon=124.7), heading_deg=0,
                       battery_pct=100, status="ready")  # fmt: skip
     assert (st.patrol_step_id, st.patrol_idx) == (None, 0)
+
+
+def test_a_condition_can_wait_for_a_site_another_vehicle_reported():  # decision 0066
+    from contracts.models import ConditionKind
+
+    assert ConditionKind("target_resighted") is ConditionKind.target_resighted

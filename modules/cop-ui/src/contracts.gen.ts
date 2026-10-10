@@ -136,7 +136,7 @@ export interface RouteDef {
   offsets?: RouteOffset[];
 }
 
-export type ConditionKind = "target_found" | "arrived" | "time_elapsed" | "battery_below" | "operator_choice" | "signal_received" | "at_time" | "target_neutralized";
+export type ConditionKind = "target_found" | "arrived" | "time_elapsed" | "battery_below" | "operator_choice" | "signal_received" | "at_time" | "target_neutralized" | "target_resighted";
 
 export interface Condition {
   kind: ConditionKind;
