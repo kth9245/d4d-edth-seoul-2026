@@ -50,3 +50,31 @@ def test_a_target_scanned_once_keeps_its_kind_when_nobody_sees_it_now():  # deci
     assert t.threat_reasons[0] == "kind_fast_boat"  # still known, not 'kind_unknown'
     assert "speed" not in t.threat_reasons and t.threat_accum == 0  # these need a scan right now
     assert t.threat == 100  # fast_boat 0.40 + inside the radius 0.30 + RF 0.30, no speed
+
+
+def test_infrared_and_sound_are_heard_only_by_live_vehicles_in_range():  # decision 0069
+    spec = SPECS["d2"].model_copy(
+        update={"ir_range_m": 800.0, "acoustic_range_m": 600.0}
+    )  # the target is 500.4 m away: a 500 m ear would just miss it
+    t = fast(kind="unknown", seen_by=[], emitting=False, heat=True, noise=True)
+    out = score_targets(STATES, {"d2": spec}, [t], WATCH, 200)[0]
+    assert (out.ir_detected, out.sound_detected) == (True, True)
+    assert "ir_signature" in out.threat_reasons and "sound" in out.threat_reasons
+    gone = [STATES[0].model_copy(update={"status": "returning"})]
+    out2 = score_targets(gone, {"d2": spec}, [t], WATCH, 200)[0]
+    assert (out2.ir_detected, out2.sound_detected) == (
+        False,
+        False,
+    )  # a returning vehicle is no receiver
+    out3 = score_targets(STATES, SPECS, [t], WATCH, 200)[0]  # SPECS: both ranges 0
+    assert (out3.ir_detected, out3.sound_detected) == (False, False)
+
+
+def test_a_vehicle_out_of_range_hears_nothing_and_a_neutralized_target_keeps_its_scores():
+    spec = SPECS["d2"].model_copy(update={"ir_range_m": 100.0})  # the target is ~500 m away
+    t = fast(kind="unknown", emitting=False, heat=True)
+    assert not score_targets(STATES, {"d2": spec}, [t], WATCH, 200)[0].ir_detected
+    spec = SPECS["d2"].model_copy(update={"ir_range_m": 800.0})
+    dead = fast(heat=True, neutralized_ms=5, threat=33)
+    out = score_targets(STATES, {"d2": spec}, [dead], WATCH, 200)[0]
+    assert (out.threat, out.ir_detected) == (33, False)

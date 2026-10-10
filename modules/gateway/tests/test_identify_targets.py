@@ -34,3 +34,12 @@ def test_other_kinds_and_neutralized_sites_are_left_alone():
     dead = site(id="site_b", seen_by=["d1"], first_seen_ms=1, neutralized_ms=5)
     out = identify_targets([boat, dead], 10_000, 200)
     assert out == [boat, dead]
+
+
+def test_the_detected_clues_reach_the_identification():  # decision 0069
+    t = site(seen_by=["d1"], first_seen_ms=9_000, last_seen_ms=10_000, rf_detected=False,
+             ir_detected=True, sound_detected=True)  # fmt: skip
+    r = identify_targets([t], 10_000, 200)[0]
+    assert (
+        r.ident_reasons[:2] == ["ir_signature", "sound"] and r.ident_confidence == 60
+    )  # scan 40 + 10 + 10

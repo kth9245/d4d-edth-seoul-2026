@@ -19,6 +19,8 @@ def score_targets(
     tick_ms: int,
 ) -> list[Target]:
     receivers = [(s.pos, specs[s.id].rf_range_m) for s in states if s.status in LIVE]
+    ir = [(s.pos, specs[s.id].ir_range_m) for s in states if s.status in LIVE]  # decision 0069
+    sound = [(s.pos, specs[s.id].acoustic_range_m) for s in states if s.status in LIVE]
     watch = [(w.pos, w.radius_m) for w in watch_points]
     out = []
     for tg in targets:
@@ -37,7 +39,13 @@ def score_targets(
             watch,
             tg.threat_accum,
             tick_ms,
+            heat=tg.heat,
+            noise=tg.noise,
+            ir_receivers=ir,
+            sound_receivers=sound,
         )
         out.append(tg.model_copy(update={"threat": r.score, "threat_reasons": r.reasons,
-                                         "rf_detected": r.rf_detected, "threat_accum": r.accum}))  # fmt: skip
+                                         "rf_detected": r.rf_detected, "threat_accum": r.accum,
+                                         "ir_detected": r.ir_detected,
+                                         "sound_detected": r.sound_detected}))  # fmt: skip
     return out

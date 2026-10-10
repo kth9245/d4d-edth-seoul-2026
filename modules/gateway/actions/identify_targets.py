@@ -16,7 +16,15 @@ def identify_targets(targets: list[Target], t_ms: int, tick_ms: int) -> list[Tar
             continue
         scanned = bool(tg.seen_by) or tg.first_seen_ms != 0
         age = None if not scanned else max(0, t_ms - tg.last_seen_ms)
-        r = identify_target(tg.rf_detected, len(tg.seen_by), age, tg.ident_observed_ms, tick_ms)
+        r = identify_target(
+            tg.rf_detected,
+            len(tg.seen_by),
+            age,
+            tg.ident_observed_ms,
+            tick_ms,
+            ir_detected=tg.ir_detected,  # decision 0069
+            sound_detected=tg.sound_detected,
+        )
         out.append(tg.model_copy(update={"ident_state": r.state, "ident_confidence": r.confidence,
                                          "ident_reasons": r.reasons,
                                          "ident_observed_ms": r.observed_ms}))  # fmt: skip
