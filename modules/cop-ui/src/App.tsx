@@ -1,7 +1,9 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import type { Polygon } from "./contracts.gen";
+import { EditorScreen } from "./features/editor/EditorScreen";
 import { fetchZone } from "./features/live/fetchZone";
 import { useFrames } from "./features/live/useFrames";
+import { tabFromHash } from "./features/nav/tab";
 import { Screen } from "./Screen";
 
 const WS_URL = `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws`;
@@ -20,12 +22,28 @@ function LiveApp() {
 }
 
 export default function App() {
-  if (SceneApp && scene) {
-    return (
-      <Suspense fallback={null}>
-        <SceneApp scene={scene} />
-      </Suspense>
-    );
-  }
-  return <LiveApp />;
+  const [hash, setHash] = useState(location.hash);
+  useEffect(() => {
+    const onHash = () => setHash(location.hash);
+    addEventListener("hashchange", onHash);
+    return () => removeEventListener("hashchange", onHash);
+  }, []);
+  const tab = tabFromHash(hash);
+  return (
+    <div className="app">
+      <header className="tabs">
+        <a href="#editor" className={tab === "editor" ? "on" : ""}>편집기</a>
+        <a href="#live" className={tab === "live" ? "on" : ""}>상황판</a>
+      </header>
+      {tab === "editor" ? (
+        <EditorScreen />
+      ) : SceneApp && scene ? (
+        <Suspense fallback={null}>
+          <SceneApp scene={scene} />
+        </Suspense>
+      ) : (
+        <LiveApp />
+      )}
+    </div>
+  );
 }
