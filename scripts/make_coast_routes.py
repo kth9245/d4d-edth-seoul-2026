@@ -88,8 +88,8 @@ def build() -> dict:
     a, b = coast_routes(sc.land, sc.vehicles[0].home)
     base = sc.vehicles[
         0
-    ].home  # pads: a 50 m square around the night base, d1 NW d2 NE d3 SW d4 SE (user, 10/10)
-    pads = {"d1": (-25, 25), "d2": (25, 25), "d3": (-25, -25), "d4": (25, -25)}
+    ].home  # pads: a 2.4 km square (visible at the start zoom) around the night base, d1 NW d2 NE d3 SW d4 SE (user, 10/10)
+    pads = {"d1": (-1200, 1200), "d2": (1200, 1200), "d3": (-1200, -1200), "d4": (1200, -1200)}
     home = {}
     for k, (e, n) in pads.items():
         lat, lon = offset_latlon(base.lat, base.lon, e, n)

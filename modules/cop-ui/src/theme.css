@@ -332,3 +332,5 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 /* battery label right of a drone (user, 10/10): yellow at 50% or less, red at 30% or less */
 .mk.vehicle.batt-mid span { color: #f5c542; }
 .mk.vehicle.batt-low span { color: #ff5a5a; }
+/* the battery label is half the default label size so four drones fit at the start zoom (user, 10/10) */
+.mk.vehicle span { font-size: 7px; line-height: 1; padding: 1px 3px; left: 16px; letter-spacing: 0; }
