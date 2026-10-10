@@ -600,3 +600,4 @@
 {"at": "2026-10-11T02:54:43+09:00", "by": "황승주", "op": "add", "id": "Part2-69", "title": "멸공 집중 순찰·USV/UGV 추적 Role에 비상 귀환(배터리 30%) 추가, 야간 작전과 동일", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-11T02:54:46+09:00", "by": "황승주", "op": "start", "id": "Part2-69", "take": false, "from": null}
 {"at": "2026-10-11T03:00:06+09:00", "by": "황승주", "op": "done", "id": "Part2-69", "take": false}
+{"at": "2026-10-11T03:05:51+09:00", "by": "kth9245", "op": "add", "id": "Part1-42.5", "title": "공격 시연 작전 코드·문서의 옛 결정 번호(0069~0073)를 새 번호(0074~0078)로 고친다", "parent": "Part1-42", "assign": null, "slot": null, "spec": null}
