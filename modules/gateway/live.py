@@ -1,11 +1,12 @@
-"""One operation in process memory: run state, queued operator inputs and the last Frame.
+"""The running operation in process memory: run state, queued operator inputs and the last Frame.
 
 The app calls `period()` every 0.2 s. Inputs queued between periods go into the next tick
 (contracts/API.md §5). Pause = speed 0, which keeps the last speed (decision 0026).
 Depends only on `init(scenario) -> state` and `tick(state, inputs) -> (state, Frame)`.
+Other demo operations wait in `scenarios`; `activate` swaps the running one (decision 0041).
 """
 
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from typing import Any
 
 from contracts.models import (
@@ -21,6 +22,7 @@ from contracts.models import (
     PlayCheck,
     RunState,
     Scenario,
+    ScenarioInfo,
     SwitchIn,
     TickInputs,
 )
@@ -33,8 +35,16 @@ class Live:
         scenario: Scenario,
         init: Callable[[Scenario], Any],
         tick: Callable[[Any, TickInputs], tuple[Any, Frame]],
+        catalog: Sequence[Scenario] = (),
     ):
         self.scenario, self._init, self._tick = scenario, init, tick
+        # Operations the editor can pick (decision 0041), in catalog order; the running one is put
+        # first when the catalog lacks its id and replaces a catalog entry that has it.
+        ids = [s.id for s in catalog]
+        self.scenarios: dict[str, Scenario] = {} if scenario.id in ids else {scenario.id: scenario}
+        for s in catalog:
+            self.scenarios.setdefault(s.id, s)
+        self.scenarios[scenario.id] = scenario
         self.reset()
 
     def reset(self) -> RunState:
@@ -100,6 +110,28 @@ class Live:
             self.scenario = self.scenario.model_copy(update={"plays": plays})
             self.reset()
         return chk
+
+    def scenario_infos(self) -> list[ScenarioInfo]:
+        self.scenarios[self.scenario.id] = self.scenario  # saved plays and operation edits
+        return [
+            ScenarioInfo(
+                id=s.id,
+                name=s.operation.name,
+                purpose=s.operation.purpose,
+                active=s.id == self.scenario.id,
+            )
+            for s in self.scenarios.values()
+        ]
+
+    def activate(self, scenario_id: str) -> RunState:
+        """Run another operation from its start, paused. The one left keeps what was saved to it."""
+        if scenario_id not in self.scenarios:
+            raise KeyError(scenario_id)  # 404, before anything changes
+        self.scenarios[self.scenario.id] = (
+            self.scenario
+        )  # write back first: the same id may come back
+        self.scenario = self.scenarios[scenario_id]
+        return self.reset()
 
     def _next(self, kind: str) -> tuple[str, int]:
         self._n[kind] += 1
