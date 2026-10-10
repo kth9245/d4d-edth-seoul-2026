@@ -17,11 +17,14 @@ from contracts.models import (
     Frame,
     Injection,
     Operation,
+    Play,
+    PlayCheck,
     RunState,
     Scenario,
     SwitchIn,
     TickInputs,
 )
+from modules.play import check_play as _check_play
 
 
 class Live:
@@ -82,6 +85,22 @@ class Live:
         self.scenario = self.scenario.model_copy(update={"operation": op})
         self.reset()
         return op
+
+    def check_play(self, play: Play) -> PlayCheck:
+        specs = {v.id: v for v in self.scenario.vehicles}
+        return _check_play(play, self.scenario.operation, specs)
+
+    def save_play(self, play: Play) -> PlayCheck:
+        """Saved (in memory, same id replaced in place) only when the check passes; then reset like
+        set_operation, so the next run start uses it. A failing play changes nothing."""
+        chk = self.check_play(play)
+        if chk.ok:
+            plays = [play if p.id == play.id else p for p in self.scenario.plays]
+            if all(p.id != play.id for p in self.scenario.plays):
+                plays.append(play)
+            self.scenario = self.scenario.model_copy(update={"plays": plays})
+            self.reset()
+        return chk
 
     def _next(self, kind: str) -> tuple[str, int]:
         self._n[kind] += 1

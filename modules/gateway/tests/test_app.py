@@ -65,6 +65,22 @@ def test_switch_request_and_approve():
     assert client.post(f"/injections/{inj['id']}/approve").json()["status"] == "approved"
 
 
+def test_plays_check_and_save():
+    from modules.gateway.tests.test_live_plays import PATROL_A, no_report_play
+
+    client, _ = fake_app()
+    bad = no_report_play().model_dump(mode="json")
+    assert client.post("/plays/check", json=bad).json()["ok"] is False
+    assert client.post("/plays", json=bad).json()["ok"] is False
+    renamed = PATROL_A.model_copy(update={"name": "해안 순찰 A2"}).model_dump(mode="json")
+    assert client.post("/plays", json=renamed).json() == {
+        "ok": True,
+        "issues": [],
+        "est_return_battery": {"d1": 53.6, "d3": 51.4},
+    }
+    assert "해안 순찰 A2" in [p["name"] for p in client.get("/plays").json()]
+
+
 def test_reset_pauses():
     client, _ = fake_app()
     client.post("/run/live?speed=5")

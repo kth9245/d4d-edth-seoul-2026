@@ -15,7 +15,7 @@ from types import SimpleNamespace
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 
-from contracts.models import DecisionIn, DirectIn, Operation, SwitchIn
+from contracts.models import DecisionIn, DirectIn, Operation, Play, SwitchIn
 from modules import sim
 from modules.gateway import stub_engine
 from modules.gateway.live import Live
@@ -83,6 +83,18 @@ def create_app(
     @app.get("/plays")
     async def plays():
         return live.scenario.plays
+
+    @app.post("/plays")
+    async def save_play(play: Play):
+        chk = live.save_play(play)  # saved and reset only when the check passes
+        log.info("POST /plays %s ok=%s issues=%d", play.id, chk.ok, len(chk.issues))
+        return chk
+
+    @app.post("/plays/check")
+    async def check_play(play: Play):
+        chk = live.check_play(play)
+        log.info("POST /plays/check %s ok=%s issues=%d", play.id, chk.ok, len(chk.issues))
+        return chk
 
     @app.get("/operation")
     async def get_operation():
