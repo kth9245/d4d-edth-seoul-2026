@@ -27,6 +27,7 @@
 ### 누구나
 - **Part1-18** 타격: 계약 추가 5개 + play 대응표 행 + TS·예시 (한 커밋)
 - **Part1-19** 타격: 시나리오·플레이 JSON (fast1 동쪽 해안 우회, track_fast 수정·track_fast_sea·strike, 고속 보트 추적 전환 버튼)
+- **Part1-20** 타격: 화면 (무력화 표적 X·결과 카드·작전 성공·예시 장면 s7·s8)
 - **Part3-15** play `compile_mavlink` (결정 0011) · 하위 0/1 완료 · PLY-10
 
 ## 최근 결정

@@ -194,3 +194,4 @@
 {"at": "2026-10-10T11:37:23+09:00", "by": "kth9245", "op": "add", "id": "Part1-19", "title": "타격: 시나리오·플레이 JSON (fast1 동쪽 해안 우회, track_fast 수정·track_fast_sea·strike, 고속 보트 추적 전환 버튼)", "parent": null, "assign": null, "slot": null, "spec": null}
 {"at": "2026-10-10T11:37:26+09:00", "by": "kth9245", "op": "start", "id": "Part1-11", "take": false, "from": null}
 {"at": "2026-10-10T11:37:28+09:00", "by": "kth9245", "op": "decide", "id": "Part1-11", "text": "직접 조종은 기체 클릭(선택, 초록 링·안내 줄·십자 커서) → 지도 클릭 → POST /direct, 보낸 뒤 선택 해제, Esc나 같은 기체 다시 누르면 취소. 차단 카드에 대안 지점이 있으면 '대안 지점으로' → 같은 기체로 대안 좌표 POST /direct. 막힘 판단은 서버(safety)만. 리드 답 'ㄱㄱ'"}
+{"at": "2026-10-10T11:37:34+09:00", "by": "kth9245", "op": "add", "id": "Part1-20", "title": "타격: 화면 (무력화 표적 X·결과 카드·작전 성공·예시 장면 s7·s8)", "parent": null, "assign": null, "slot": null, "spec": null}
