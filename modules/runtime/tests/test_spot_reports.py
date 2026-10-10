@@ -10,6 +10,7 @@ from contracts.models import (
     Step,
     Switch,
     Target,
+    VehicleSpec,
     VehicleState,
 )
 from modules.runtime.actions.spot_reports import spot_reports
@@ -44,6 +45,14 @@ OP = Operation(id="op", name="op", area=SQ, zone=SQ, vehicle_ids=["d1", "d2", "d
                                 role_by_vehicle={"d2": "track_fast", "usv": "track_fast_sea"})])  # fmt: skip
 
 
+ISLE = Polygon(points=[GeoPoint(lat=37.94, lon=124.64), GeoPoint(lat=37.94, lon=124.66),
+                       GeoPoint(lat=37.96, lon=124.66), GeoPoint(lat=37.96, lon=124.64)])  # fmt: skip
+LAND = [ISLE]  # HOME (37.98, 124.70) is at sea
+SPECS = {v: VehicleSpec(id=v, name=v, domain=d, speed_mps=10, endurance_min=60, sensor_range_m=800,
+                        capabilities=[], home=HOME)
+         for v, d in (("d1", "air"), ("d2", "air"), ("d3", "air"), ("d4", "air"), ("usv", "sea"))}  # fmt: skip
+
+
 def vs(
     vid, role=None, status="active", target=None, battery=100.0, pending=None, step="s"
 ) -> VehicleState:
@@ -66,9 +75,11 @@ FLEET = [vs("d1", "go_home", "returning", battery=20), vs("d2", "coast_a"), vs("
 
 def test_a_watching_drone_raises_a_card_for_a_new_enemy_with_target_switches_then_standby_drones():
     # decision 0057: d3 keeps watching boat1 and asks who to send to fast1
-    (rep,) = spot_reports(FLEET, [tg("boat1", "boat", reported="d1"), tg()], ROLES, OP, T)
+    (rep,) = spot_reports(
+        FLEET, [tg("boat1", "boat", reported="d1"), tg()], ROLES, OP, SPECS, LAND, T
+    )
     assert (rep.id, rep.kind, rep.vehicle_id, rep.target_id) == (
-        f"rep-d3-{T}-s",
+        f"rep-d3-{T}-fast1",
         "target_detected",
         "d3",
         "fast1",
@@ -84,15 +95,15 @@ def test_a_watching_drone_raises_a_card_for_a_new_enemy_with_target_switches_the
 
 def test_no_card_before_the_threat_builds_up_or_once_reported_worked_or_struck():
     for t in (tg(accum=449_999), tg(reported="d2"), tg(struck=T), tg(seen=())):
-        assert spot_reports(FLEET, [t], ROLES, OP, T) == []
+        assert spot_reports(FLEET, [t], ROLES, OP, SPECS, LAND, T) == []
     on_it = [*FLEET[:3], vs("d4", "watch", target="fast1"), FLEET[4]]  # someone already works fast1
-    assert spot_reports(on_it, [tg()], ROLES, OP, T) == []
+    assert spot_reports(on_it, [tg()], ROLES, OP, SPECS, LAND, T) == []
 
 
 def test_keep_when_no_target_switch_and_no_standby_drone():
     op = OP.model_copy(update={"switches": OP.switches[:1]})
     busy = [*FLEET[:3], vs("d4", "coast_a"), FLEET[4]]
-    (rep,) = spot_reports(busy, [tg()], ROLES, op, T)
+    (rep,) = spot_reports(busy, [tg()], ROLES, op, SPECS, LAND, T)
     assert [c.id for c in rep.choices] == ["keep"]
 
 
@@ -100,4 +111,21 @@ def test_a_patrolling_drone_leaves_the_card_to_its_own_report_step():
     # decision 0036: the patrol's report step raises it (a tick after target_found); spot cards are for the rest
     for step in ("s", "r"):
         fleet = [vs("d2", "coast_a", step=step), FLEET[3]]
-        assert spot_reports(fleet, [tg(seen=("d2",))], ROLES, OP, T) == []
+        assert spot_reports(fleet, [tg(seen=("d2",))], ROLES, OP, SPECS, LAND, T) == []
+
+
+def test_a_switch_that_would_move_the_reporter_or_cannot_reach_the_target_domain_is_not_offered():
+    # decision 0057: the reporter keeps its job; decision 0055: a usv never chases a target on land
+    (rep,) = spot_reports(FLEET, [tg(seen=("usv",))], ROLES, OP, SPECS, LAND, T)
+    assert "switch_track_fast" not in [c.id for c in rep.choices]
+    ashore = tg("e_ugv1", "unknown").model_copy(update={"pos": GeoPoint(lat=37.95, lon=124.65)})
+    (rep,) = spot_reports(FLEET, [ashore], ROLES, OP, SPECS, LAND, T)
+    assert [c.id for c in rep.choices] == ["watch_d4"]
+
+
+def test_two_targets_in_one_tick_get_two_card_ids():
+    two = [tg(), tg("fast2")]
+    assert [r.id for r in spot_reports(FLEET, two, ROLES, OP, SPECS, LAND, T)] == [
+        f"rep-d3-{T}-fast1",
+        f"rep-d3-{T}-fast2",
+    ]
