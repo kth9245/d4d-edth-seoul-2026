@@ -15,4 +15,4 @@
 | SIM-10 | resolve_strikes | states, targets, t_ms | (targets, list[Report]) | 100 m 안·밖, 이미 무력화면 카드 없음, 같은 틱 두 기체면 카드 하나(결정 0033) | kth9245 | 완료 |
 | SIM-11 | spawn_enemies | scenario, targets, t_ms, dt_ms | targets | 등장 틱에만 하나, from_enemy 위치, play_id·step_id·step_since_ms | kth9245 | 완료 |
 | SIM-12 | steer_enemies | enemies, plays, targets, t_ms, dt_ms, land | targets | 목적지 방향 속도, 도착 틱에 위치 맞춤·속도 0·waypoint -1, time_elapsed 전이, 무력화면 그대로 · 배는 land를 돌아가 도착(결정 0034) | kth9245 | 완료 |
-| SIM-13 | sea_aim | pos, goal, land | GeoPoint | 열린 직선이면 goal, 막히면 가까운 쪽 모서리, 모서리 위면 다음 모서리, 목표가 육지면 해안 50 m 바다 점, 육지 위 출발·land 없음이면 goal | kth9245 | 진행중 |
+| SIM-13 | sea_aim | pos, goal, land | GeoPoint | 열린 직선이면 goal, 막히면 가까운 쪽 모서리, 모서리 위면 다음 모서리, 목표가 육지면 해안 50 m 바다 점, 육지 위 출발·land 없음이면 goal | kth9245 | 완료 |
