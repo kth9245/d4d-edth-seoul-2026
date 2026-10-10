@@ -529,3 +529,4 @@
 {"at": "2026-10-10T23:51:35+09:00", "by": "황승주", "op": "add", "id": "Part2-58", "title": "멸공 적 대응 단계별 카드 흐름 설계 문서", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T23:51:39+09:00", "by": "황승주", "op": "start", "id": "Part2-58", "take": false, "from": null}
 {"at": "2026-10-10T23:54:32+09:00", "by": "황승주", "op": "done", "id": "Part2-58", "take": false}
+{"at": "2026-10-10T23:55:45+09:00", "by": "kth9245", "op": "add", "id": "Part1-42.3", "title": "결정 번호 겹침: 무력화 뒤 정찰 이어가기 결정(최동호, 공격 작전 항모)을 0058에서 0066으로 옮기고 참조를 고친다", "parent": "Part1-42", "assign": null, "slot": null, "spec": null}
