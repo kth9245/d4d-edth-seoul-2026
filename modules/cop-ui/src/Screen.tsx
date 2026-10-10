@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Frame, Polygon } from "./contracts.gen";
+import { CardList } from "./features/cards/CardList";
 import { tilesExist } from "./features/map/basemap";
 import { MapView } from "./features/map/MapView";
 
@@ -15,6 +16,7 @@ export function Screen({ frame, zone, status, ok }:
       {tiles === null ? <div className="map" /> : <MapView frame={frame} zone={zone} tilesAvailable={tiles} />}
       <aside>
         <div className={ok ? "status ok" : "status down"}>{status}</div>
+        <CardList frame={frame} />
       </aside>
     </div>
   );
