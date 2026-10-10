@@ -1,8 +1,9 @@
 """FastAPI app: REST inputs, WS Frame stream and the static UI (contracts/API.md §5).
 
 Run: uvicorn modules.gateway.app:create_app --factory (env KDTH_SCENARIO, KDTH_UI_DIST).
-One operation lives in process memory (`Live`); a background task calls `Live.period()`
-every `period_s`. Handlers are async so all state changes happen on the event loop thread.
+The demo operations live in process memory (`Live`, one of them running, decision 0041);
+a background task calls `Live.period()` every `period_s`. Handlers are async so all state
+changes happen on the event loop thread.
 """
 
 import asyncio
@@ -27,6 +28,12 @@ from shared.log import get_logger, setup_logging
 log = get_logger("gateway")
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SCENARIO = str(ROOT / "demo/scenarios/baengnyeong_night.json")
+# Operations the editor can pick (decision 0041). The backup baengnyeong_night_before_0036.json
+# shares the night scenario id, so it is left out.
+DEMO_SCENARIOS = [
+    DEFAULT_SCENARIO,
+    str(ROOT / "demo/scenarios/baengnyeong_24h.json"),
+]
 
 
 def default_engine():
@@ -43,12 +50,15 @@ def create_app(
     ui_dist: str | None = None,
     engine=None,
     period_s: float = 0.2,
+    scenario_paths: list[str] | None = None,
 ) -> FastAPI:
     setup_logging("gateway")  # decision 0010: always log (stderr + logs/gateway.log)
     eng = engine or default_engine()
     path = scenario_path or os.environ.get("KDTH_SCENARIO", DEFAULT_SCENARIO)
-    live = Live(eng.load_scenario_json(path), eng.init_engine, eng.tick)
-    log.info("scenario %s loaded", path)
+    paths = DEMO_SCENARIOS if scenario_paths is None else scenario_paths
+    catalog = [eng.load_scenario_json(p) for p in paths]
+    live = Live(eng.load_scenario_json(path), eng.init_engine, eng.tick, catalog)
+    log.info("scenario %s loaded; %d operations to pick", path, len(live.scenarios))
 
     async def run_loop() -> None:
         while True:
@@ -133,6 +143,17 @@ def create_app(
             return build_object_graph(live.state, focus)
         except ValueError as e:
             raise HTTPException(404, str(e)) from e
+
+    @app.get("/scenarios")
+    async def scenarios():
+        return live.scenario_infos()
+
+    @app.post("/scenarios/{scenario_id}/activate")
+    async def activate(scenario_id: str):
+        if scenario_id not in live.scenarios:
+            raise HTTPException(404, f"no scenario {scenario_id}")
+        log.info("POST /scenarios/%s/activate", scenario_id)
+        return live.activate(scenario_id)
 
     @app.post("/operation")
     async def post_operation(op: Operation):

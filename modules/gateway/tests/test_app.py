@@ -46,6 +46,36 @@ def test_enemies_come_from_the_scenario():
     assert all(e["play_id"] in plays for e in enemies)
 
 
+def test_scenarios_lists_the_demo_operations_with_the_running_one_active():
+    # decision 0041: the editor picks one of the demo operations
+    client, _ = fake_app()
+    got = client.get("/scenarios").json()
+    assert [(s["id"], s["active"]) for s in got] == [
+        ("baengnyeong_night", True),
+        ("baengnyeong_24h", False),
+    ]
+
+
+def test_activate_switches_what_the_editor_endpoints_answer():
+    client, _ = fake_app()
+    run = client.post("/scenarios/baengnyeong_24h/activate").json()
+    assert run["status"] == "paused"
+    assert client.get("/operation").json()["name"] == "백령도 해안 순찰 24시간 교대(가상)"
+    assert [v["id"] for v in client.get("/vehicles").json()] == ["d1", "d2", "d3"]
+    assert [s["active"] for s in client.get("/scenarios").json()] == [False, True]
+
+
+def test_activate_an_unknown_scenario_is_404():
+    client, _ = fake_app()
+    assert client.post("/scenarios/nope/activate").status_code == 404
+    assert client.get("/operation").json()["name"] == "백령도 야간 해안 경계"
+
+
+def test_scenario_paths_replace_the_demo_list():
+    client, _ = fake_app(scenario_paths=[SCENARIO])
+    assert [s["id"] for s in client.get("/scenarios").json()] == ["baengnyeong_night"]
+
+
 def test_run_live_then_ws_streams_running_frames():
     client, _ = fake_app()
     with client:
