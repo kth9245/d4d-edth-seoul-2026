@@ -17,3 +17,4 @@
 | RT-12 | relieve_hover |  |  |  | 황승주 | 완료 |
 | RT-13 | route_command | Action, Domain, 기체 위치, params | (CommandKind/None, params) | 상대 경로가 기체 위치 기준 좌표, move_to+route는 follow_route loop false, 그 밖은 expand_action 그대로 | kth9245 | 완료 |
 | RT-14 | relief_due | VehicleState, VehicleSpec, 교대 기체 비행 분 | bool | 기준 배터리(귀환량 2배 빼고 35%) 또는 교대 비행 중 순찰기 소모+7% ≥ 하한선 위 여유면 참. 멀리서 오는 교대도 하한선 전에 인계(사용자 10/10) | 황승주 | 완료 |
+| RT-15 | target_domain | Target, land | air/ground/sea | drone이면 공중, 아니면 지금 위치가 섬 안이면 지상·밖이면 해상(결정 0055) | 황승주 | 완료 |

@@ -98,7 +98,7 @@ def test_report_without_choices_does_not_wait():
 
 
 def test_no_command_when_the_domain_cannot_do_the_action():
-    st, cmd, _ = run(Action(kind="watch_target", params={"target": "nearest"}), [boat("b", 1)],
+    st, cmd, _ = run(Action(kind="approach_target", params={"target": "nearest"}), [boat("b", 1)],
                      domain="ground")  # fmt: skip
     assert cmd is None and st.entered_step
 

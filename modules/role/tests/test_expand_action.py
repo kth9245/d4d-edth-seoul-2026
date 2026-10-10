@@ -24,7 +24,11 @@ def test_action_becomes_the_domain_command(kind, domain, want):
 
 def test_none_when_the_domain_cannot_do_it():
     assert expand_action(Action(kind="search_area"), Domain.ground) is None
-    assert expand_action(Action(kind="watch_target"), "ground") is None
+    assert expand_action(Action(kind="strike_target"), "ground") is None
+
+
+def test_ground_robot_can_watch_a_target():  # 24h raid: ugv tracks a ground enemy (decision 0055)
+    assert expand_action(Action(kind="watch_target"), Domain.ground) == CommandKind.keep_distance
 
 
 def test_table_covers_every_action_for_three_domains():

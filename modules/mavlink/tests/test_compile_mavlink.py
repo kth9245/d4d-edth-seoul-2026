@@ -66,8 +66,8 @@ def test_follow_mode_number_depends_on_the_vehicle():
 
 
 def test_action_the_vehicle_cannot_do_gives_an_empty_mission():
-    plan, script = run("watch", {"ugv": "watch"})["ugv"]  # no watch_target on the ground
-    assert commands(plan) == [] and "'watch'" in script
+    plan, script = run("approach", {"ugv": "approach"})["ugv"]  # no approach_target on the ground
+    assert commands(plan) == [] and "'approach'" in script
 
 
 @pytest.mark.parametrize("role_id", sorted(ROLES))

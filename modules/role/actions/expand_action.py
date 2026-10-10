@@ -11,7 +11,11 @@ TABLE: dict[str, tuple[CommandKind | None, ...]] = {  # (air, sea, ground)
     "patrol_route": (K.follow_route,) * 3,
     "search_area": (K.zigzag, K.zigzag, None),
     "return_home": (K.return_home,) * 3,
-    "watch_target": (K.orbit, K.keep_distance, None),
+    "watch_target": (
+        K.orbit,
+        K.keep_distance,
+        K.keep_distance,
+    ),  # ground: 24h raid ugv (decision 0055)
     "watch_point": (K.orbit, K.hold, K.hold),
     "approach_target": (K.keep_distance, K.keep_distance, None),
     "relay_comms": (K.relay,) * 3,
