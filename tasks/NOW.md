@@ -2,11 +2,13 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 12:04 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 12:05 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
+- **Part1-18** 타격: 계약 추가 5개 + play 대응표 행 + TS·예시 (한 커밋) — kth9245, 10/10 12:05부터
 - **Part2-19** 시나리오 튜닝 — 최동호, 10/10 12:02부터
 - **Part3-10.1** 워크플로우 그래프 보기(step 카드 + 조건 연결선, React Flow) — kth9245, 10/10 12:04부터
+- ⚠ kth9245 진행중 2개
 
 ## 막힘
 - (없음)
@@ -28,7 +30,6 @@
 - **Part2-25** sim 적 진행(SIM-11, 결정 0032) + engine.py 호출
 
 ### 누구나
-- **Part1-18** 타격: 계약 추가 5개 + play 대응표 행 + TS·예시 (한 커밋)
 - **Part1-19** 타격: 시나리오·플레이 JSON (fast1 동쪽 해안 우회, track_fast 수정·track_fast_sea·strike, 고속 보트 추적 전환 버튼)
 - **Part1-20** 타격: 화면 (무력화 표적 X·결과 카드·작전 성공·예시 장면 s7·s8)
 - **Part1-21** 편집기 적 열 + GET /enemies (결정 0032, 읽기 전용)
