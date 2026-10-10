@@ -324,3 +324,4 @@
 {"at": "2026-10-10T15:16:46+09:00", "by": "황승주", "op": "start", "id": "Part2-27", "take": false, "from": null}
 {"at": "2026-10-10T15:17:29+09:00", "by": "황승주", "op": "done", "id": "Part2-27", "take": false}
 {"at": "2026-10-10T15:18:26+09:00", "by": "최동호", "op": "add", "id": "Part2-28", "title": "표적 위협도 판단 (결정 0039): sensing score_target, 계약·sim·gateway 연결", "parent": null, "assign": null, "slot": null, "spec": null}
+{"at": "2026-10-10T15:18:32+09:00", "by": "최동호", "op": "start", "id": "Part2-28", "take": false, "from": null}
