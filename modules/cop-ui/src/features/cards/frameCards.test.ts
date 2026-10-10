@@ -18,7 +18,8 @@ describe("frameCards", () => {
     const cards = frameCards(s4 as Frame);
     expect(cards.filter((c) => c.kind === "injection_pending")).toEqual([]);
     const inj = cards.find((c) => c.source === "injection")!;
-    expect(inj).toMatchObject({ id: "inj-1", vehicle: "d2", text: "고속 보트 추적: d2", done: null, choices: [] });
+    expect(inj).toMatchObject({ id: "inj-1", vehicle: "d2", text: "고속 보트 추적: d2", done: null, choices: [],
+      preview: "d2→track_fast" });
   });
 
   it("shows each block from Frame.blocks with its reason and detail, not the command_blocked reports", () => {

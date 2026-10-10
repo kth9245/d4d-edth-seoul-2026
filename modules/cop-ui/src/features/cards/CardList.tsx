@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import type { Frame } from "../../contracts.gen";
 import "./cards.css";
 import { type Card, frameCards } from "./frameCards";
+import { postSettle } from "./injectionRequests";
 import { postDecision } from "./postDecision";
+import type { Sent } from "./postJson";
 import { pruneSent } from "./pruneSent";
 
 const TITLE: Record<Card["kind"], string> = {
@@ -24,7 +26,8 @@ const TONE: Partial<Record<Card["kind"], string>> = {
 
 type SendState = { state: "sending" } | { state: "sent"; id: string } | { state: "error"; error: string };
 
-// Side column: one card per report / injection / block, newest first; choice buttons → POST /decisions.
+// Side column: one card per report / injection / block, newest first.
+// Report choices → POST /decisions; a pending injection gets approve / reject → POST /injections/{id}/...
 export function CardList({ frame }: { frame: Frame | null }) {
   const [sent, setSent] = useState<Record<string, SendState>>({});
   const lastT = useRef(0);
@@ -32,18 +35,19 @@ export function CardList({ frame }: { frame: Frame | null }) {
     if (!frame) return;
     const back = frame.t_ms < lastT.current;
     lastT.current = frame.t_ms;
-    setSent((m) => pruneSent(m, frame.reports.map((r) => r.id), back));
+    setSent((m) => pruneSent(m, [...frame.reports.map((r) => r.id), ...frame.injections.map((i) => i.id)], back));
   }, [frame]);
   if (!frame) return null;
   const cards = frameCards(frame);
   const paused = frame.run.status === "paused";
 
-  const choose = async (reportId: string, choiceId: string) => {
-    const s = sent[reportId]?.state;
-    if (s === "sending" || s === "sent") return; // one decision per report
-    setSent((m) => ({ ...m, [reportId]: { state: "sending" } }));
-    const r = await postDecision(reportId, choiceId);
-    setSent((m) => ({ ...m, [reportId]: r.ok ? { state: "sent", id: r.id } : { state: "error", error: r.error } }));
+  // One answer per card: locked while sending and after the server accepted it, until the Frame shows it done.
+  const send = async (cardId: string, request: () => Promise<Sent>) => {
+    const s = sent[cardId]?.state;
+    if (s === "sending" || s === "sent") return;
+    setSent((m) => ({ ...m, [cardId]: { state: "sending" } }));
+    const r = await request();
+    setSent((m) => ({ ...m, [cardId]: r.ok ? { state: "sent", id: r.id } : { state: "error", error: r.error } }));
   };
 
   if (cards.length === 0) return <div className="cards empty">아직 보고 없음</div>;
@@ -61,12 +65,19 @@ export function CardList({ frame }: { frame: Frame | null }) {
               <time>{c.time}</time>
             </div>
             <div className="text">{c.text}</div>
+            {c.preview && <div className="preview">{c.preview}</div>}
             {c.choices.map((ch) => (
-              <button key={ch.id} disabled={locked} onClick={() => choose(c.id, ch.id)}>
+              <button key={ch.id} disabled={locked} onClick={() => send(c.id, () => postDecision(c.id, ch.id))}>
                 {ch.label}
                 {ch.preview && <small>{ch.preview}</small>}
               </button>
             ))}
+            {c.source === "injection" && !c.done && (
+              <div className="settle">
+                <button disabled={locked} onClick={() => send(c.id, () => postSettle(c.id, true))}>승인</button>
+                <button className="secondary" disabled={locked} onClick={() => send(c.id, () => postSettle(c.id, false))}>거부</button>
+              </div>
+            )}
             {!c.done && s?.state === "sent" && (
               <div className="note">보냄 {s.id} · {paused ? "재생하면 반영" : "다음 틱에 반영"}</div>
             )}

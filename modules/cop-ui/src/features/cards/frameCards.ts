@@ -11,6 +11,7 @@ export interface Card {
   time: string;
   text: string;
   choices: CardChoice[]; // only on open reports
+  preview?: string; // injections: what approving switches, e.g. "d2→track_fast"
   done: string | null; // null = still needs the operator (or a block, which is an event)
 }
 
@@ -19,19 +20,20 @@ export interface Card {
 const SKIP: ReportKind[] = ["injection_pending", "command_blocked"];
 const SETTLED: Record<string, string> = { approved: "승인됨", rejected: "거부됨" };
 
+const switches = (pbv: Record<string, string> | undefined) =>
+  Object.entries(pbv ?? {}).map(([v, p]) => `${v}→${p}`).join(" · ");
+
 function fromReport(r: Report): Card {
   const done = r.resolved_ms == null ? null : `처리됨 ${kstTime(r.resolved_ms)}`;
-  const choices = done ? [] : (r.choices ?? []).map((c) => ({
-    id: c.id, label: c.label,
-    preview: Object.entries(c.play_by_vehicle ?? {}).map(([v, p]) => `${v}→${p}`).join(" · "),
-  }));
+  const choices = done ? [] : (r.choices ?? []).map((c) => ({ id: c.id, label: c.label, preview: switches(c.play_by_vehicle) }));
   return { id: r.id, source: "report", kind: r.kind, vehicle: r.vehicle_id ?? null, t_ms: r.t_ms,
     time: kstTime(r.t_ms), text: r.text, choices, done };
 }
 
 function fromInjection(i: Injection): Card {
   return { id: i.id, source: "injection", kind: "injection", vehicle: Object.keys(i.play_by_vehicle).join("·") || null,
-    t_ms: i.t_ms, time: kstTime(i.t_ms), text: i.label, choices: [], done: SETTLED[i.status ?? "pending"] ?? null };
+    t_ms: i.t_ms, time: kstTime(i.t_ms), text: i.label, choices: [], preview: switches(i.play_by_vehicle),
+    done: SETTLED[i.status ?? "pending"] ?? null };
 }
 
 function fromBlock(b: Block): Card {

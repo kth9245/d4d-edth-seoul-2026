@@ -33,3 +33,7 @@
 | UI-28 | MetricsPanel | Metrics | 지표 패널 | 운용자 조작 대 기체별 직접 명령 수 나란히, 나머지 지표, 수동 기준 주석 | 리드 | 완료 |
 | UI-29 | savePlay | Play | PlayCheck | POST /plays(검사 통과 시 서버 메모리에 저장·실행을 시작 전으로), 2xx 아니면·연결 실패면 오류 | 리드 | 완료 |
 | UI-30 | issuesByStep·batteryText | PlayCheck, Play | {byStep, general} / string | step id 있는 오류는 그 카드에, 없거나 모르는 step은 플레이 머리에, 예상 귀환 배터리 한 줄 (편집기 저장 막대, Part3-11) | 리드 | 완료 |
+| UI-31 | postJson | url, body? | {ok, id} \| {ok: false, error} | POST 공통: 실패해도 throw 없이 상태·detail, postDecision이 씀 | 리드 | 완료 |
+| UI-32 | postSwitch·postSettle | SwitchIn / injection id, 승인 여부 | {ok, id} \| 오류 | POST /injections, /injections/{id}/approve·reject | 리드 | 완료 |
+| UI-33 | fetchPlays | — | Play[] | GET /plays, 실패·목록 아님이면 [] | 리드 | 완료 |
+| UI-34 | SwitchPanel | frame | 전환 요청 패널 | 작전 전체 전환 버튼 + 일부 전환(기체·플레이) → 승인 대기 생성 | 리드 | 완료 |

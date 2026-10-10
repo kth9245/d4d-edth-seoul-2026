@@ -26,6 +26,12 @@
   --font: "Pretendard Variable", Pretendard, system-ui, sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, "Pretendard Variable", monospace;
   --font-display: Orbitron, "Pretendard Variable", sans-serif;
+  /* First-pass names (Part1-9.2) still used by screens built from that message: keep them as aliases. */
+  --panel: var(--s1);
+  --raised: var(--s2);
+  --on-friend: #08202b;
+  --font-ui: var(--font);
+  --font-data: var(--font-mono);
   --ls: 0.14em;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --r: 0;
@@ -59,10 +65,11 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .status.down { color: var(--hostile); }
 @keyframes live-pulse { 50% { opacity: 0.35; } }
 @media (prefers-reduced-motion: reduce) { .status.ok::before { animation: none; } }
-.cards::before, .metrics::before { display: block; margin-bottom: 8px; font-family: var(--font-mono); font-size: 10px;
+.cards::before, .metrics::before, .switchpanel::before { display: block; margin-bottom: 8px; font-family: var(--font-mono); font-size: 10px;
   letter-spacing: var(--ls); color: var(--dim); }
 .cards::before { content: "EVENT LOG"; }
 .metrics::before { content: "OPERATOR LOAD"; }
+.switchpanel::before { content: "PLAY SWITCH"; }
 
 /* Cards: code and left rule say what kind of event it is */
 .card { padding: 12px 14px; border: 1px solid var(--line); border-left: 2px solid var(--live); border-radius: var(--r); background: var(--s2); }
@@ -86,8 +93,21 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .card button small { margin-top: 3px; font-family: var(--font-mono); font-size: 11px; font-weight: 500; opacity: 0.7; }
 .card button.secondary { border-color: var(--line2); background: transparent; color: var(--text2); }
 .card button.secondary:hover:not(:disabled) { border-color: var(--hostile); background: transparent; color: var(--hostile); }
+.card .preview { color: var(--unknown); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; }
 .card .note { margin-top: 8px; color: var(--muted); font-family: var(--font-mono); font-size: 11px; opacity: 1; }
 .card .note.error { color: var(--hostile); }
+
+/* Switch request panel (Part1-12): whole-operation switches are big moves, so amber; the request is the primary button */
+.switchpanel select { border: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); color: var(--text); font-family: var(--font); }
+.switchpanel select:hover { border-color: var(--text); }
+.switchpanel button { border: 1px solid var(--line2); border-radius: var(--r); background: transparent; color: var(--text2); font-weight: 600; }
+.switchpanel .whole button { border-color: rgba(245, 158, 11, 0.45); color: var(--warn); }
+.switchpanel .whole button:hover:not(:disabled) { background: var(--warn-soft); border-color: var(--warn); }
+.switchpanel .partial button { border-color: var(--text); background: var(--text); color: var(--bg); font-weight: 700; }
+.switchpanel .partial button:hover:not(:disabled) { border-color: var(--live); background: var(--live); }
+.switchpanel button:disabled, .switchpanel .partial button:disabled { border-color: var(--line2); background: var(--s3); color: var(--muted); }
+.switchpanel .note { color: var(--muted); font-family: var(--font-mono); }
+.switchpanel .note.error { color: var(--hostile); }
 
 /* Map symbols: friendly vehicles share one color and show status by fill and ring; targets by affiliation */
 .mk i { border: 2px solid var(--bg); }
@@ -149,6 +169,11 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .step-card { border: 1px solid var(--line); border-left: 2px solid var(--friend); border-radius: var(--r); background: var(--s2); }
 .step-report { border: 1px solid var(--line); border-radius: var(--r); background: var(--s1); }
 .switch { border: 1px solid rgba(245, 158, 11, 0.4); border-radius: var(--r); background: var(--warn-soft); color: var(--warn); }
+.save { padding: 7px 16px; border: 1px solid var(--text); background: var(--text); color: var(--bg); }
+.save:hover:not(:disabled) { border-color: var(--live); background: var(--live); }
+.save-ok { color: var(--live); font-family: var(--font-mono); font-size: 12px; }
+.save-bad { font-family: var(--font-mono); font-size: 12px; }
+.editor .battery { color: var(--muted); font-family: var(--font-mono); font-size: 12px; }
 .link { color: var(--text); text-decoration-color: var(--line2); text-underline-offset: 3px; }
 .link:hover { color: var(--live); text-decoration-color: var(--live); }
 .missing { color: var(--hostile); }

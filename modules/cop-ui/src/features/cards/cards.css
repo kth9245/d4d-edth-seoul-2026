@@ -14,3 +14,14 @@
 .card button small { display: block; margin-top: 2px; font-weight: 400; font-size: 12px; opacity: 0.85; }
 .card .note { margin-top: 4px; font-size: 12px; opacity: 0.8; }
 .card .note.error { color: #ff7875; opacity: 1; }
+
+/* Approve / reject row and the switch request panel (Part1-12). Layout only; colors in theme.css. */
+.card .preview { margin-top: 2px; font-size: 12px; }
+.card .settle { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.card .settle button { text-align: center; }
+.switchpanel { margin-bottom: 18px; }
+.switchpanel .whole { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+.switchpanel .partial { display: grid; grid-template-columns: 0.8fr 1.6fr auto; gap: 6px; }
+.switchpanel select, .switchpanel button { min-width: 0; padding: 8px 10px; font-size: 13px; cursor: pointer; }
+.switchpanel button:disabled { cursor: default; }
+.switchpanel .note { margin-top: 6px; font-size: 11px; }

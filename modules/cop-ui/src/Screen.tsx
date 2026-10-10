@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import type { Frame, Polygon } from "./contracts.gen";
 import { CardList } from "./features/cards/CardList";
+import { SwitchPanel } from "./features/cards/SwitchPanel";
 import { tilesExist } from "./features/map/basemap";
 import { MapView } from "./features/map/MapView";
 import { MetricsPanel } from "./features/run/MetricsPanel";
 import { RunBar } from "./features/run/RunBar";
 
-// Map with the run bar under it on the left; status, metrics and cards in the side column.
+// Map with the run bar under it on the left; status, metrics, switch requests and cards in the side column.
 export function Screen({ frame, zone, status, ok }:
   { frame: Frame | null; zone: Polygon | null; status: string; ok: boolean }) {
   const [tiles, setTiles] = useState<boolean | null>(null);
@@ -22,6 +23,7 @@ export function Screen({ frame, zone, status, ok }:
       <aside>
         <div className={ok ? "status ok" : "status down"}>{status}</div>
         <MetricsPanel metrics={frame?.metrics ?? null} />
+        <SwitchPanel frame={frame} />
         <CardList frame={frame} />
       </aside>
     </div>
