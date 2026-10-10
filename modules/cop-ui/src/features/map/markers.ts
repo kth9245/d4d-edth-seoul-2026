@@ -45,7 +45,7 @@ function sync<T extends { id: string; lon: number; lat: number; label?: string }
 
 export function syncVehicles(map: MapLibreMap, store: MarkerStore, items: VehicleMarker[],
   selected: string | null, onClick: (id: string) => void): void {
-  sync(map, store, items, (v) => `mk vehicle ${v.status}${v.id === selected ? " selected" : ""}`, onClick);
+  sync(map, store, items, (v) => `mk vehicle ${v.status} batt-${v.battery}${v.id === selected ? " selected" : ""}`, onClick);
 }
 
 export function syncTargets(map: MapLibreMap, store: MarkerStore, items: TargetMarker[]): void {

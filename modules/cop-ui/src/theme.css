@@ -328,3 +328,7 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .og-edge .react-flow__edge-textbg { fill: var(--bg); }
 .delete { border: 1px solid var(--hostile); background: none; color: var(--hostile); }
 .delete.armed { background: var(--hostile); color: var(--text); }
+
+/* battery label right of a drone (user, 10/10): yellow at 50% or less, red at 30% or less */
+.mk.vehicle.batt-mid span { color: #f5c542; }
+.mk.vehicle.batt-low span { color: #ff5a5a; }

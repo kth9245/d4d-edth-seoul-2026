@@ -86,7 +86,19 @@ def build() -> dict:
     night = json.loads(NIGHT.read_text(encoding="utf-8"))
     sc = Scenario.model_validate(night)
     a, b = coast_routes(sc.land, sc.vehicles[0].home)
-    drones = [v | {"recharge_min": 5} for v in night["vehicles"] if v["domain"] == "air"]
+    base = sc.vehicles[
+        0
+    ].home  # pads: a 50 m square around the night base, d1 NW d2 NE d3 SW d4 SE (user, 10/10)
+    pads = {"d1": (-25, 25), "d2": (25, 25), "d3": (-25, -25), "d4": (25, -25)}
+    home = {}
+    for k, (e, n) in pads.items():
+        lat, lon = offset_latlon(base.lat, base.lon, e, n)
+        home[k] = {"lat": round(lat, 7), "lon": round(lon, 7), "alt_m": 0.0}
+    drones = [
+        v | {"recharge_min": 5, "home": home[v["id"]]}
+        for v in night["vehicles"]
+        if v["domain"] == "air"
+    ]
     plays = {p["id"]: p for p in night["plays"]}
     op = night["operation"] | {
         "name": "멸공",

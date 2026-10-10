@@ -97,8 +97,8 @@
    "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "home": {
-    "lat": 37.95,
-    "lon": 124.7,
+    "lat": 37.9502248,
+    "lon": 124.6997149,
     "alt_m": 0.0
    },
    "recharge_min": 5,
@@ -113,8 +113,8 @@
    "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "home": {
-    "lat": 37.955,
-    "lon": 124.7,
+    "lat": 37.9502248,
+    "lon": 124.7002851,
     "alt_m": 0.0
    },
    "recharge_min": 5,
@@ -129,8 +129,8 @@
    "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "home": {
-    "lat": 37.945,
-    "lon": 124.7,
+    "lat": 37.9497752,
+    "lon": 124.6997149,
     "alt_m": 0.0
    },
    "recharge_min": 5,
@@ -145,8 +145,8 @@
    "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "home": {
-    "lat": 37.96,
-    "lon": 124.7,
+    "lat": 37.9497752,
+    "lon": 124.7002851,
     "alt_m": 0.0
    },
    "recharge_min": 5,

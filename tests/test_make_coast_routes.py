@@ -36,3 +36,16 @@ def test_the_24h_scenario_takes_the_night_ontology_and_drone_kinds():  # decisio
     committed = json.loads((ROOT / "demo/scenarios/baengnyeong_24h.json").read_text("utf-8"))
     assert committed["ontology"] == out["ontology"]
     assert committed["vehicles"] == out["vehicles"]
+
+
+def test_the_24h_drones_take_off_and_land_on_a_50_m_square():  # user, 10/10: d1 NW, d2 NE, d3 SW, d4 SE
+    from contracts.models import GeoPoint
+    from shared.geo import dist_m
+
+    committed = json.loads((ROOT / "demo/scenarios/baengnyeong_24h.json").read_text("utf-8"))
+    assert committed["vehicles"] == _script().build()["vehicles"]
+    h = {v["id"]: GeoPoint(**v["home"]) for v in committed["vehicles"]}
+    for a, b in (("d1", "d2"), ("d3", "d4"), ("d1", "d3"), ("d2", "d4")):
+        assert abs(dist_m(h[a], h[b]) - 50) < 0.5, (a, b)
+    assert abs(dist_m(h["d1"], h["d4"]) - 50 * 2**0.5) < 0.5
+    assert h["d1"].lat > h["d3"].lat and h["d2"].lon > h["d1"].lon
