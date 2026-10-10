@@ -90,4 +90,7 @@ def test_the_24h_coast_cards_call_the_usv_and_ugv_with_the_night_roles():  # use
     for coast in ("coast_a", "coast_b"):
         card = roles[coast].steps[1].report
         assert [c.label for c in card.choices] == ["근접 확인", "수상정 인계"] and card.auto_choices
-    assert day.operation.switches[0].role_by_vehicle == {"usv": "track_fast_sea"}
+    track = next(
+        s for s in day.operation.switches if s.id == "track_fast"
+    )  # after all_home (Part2-46)
+    assert track.role_by_vehicle == {"usv": "track_fast_sea"}

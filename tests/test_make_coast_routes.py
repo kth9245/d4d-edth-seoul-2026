@@ -50,3 +50,15 @@ def test_the_24h_drones_take_off_and_land_on_a_600_m_square():  # user, 10/10: v
         assert abs(dist_m(h[a], h[b]) - 600) < 1, (a, b)
     assert abs(dist_m(h["d1"], h["d4"]) - 600 * 2**0.5) < 1
     assert h["d1"].lat > h["d3"].lat and h["d2"].lon > h["d1"].lon
+
+
+def test_the_24h_operation_takes_the_night_strike_role_and_all_home_switch():  # user, 10/10
+    night = json.loads((ROOT / "demo/scenarios/baengnyeong_night.json").read_text("utf-8"))
+    strike = next(r for r in night["roles"] if r["id"] == "strike")
+    all_home = next(s for s in night["operation"]["switches"] if s["id"] == "all_home")
+    out = _script().build()
+    assert strike in out["roles"]
+    assert out["operation"]["switches"][0] == all_home
+    committed = json.loads((ROOT / "demo/scenarios/baengnyeong_24h.json").read_text("utf-8"))
+    assert committed["roles"] == out["roles"]
+    assert committed["operation"]["switches"] == out["operation"]["switches"]

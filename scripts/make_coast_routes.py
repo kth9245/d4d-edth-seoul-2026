@@ -141,12 +141,13 @@ def build() -> dict:
         },
         "reserve": {},
         "switches": [
+            *(sw for sw in night["operation"]["switches"] if sw["id"] == "all_home"),  # user, 10/10
             {
                 "id": "track_fast",
                 "label": "고속 보트 추적",
                 "role_by_vehicle": {"usv": "track_fast_sea"},
-            }
-        ],  # usv only: d2 stays on its coast
+            },
+        ],  # track_fast: usv only, d2 stays on its coast
         "rotation": ["d1", "d2", "d3", "d4"],
         "rotation_pools": {"coast_a": ["d1", "d3"], "coast_b": ["d2", "d4"]},
         "rotation_roles": ["coast_a", "coast_b"],

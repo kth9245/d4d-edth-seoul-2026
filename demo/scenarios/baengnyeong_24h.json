@@ -72,6 +72,18 @@
   "reserve": {},
   "switches": [
    {
+    "id": "all_home",
+    "label": "전 기체 귀환",
+    "role_by_vehicle": {
+     "d1": "go_home",
+     "d2": "go_home",
+     "d3": "go_home",
+     "usv": "go_home",
+     "ugv": "go_home",
+     "d4": "go_home"
+    }
+   },
+   {
     "id": "track_fast",
     "label": "고속 보트 추적",
     "role_by_vehicle": {
