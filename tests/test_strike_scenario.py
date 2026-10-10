@@ -567,3 +567,9 @@ def test_site_a_is_exactly_as_before(sc):
         ["kind_unknown", "near_watch_radius", "rf_emission"],
     )
     assert (a.ir_detected, a.sound_detected) == (False, False)
+
+
+def test_the_operation_is_called_by_its_plain_name(sc):
+    # no "(가상)" in the name the screen lists; the purpose text still says the sites are virtual (policy 2)
+    assert sc.operation.name == "해안 거점 무력화"
+    assert "(가상)" not in sc.operation.name
