@@ -42,6 +42,9 @@ SEARCH = {
     "search_n": [_p(37.967, 124.640), _p(37.975, 124.652)],
     "search_s": [_p(37.943, 124.640), _p(37.934, 124.652)],
     "search_f": [_p(37.965, 124.672), _p(37.955, 124.688)],
+    # r2 goes on scouting the east coast after the south site (nobody sits idle); the loop and the transit from the
+    # south site keep 1.7 km from the forest site, so r2 never reports it first and r1 still finds it
+    "search_e": [_p(37.940, 124.722), _p(37.958, 124.738), _p(37.972, 124.728)],
 }
 # the objective area: every site lies within three radii (near step +0.15), so a silent site scores 0.45 and
 # the finder's card goes up (decision 0043)
@@ -131,7 +134,7 @@ def build():
     enemies = [{"id": i, "kind": "unknown", "speed_mps": 0.0, "appear_offset_ms": APPEAR_MS,
                 "pos": _p(lat, lon), "from_enemy": None, "role_id": "site_hold", "emit_start_offset_ms": None}
                for i, lat, lon in SITES]  # fmt: skip
-    roles = [recon("r1", [("search_n", "북쪽"), ("search_f", "숲속")]), recon("r2", [("search_s", "남쪽")]),
+    roles = [recon("r1", [("search_n", "북쪽"), ("search_f", "숲속")]), recon("r2", [("search_s", "남쪽"), ("search_e", "동쪽 해안")]),
              nr["standby"], nr["go_home"], nr["watch"], nr["approach"], point_strike(nr["strike"]), site_hold()]  # fmt: skip
     out = night | {
         "id": "baengnyeong_assault", "operation": op, "vehicles": vehicles, "roles": roles,

@@ -454,6 +454,70 @@
         "kind": "target_neutralized",
         "params": {}
        },
+       "go_step": "search_e"
+      }
+     ],
+     "report": {
+      "text": "거점 발견",
+      "choices": [],
+      "auto_choices": false
+     },
+     "ui": {}
+    },
+    {
+     "id": "search_e",
+     "name": "거점 탐색 · 동쪽 해안",
+     "do": {
+      "kind": "patrol_route",
+      "params": {
+       "route": [
+        {
+         "lat": 37.94,
+         "lon": 124.722,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.958,
+         "lon": 124.738,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.972,
+         "lon": 124.728,
+         "alt_m": 0.0
+        }
+       ],
+       "route_name": "동쪽 해안"
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "target_found",
+        "params": {}
+       },
+       "go_step": "watch_e"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "watch_e",
+     "name": "감시 · 동쪽 해안",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "nearest",
+       "distance_m": 150
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "target_neutralized",
+        "params": {}
+       },
        "go_step": "home"
       }
      ],

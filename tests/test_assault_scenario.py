@@ -107,6 +107,22 @@ def test_each_site_lies_on_its_finders_search_route(sc):
         assert min(dist_m(p, by[site]) for p in _route(sc, role, step)) < 800, site
 
 
+def test_r2_goes_on_to_the_east_coast_far_from_the_forest_site(sc):
+    steps = [s.id for s in _roles(sc)["recon_r2"].steps]
+    assert steps == ["formation", "search_s", "watch_s", "search_e", "watch_e", "home"]
+    south = next(e.pos for e in sc.enemies if e.id == "site_s")
+    forest = next(e.pos for e in sc.enemies if e.id == "site_f")
+    east = _route(sc, "recon_r2", "search_e")
+    legs = [(south, east[0]), *zip(east, east[1:] + east[:1])]  # the transit from the south site, then the loop
+
+    def nearest(a, b, k=60):
+        pts = [GeoPoint(lat=a.lat + (b.lat - a.lat) * i / k, lon=a.lon + (b.lon - a.lon) * i / k) for i in range(k + 1)]
+        return min(dist_m(p, forest) for p in pts)
+
+    # out of r2's 800 m camera, so r2 never reports the forest site first and r1 still finds it
+    assert min(nearest(a, b) for a, b in legs) > 800
+
+
 def test_every_site_scores_above_the_card_threshold(sc):
     wp = sc.watch_points[0]
     for e in sc.enemies:  # near step +0.15: a silent unknown 0.30 becomes 0.45 >= 0.40
@@ -188,9 +204,10 @@ def test_full_run_the_operator_strikes_three_sites_with_two_drones(sc):
     es = _point(es, sc, 1, "a1", "site_n")
     es = _point(es, sc, 2, "a2", "site_s")
     es = _run_until(es, lambda e: _down(e, "site_n") and _down(e, "site_s"))
-    # r1 goes on to the forest; r2 is done and heads home
+    # r1 goes on to the forest; r2 goes on scouting the east coast (decision 0080 follow-up: nobody sits idle)
     es = _run_until(es, lambda e: _card(e, "site_f", "r1") is not None)
-    assert _st(es, "r2").status.value in ("returning", "maintenance")
+    assert _st(es, "r2").step_id == "search_e" and _st(es, "r2").status.value == "active"
+    assert _card(es, "site_f", "r2") is None
     es = _point(es, sc, 3, "a1", "site_f")  # a1's second sortie
     es = _run_until(es, lambda e: _down(e, "site_f"))
     assert all(_down(es, s) for s in SITES)
