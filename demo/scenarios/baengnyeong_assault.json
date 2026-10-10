@@ -639,7 +639,7 @@
    "template": true
   },
   {
-   "id": "strike",
+   "id": "point_strike",
    "name": "표적 타격",
    "domains": [
     "air",

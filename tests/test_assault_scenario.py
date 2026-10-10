@@ -75,7 +75,10 @@ def test_assign_and_operation_checks(sc):
     assert sc.id == "baengnyeong_assault" and sc.operation.id == "op_assault"
     assert sc.operation.assign == {"usv": "standby", "r1": "recon_r1", "r2": "recon_r2",
                                    "a1": "standby", "a2": "standby", "ugv": "standby"}  # fmt: skip
-    assert {"recon_r1", "recon_r2", "strike", "standby", "go_home", "site_hold"} <= set(_roles(sc))
+    assert {"recon_r1", "recon_r2", "point_strike", "standby", "go_home", "site_hold"} <= set(_roles(sc))
+    # no role named "strike": the engine then never puts strike buttons on the site cards (GW-13), the strike
+    # goes only through the vehicle menu, which keys off the strike_target step, not the role id
+    assert "strike" not in _roles(sc)
     assert check_operation(sc.operation, _roles(sc), {v.id: v for v in sc.vehicles}).ok
 
 
@@ -145,7 +148,7 @@ def _down(es, site):
 
 def _point(es, sc, n, vehicle, site):  # the vehicle menu's '표적 타격' (decision 0058): one approved request
     inj = Injection(id=f"inj-{n}", t_ms=es.t_ms + sc.tick_ms, label=f"표적 타격: {vehicle} → {site}",
-                    role_by_vehicle={vehicle: "strike"}, target_by_vehicle={vehicle: site},
+                    role_by_vehicle={vehicle: "point_strike"}, target_by_vehicle={vehicle: site},
                     status="approved")  # fmt: skip
     es, _ = tick(es, TickInputs(injections=[inj]))
     return es
@@ -190,5 +193,10 @@ def test_full_run_the_operator_strikes_three_sites_with_two_drones(sc):
     assert _st(es, "r2").status.value in ("returning", "maintenance")
     es = _point(es, sc, 3, "a1", "site_f")  # a1's second sortie
     es = _run_until(es, lambda e: _down(e, "site_f"))
-    assert es.metrics.mission_success
+    assert all(_down(es, s) for s in SITES)
     assert not es.blocks  # cumulative over the run (engine.py: es.blocks + blocks)
+    # two drones seeing a site lift it to identified, yet no card gets strike buttons, and no decision is left
+    # waiting at the end (a stale card would keep the board's result box from showing)
+    site_cards = [r for r in es.reports if r.kind == "target_detected" and r.target_id in SITES]
+    assert len(site_cards) == 3 and all(not r.choices for r in site_cards)
+    assert not [r for r in es.reports if r.choices and not r.resolved_ms]

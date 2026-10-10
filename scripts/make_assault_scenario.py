@@ -93,6 +93,13 @@ def recon(vid, legs):
     return _role(f"recon_{vid}", f"정찰 · {vid}", ["air"], steps, "formation")
 
 
+def point_strike(night_strike):
+    """The night 'strike' Role under another id. With no role named "strike" the engine never puts strike buttons
+    on the site cards (GW-13 refresh_strike_cards), which would otherwise appear once two drones see a site and
+    stay on the card after the site is down; the vehicle menu still offers it, by its strike_target step."""
+    return copy.deepcopy(night_strike) | {"id": "point_strike"}
+
+
 def site_hold():
     return _role("site_hold", "적: 거점 대기", ["ground"], [_step("hold", "대기", "hold", {}, [])], "hold")
 
@@ -125,7 +132,7 @@ def build():
                 "pos": _p(lat, lon), "from_enemy": None, "role_id": "site_hold", "emit_start_offset_ms": None}
                for i, lat, lon in SITES]  # fmt: skip
     roles = [recon("r1", [("search_n", "북쪽"), ("search_f", "숲속")]), recon("r2", [("search_s", "남쪽")]),
-             nr["standby"], nr["go_home"], nr["watch"], nr["approach"], nr["strike"], site_hold()]  # fmt: skip
+             nr["standby"], nr["go_home"], nr["watch"], nr["approach"], point_strike(nr["strike"]), site_hold()]  # fmt: skip
     out = night | {
         "id": "baengnyeong_assault", "operation": op, "vehicles": vehicles, "roles": roles,
         "events": [], "enemies": enemies,
