@@ -60,8 +60,9 @@ def test_activate_switches_what_the_editor_endpoints_answer():
     client, _ = fake_app()
     run = client.post("/scenarios/baengnyeong_24h/activate").json()
     assert run["status"] == "paused"
-    assert client.get("/operation").json()["name"] == "백령도 해안 순찰 24시간 교대(가상)"
-    assert [v["id"] for v in client.get("/vehicles").json()] == ["d1", "d2", "d3"]
+    day = sim.load_scenario_json(str(ROOT / "demo/scenarios/baengnyeong_24h.json"))
+    assert client.get("/operation").json()["name"] == day.operation.name
+    assert [v["id"] for v in client.get("/vehicles").json()] == [v.id for v in day.vehicles]
     assert [s["active"] for s in client.get("/scenarios").json()] == [False, True]
 
 
