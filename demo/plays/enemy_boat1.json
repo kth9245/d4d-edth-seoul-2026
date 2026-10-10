@@ -12,7 +12,7 @@
     "kind": "move_to",
     "params": {
      "target": {
-      "lat": 37.976,
+      "lat": 37.982,
       "lon": 124.7,
       "alt_m": 0
      }

@@ -12,7 +12,7 @@
     "kind": "move_to",
     "params": {
      "target": {
-      "lat": 37.985,
+      "lat": 37.988,
       "lon": 124.75,
       "alt_m": 0
      }
@@ -37,8 +37,8 @@
     "kind": "move_to",
     "params": {
      "target": {
-      "lat": 37.962,
-      "lon": 124.765,
+      "lat": 37.9645,
+      "lon": 124.737,
       "alt_m": 0
      }
     }
