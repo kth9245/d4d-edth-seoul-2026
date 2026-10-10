@@ -533,3 +533,4 @@
 {"at": "2026-10-10T23:55:48+09:00", "by": "kth9245", "op": "start", "id": "Part1-42.3", "take": false, "from": null}
 {"at": "2026-10-10T23:57:16+09:00", "by": "kth9245", "op": "done", "id": "Part1-42.3", "take": false}
 {"at": "2026-10-10T23:57:54+09:00", "by": "kth9245", "op": "add", "id": "Part1-48", "title": "실작전 탭: 시뮬레이션과 같은 화면으로 같은 실행을 운용자 화면으로 봄. 재생 조작·재생 속도 숨김(들어가면 ×1 재생), 센서가 본 것만(미탐 적·정답 적 수 제외)", "parent": null, "assign": null, "slot": null, "spec": null}
+{"at": "2026-10-10T23:57:57+09:00", "by": "kth9245", "op": "start", "id": "Part1-48", "take": false, "from": null}
