@@ -55,3 +55,44 @@ def test_a_gap_shorter_than_a_second_does_not_reset_the_sustained_time():
 def test_a_gap_of_a_second_or_more_resets_it():
     r = identify_target(True, 0, 3000, 5000, TICK)
     assert (r.state, r.confidence, r.observed_ms) == ("identifying", 62, 0)  # rf 25 + scan 37
+
+
+def test_a_heat_clue_with_a_fresh_scan_reaches_the_threshold_alone():  # decision 0069
+    r = identify_target(
+        False, 1, 0, 19800, TICK, ir_detected=True
+    )  # scan 40 + heat 10 + sustained 20
+    assert (r.state, r.confidence, r.reasons) == (
+        "identified",
+        70,
+        ["ir_signature", "scan", "sustained"],
+    )
+
+
+def test_a_sound_clue_does_the_same_and_both_clues_stack():
+    r = identify_target(False, 1, 0, 19800, TICK, sound_detected=True)
+    assert (r.state, r.confidence, r.reasons[0]) == ("identified", 70, "sound")
+    both = identify_target(
+        False, 1, 0, 0, TICK, ir_detected=True, sound_detected=True
+    )  # scan 40 + 10 + 10
+    assert both.confidence == 60 and both.reasons == ["ir_signature", "sound", "scan"]
+
+
+def test_clues_alone_never_identify_and_the_state_is_rf_only():
+    r = identify_target(
+        True, 0, None, 0, TICK, ir_detected=True, sound_detected=True
+    )  # 25 + 10 + 10, no scan
+    assert (r.state, r.confidence) == ("rf_only", 45)
+    only_sound = identify_target(False, 0, None, 0, TICK, sound_detected=True)
+    assert (only_sound.state, only_sound.confidence, only_sound.reasons) == (
+        "rf_only",
+        10,
+        ["sound"],
+    )
+
+
+def test_the_old_calls_are_unchanged_and_the_total_is_capped():
+    assert identify_target(True, 2, 0, 19800, TICK).confidence == 100  # 25 + 40 + 15 + 20
+    assert (
+        identify_target(True, 2, 0, 19800, TICK, ir_detected=True, sound_detected=True).confidence
+        == 100
+    )
