@@ -26,8 +26,9 @@ import { RunBar } from "./features/run/RunBar";
 // (a picked one opens its menu under its row, Part1-32.1) and the targets on the left with the operation's switch
 // buttons in its head, the map with the run bar in the middle, the decision queue on the right with the history
 // folded under it. A card's "연결 보기" opens its target's graph over the map.
-export function Screen({ frame, zone, status, ok }:
-  { frame: Frame | null; zone: Polygon | null; status: string; ok: boolean }) {
+// On 실작전 (ops, decision 0067) the same screen has no run bar.
+export function Screen({ frame, zone, status, ok, ops = false }:
+  { frame: Frame | null; zone: Polygon | null; status: string; ok: boolean; ops?: boolean }) {
   const [tiles, setTiles] = useState<boolean | null>(null);
   const [graph, setGraph] = useState<string | null>(null);
   const [slot, setSlot] = useState<HTMLElement | null>(null);
@@ -75,13 +76,13 @@ export function Screen({ frame, zone, status, ok }:
             roles={pointRoles(menuRoles.target, board?.tracks[direct.pick.target])} current={current}
             onPick={direct.onPoint} onCancel={direct.cancelPick} />
         )}
-        <RunBar frame={frame} />
+        {!ops && <RunBar frame={frame} />}
         {graph && <ObjectGraphView focus={graph} onClose={() => setGraph(null)} />}
         {mavlink && <MavlinkPanel onClose={() => setMavlink(false)} />}
       </div>
       <aside className="ops">
         <div className="ops-scroll">
-          {frame && board ? <DecisionQueue frame={frame} queue={board.queue} onGraph={setGraph} />
+          {frame && board ? <DecisionQueue frame={frame} queue={board.queue} onGraph={setGraph} ops={ops} />
             : <div className="next-act"><div className="t">게이트웨이 연결 대기</div></div>}
         </div>
         <div className="folds">

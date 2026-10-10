@@ -23,8 +23,9 @@ function Row({ item, onOpen }: { item: QueueItem; onOpen: () => void }) {
 }
 
 // The strike result stays as the answer to "what now" after its alert ages out (review of Task 6: at ×10 a
-// 2-minute alert lasts 12 s, and the strike is the last scene).
-function Idle({ frame, seen, onGraph }: { frame: Frame; seen: Card[]; onGraph?: (target: string) => void }) {
+// 2-minute alert lasts 12 s, and the strike is the last scene). 실작전 (ops, decision 0067) has no play or "다음
+// 사건" button, so its idle box does not point at them.
+function Idle({ frame, seen, onGraph, ops }: { frame: Frame; seen: Card[]; onGraph?: (target: string) => void; ops: boolean }) {
   const win = seen.find((c) => c.kind === "target_neutralized");
   const m = frame.metrics;
   return win ? (
@@ -34,14 +35,15 @@ function Idle({ frame, seen, onGraph }: { frame: Frame; seen: Card[]; onGraph?: 
       {onGraph && win.target && <button className="graph-open" onClick={() => onGraph(win.target!)}>연결 보기</button>}</div>
   ) : (
     <div className="next-act"><div className="k">할 일 없음</div><div className="t">지금 결정할 것이 없습니다</div>
-      <div className="s">▶ 재생하거나 다음 사건으로 넘어가세요.</div></div>
+      {!ops && <div className="s">▶ 재생하거나 다음 사건으로 넘어가세요.</div>}</div>
   );
 }
 
 // Right column (Part1-32): the decision queue — one item open (the first, or the one the operator opened), the
 // rest one line each; with nothing waiting, what to do next. One answer per card, locked while sending and after
 // the server accepted it until the Frame shows it done; a reset forgets what was sent (UI-20).
-export function DecisionQueue({ frame, queue, onGraph }: { frame: Frame; queue: Queue; onGraph?: (target: string) => void }) {
+export function DecisionQueue({ frame, queue, onGraph, ops = false }:
+  { frame: Frame; queue: Queue; onGraph?: (target: string) => void; ops?: boolean }) {
   const [sent, setSent] = useState<Record<string, SendState>>({});
   const [openKey, setOpenKey] = useState<string | null>(null);
   const lastT = useRef(0);
@@ -73,7 +75,7 @@ export function DecisionQueue({ frame, queue, onGraph }: { frame: Frame; queue: 
             ? <QueueCard key={item.key} frame={frame} item={item} sent={sent} send={send} onGraph={onGraph} />
             : <Row key={item.key} item={item} onOpen={() => setOpenKey(item.key)} />))}
         </>
-      ) : <Idle frame={frame} seen={[...queue.alerts, ...queue.history]} onGraph={onGraph} />}
+      ) : <Idle frame={frame} seen={[...queue.alerts, ...queue.history]} onGraph={onGraph} ops={ops} />}
       {queue.alerts.length > 0 && <div className="sec">알림</div>}
       {queue.alerts.map((c) => (
         <div key={`${c.source}-${c.id}`} className={`alert${c.kind === "target_neutralized" ? " win" : c.source === "block" ? " blk" : ""}`}>

@@ -1,0 +1,16 @@
+[
+ {"viewport": [1366, 768]},
+ {"nav": "/?qa=ops#live", "wait": 6000},
+ {"label": "O0 server back to the start", "eval": "fetch('/run/reset', { method: 'POST' }).then(r => r.status)", "expect": 200},
+ {"label": "O1 jump to T+12:00: boat1-3 are out (11:00) and nobody has seen them yet (first sighting 16:21)", "eval": "fetch('/run/jump?offset_ms=720000', { method: 'POST' }).then(r => r.status)", "expect": 200},
+ {"nav": "/?qa=ops2#live", "wait": 7000},
+ {"label": "O2 시뮬레이션 shows the simulator's truth: 3 enemies, all 미탐, run bar there", "eval": "({ head: document.querySelector('.situation .lbl')?.innerText, never: document.querySelectorAll('.mk.target.never').length, bar: !!document.querySelector('.runbar') })", "expect": {"head": "적 3척", "never": 3, "bar": true}},
+ {"label": "O3 switch to 실작전 in the page (hash only, no reload)", "eval": "(location.hash = '#ops', 'ok')", "expect": "ok"},
+ {"wait": 3000},
+ {"label": "O4 실작전: no run bar, nothing our sensors have not seen, same LIVE link and vehicles, the empty queue does not point at play/next buttons it lacks", "eval": "({ head: document.querySelector('.situation .lbl')?.innerText, targets: document.querySelectorAll('.mk.target').length, bar: !!document.querySelector('.runbar'), status: document.querySelector('.status')?.innerText, vehicles: document.querySelectorAll('.mk.vehicle').length, tab: document.querySelector('.tabs a.on')?.innerText, hint: document.querySelector('.next-act .s')?.innerText ?? null })", "expect": {"head": "적 0척", "targets": 0, "bar": false, "status": "LIVE", "vehicles": 6, "tab": "실작전", "hint": null}},
+ {"layout": "O4 layout ops 1366x768"},
+ {"shot": "ops.png"},
+ {"label": "O5 back to 시뮬레이션 (hash only)", "eval": "(location.hash = '#live', 'ok')", "expect": "ok"},
+ {"wait": 1500},
+ {"label": "O6 the run bar is back and the run flows at ×1 because entering 실작전 pressed play; the truth is back", "eval": "({ run: document.querySelector('.runbar .run-toggle')?.innerText, speed: document.querySelector('.runbar .speeds button.on')?.innerText, never: document.querySelectorAll('.mk.target.never').length, hint: document.querySelector('.next-act .s')?.innerText ?? null })", "expect": {"run": "⏸ 일시정지", "speed": "×1", "never": 3, "hint": "▶ 재생하거나 다음 사건으로 넘어가세요."}}
+]
