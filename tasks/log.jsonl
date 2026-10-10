@@ -634,3 +634,4 @@
 {"at": "2026-10-11T05:08:38+09:00", "by": "황승주", "op": "start", "id": "Part2-73", "take": false, "from": null}
 {"at": "2026-10-11T05:25:54+09:00", "by": "황승주", "op": "done", "id": "Part2-73", "take": false}
 {"at": "2026-10-11T05:52:21+09:00", "by": "황승주", "op": "add", "id": "Part2-74", "title": "다른 작전: 무력화된 표적을 감시·접근하던 기체도 순찰 복귀(없으면 기지), 0066 출구가 있는 step은 그대로", "parent": null, "assign": "황승주", "slot": null, "spec": null}
+{"at": "2026-10-11T05:52:25+09:00", "by": "황승주", "op": "start", "id": "Part2-74", "take": false, "from": null}
