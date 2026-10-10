@@ -378,3 +378,4 @@
 {"at": "2026-10-10T17:04:40+09:00", "by": "kth9245", "op": "start", "id": "Part1-30", "take": false, "from": null}
 {"at": "2026-10-10T17:07:03+09:00", "by": "kth9245", "op": "add", "id": "Part1-31", "title": "경로 선택과 offset 행동: 시나리오 경로 목록, 편집기 '경로 비행+반복'과 경로 선택칸, 상대 경로는 카드 진입 때 좌표로, T+ 조건 at_time (결정 0044·0045)", "parent": null, "assign": null, "slot": null, "spec": null}
 {"at": "2026-10-10T17:10:12+09:00", "by": "황승주", "op": "add", "id": "Part2-34", "title": "drones: endurance 100 min, battery swap 5 min (user)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
+{"at": "2026-10-10T17:10:28+09:00", "by": "황승주", "op": "start", "id": "Part2-34", "take": false, "from": null}

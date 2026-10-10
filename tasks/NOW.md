@@ -6,6 +6,7 @@
 
 ## 진행중
 - **Part1-30** 화면 점검 목록 최신화: editor.json·live.json 기대값을 d4·적 3척·위협 점수 변경에 맞춤 — kth9245, 10/10 17:04부터
+- **Part2-34** drones: endurance 100 min, battery swap 5 min (user) — 황승주, 10/10 17:10부터
 
 ## 막힘
 - (없음)
@@ -14,9 +15,6 @@
 
 ### kth9245
 - **Part1-15** 3분 대본·BUILT_HERE·제출 설명
-
-### 황승주
-- **Part2-34** drones: endurance 100 min, battery swap 5 min (user)
 
 ### 누구나
 - **Part1-31** 경로 선택과 offset 행동: 시나리오 경로 목록, 편집기 '경로 비행+반복'과 경로 선택칸, 상대 경로는 카드 진입 때 좌표로, T+ 조건 at_time (결정 0044·0045)
