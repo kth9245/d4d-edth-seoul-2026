@@ -1,43 +1,21 @@
 """MAV-01 compile_mavlink: Role을 기체별 QGC .plan + pymavlink 스크립트로(결정 0011, 실제 전송 없음)
 .plan은 entry step의 미션, 스크립트는 step 그래프 전체(틀: modules/mavlink/vehicle_script.py.txt).
+명령 종류 → MAV_CMD 대응표는 mav_cmd.py(mavlink_lines와 같은 표, 결정 0063).
 SPEC: modules/mavlink/SPEC.md#MAV-01
 """
 
 from pathlib import Path
 
-from contracts.models import CommandKind, Domain, Operation, Role, Step, VehicleSpec
+from contracts.models import Domain, Operation, Role, Step, VehicleSpec
+from modules.mavlink.mav_cmd import items as mav_items
 from modules.role import expand_action
 
 TEMPLATE = Path(__file__).resolve().parents[1] / "vehicle_script.py.txt"
-WAYPOINT, LOITER_UNLIM, RTL, DO_SET_MODE = 16, 17, 20, 176  # MAV_CMD
-FOLLOW = {Domain.air: 23, Domain.sea: 6, Domain.ground: 6}  # ArduPilot custom mode (Copter/Rover)
-ROVER_HOLD = 4
 MAV_TYPE = {Domain.air: 2, Domain.sea: 11, Domain.ground: 10}  # quadrotor / surface boat / rover
-AIR_ALT_M = 50  # roles store alt_m 0; drones need a flight altitude
-K = CommandKind
-
-
-def _points(step: Step, spec: VehicleSpec) -> list[list[float]]:
-    p = step.do.params
-    pts = p.get("route") or ([p["target"]] if isinstance(p.get("target"), dict) else [])
-    alt = AIR_ALT_M if spec.domain == Domain.air else 0
-    return [[q["lat"], q["lon"], q.get("alt_m") or alt] for q in pts]
 
 
 def _items(step: Step, spec: VehicleSpec) -> list[list[float]]:
-    """[MAV_CMD, p1..p7] per mission item; empty when the vehicle cannot do the action."""
-    kind, pts = expand_action(step.do, spec.domain), _points(step, spec)
-    if kind in (K.move, K.follow_route, K.zigzag):
-        return [[WAYPOINT, 0, 0, 0, 0, *pt] for pt in pts]
-    if kind == K.return_home:
-        return [[RTL, 0, 0, 0, 0, 0, 0, 0]]
-    if kind == K.keep_distance:
-        return [[DO_SET_MODE, 1, FOLLOW[spec.domain], 0, 0, 0, 0, 0]]
-    if kind == K.hold and spec.domain == Domain.ground:
-        return [[DO_SET_MODE, 1, ROVER_HOLD, 0, 0, 0, 0, 0]]
-    if kind in (K.orbit, K.hold, K.relay):  # lat/lon 0 = loiter where the vehicle is (ArduPilot)
-        return [[LOITER_UNLIM, 0, 0, 0, 0, *(pts[0] if pts else [0, 0, 0])]]
-    return []
+    return mav_items(expand_action(step.do, spec.domain), step.do.params, spec.domain)
 
 
 def _plan(items: list[list[float]], spec: VehicleSpec) -> dict:

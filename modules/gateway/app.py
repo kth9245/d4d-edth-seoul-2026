@@ -30,6 +30,7 @@ from contracts.models import (
 from modules import sim
 from modules.gateway.actions.build_object_graph import build_object_graph
 from modules.gateway.live import Live
+from modules.mavlink import mavlink_lines
 from modules.ontology import ontology_view
 from modules.role import draft_role
 from shared.log import get_logger, setup_logging
@@ -177,6 +178,10 @@ def create_app(
             return build_object_graph(live.state, focus)
         except ValueError as e:
             raise HTTPException(404, str(e)) from e
+
+    @app.get("/mavlink")
+    async def mavlink():  # decision 0063: commands that passed this run, as MAVLink message lines
+        return mavlink_lines(live.state.passed, live.state.specs)
 
     @app.get("/scenarios")
     async def scenarios():
