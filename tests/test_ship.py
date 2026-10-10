@@ -122,6 +122,18 @@ def test_ship_runs_tests_when_only_tests_dir_changed(tmp_path):
     assert r.returncode == 1 and "test_zz_broken" in r.stdout + r.stderr
 
 
+def test_ship_skips_slow_tests(tmp_path):  # decision 0056: `uv run pytest -m slow` runs them
+    _, work = make_clone(tmp_path)
+    (work / "tests/test_zz_slow.py").write_text(
+        "import pytest\n\npytestmark = pytest.mark.slow\n\n\ndef test_zz_slow():\n    assert False\n"
+    )
+    git(work, "add", "-A")
+    git(work, "commit", "-qm", "slow only")
+    r = run_ship(work)
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert "slow only" in git(work, "log", "--oneline", "origin/main", "-1")
+
+
 def test_ship_freeze_downgrades_test_failure_to_warning(tmp_path):
     remote, work = make_clone(tmp_path)
     t = work / "modules/tracking/tests/test_delete_stale_tracks.py"

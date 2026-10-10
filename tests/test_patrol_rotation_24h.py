@@ -12,6 +12,7 @@ from shared.geo import dist_m
 
 SCENARIO = Path(__file__).resolve().parent.parent / "demo" / "scenarios" / "baengnyeong_24h.json"
 WARMUP_S, DAY_S = 30 * 60, 24 * 3600
+pytestmark = pytest.mark.slow  # ~70 s: ship skips it, run `uv run pytest -m slow` (decision 0056)
 
 
 @pytest.fixture(scope="module")

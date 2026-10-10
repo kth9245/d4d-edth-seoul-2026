@@ -26,7 +26,8 @@ else
     | while read -r m; do [ -f "modules/$m/__init__.py" ] && echo "modules/$m"; done | tr '\n' ' ')
 fi
 if [ -n "${targets// /}" ]; then
-  out=$("$PYTEST" -q -x --ignore=tests/test_ship.py $targets 2>&1); rc=$?
+  # slow tests (decision 0056) are run by hand: uv run pytest -m slow
+  out=$("$PYTEST" -q -x -m "not slow" --ignore=tests/test_ship.py $targets 2>&1); rc=$?
   if [ "$rc" = 5 ]; then echo "[ship] 경고: $targets 에 테스트가 없습니다 (SPEC 행만 바뀐 새 모듈)";
   elif [ "$rc" != 0 ]; then echo "$out" | tail -25; soft_fail "테스트 실패"; fi
 fi

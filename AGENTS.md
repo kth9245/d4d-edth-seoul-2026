@@ -56,6 +56,7 @@ KDTH 2026 해커톤 팀 저장소. 24시간 안에 **로컬에서 작동하는 �
 
 ## 명령
 - 설치: `scripts/setup.sh <모듈>` · 개발: `scripts/dev.sh` · 시연: `scripts/demo.sh` · 테스트: `uv run pytest modules/<m>`(병렬이 기본, 테스트 하나 디버깅은 `-n 0`, 결정 0021) · 의존성: `uv add <패키지>`
+- ship은 `slow` 테스트(24시간 교대)를 돌리지 않는다(결정 0056). 교대 로직·`demo/scenarios/baengnyeong_24h.json`·`demo/roles/coast_*.json`을 바꿨으면, 그리고 프리즈 전에 `uv run pytest -m slow`.
 - 결정: 사람이 결정을 말하면 `/decide`로 적고, 사람이 답한 것은 같은 턴에 `uv run python scripts/decide.py accept NNNN --by <이름>`(승인 창이 뜬다). AI는 `확정`을 직접 쓰지 못한다. 조사 결과는 `/kb-save`.
 - 스킬: 개발·디버깅은 superpowers(brainstorming → test-driven-development → systematic-debugging → verification-before-completion), 되돌리기 비싼 결정 전에는 `/devil-advocate:devil-advocate`. 없으면 `/plugin install superpowers@claude-plugins-official`, `/plugin marketplace add hadicancatak-coder/devils-advocate` 뒤 `/plugin install devil-advocate@devil-advocate`.
 
