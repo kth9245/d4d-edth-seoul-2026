@@ -305,6 +305,13 @@
         "params": {}
        },
        "go_step": "report"
+      },
+      {
+       "cond": {
+        "kind": "target_resighted",
+        "params": {}
+       },
+       "go_step": "assist"
       }
      ],
      "report": null,
@@ -365,6 +372,54 @@
        }
       ],
       "auto_choices": true
+     },
+     "ui": {}
+    },
+    {
+     "id": "assist",
+     "name": "함께 관측",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 150
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "operator_choice",
+        "params": {
+         "choice": "back"
+        }
+       },
+       "go_step": "patrol"
+      },
+      {
+       "cond": {
+        "kind": "target_neutralized",
+        "params": {}
+       },
+       "go_step": "after_strike"
+      }
+     ],
+     "report": {
+      "text": "이미 보고된 거점 재탐지",
+      "choices": [
+       {
+        "id": "stay",
+        "label": "계속 관측",
+        "role_by_vehicle": {},
+        "target_by_vehicle": {}
+       },
+       {
+        "id": "back",
+        "label": "각자 순찰로 복귀",
+        "role_by_vehicle": {},
+        "target_by_vehicle": {}
+       }
+      ],
+      "auto_choices": false
      },
      "ui": {}
     },
@@ -519,6 +574,13 @@
         "params": {}
        },
        "go_step": "report"
+      },
+      {
+       "cond": {
+        "kind": "target_resighted",
+        "params": {}
+       },
+       "go_step": "assist"
       }
      ],
      "report": null,
@@ -579,6 +641,54 @@
        }
       ],
       "auto_choices": true
+     },
+     "ui": {}
+    },
+    {
+     "id": "assist",
+     "name": "함께 관측",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 150
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "operator_choice",
+        "params": {
+         "choice": "back"
+        }
+       },
+       "go_step": "patrol"
+      },
+      {
+       "cond": {
+        "kind": "target_neutralized",
+        "params": {}
+       },
+       "go_step": "after_strike"
+      }
+     ],
+     "report": {
+      "text": "이미 보고된 거점 재탐지",
+      "choices": [
+       {
+        "id": "stay",
+        "label": "계속 관측",
+        "role_by_vehicle": {},
+        "target_by_vehicle": {}
+       },
+       {
+        "id": "back",
+        "label": "각자 순찰로 복귀",
+        "role_by_vehicle": {},
+        "target_by_vehicle": {}
+       }
+      ],
+      "auto_choices": false
      },
      "ui": {}
     },
@@ -728,6 +838,13 @@
         "params": {}
        },
        "go_step": "report"
+      },
+      {
+       "cond": {
+        "kind": "target_resighted",
+        "params": {}
+       },
+       "go_step": "assist"
       }
      ],
      "report": null,
@@ -788,6 +905,54 @@
        }
       ],
       "auto_choices": true
+     },
+     "ui": {}
+    },
+    {
+     "id": "assist",
+     "name": "함께 관측",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 150
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "operator_choice",
+        "params": {
+         "choice": "back"
+        }
+       },
+       "go_step": "patrol"
+      },
+      {
+       "cond": {
+        "kind": "target_neutralized",
+        "params": {}
+       },
+       "go_step": "after_strike"
+      }
+     ],
+     "report": {
+      "text": "이미 보고된 거점 재탐지",
+      "choices": [
+       {
+        "id": "stay",
+        "label": "계속 관측",
+        "role_by_vehicle": {},
+        "target_by_vehicle": {}
+       },
+       {
+        "id": "back",
+        "label": "각자 순찰로 복귀",
+        "role_by_vehicle": {},
+        "target_by_vehicle": {}
+       }
+      ],
+      "auto_choices": false
      },
      "ui": {}
     },

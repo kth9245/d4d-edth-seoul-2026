@@ -97,6 +97,27 @@ def after_strike(drone: str) -> dict:
     }  # fmt: skip
 
 
+def assist() -> dict:
+    """A scout that meets a site another scout already reported stops and watches it too (decision 0066)."""
+    stay = {"id": "stay", "label": "계속 관측", "role_by_vehicle": {}, "target_by_vehicle": {}}
+    back = {
+        "id": "back",
+        "label": "각자 순찰로 복귀",
+        "role_by_vehicle": {},
+        "target_by_vehicle": {},
+    }
+    return {
+        "id": "assist", "name": "함께 관측",
+        "do": {"kind": "watch_target", "params": {"target": "operator", "distance_m": 150}},
+        "on": [
+            {"cond": {"kind": "operator_choice", "params": {"choice": "back"}}, "go_step": "patrol"},
+            {"cond": {"kind": "target_neutralized", "params": {}}, "go_step": "after_strike"},
+        ],
+        "report": {"text": "이미 보고된 거점 재탐지", "choices": [stay, back], "auto_choices": False},
+        "ui": {},
+    }  # fmt: skip
+
+
 def coast_patrols(day: dict) -> tuple[list[dict], list[dict]]:
     """One search Role and one editor route per coast stretch, cut from the 24h operation's coast routes."""
     base_role = next(r for r in day["roles"] if r["id"] == "coast_a")
@@ -131,7 +152,10 @@ def coast_patrols(day: dict) -> tuple[list[dict], list[dict]]:
             # decision 0066: once the site is struck the scout asks what next instead of hovering forever
             {"cond": {"kind": "target_neutralized", "params": {}}, "go_step": "after_strike"},
         ]  # decision 0031: the reporter not named in role_by_vehicle takes the operator_choice exit
-        role["steps"].append(after_strike(drone))
+        role["steps"][0]["on"].append(  # decision 0066: after target_found (a new site comes first)
+            {"cond": {"kind": "target_resighted", "params": {}}, "go_step": "assist"}
+        )
+        role["steps"] += [assist(), after_strike(drone)]
         roles.append(role)
         routes.append(route)
     return roles, routes

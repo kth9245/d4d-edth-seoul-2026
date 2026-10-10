@@ -361,3 +361,83 @@ def test_going_home_sends_the_scout_back_to_the_usv_spot(sc):
         es, _ = tick(es, TickInputs())
     assert _r1(es).role_id == "go_home"
     assert dist_m(_r1(es).pos, spot) < far - 3000  # it is flying back
+
+
+def test_every_patrol_stops_at_a_site_another_scout_reported(sc):  # decision 0066
+    roles = {r.id: r for r in sc.roles}
+    for drone, role_id in PATROL_OF.items():
+        steps = {s.id: s for s in roles[role_id].steps}
+        assert [e.go_step for e in steps["patrol"].on] == ["report", "assist"], drone
+        assert steps["patrol"].on[1].cond.kind.value == "target_resighted", drone
+        assist = steps["assist"]
+        assert (assist.do.kind.value, assist.do.params["target"]) == ("watch_target", "operator")
+        assert assist.report.text == "이미 보고된 거점 재탐지"
+        assert [c.id for c in assist.report.choices] == ["stay", "back"], drone
+        assert {(e.cond.kind.value, e.go_step) for e in assist.on} == {
+            ("operator_choice", "patrol"),
+            ("target_neutralized", "after_strike"),
+        }, drone
+
+
+def _answer(es, card, choice, sc):
+    dec = Decision(id=f"dec-{len(es.decisions) + 1}", t_ms=es.t_ms + sc.tick_ms,
+                   report_id=card.id, choice_id=choice)  # fmt: skip
+    es, _ = tick(es, TickInputs(decisions=[dec]))
+    return es
+
+
+def _open_card(es, vehicle, target):
+    return next(
+        (
+            r
+            for r in es.reports
+            if r.kind == "target_detected"
+            and (r.vehicle_id, r.target_id) == (vehicle, target)
+            and not r.resolved_ms
+        ),
+        None,
+    )
+
+
+def _two_scouts_on_site_b(sc):
+    """r2 and r1 answer 'resume'; r1 then holds site_b (card unanswered) until r3 passes it."""
+    es = init_engine(sc)
+    es = _run_until(es, lambda e: _open_card(e, "r2", "site_c") is not None)
+    es = _answer(es, _open_card(es, "r2", "site_c"), "resume", sc)
+    es = _run_until(es, lambda e: _open_card(e, "r1", "site_a") is not None)
+    es = _answer(es, _open_card(es, "r1", "site_a"), "resume", sc)
+    return _run_until(es, lambda e: _open_card(e, "r3", "site_b") is not None, limit=9000)
+
+
+def test_a_second_scout_stops_at_the_reported_site_and_raises_its_own_card(sc):
+    es = _two_scouts_on_site_b(sc)
+    card = _open_card(es, "r3", "site_b")
+    assert card.text.startswith("이미 보고된 거점 재탐지")
+    r3 = next(s for s in es.states if s.id == "r3")
+    assert (r3.step_id, r3.target_id) == ("assist", "site_b")
+    assert _site(es, "site_b").reported_by == "r1"  # the first reporter is not overwritten
+
+
+def test_two_scouts_on_a_silent_site_identify_it_and_open_the_strike_choices(sc):
+    es = _two_scouts_on_site_b(sc)
+    es = _run_until(es, lambda e: _site(e, "site_b").ident_state == "identified", limit=400)
+    es, _ = tick(es, TickInputs())  # the cards are refreshed at the end of the tick
+    site_b = _site(es, "site_b")
+    assert set(site_b.seen_by) >= {"r1", "r3"} and site_b.ident_confidence >= 70
+    assert "multi_observer" in site_b.ident_reasons  # without RF, two observers are what it took
+    ids = {c.id for c in _open_card(es, "r3", "site_b").choices}
+    assert {"strike_a1", "strike_a2", "strike_a3", "strike_all"} <= ids
+
+
+def test_the_second_scout_can_keep_watching_or_go_back_to_its_patrol(sc):
+    es = _two_scouts_on_site_b(sc)
+    left = next(s for s in es.states if s.id == "r3").patrol_idx
+    assert left > 0  # remembered when it stopped
+    stay = _answer(es, _open_card(es, "r3", "site_b"), "stay", sc)
+    for _ in range(60 * 1000 // sc.tick_ms):
+        stay, _ = tick(stay, TickInputs())
+    assert next(s for s in stay.states if s.id == "r3").step_id == "assist"  # still watching
+    back = _answer(es, _open_card(es, "r3", "site_b"), "back", sc)
+    back, _ = tick(back, TickInputs())
+    r3 = next(s for s in back.states if s.id == "r3")
+    assert (r3.step_id, r3.waypoint_idx) == ("patrol", left)  # continues, not from the start
