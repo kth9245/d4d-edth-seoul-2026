@@ -1,4 +1,4 @@
-"""SIM-04 load_scenario_json: 시나리오 JSON을 Scenario로 읽고 시작 시각·배정을 검사
+"""SIM-04 load_scenario_json: 시나리오 JSON을 Scenario로 읽고 시작 시각·배정을 검사 · ontology가 있으면 기체 능력을 계층에서 채움(결정 0038)
 SPEC: modules/sim/SPEC.md#SIM-04
 """
 
@@ -7,6 +7,7 @@ from pathlib import Path
 from pydantic import ValidationError
 
 from contracts.models import Scenario
+from modules.ontology import fill_vehicle_kinds
 
 
 def load_scenario_json(path: str | Path) -> Scenario:
@@ -20,4 +21,5 @@ def load_scenario_json(path: str | Path) -> Scenario:
     bad = {v: p for v, p in op.assign.items() if p not in play_ids or v not in op.vehicle_ids}
     if bad:
         raise ValueError(f"{path}: operation.assign이 없는 기체·플레이를 가리킵니다 {bad}")
-    return sc
+    # decision 0038: capabilities and kind_path from Scenario.ontology
+    return fill_vehicle_kinds(sc)

@@ -25,11 +25,12 @@ def check_play(play: Play, op: Operation, specs: dict[str, VehicleSpec]) -> Play
         if sp.domain not in play.domains:
             msg = f"{vid}({sp.domain.value})는 이 플레이 영역 밖"
             issues.append(ValidationIssue(code="domain_mismatch", message=msg))
+        why = f": {' → '.join(sp.kind_path)} 어디에도 이 능력 없음" if sp.kind_path else ""  # 0038
         issues += [
             ValidationIssue(
                 code="missing_capability",
                 step_id=s.id,
-                message=f"{vid}는 {s.do.kind.value}를 못 함",
+                message=f"{vid}는 {s.do.kind.value}를 못 함{why}",
             )  # fmt: skip
             for s in play.steps
             if s.do.kind not in sp.capabilities

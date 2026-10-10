@@ -9,14 +9,14 @@ from pathlib import Path
 
 import pytest
 
-from contracts.models import Play, Scenario
+from contracts.models import Play
 from modules.play import check_operation
 from modules.play.actions.build_draft_prompt import build_draft_prompt
+from modules.sim import load_scenario_json
 
 ROOT = Path(__file__).resolve().parent.parent
-SC = Scenario.model_validate_json(
-    (ROOT / "demo" / "scenarios" / "baengnyeong_night.json").read_text(encoding="utf-8")
-)
+# through the loader so capabilities come from the ontology (decision 0038)
+SC = load_scenario_json(ROOT / "demo" / "scenarios" / "baengnyeong_night.json")
 SENTENCES = json.loads((ROOT / "demo" / "draft_sentences.json").read_text(encoding="utf-8"))
 CACHE = ROOT / "demo" / "plays" / "cache"
 

@@ -13,12 +13,13 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from types import SimpleNamespace
 
-from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 
 from contracts.models import DecisionIn, DirectIn, DraftIn, Operation, Play, SwitchIn
 from modules import sim
 from modules.gateway.live import Live
+from modules.ontology import ontology_view
 from modules.play import draft_play
 from shared.log import get_logger, setup_logging
 
@@ -118,6 +119,12 @@ def create_app(
     @app.get("/enemies")
     async def enemies():
         return live.scenario.enemies
+
+    @app.get("/ontology")
+    async def ontology():  # decision 0038: the same inference the play check uses
+        if live.scenario.ontology is None:
+            raise HTTPException(404, "이 시나리오에는 온톨로지가 없습니다")
+        return ontology_view(live.scenario)
 
     @app.post("/operation")
     async def post_operation(op: Operation):

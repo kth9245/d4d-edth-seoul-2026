@@ -3,7 +3,8 @@ from types import SimpleNamespace
 
 from fastapi.testclient import TestClient
 
-from contracts.models import Frame, Scenario
+from contracts.models import Frame
+from modules import sim
 from modules.gateway import create_app
 from modules.gateway.tests.test_live import FakeEngine
 
@@ -14,7 +15,7 @@ SCENARIO = str(ROOT / "demo/scenarios/baengnyeong_night.json")
 def fake_app(**kw) -> tuple[TestClient, FakeEngine]:
     eng = FakeEngine()
     ns = SimpleNamespace(
-        load_scenario_json=lambda p: Scenario.model_validate_json(Path(p).read_text("utf-8")),
+        load_scenario_json=sim.load_scenario_json,  # capabilities from the ontology (decision 0038)
         init_engine=eng.init,
         tick=lambda state, inputs: eng.tick(state, inputs),  # tests may swap eng.tick
     )
@@ -180,3 +181,22 @@ def test_serves_ui_dist(tmp_path):
     (tmp_path / "index.html").write_text("<html>ui</html>")
     client, _ = fake_app(ui_dist=str(tmp_path))
     assert "ui" in client.get("/").text
+
+
+def test_ontology_view_from_the_scenario():  # decision 0038
+    client, _ = fake_app()
+    view = client.get("/ontology").json()
+    assert [v["vehicle_id"] for v in view["vehicles"]] == ["d1", "d2", "d3", "usv", "ugv"]
+    d1 = {r["action"]: r for r in view["vehicles"][0]["reasons"]}
+    assert d1["strike_target"]["allowed"] is False
+    assert d1["strike_target"]["path"] == ["recon_drone", "air_vehicle", "vehicle"]
+
+
+def test_check_shows_the_kind_path_when_d1_gets_a_strike_step():  # editor demo beat (0038)
+    client, _ = fake_app()
+    patrol = next(p for p in client.get("/plays").json() if p["id"] == "patrol_a")
+    strike = {"kind": "strike_target", "params": {"target": "nearest"}}
+    patrol["steps"].append({"id": "hit", "name": "타격", "do": strike})
+    chk = client.post("/plays/check", json=patrol).json()
+    msgs = [i["message"] for i in chk["issues"] if i["code"] == "missing_capability"]
+    assert "d1는 strike_target를 못 함: 정찰 드론 → 공중 기체 → 기체 어디에도 이 능력 없음" in msgs

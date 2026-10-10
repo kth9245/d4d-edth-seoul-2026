@@ -11,12 +11,12 @@ from contracts.models import (
     SwitchIn,
     TickInputs,
 )
+from modules import sim
 from modules.gateway.live import Live
 
 ROOT = Path(__file__).resolve().parents[3]
-SCENARIO = Scenario.model_validate_json(
-    (ROOT / "demo/scenarios/baengnyeong_night.json").read_text(encoding="utf-8")
-)
+# through the loader so capabilities come from the ontology (decision 0038)
+SCENARIO = sim.load_scenario_json(ROOT / "demo/scenarios/baengnyeong_night.json")
 START = SCENARIO.operation.started_ms
 
 

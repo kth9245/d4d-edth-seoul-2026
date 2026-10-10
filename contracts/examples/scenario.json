@@ -120,18 +120,7 @@
    "speed_mps": 15.0,
    "endurance_min": 50.0,
    "sensor_range_m": 800.0,
-   "capabilities": [
-    "move_to",
-    "patrol_route",
-    "search_area",
-    "return_home",
-    "watch_target",
-    "watch_point",
-    "approach_target",
-    "relay_comms",
-    "hold",
-    "strike_target"
-   ],
+   "capabilities": [],
    "home": {
     "lat": 37.95,
     "lon": 124.7,
@@ -149,18 +138,7 @@
    "speed_mps": 15.0,
    "endurance_min": 50.0,
    "sensor_range_m": 800.0,
-   "capabilities": [
-    "move_to",
-    "patrol_route",
-    "search_area",
-    "return_home",
-    "watch_target",
-    "watch_point",
-    "approach_target",
-    "relay_comms",
-    "hold",
-    "strike_target"
-   ],
+   "capabilities": [],
    "home": {
     "lat": 37.955,
     "lon": 124.7,
@@ -178,18 +156,7 @@
    "speed_mps": 15.0,
    "endurance_min": 50.0,
    "sensor_range_m": 800.0,
-   "capabilities": [
-    "move_to",
-    "patrol_route",
-    "search_area",
-    "return_home",
-    "watch_target",
-    "watch_point",
-    "approach_target",
-    "relay_comms",
-    "hold",
-    "strike_target"
-   ],
+   "capabilities": [],
    "home": {
     "lat": 37.945,
     "lon": 124.7,
@@ -207,18 +174,7 @@
    "speed_mps": 8.0,
    "endurance_min": 720.0,
    "sensor_range_m": 500.0,
-   "capabilities": [
-    "move_to",
-    "patrol_route",
-    "search_area",
-    "return_home",
-    "watch_target",
-    "watch_point",
-    "approach_target",
-    "relay_comms",
-    "hold",
-    "strike_target"
-   ],
+   "capabilities": [],
    "home": {
     "lat": 37.981,
     "lon": 124.691,
@@ -236,18 +192,7 @@
    "speed_mps": 5.0,
    "endurance_min": 480.0,
    "sensor_range_m": 300.0,
-   "capabilities": [
-    "move_to",
-    "patrol_route",
-    "search_area",
-    "return_home",
-    "watch_target",
-    "watch_point",
-    "approach_target",
-    "relay_comms",
-    "hold",
-    "strike_target"
-   ],
+   "capabilities": [],
    "home": {
     "lat": 37.955,
     "lon": 124.72,

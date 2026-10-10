@@ -45,3 +45,16 @@ def test_assign_to_unknown_play_raises(tmp_path):
 
     with pytest.raises(ValueError, match="assign"):
         load_scenario_json(_write(tmp_path, point_to_nothing))
+
+
+def test_capabilities_come_from_the_ontology():  # decision 0038
+    v = {x.id: x for x in load_scenario_json(DEMO).vehicles}
+    assert "strike_target" not in v["d1"].capabilities
+    assert "strike_target" in v["usv"].capabilities
+    assert v["d2"].kind_path == ["무장 드론", "공중 기체", "기체"]
+
+
+def test_scenario_without_ontology_keeps_hand_written_capabilities():  # 24h scenario, decision 0037
+    sc = load_scenario_json(ROOT / "demo" / "scenarios" / "baengnyeong_24h.json")
+    assert sc.ontology is None
+    assert all(v.capabilities and v.kind_path == [] for v in sc.vehicles)

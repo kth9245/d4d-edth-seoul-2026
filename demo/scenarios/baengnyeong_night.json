@@ -127,19 +127,7 @@
    },
    "recharge_min": 10.0,
    "rf_range_m": 2000.0,
-   "kind": "recon_drone",
-   "capabilities": [
-    "move_to",
-    "patrol_route",
-    "search_area",
-    "return_home",
-    "watch_target",
-    "watch_point",
-    "approach_target",
-    "relay_comms",
-    "hold",
-    "strike_target"
-   ]
+   "kind": "recon_drone"
   },
   {
    "id": "d2",
@@ -155,19 +143,7 @@
    },
    "recharge_min": 10.0,
    "rf_range_m": 2000.0,
-   "kind": "armed_drone",
-   "capabilities": [
-    "move_to",
-    "patrol_route",
-    "search_area",
-    "return_home",
-    "watch_target",
-    "watch_point",
-    "approach_target",
-    "relay_comms",
-    "hold",
-    "strike_target"
-   ]
+   "kind": "armed_drone"
   },
   {
    "id": "d3",
@@ -183,19 +159,7 @@
    },
    "recharge_min": 10.0,
    "rf_range_m": 2000.0,
-   "kind": "recon_drone",
-   "capabilities": [
-    "move_to",
-    "patrol_route",
-    "search_area",
-    "return_home",
-    "watch_target",
-    "watch_point",
-    "approach_target",
-    "relay_comms",
-    "hold",
-    "strike_target"
-   ]
+   "kind": "recon_drone"
   },
   {
    "id": "usv",
@@ -211,19 +175,7 @@
    },
    "recharge_min": 0.0,
    "rf_range_m": 0.0,
-   "kind": "armed_usv",
-   "capabilities": [
-    "move_to",
-    "patrol_route",
-    "search_area",
-    "return_home",
-    "watch_target",
-    "watch_point",
-    "approach_target",
-    "relay_comms",
-    "hold",
-    "strike_target"
-   ]
+   "kind": "armed_usv"
   },
   {
    "id": "ugv",
@@ -239,19 +191,7 @@
    },
    "recharge_min": 0.0,
    "rf_range_m": 0.0,
-   "kind": "ground_robot",
-   "capabilities": [
-    "move_to",
-    "patrol_route",
-    "search_area",
-    "return_home",
-    "watch_target",
-    "watch_point",
-    "approach_target",
-    "relay_comms",
-    "hold",
-    "strike_target"
-   ]
+   "kind": "ground_robot"
   }
  ],
  "plays": [

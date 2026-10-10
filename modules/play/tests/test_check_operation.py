@@ -1,13 +1,16 @@
 import json
 from pathlib import Path
 
-from contracts.models import Action, Condition, Exit, Operation, Play, Step, Switch, VehicleSpec
+from contracts.models import Action, Condition, Exit, Operation, Play, Step, Switch
 from modules.play.actions.check_operation import check_operation
+from modules.sim import load_scenario_json
 
 DEMO = Path(__file__).resolve().parents[3] / "demo"
 SC = json.loads((DEMO / "scenarios" / "baengnyeong_night.json").read_text(encoding="utf-8"))
 OP = Operation.model_validate(SC["operation"])
-SPECS = {v["id"]: VehicleSpec.model_validate(v) for v in SC["vehicles"]}
+# capabilities come from the ontology through the loader (decision 0038)
+LOADED = load_scenario_json(DEMO / "scenarios" / "baengnyeong_night.json")
+SPECS = {v.id: v for v in LOADED.vehicles}
 PLAYS = {
     p.stem: Play.model_validate_json(p.read_text(encoding="utf-8"))
     for p in (DEMO / "plays").glob("*.json")

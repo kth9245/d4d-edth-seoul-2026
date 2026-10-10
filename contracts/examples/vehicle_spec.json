@@ -14,8 +14,7 @@
   "watch_point",
   "approach_target",
   "relay_comms",
-  "hold",
-  "strike_target"
+  "hold"
  ],
  "home": {
   "lat": 37.95,
@@ -24,6 +23,10 @@
  },
  "recharge_min": 10.0,
  "kind": "recon_drone",
- "kind_path": [],
+ "kind_path": [
+  "정찰 드론",
+  "공중 기체",
+  "기체"
+ ],
  "rf_range_m": 2000.0
 }

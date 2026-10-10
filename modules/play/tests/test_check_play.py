@@ -3,13 +3,16 @@ from pathlib import Path
 
 import pytest
 
-from contracts.models import Action, Condition, Exit, Operation, Play, Step, VehicleSpec
+from contracts.models import Action, Condition, Exit, Operation, Play, Step
 from modules.play.actions.check_play import check_play
+from modules.sim import load_scenario_json
 
 DEMO = Path(__file__).resolve().parents[3] / "demo"
 SC = json.loads((DEMO / "scenarios" / "baengnyeong_night.json").read_text(encoding="utf-8"))
 OP = Operation.model_validate(SC["operation"])
-SPECS = {v["id"]: VehicleSpec.model_validate(v) for v in SC["vehicles"]}
+# capabilities come from the ontology through the loader (decision 0038)
+LOADED = load_scenario_json(DEMO / "scenarios" / "baengnyeong_night.json")
+SPECS = {v.id: v for v in LOADED.vehicles}
 PLAYS = {
     p.stem: Play.model_validate_json(p.read_text(encoding="utf-8"))
     for p in (DEMO / "plays").glob("*.json")
@@ -42,6 +45,14 @@ def test_vehicle_missing_a_capability():
     assert not chk.ok and {i.code for i in chk.issues} == {"missing_capability"}
 
 
+def test_missing_capability_message_shows_the_kind_path():  # decision 0038
+    strike = next(p for p in LOADED.plays if p.id == "strike")
+    op = OP.model_copy(update={"assign": {"d1": "strike"}})
+    chk = check_play(strike, op, SPECS)
+    msgs = [i.message for i in chk.issues if i.code == "missing_capability"]
+    assert "d1는 strike_target를 못 함: 정찰 드론 → 공중 기체 → 기체 어디에도 이 능력 없음" in msgs
+
+
 def test_play_without_its_report_point_fails():
     rush = Play(id="rush", name="r", domains=["sea"], entry="patrol", steps=[
         Step(id="patrol", name="p", do=Action(kind="hold"),
@@ -60,14 +71,14 @@ def test_broken_link_fails():
 def test_rotation_play_skips_the_full_lap_battery_check():  # decision 0037
     import json
 
-    from contracts.models import Operation, Play, VehicleSpec
+    from contracts.models import Operation, Play
 
     root = Path(__file__).resolve().parents[3]
     night = json.loads((root / "demo" / "scenarios" / "baengnyeong_night.json").read_text("utf-8"))
     coast = Play.model_validate(
         json.loads((root / "demo" / "plays" / "coast_a.json").read_text("utf-8"))
     )
-    specs = {v["id"]: VehicleSpec.model_validate(v) for v in night["vehicles"]}
+    specs = SPECS  # capabilities from the ontology (decision 0038)
     op = Operation.model_validate(night["operation"]).model_copy(
         update={"assign": {"d1": "coast_a"}}
     )
