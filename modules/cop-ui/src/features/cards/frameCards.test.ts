@@ -56,7 +56,7 @@ describe("frameCards", () => {
 
   it("adds the observed risk of the card's target as one line", () => {
     const f = { ...f1, targets: [boat("boat1", 58, ["kind_boat", "inside_watch_radius", "speed"])] };
-    expect(frameCards(f)[0].threat).toEqual({
+    expect(frameCards(f)[0].threat).toMatchObject({
       score: 0.58, rf: false, line: "관측 위험 0.58 · 스캔 판별: 보트 · 기준점 반경 안 +0.30 · 속도 5.0 m/s" });
   });
 
@@ -69,7 +69,14 @@ describe("frameCards", () => {
 
   it("says RF when our vehicles picked up its emission and 'before scan' when nobody has seen its kind", () => {
     const f = { ...f1, targets: [boat("boat1", 60, ["kind_unknown", "rf_emission"])] };
-    expect(frameCards(f)[0].threat).toEqual({ score: 0.6, rf: true, line: "관측 위험 0.60 · 스캔 전: 미상 · RF 방출 감지 +0.30" });
+    expect(frameCards(f)[0].threat).toMatchObject({ score: 0.6, rf: true, line: "관측 위험 0.60 · 스캔 전: 미상 · RF 방출 감지 +0.30" });
+  });
+
+  it("keeps each risk reason as its own item for the board (Part1-32)", () => {
+    const f = { ...f1, targets: [boat("boat1", 75, ["kind_boat", "rf_emission"])] };
+    const [c] = frameCards(f);
+    expect(c.threat?.parts).toEqual(["관측 위험 0.75", "스캔 판별: 보트", "RF 방출 감지 +0.30"]);
+    expect(c.threat?.line).toBe(c.threat?.parts.join(" · "));
   });
 
   it("has no risk line before sensing scored the target", () => {

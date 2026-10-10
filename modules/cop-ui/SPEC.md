@@ -58,3 +58,5 @@
 | UI-53 | describeAction·describeCondition(경로·T+) | Action/Condition | 카드 문구 | "경로 비행 · 이름|경로 N곳 · 한 번|반복 · 기체 위치 기준", at_time은 T+m:ss | 리드 | 완료 |
 | UI-54 | deletePlay | 플레이 id | 서버에 있었나(bool) | DELETE /plays/{id}(결정 0050, 실행 작전에서 지우고 시작 전으로), 404는 저장 전 새 플레이라 false, 그 밖의 실패는 오류. 플레이 화면 "삭제"는 두 번 누르기, 지운 뒤 작전 개요 | 리드 | 완료 |
 | UI-55 | fetchOntology | — | OntologyView | GET /ontology(결정 0038), 실패하면 서버 detail("이 시나리오에는 온톨로지가 없습니다")을 담은 오류, 온톨로지 화면이 그 문구를 보임(결정 0051) | 리드 | 완료 |
+| UI-57 | decisionQueue | Card[], t_ms | {action, alerts, history} | 선택지 있는 미처리 보고·대기 전환·30초 안의 대안 있는 차단이 대기열, 같은 전환의 표적 선택 여러 장은 한 항목, 순서 타격 허락 > 차단 > 전환 > 위험도(같으면 최신), 2분 안의 무력화·공백·배터리·차단은 알림, 나머지 최신 위(Part1-32) | 리드 | 완료 |
+| UI-58 | choiceGroups | CardChoice[] | {planned, requests} | 정해진 선택지 먼저 엔진 순서(결정 0046), "X → 무엇" 한 기체 선택지는 무엇별 묶음(발생 지역 순찰 → "… 이어받기", 함께 감시 → "Y와 함께 T 감시") | 리드 | 완료 |

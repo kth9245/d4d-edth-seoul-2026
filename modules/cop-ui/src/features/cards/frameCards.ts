@@ -3,7 +3,7 @@ import { kstTime } from "./kstTime";
 
 export interface CardChoice { id: string; label: string; preview: string }
 // Decision 0040: what sensing found about a contact card's target (score 0..1, rf = our vehicles picked up its emission).
-export interface CardThreat { score: number; rf: boolean; line: string }
+export interface CardThreat { score: number; rf: boolean; line: string; parts: string[] }
 export interface Card {
   id: string;
   source: "report" | "injection" | "block";
@@ -63,7 +63,7 @@ function threatOf(t: Target | undefined): CardThreat | undefined {
     else if (r === "rf_emission") parts.push("RF 방출 감지 +0.30");
     else if (r === "speed") parts.push(`속도 ${Math.hypot(t.vel_east_mps, t.vel_north_mps).toFixed(1)} m/s`);
   }
-  return { score, rf: reasons.includes("rf_emission"), line: parts.join(" · ") };
+  return { score, rf: reasons.includes("rf_emission"), line: parts.join(" · "), parts };
 }
 
 function fromReport(r: Report, frame: Frame): Card {
