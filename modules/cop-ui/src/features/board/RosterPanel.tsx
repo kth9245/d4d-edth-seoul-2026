@@ -42,7 +42,7 @@ export function RosterPanel({ rows, targets, stages, selected, onVehicle, onTarg
           <button key={t.id} type="button" className={`ro en ${quiet ? s.key : tone(r)}`} onClick={() => onTarget(t.id)}>
             <span className="l1">
               <b>{t.id}</b><span className="doing">{KIND_KO[t.kind] ?? t.kind}</span>
-              {t.rf_detected && !quiet && <span className="rf">RF</span>}
+              {t.rf_detected && !quiet && <span className="rf-tag">RF</span>}
               <span className="risk">{quiet ? "—" : r.toFixed(2)}</span>
             </span>
             <span className="l2"><span className={`stg ${s?.key}${s?.away ? " away" : ""}`}>{s?.label}</span><span className="det">{s?.detail}</span></span>

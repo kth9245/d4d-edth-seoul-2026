@@ -60,6 +60,7 @@
  {"shot": "live-end-1280.png"},
  {"viewport": [1920, 1080], "wait": 800},
  {"layout": "L13 layout live 1920x1080"},
+ {"label": "L13b every stage tag is readable (text colour is not its background)", "eval": "[...document.querySelectorAll('.ro .stg')].map(s => { const c = getComputedStyle(s); return [s.innerText, c.color === c.backgroundColor]; }).filter(x => x[1]).map(x => x[0])", "expect": []},
  {"label": "L15 mark d4 and boat2, remember the operator count", "eval": "(() => { const v = [...document.querySelectorAll('.mk.vehicle')].find(x => x.querySelector('span').innerText.startsWith('d4 ')); const t = [...document.querySelectorAll('.mk.target')].find(x => x.querySelector('span').innerText.startsWith('boat2')); if (!v || !t) return 'missing'; v.querySelector('i').id = 'qa-d4'; t.querySelector('i').id = 'qa-boat2'; window.__ops = Number(document.querySelector('.loadbar .op b')?.innerText); return 'marked'; })()", "expect": "marked"},
  {"label": "L15 targets ignore clicks until a vehicle is selected", "eval": "getComputedStyle(document.querySelector('#qa-boat2').closest('.maplibregl-marker')).pointerEvents", "expect": "none"},
  {"clickSel": "#qa-d4", "wait": 400},

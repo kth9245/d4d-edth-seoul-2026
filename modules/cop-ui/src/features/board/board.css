@@ -22,7 +22,7 @@
 .board .ro .bat i, .board .ro .rbar i { position: absolute; inset: 0 auto 0 0; }
 .board .ro em { flex: none; width: 34px; font-style: normal; text-align: right; }
 .board .ro .risk { margin-left: auto; }
-.board .ro .rf { padding: 0 4px; }
+.board .ro .rf-tag { padding: 0 4px; }
 .board .ro .rbar { position: relative; display: block; height: 3px; margin-top: 5px; }
 .board .ro .rbar::after { content: ""; position: absolute; left: 40%; top: -2px; bottom: -2px; width: 1px; }
 .board .ops { display: flex; flex-direction: column; min-height: 0; padding: 0; overflow: hidden; }

@@ -354,7 +354,7 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .board .ro.en.lo .risk { color: var(--unknown); }
 .board .ro.en.mid .risk { color: var(--warn); }
 .board .ro.en.hi .risk { color: var(--hostile); }
-.board .ro .rf { background: var(--hostile); color: var(--bg); font-family: var(--font-mono); font-size: 10px; font-weight: 700; }
+.board .ro .rf-tag { background: var(--hostile); color: var(--bg); font-family: var(--font-mono); font-size: 10px; font-weight: 700; }
 .board .ro .stg { border: 1px solid var(--line2); color: var(--text2); font-size: 11px; }
 .board .ro .stg.ask, .board .ro .stg.strike, .board .ro .stg.rf, .board .ro .stg.lost.away { border-color: var(--hostile); color: var(--hostile); }
 .board .ro .stg.track { border-color: var(--friend); color: var(--friend); }
