@@ -5,7 +5,7 @@
 마지막 기록 10/10 10:04 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- (없음)
+- **Part2-15** runtime `apply_direct` — 황승주, 10/10 10:04부터 · RT-06
 
 ## 막힘
 - (없음)
@@ -36,7 +36,6 @@
 - **Part2-12** runtime `apply_decision` · 하위 1/1 완료 · RT-03
 - **Part2-13** runtime `update_metrics` · RT-04
 - **Part2-14** runtime `apply_injection` · RT-05
-- **Part2-15** runtime `apply_direct` · RT-06
 - **Part2-16** runtime `apply_emergency` · RT-07
 - **Part3-1** play `load_play` · PLY-01
 - **Part3-2** play `check_links` · PLY-02
