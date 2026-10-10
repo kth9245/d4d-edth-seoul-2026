@@ -135,3 +135,4 @@
 {"at": "2026-10-10T10:38:58+09:00", "by": "kth9245", "op": "decide", "id": "Part1-7", "text": "리뷰 반영: WS Frame.log는 연결마다 안 보낸 줄 전부(배속 중 유실·일시정지 중 중복 없음), 요청이 아직 틱 전이면 승인·거부를 한 틱 뒤로(엔진 GW-03이 카드를 못 닫던 문제). 스파이크 엔진으로 35분 대본 결과 동일 확인"}
 {"at": "2026-10-10T10:39:36+09:00", "by": "kth9245", "op": "done", "id": "Part1-7", "take": false}
 {"at": "2026-10-10T10:40:57+09:00", "by": "kth9245", "op": "start", "id": "Part1-10", "take": false, "from": null}
+{"at": "2026-10-10T10:41:00+09:00", "by": "kth9245", "op": "decide", "id": "Part1-10", "text": "카드는 Report(injection_pending·command_blocked 제외) + Frame.injections + Frame.blocks로 만든다. Report에 Injection·Block을 가리키는 칸이 없어서, 원본 항목으로 카드를 만들면 승인·대안 버튼(Part1-11·12)에 필요한 id를 계약 변경 없이 쓸 수 있다. 최신이 위, 처리된 것은 흐리게, 시각은 KST"}
