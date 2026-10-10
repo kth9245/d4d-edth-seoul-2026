@@ -95,7 +95,10 @@ export function QueueCard({ frame, item, sent, send, onGraph }: {
   const ap = isApproval(c);
   const { planned, requests } = choiceGroups(c.choices);
   const sensor = c.text.split(" · ").slice(1).join(" · ") || c.text;
+  // A card from a vehicle that is not patrolling (decision 0056) leaves it on its job: no "stays over the boat".
+  const spot = c.text.startsWith("새 적 탐지");
   const hint = ap ? "사람이 고르기 전에는 어떤 기체도 타격하지 않습니다."
+    : spot ? `${c.vehicle}는 하던 일을 계속합니다. 이 적에 누구를 보낼지 고르세요.`
     : `${c.vehicle}는 그 배 위에 머뭅니다. 정해진 대응을 고르거나, 기지 대기 드론에게 비는 해안이나 함께 감시를 맡기세요.`;
   return (
     <div className={`card first${ap ? " t-danger" : ""}`}>

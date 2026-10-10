@@ -50,6 +50,8 @@ export function DecisionQueue({ frame, queue, onGraph }: { frame: Frame; queue: 
     lastT.current = frame.t_ms;
     const ids = [...frame.reports.map((r) => r.id), ...frame.injections.map((i) => i.id), ...frame.blocks.map((b) => b.command_id)];
     setSent((m) => pruneSent(m, ids, back));
+    // A reset replays the same card ids; the card opened last run must not open first again (script rehearsal).
+    if (back) setOpenKey(null);
   }, [frame]);
   const send: Send = async (cardId, request) => {
     const s = sent[cardId]?.state;
