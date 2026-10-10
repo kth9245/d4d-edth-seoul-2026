@@ -136,3 +136,18 @@ def test_a_relative_route_card_flies_its_shape_from_where_the_vehicle_is():  # d
     _, cmd, _ = enter_step(vs().model_copy(update={"pos": here}), spec(), role, step, [], 0)
     assert cmd.kind == "follow_route"
     assert abs(cmd.params["route"][0]["lat"] - (here.lat + 300 / 111_195)) < 1e-4
+
+
+def test_enter_step_orbits_the_reported_spot():  # 24h raid focus patrol (decision 0055)
+    seen = boat("e1", 0).model_copy(
+        update={
+            "pos": GeoPoint(lat=HOME.lat + 0.05, lon=HOME.lon),
+            "last_seen_pos": GeoPoint(lat=HOME.lat + 0.02, lon=HOME.lon),
+        }
+    )
+    do = Action(
+        kind="patrol_route", params={"offsets": [{"east_m": 0, "north_m": 800}], "anchor": "target"}
+    )
+    _, cmd, _ = run(do, [seen], target_id="e1")
+    first = GeoPoint(**cmd.params["route"][0])
+    assert abs(first.lat - (HOME.lat + 0.02 + 800 / 111_195)) < 1e-4

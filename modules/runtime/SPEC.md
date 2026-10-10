@@ -15,6 +15,6 @@
 | RT-10 | rotate_patrols | states, specs, Operation, roles, assignments, t_ms | (states, assignments) | 출발·만남·인계·대기 없음·하한선·기록 없는 쌍 테스트 | 황승주 | 완료 |
 | RT-11 | fleet_choices | report, states, op, roles | report | auto_choices 카드의 선택지를 그때 함대 상황으로 만든다. 카드에 정해진 선택지가 있으면 그것을 맨 앞에 두고 "발생 지역 순찰"·"함께 감시"를 덧붙이며 "유지"는 정해진 선택지가 없을 때만 붙인다. 자기 카드가 열린 드론은 후보에서 뺀다(결정 0046). 함께 감시는 카드를 올린 드론과만(결정 0048) | 황승주 | 완료 |
 | RT-12 | relieve_hover |  |  |  | 황승주 | 완료 |
-| RT-13 | route_command | Action, Domain, 기체 위치, params | (CommandKind/None, params) | 상대 경로가 기체 위치 기준 좌표, move_to+route는 follow_route loop false, 그 밖은 expand_action 그대로 | kth9245 | 완료 |
+| RT-13 | route_command | Action, Domain, 기체 위치, params | (CommandKind/None, params) | 상대 경로가 기체 위치 기준 좌표(anchor target이면 표적을 본 지점, 결정 0055), move_to+route는 follow_route loop false, 그 밖은 expand_action 그대로 | kth9245 | 완료 |
 | RT-14 | relief_due | VehicleState, VehicleSpec, 교대 기체 비행 분 | bool | 기준 배터리(귀환량 2배 빼고 35%) 또는 교대 비행 중 순찰기 소모+7% ≥ 하한선 위 여유면 참. 멀리서 오는 교대도 하한선 전에 인계(사용자 10/10) | 황승주 | 완료 |
 | RT-15 | target_domain | Target, land | air/ground/sea | drone이면 공중, 아니면 지금 위치가 섬 안이면 지상·밖이면 해상(결정 0055) | 황승주 | 완료 |

@@ -61,7 +61,8 @@ def enter_step(
         if step.do.kind.value == "strike_target":  # decision 0033: safety rules 2·3 see where
             tg = next((t for t in targets if t.id == tid), None)
             params |= {"target": tg.pos.model_dump()} if tg else {}
-    kind, params = route_command(step.do, spec.domain, st.pos, params)
+    spot = next((t.last_seen_pos or t.pos for t in targets if t.id == st.target_id), None)
+    kind, params = route_command(step.do, spec.domain, st.pos, params, spot)  # 0055: focus orbit
     prov = Provenance(source="role_step", role_id=role.id, step_id=step.id, issued_ms=t_ms,
                       decision_id=st.decision_id)  # fmt: skip
     cmd = None if kind is None else Command(id=f"cmd-{st.id}-{t_ms}", vehicle_id=st.id,

@@ -40,3 +40,19 @@ def test_a_point_move_and_other_actions_are_unchanged():
     move = route_command(Action(kind="move_to"), "air", HERE, {"target": target})
     assert move == (CommandKind.move, {"target": target})
     assert route_command(Action(kind="hold"), "air", HERE, {}) == (CommandKind.hold, {})
+
+
+def test_offsets_anchor_on_the_target():  # 24h raid focus patrol (decision 0055)
+    spot = GeoPoint(lat=37.95, lon=124.70)
+    params = {"offsets": [{"east_m": 800, "north_m": 0}], "anchor": "target"}
+    kind, p = route_command(Action(kind="patrol_route"), "air", HERE, params, spot)
+    lat, lon = offset_latlon(spot.lat, spot.lon, 800, 0)
+    assert kind == CommandKind.follow_route and "anchor" not in p
+    assert dist_m(GeoPoint(**p["route"][0]), GeoPoint(lat=lat, lon=lon)) < 1
+
+
+def test_target_anchor_without_a_spot_uses_the_vehicle():
+    params = {"offsets": [{"east_m": 800, "north_m": 0}], "anchor": "target"}
+    _, p = route_command(Action(kind="patrol_route"), "air", HERE, params)
+    lat, lon = offset_latlon(HERE.lat, HERE.lon, 800, 0)
+    assert dist_m(GeoPoint(**p["route"][0]), GeoPoint(lat=lat, lon=lon)) < 1
