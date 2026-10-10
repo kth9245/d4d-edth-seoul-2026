@@ -442,3 +442,4 @@
 {"at": "2026-10-10T20:35:45+09:00", "by": "kth9245", "op": "done", "id": "Part1-39", "take": false}
 {"at": "2026-10-10T20:38:21+09:00", "by": "황승주", "op": "done", "id": "Part2-43", "take": false}
 {"at": "2026-10-10T20:41:06+09:00", "by": "kth9245", "op": "add", "id": "Part1-40", "title": "상대 경로 그리기: 경로 추가 창의 상대 경로를 지도 없는 격자판(가운데 = 기체 위치)에 눌러 그리고, 거리 표 입력과 서로 맞춰짐", "parent": null, "assign": null, "slot": null, "spec": null}
+{"at": "2026-10-10T20:41:09+09:00", "by": "kth9245", "op": "start", "id": "Part1-40", "take": false, "from": null}
