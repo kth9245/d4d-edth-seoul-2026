@@ -2,10 +2,10 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 10:10 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 10:11 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- (없음)
+- **Part2-20** sim `load_scenario_json` — 최동호, 10/10 10:11부터 · SIM-04
 
 ## 막힘
 - (없음)
@@ -53,7 +53,6 @@
 - **Part2-17.5** gateway tick_log · GW-07 (묶음 A)
 - **Part2-18** gateway `build_frame` 재작성
 - **Part2-19** 시나리오 튜닝
-- **Part2-20** sim `load_scenario_json` · SIM-04
 
 ### 누구나
 - **Part3-15** play `compile_mavlink` (결정 0011) · 하위 0/1 완료 · PLY-10
