@@ -1,4 +1,4 @@
-"""Decision NNNN guard: night and 24h run exactly as before the infrared/acoustic sensors.
+"""Decision 0069 guard: night and 24h run exactly as before the infrared/acoustic sensors.
 
 Every frame of a fixed run is hashed with the keys the sensors add taken out, so the hash was recorded on the code
 before the sensors existed. The new keys themselves must stay off (False / 0) in these operations.
