@@ -1,11 +1,15 @@
 from contracts.models import (
     Block,
+    Command,
     Decision,
     DirectControl,
     GeoPoint,
     Injection,
     Operation,
+    PassedCommand,
     Polygon,
+    Provenance,
+    Report,
     Scenario,
     ScenarioEvent,
     TickInputs,
@@ -47,3 +51,17 @@ def test_direct_control_line():
 def test_block_line():
     blk = Block(command_id="c", vehicle_id="d2", reason="outside_zone", detail="x", t_ms=T)
     assert "[계산] 21:11:00 차단 d2 outside_zone" in tick_log(SC, T, 200, TickInputs(), [blk])
+
+
+def test_strike_pass_and_neutralized_lines():
+    prov = Provenance(source="play_step", issued_ms=T, decision_id="dec-3")
+    cmd = Command(id="c1", vehicle_id="d2", kind="strike", params={"target_id": "fast1"},
+                  provenance=prov)  # fmt: skip
+    hit = Report(id="r", t_ms=T, kind="target_neutralized", vehicle_id="d2", target_id="fast1",
+                 text="fast1 무력화(d2)")  # fmt: skip
+    lines = tick_log(SC, T + 200, 200, TickInputs(), [],
+                     [PassedCommand(command=cmd, checks=[], passed_ms=T)], [hit])  # fmt: skip
+    assert lines == [
+        "[계산] 21:11:00 타격 명령 통과: d2 → fast1, 운용자 결정 dec-3 확인",
+        "[계산] 21:11:00 fast1 무력화(d2)",
+    ]

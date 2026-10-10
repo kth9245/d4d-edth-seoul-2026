@@ -23,7 +23,7 @@ from modules.runtime import (
     update_metrics,
 )
 from modules.sensing import observe
-from modules.sim import advance, apply_events
+from modules.sim import advance, apply_events, resolve_strikes
 from shared.log import get_logger
 
 __all__ = ["EngineState", "init_engine", "tick"]
@@ -66,7 +66,8 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
         cmds, before_direct, states, specs, sc.operation, plays, injections, t
     )
     states = advance(states, specs, passed, dt, targets)  # 8
-    new_reports += cards
+    targets, hits = resolve_strikes(states, targets, t)  # 8.5 decision 0033
+    new_reports += cards + hits
     reports += new_reports
     outcome = TickOutcome(inputs=inputs, commands=cmds, passed=passed, blocks=blocks,
                           new_reports=new_reports, assignments=assigns, states=states,
@@ -76,4 +77,4 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
                  metrics=update_metrics(es.metrics, outcome))  # 9  # fmt: skip
     log.debug("tick t=%d cmds=%d passed=%d blocks=%d new_reports=%d",
               t, len(cmds), len(passed), len(blocks), len(new_reports))  # fmt: skip
-    return es, build_frame_v2(es, tick_log(sc, t, dt, inputs, blocks))  # 10
+    return es, build_frame_v2(es, tick_log(sc, t, dt, inputs, blocks, passed, hits))  # 10

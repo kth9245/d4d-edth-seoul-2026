@@ -48,3 +48,25 @@ def test_one_decision_switches_four_vehicles():
     want = {"d1": "watch", "usv": "approach", "ugv": "landing", "d2": "patrol_b"}
     assert {k: plays[k] for k in want} == want
     assert any(a.reason == "결정 dec-1" for a in fr.assignments)
+
+
+def test_strike_next_to_a_target_neutralizes_it_and_logs():
+    from dataclasses import replace
+
+    from contracts.models import Command, PassedCommand, Target, VehicleStatus
+
+    es = init_engine(SC)
+    d1 = es.states[0]
+    tg = Target(id="x", kind="boat", pos=d1.pos, vel_east_mps=0, vel_north_mps=0,
+                first_seen_ms=0, last_seen_ms=0)  # fmt: skip
+    cmd = Command(
+        id="c", vehicle_id=d1.id, kind="strike", params={"target_id": "x", "distance_m": 0}
+    )
+    # model_copy does not validate: give the enum, not the string (step_vehicle reads .value)
+    d1 = d1.model_copy(update={"entered_step": True, "status": VehicleStatus.active,
+                               "active": PassedCommand(command=cmd, checks=[], passed_ms=0)})  # fmt: skip
+    es = replace(es, states=[d1, *es.states[1:]], targets=[tg])
+    es, fr = tick(es, TickInputs())
+    assert fr.targets[0].neutralized_ms == es.t_ms
+    assert any(line.endswith("x 무력화(d1)") for line in fr.log)
+    assert fr.metrics.mission_success is True
