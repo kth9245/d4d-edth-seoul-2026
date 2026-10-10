@@ -351,3 +351,4 @@
 {"at": "2026-10-10T15:56:30+09:00", "by": "kth9245", "op": "add", "id": "Part3-15.2", "title": "mavlink 스크립트: 운용자 선택을 엔진과 같게(결정 0031, 선택지 id 비교·같은 플레이 이어 가기)", "parent": "Part3-15", "assign": null, "slot": "2 뒤", "spec": null}
 {"at": "2026-10-10T15:56:34+09:00", "by": "kth9245", "op": "start", "id": "Part3-15.2", "take": false, "from": null}
 {"at": "2026-10-10T15:58:36+09:00", "by": "kth9245", "op": "done", "id": "Part3-15.2", "take": false}
+{"at": "2026-10-10T15:59:01+09:00", "by": "kth9245", "op": "add", "id": "Part1-27.1", "title": "다음 사건 17:00 정지(2번 배 무선 송신) + 상황판 QA 항목", "parent": "Part1-27", "assign": "kth9245", "slot": null, "spec": null}
