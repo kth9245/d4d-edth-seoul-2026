@@ -597,3 +597,4 @@
 {"at": "2026-10-11T02:46:49+09:00", "by": "kth9245", "op": "start", "id": "Part1-32.7", "take": false, "from": null}
 {"at": "2026-10-11T02:46:52+09:00", "by": "kth9245", "op": "decide", "id": "Part1-32.7", "text": "결정 0079 참조"}
 {"at": "2026-10-11T02:49:35+09:00", "by": "kth9245", "op": "done", "id": "Part1-32.7", "take": false}
+{"at": "2026-10-11T02:54:43+09:00", "by": "황승주", "op": "add", "id": "Part2-69", "title": "멸공 집중 순찰·USV/UGV 추적 Role에 비상 귀환(배터리 30%) 추가, 야간 작전과 동일", "parent": null, "assign": "황승주", "slot": null, "spec": null}
