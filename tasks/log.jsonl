@@ -423,3 +423,4 @@
 {"at": "2026-10-10T20:03:25+09:00", "by": "kth9245", "op": "done", "id": "Part1-36", "take": false}
 {"at": "2026-10-10T20:03:28+09:00", "by": "kth9245", "op": "note", "id": "Part1-36", "text": "팀원: rebase 뒤 'uv run python scripts/rename_play_role.py' 실행 → 테스트. modules/play→modules/role, /plays→/roles, Play→Role, play_id→role_id, 재생 버튼 클래스는 .run-toggle"}
 {"at": "2026-10-10T20:03:50+09:00", "by": "kth9245", "op": "add", "id": "Part1-38", "title": "Role 화면 저장·삭제 버튼 크기 맞추기", "parent": null, "assign": null, "slot": null, "spec": null}
+{"at": "2026-10-10T20:03:54+09:00", "by": "kth9245", "op": "start", "id": "Part1-38", "take": false, "from": null}
