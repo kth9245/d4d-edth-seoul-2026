@@ -47,9 +47,7 @@ def pick_choices(stage: str, cands: Iterable[VehicleState], tid: str,
                  role_of: Callable[[VehicleState], str]) -> list[Choice]:  # fmt: skip
     out = [Choice(id=f"{stage}_{s.id}", label=f"{s.id} → {tid} {VERB[stage]}", role_by_vehicle={s.id: role_of(s)},
                   target_by_vehicle={s.id: tid}) for s in cands]  # fmt: skip
-    out.append(
-        Choice(id=f"{stage}_skip", label="선택 기체는 옮기지 않음" if stage == "track" else "대기")
-    )
+    out.append(Choice(id=f"{stage}_skip", label="대기"))
     return [*out, Choice(id="track_allstay", label="전체 대기")] if stage == "track" else out
 
 

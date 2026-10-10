@@ -7,6 +7,7 @@ import type { Sent } from "../cards/postJson";
 import { choiceGroups } from "./choiceGroups";
 import type { QueueItem } from "./decisionQueue";
 import { clueTags } from "./clueTags";
+import { raidCopy, skipNote } from "./raidCopy";
 
 export type SendState = { state: "sending" } | { state: "sent"; id: string } | { state: "error"; error: string };
 export type Send = (cardId: string, request: () => Promise<Sent>) => void;
@@ -94,11 +95,12 @@ export function QueueCard({ frame, item, sent, send, onGraph }: {
   }
 
   const ap = isApproval(c);
-  const { planned, requests } = choiceGroups(c.choices);
+  const raid = raidCopy(c.id, c.vehicle ?? null, c.target ?? null); // 24h step cards (user 10/11)
+  const { planned, requests } = raid?.flat ? { planned: c.choices, requests: [] } : choiceGroups(c.choices);
   const sensor = c.text.split(" · ").slice(1).join(" · ") || c.text;
   // A card from a vehicle that is not patrolling (decision 0057) leaves it on its job: no "stays over the boat".
   const spot = c.text.startsWith("새 적 탐지");
-  const hint = ap ? "사람이 고르기 전에는 어떤 기체도 타격하지 않습니다."
+  const hint = raid ? raid.hint : ap ? "사람이 고르기 전에는 어떤 기체도 타격하지 않습니다."
     : spot ? `${c.vehicle}는 하던 일을 계속합니다. 이 적에 누구를 보낼지 고르세요.`
     : `${c.vehicle}는 그 배 위에 머뭅니다. 정해진 대응을 고르거나, 기지 대기 드론에게 비는 해안이나 함께 감시를 맡기세요.`;
   return (
@@ -112,14 +114,14 @@ export function QueueCard({ frame, item, sent, send, onGraph }: {
           {c.threat.parts.slice(1).map((p) => <span key={p} className="why">{p}</span>)}
         </div>
       )}
-      <div className="q">{ap ? "타격을 허락할까요?" : "누구를 보낼까요?"}</div>
+      <div className="q">{raid ? raid.question : ap ? "타격을 허락할까요?" : "누구를 보낼까요?"}</div>
       {planned.map((ch, i) => (
         <button key={ch.id} className={`wide ${ap ? (i === 0 ? "strike" : "strike2") : ch.preview ? "pri" : ""}`}
           disabled={locked(c.id)} onClick={() => send(c.id, () => postDecision(c.id, ch.id))}>
-          {ch.label}<small>{ch.preview || "아무 기체도 옮기지 않음"}</small>
+          {ch.label}<small>{ch.preview || skipNote(ch.id)}</small>
         </button>
       ))}
-      {requests.length > 0 && <div className="reqs">기지 대기 드론에게 맡기기</div>}
+      {requests.length > 0 && <div className="reqs">{raid ? raid.group : "기지 대기 드론에게 맡기기"}</div>}
       {requests.map((g) => (
         <div key={g.what} className="grp">
           <span className="gl">{g.what}</span>

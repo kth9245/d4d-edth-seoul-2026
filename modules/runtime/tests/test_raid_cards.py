@@ -44,7 +44,7 @@ def test_pick_choices_track_has_skip_and_allstay():
     track = pick_choices("track", cands, "e_usv", lambda s: "watch")
     assert ids(track) == ["track_d3", "track_usv", "track_skip", "track_allstay"]
     assert track[0].label == "d3 → e_usv 추적" and track[0].target_by_vehicle == {"d3": "e_usv"}
-    assert [c.label for c in track[2:]] == ["선택 기체는 옮기지 않음", "전체 대기"]
+    assert [c.label for c in track[2:]] == ["대기", "전체 대기"]
     focus = pick_choices("focus", cands, "e_usv", lambda s: "focus_orbit")
     assert ids(focus)[-1] == "focus_skip" and focus[0].label == "d3 → e_usv 발견 지점 집중 순찰"
     assert (
@@ -62,9 +62,3 @@ def test_idle_choices():
 
 def test_unused_tg_helper_kept():  # sea target fixture shared with RT-16 tests
     assert tg("x", "usv", SEA.pos, 1).seen_by == ["d1"]
-
-
-def test_track_skip_says_the_picked_vehicles_stay():  # user 10/11: not the same as 전체 대기
-    track = pick_choices("track", [vs("d3", None, None, "ready")], "e_usv", lambda s: "watch")
-    assert track[-2].label == "선택 기체는 옮기지 않음"
-    assert pick_choices("focus", [], "e_usv", lambda s: "focus_orbit")[-1].label == "대기"
