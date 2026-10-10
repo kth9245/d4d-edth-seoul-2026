@@ -292,3 +292,4 @@
 {"at": "2026-10-10T14:39:46+09:00", "by": "kth9245", "op": "done", "id": "Part1-13.1", "take": false}
 {"at": "2026-10-10T14:42:07+09:00", "by": "황승주", "op": "add", "id": "Part1-22", "title": "화면 '처음으로' 두 번 누르기(앱 내장 브라우저가 confirm 확인창을 자동 취소해 reset이 안 나가던 문제)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T14:42:10+09:00", "by": "황승주", "op": "start", "id": "Part1-22", "take": false, "from": null}
+{"at": "2026-10-10T14:42:57+09:00", "by": "황승주", "op": "done", "id": "Part1-22", "take": false}
