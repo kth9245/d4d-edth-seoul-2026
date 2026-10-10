@@ -67,6 +67,7 @@
 | UI-62 | routeGeoJSON | GeoPoint[] | GeoJSON | 경로 추가 창 지도: 찍은 점을 잇는 선(2개부터)과 점(찍은 순서 n, 첫 점은 크게)(결정 0054) | 리드 | 완료 |
 | UI-63 | offsetPad | RouteOffset[], 크기(px) | {half, grid, toXY, fromXY} | 경로 추가 창의 상대 경로 격자판(Part1-40): 가운데 = 기체 위치, 북쪽 위, 최소 1 km(넘는 점이 있으면 500 m 단위로 넓힘), 격자 100/250/500 m, 누른 곳은 10 m 단위 북·동 거리 | 리드 | 완료 |
 | UI-64 | addUnlessSame | 목록, 새 항목, 비교 키 | 목록 | 경로 추가 창(Part1-41): 바로 앞 점과 같은 자리(두 번 누르기·더블클릭)는 더하지 않음. 상대 격자판은 같은 자리 점 번호를 "1·2"로 함께 표시(offsetPad.labels), 고정 지도는 더블클릭 확대를 끔 | 리드 | 완료 |
+| UI-65 | switchRoleOptions | Role[], VehicleSpec[], EnemySpec[], 기체 id | {id, name}[] | 상황판 작전 전환의 새 Role 목록(QA 발견 2): 고른 기체 영역의 Role, 적 Role 제외(startRoleOptions와 같은 규칙), 기체를 안 골랐으면 빈 목록 | 리드 | 완료 |
 | UI-80 | decisionQueue | Card[], t_ms | {action, alerts, history} | 선택지 있는 미처리 보고·대기 전환·대안 있는 차단(그 기체에 차단 뒤 새 명령이 나갈 때까지, 최대 2분)이 대기열, 같은 전환의 표적 선택 여러 장은 한 항목, 순서 타격 허락 > 차단 > 전환 > 위험도(표적 선택은 0.55, 같으면 최신), 2분 안의 무력화·공백·배터리·차단은 알림, 나머지 최신 위(Part1-32) | 리드 | 완료 |
 | UI-81 | choiceGroups | CardChoice[] | {planned, requests} | 정해진 선택지 먼저 엔진 순서(결정 0046), "X → 무엇" 한 기체 선택지는 무엇별 묶음(발생 지역 순찰 → "… 이어받기", 함께 감시 → "Y와 함께 T 감시") | 리드 | 완료 |
 | UI-82 | trackState | Target, t_ms, 기준점 | {k, pos, est?, agoMs?, dir?, speed?} | seen·rf·lost·never·gone, lost는 마지막으로 본 위치(없으면 실제 위치), 0.3 m/s 미만 정지, 기준점 쪽 접근·반대 이탈(기준점 없으면 접근), 추정 위치 = 마지막 위치 + 속도 × 지난 시간(결정 0047) | 리드 | 완료 |

@@ -36,6 +36,7 @@
  {"shot": "live-block.png"},
  {"clickSel": ".fold.sw summary", "wait": 300},
  {"select": ["select[aria-label='전환할 기체']", "d2"]},
+ {"label": "L7 the switch offers d2 (a drone) air roles only and no enemy role (QA finding 2)", "eval": "(() => { const ids = [...document.querySelector(\"select[aria-label='새 Role']\").options].map(o => o.value).filter(Boolean); return { track: ids.includes('track_fast'), sea: ids.includes('approach') || ids.includes('track_fast_sea'), enemy: ids.some(id => id.startsWith('enemy_')) }; })()", "expect": {"track": true, "sea": false, "enemy": false}},
  {"select": ["select[aria-label='새 Role']", "track_fast"], "wait": 200},
  {"click": "전환 요청", "wait": 800},
  {"label": "L7 switch requested", "eval": "document.querySelector('.switchpanel .note')?.innerText ?? null", "match": "^요청됨 inj-\\d+ · 위 결정 대기에서 승인$"},
