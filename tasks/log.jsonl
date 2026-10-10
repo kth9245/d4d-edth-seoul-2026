@@ -129,3 +129,4 @@
 {"at": "2026-10-10T10:28:51+09:00", "by": "kth9245", "op": "done", "id": "Part1-9", "take": false}
 {"at": "2026-10-10T10:28:54+09:00", "by": "kth9245", "op": "note", "id": "Part1-9", "text": "Part1-7 주의: gateway가 / 에 StaticFiles를 마운트하므로 GET /operation은 그보다 먼저 등록해야 함. 화면은 WS 연결될 때마다 /operation을 한 번 읽고 404면 구역 없이 그림. 개발 중 확인은 npm run dev 뒤 ?scene=s1~s6"}
 {"at": "2026-10-10T10:33:01+09:00", "by": "kth9245", "op": "add", "id": "Part1-9.1", "title": "드론 출발 위치 떼어 놓기(지도에서 겹침)", "parent": "Part1-9", "assign": null, "slot": "1", "spec": null}
+{"at": "2026-10-10T10:33:07+09:00", "by": "kth9245", "op": "start", "id": "Part1-9.1", "take": false, "from": null}
