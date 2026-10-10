@@ -629,3 +629,4 @@
 {"at": "2026-10-11T04:19:27+09:00", "by": "kth9245", "op": "done", "id": "Part1-15.5", "take": false}
 {"at": "2026-10-11T04:44:03+09:00", "by": "황승주", "op": "add", "id": "Part2-72", "title": "비상 귀환: battery_low_step이 없는 Role은 배터리 기준 아래면 go_home(모든 작전에서 30% 비상 귀환이 동작하지 않던 문제)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-11T04:44:06+09:00", "by": "황승주", "op": "start", "id": "Part2-72", "take": false, "from": null}
+{"at": "2026-10-11T04:59:45+09:00", "by": "황승주", "op": "done", "id": "Part2-72", "take": false}
