@@ -1,24 +1,20 @@
-import type { Operation } from "../../contracts.gen";
+import type { Operation, VehicleSpec } from "../../contracts.gen";
+import { OperationPanel } from "./OperationPanel";
 import { StepCard } from "./StepCard";
 import type { Column } from "./vehicleColumns";
 
-type Props = { op: Operation; columns: Column[]; playName: (id: string) => string | null; onOpen: (playId: string) => void };
+type Props = {
+  op: Operation;
+  vehicles: VehicleSpec[];
+  columns: Column[];
+  playName: (id: string) => string | null;
+  onOpen: (playId: string) => void;
+};
 
-export function OperationOverview({ op, columns, playName, onOpen }: Props) {
-  const switches = op.switches ?? [];
+export function OperationOverview({ op, vehicles, columns, playName, onOpen }: Props) {
   return (
     <section className="overview">
-      <h2>{op.name}</h2>
-      {switches.length > 0 && (
-        <div className="switches">
-          전체 전환:{" "}
-          {switches.map((s) => (
-            <span key={s.id} className="switch">
-              [{s.label}]
-            </span>
-          ))}
-        </div>
-      )}
+      <OperationPanel op={op} vehicles={vehicles} playName={playName} onOpen={onOpen} />
       <div className="columns">
         {columns.map((col) => (
           <div key={col.vehicle_id} className="column">

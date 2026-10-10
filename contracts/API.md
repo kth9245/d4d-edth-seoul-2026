@@ -87,6 +87,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | `POST /plays/check` | `Play` | `PlayCheck` |
 | `POST /plays/draft` | `DraftIn{text}` | `Play`(origin=ai_draft, approved=false) |
 | `GET /operation` · `POST /operation` | — · `Operation` | `Operation` |
+| `GET /vehicles` | — | `VehicleSpec[]`(시나리오의 기체 제원·출발 위치, Part3-14 작전 패널) |
 | `POST /run/live?speed=` · `POST /run/reset` · `POST /run/jump?offset_ms=` | — | `RunState` |
 | `POST /decisions` | `DecisionIn{report_id, choice_id}` | `Accepted{id, t_ms}` |
 | `POST /direct` | `DirectIn{vehicle_id, target}` | `Accepted` |

@@ -254,3 +254,13 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .step-editor .se-remove:hover:not(:disabled) { border-color: var(--hostile); color: var(--hostile); background: var(--hostile-soft); }
 .step-editor button:disabled { border-color: var(--line); color: var(--dim); cursor: default; }
 .react-flow__node.selected .step-node { border-color: var(--friend); box-shadow: 0 0 0 1px var(--friend), 0 0 18px rgba(128, 224, 255, 0.25); }
+/* Operation panel (Part3-14) */
+.op-panel { border: 1px solid var(--line); background: var(--s1); }
+.op-meta { color: var(--muted); font-family: var(--font-mono); letter-spacing: 0.04em; }
+.mini-map { border: 1px solid var(--line); background: var(--bg); }
+.op-vehicles th { border-bottom: 1px solid var(--line2); color: var(--dim); font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: var(--ls); }
+.op-vehicles td { border-bottom: 1px solid var(--line); color: var(--text2); }
+.op-vehicles td b { color: var(--text); font-family: var(--font-mono); }
+.op-vehicles td small, .op-vehicles .muted { color: var(--muted); }
+.op-move { color: var(--text2); font-family: var(--font-mono); }
+.mini-map-wrap figcaption { color: var(--dim); font-family: var(--font-mono); }

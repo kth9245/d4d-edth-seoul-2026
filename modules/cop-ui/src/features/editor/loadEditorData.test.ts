@@ -5,11 +5,13 @@ import { loadEditorData } from "./loadEditorData";
 const json = (body: unknown, status = 200) => Promise.resolve(new Response(JSON.stringify(body), { status }));
 
 describe("loadEditorData", () => {
-  it("uses the gateway when both calls succeed", async () => {
+  it("uses the gateway when all calls succeed", async () => {
     const op = { ...scenario.operation, id: "op-gw" };
-    const d = await loadEditorData((url) => json(url === "/operation" ? op : [scenario.plays[0]]));
+    const body: Record<string, unknown> = { "/operation": op, "/plays": [scenario.plays[0]], "/vehicles": scenario.vehicles };
+    const d = await loadEditorData((url) => json(body[url]));
     expect(d.operation.id).toBe("op-gw");
     expect(d.plays).toHaveLength(1);
+    expect(d.vehicles.map((v) => v.id)).toEqual(scenario.operation.vehicle_ids);
   });
   // No example-data fallback any more (09 §4.5): without the gateway the editor says so instead of
   // showing the scenario file, where saving would fail.

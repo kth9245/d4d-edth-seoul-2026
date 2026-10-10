@@ -28,6 +28,14 @@ def test_plays_and_operation_come_from_the_scenario():
     assert client.get("/health").json() == {"ok": True}
 
 
+def test_vehicles_come_from_the_scenario():
+    # Part3-14: the editor's operation panel shows each vehicle's domain and home.
+    client, _ = fake_app()
+    vehicles = client.get("/vehicles").json()
+    assert [v["id"] for v in vehicles] == client.get("/operation").json()["vehicle_ids"]
+    assert {"domain", "home", "name"} <= set(vehicles[0])
+
+
 def test_run_live_then_ws_streams_running_frames():
     client, _ = fake_app()
     with client:

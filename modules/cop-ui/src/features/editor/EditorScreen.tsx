@@ -111,7 +111,7 @@ export function EditorScreen() {
             plays={data.plays.map((p) => ({ id: p.id, name: p.name }))}
           />
         ) : (
-          <OperationOverview op={data.operation} columns={view.columns} playName={playName} onOpen={open} />
+          <OperationOverview op={data.operation} vehicles={data.vehicles} columns={view.columns} playName={playName} onOpen={open} />
         )}
       </main>
     </div>

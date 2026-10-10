@@ -4,7 +4,7 @@ import type { LayerSpecification, StyleSpecification } from "maplibre-gl";
 export const TILE_BOUNDS: [number, number, number, number] = [124.55, 37.88, 124.85, 38.02];
 const TILES_DIR = "/tiles/baengnyeong";
 const PROBE = `${TILES_DIR}/8/216/98.jpg`;
-const ATTRIBUTION = "© EOX IT Services GmbH — Sentinel-2 cloudless 2020 (CC BY-NC-SA 4.0), contains modified Copernicus Sentinel data";
+export const ATTRIBUTION = "© EOX IT Services GmbH — Sentinel-2 cloudless 2020 (CC BY-NC-SA 4.0), contains modified Copernicus Sentinel data";
 // The dimmed sea of the imagery, so the edge of the fetched tiles leaves no seam.
 const BG: LayerSpecification = { id: "bg", type: "background", paint: { "background-color": "#0b1616" } };
 
