@@ -83,7 +83,7 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
         stepped.append(s)
         cmds += [cmd] if cmd else []
         new_reports += [rep] if rep else []
-    spotted = spot_reports(stepped, targets, roles, sc.operation, t)  # 5.15 decision 0056
+    spotted = spot_reports(stepped, targets, roles, sc.operation, t)  # 5.15 decision 0057
     targets = mark_reported(targets, spotted)
     new_reports += spotted
     raid = (targets, sc.land, specs)  # 24h raid choices (decision 0055)

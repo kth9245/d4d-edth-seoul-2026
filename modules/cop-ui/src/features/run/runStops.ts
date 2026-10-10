@@ -7,7 +7,7 @@ const MIN = 60_000;
 // Times are the real engine's scenes (modules/gateway/tests/test_demo_timeline.py, scripts/qa/script.json):
 // boat cards from the coast patrol s1 17:00, d1 goes home 19:00 (reserve d3 takes its job), d2 sent past the NLL
 // s5 20:00 (the battery block at 20:30 was checked at that battery), fast1 appears 23:00 and d3, still watching
-// boat1, raises its card at 23:04 (decision 0056). No stop in the strike (s4 fast1 card answered, s7 approval
+// boat1, raises its card at 23:04 (decision 0057). No stop in the strike (s4 fast1 card answered, s7 approval
 // cards, s8 neutralized): they follow the operator's clicks, and a jump runs with no operator input (Part1-13.1).
 export const RUN_STOPS: RunStop[] = [
   { offsetMs: 17 * MIN + 5_000, label: "보고 카드" },

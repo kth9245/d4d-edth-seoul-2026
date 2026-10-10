@@ -65,7 +65,7 @@ FLEET = [vs("d1", "go_home", "returning", battery=20), vs("d2", "coast_a"), vs("
 
 
 def test_a_watching_drone_raises_a_card_for_a_new_enemy_with_target_switches_then_standby_drones():
-    # decision 0056: d3 keeps watching boat1 and asks who to send to fast1
+    # decision 0057: d3 keeps watching boat1 and asks who to send to fast1
     (rep,) = spot_reports(FLEET, [tg("boat1", "boat", reported="d1"), tg()], ROLES, OP, T)
     assert (rep.id, rep.kind, rep.vehicle_id, rep.target_id) == (
         f"rep-d3-{T}-s",

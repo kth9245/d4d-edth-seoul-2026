@@ -3,7 +3,7 @@
 
 The operator is scripted here: cards answered 20 s after they appear (target picks 10 s, fast1;
 strike approval: '함께 타격'), d2 sent past the NLL at 20:00, the block's alternative applied at
-20:05, d2 sent to the far south-east corner at 20:30. Decision 0056: fast1's card (raised by d3, which keeps
+20:05, d2 sent to the far south-east corner at 20:30. Decision 0057: fast1's card (raised by d3, which keeps
 watching boat1) is answered with its first choice, the '고속 보트 추적' switch, so s4 is that card.
 """
 
@@ -64,7 +64,7 @@ def run():
         mark(
             "s4",
             any(r.target_id == "fast1" and r.text.startswith("새 적 탐지") for r in es.reports),
-        )  # 0056
+        )  # 0057
         mark("s7", any(r.text.startswith("타격 승인 요청") for r in es.reports))
         mark("s8", any(t.id == "fast1" and t.neutralized_ms for t in es.targets))
     return es, seen
@@ -96,7 +96,7 @@ def test_three_boats_each_get_one_card_from_the_drone_that_found_it(run):  # dec
 
 
 def test_fast1_card_comes_from_the_drone_watching_boat1_and_offers_the_track_switch_first(run):
-    # decision 0056: a drone that is not patrolling raises the new-enemy card and keeps its own job
+    # decision 0057: a drone that is not patrolling raises the new-enemy card and keeps its own job
     es, _ = run
     (card,) = [r for r in es.reports if r.text.startswith("새 적 탐지")]
     assert (card.vehicle_id, card.target_id, card.choices[0].id) == (
