@@ -10,8 +10,8 @@ from shared.geo import dist_m
 LIVE = (VehicleStatus.ready, VehicleStatus.active)
 STATE_KO = {"undetected": "미탐", "rf_only": "방출원 미확인", "identifying": "식별 중",
             "identified": "식별됨"}  # fmt: skip
-REASON_KO = {"rf_emission": "RF 방출", "scan": "스캔 확인", "multi_observer": "2기체 관측",
-             "sustained": "관측 지속"}  # fmt: skip
+REASON_KO = {"rf_emission": "RF 방출", "ir_signature": "열 신호", "sound": "소음", "scan": "스캔 확인",
+             "multi_observer": "2기체 관측", "sustained": "관측 지속"}  # fmt: skip
 MARK = " · 식별:"
 
 

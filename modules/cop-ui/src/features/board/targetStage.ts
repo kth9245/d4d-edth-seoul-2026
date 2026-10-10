@@ -2,6 +2,7 @@ import type { Frame, Target } from "../../contracts.gen";
 import { kstTime } from "../cards/kstTime";
 import { mmss } from "../run/mmss";
 import type { Track } from "./trackState";
+import { clueTags } from "./clueTags";
 
 export type StageKey = "gone" | "strike" | "ask" | "lost" | "rf" | "never" | "track" | "found";
 export interface Stage { key: StageKey; label: string; detail: string; away: boolean }
@@ -23,7 +24,10 @@ export function targetStage(f: Frame, t: Target, track: Track): Stage {
     const speed = (track.speed ?? 0) >= 0.3 ? ` ${(track.speed ?? 0).toFixed(1)} m/s` : "";
     return st("lost", "놓침", `${mmss(track.agoMs ?? 0)} 전 · ${DIR_KO[track.dir ?? "still"]}${speed}`, track.dir === "away");
   }
-  if (track.k === "rf") return st("rf", "RF 탐지", "무선만 잡힘");
+  if (track.k === "rf") {  // radio, heat or sound only (decision 0069): say what was really picked up
+    const tags = clueTags(t).join("·");
+    return tags === "RF" ? st("rf", "RF 탐지", "무선만 잡힘") : st("rf", `${tags} 탐지`, `${tags}만 잡힘`);
+  }
   if (track.k === "never") return st("never", "미탐", "센서에 안 잡힘");
   if (on.length) return st("track", "추적", on.map((v) => v.id).join("·"));
   return st("found", "발견", `${(t.seen_by ?? []).join("·")} 관측`);

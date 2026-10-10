@@ -99,3 +99,10 @@ def test_no_available_striker_leaves_only_keep():
     busy = [vs("d2", pending_report_id="rep-x"), vs("d3")]
     out = run(card(), site(), states=busy)
     assert [c.id for c in out.choices] == ["keep"]
+
+
+def test_the_identification_line_names_the_heat_and_noise_clues_in_korean():  # decision 0069
+    tg = site(ident_reasons=["ir_signature", "sound", "scan", "sustained"], ident_confidence=70)
+    out = run(card(), tg)
+    assert "열 신호" in out.text and "소음" in out.text
+    assert "ir_signature" not in out.text and "sound" not in out.text  # no raw codes on the card
