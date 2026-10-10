@@ -336,3 +336,4 @@
 {"at": "2026-10-10T15:29:01+09:00", "by": "kth9245", "op": "decide", "id": "Part1-24", "text": "설계 확정(docs/superpowers/specs/2026-10-10-ontology-design.md): 기체 종류 계층(정찰 드론 d1·d3, 무장 드론 d2, 무장 수상정 usv, 지상 로봇 ugv)과 행동 묶음 5개, 능력은 시나리오 JSON의 ontology에서 로더가 계산, 새 모듈 ontology, check_play 메시지에 경로, EngineState 기록으로 GET /graph, 편집기 사이드바 온톨로지·상황판 카드 연결 보기. 리드 답 'ㄱㄱ', 'ㄱㄱ', '그렇게 ㄲ'"}
 {"at": "2026-10-10T15:32:50+09:00", "by": "황승주", "op": "done", "id": "Part1-26", "take": false}
 {"at": "2026-10-10T15:36:41+09:00", "by": "kth9245", "op": "done", "id": "Part1-23.4", "take": false}
+{"at": "2026-10-10T15:36:43+09:00", "by": "kth9245", "op": "note", "id": "Part1-23", "text": "B 시나리오 main 반영(4b4ee47). 황승주 0037(전 기체 순찰·해안 순찰 coast_a/b·recharge_min)과 최동호 0039/0040 위협도 계약을 합쳐서 올림. 이전 시나리오는 demo/scenarios/baengnyeong_night_before_0036.json (scripts/demo.sh 첫 인자로 실행 가능)"}
