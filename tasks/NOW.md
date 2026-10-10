@@ -2,10 +2,10 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 11:30 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 11:32 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- (없음)
+- **Part2-17** gateway `engine.py` 틱 루프 — 최동호, 10/10 11:32부터 · 하위 5/5 완료
 
 ## 막힘
 - (없음)
@@ -22,7 +22,6 @@
 - **Part3-15.1** mavlink compile_mavlink · MAV-01 (리드, 결정 0025, 통합 2 뒤)
 
 ### 최동호
-- **Part2-17** gateway `engine.py` 틱 루프 · 하위 5/5 완료
 - **Part2-19** 시나리오 튜닝
 
 ### 누구나
