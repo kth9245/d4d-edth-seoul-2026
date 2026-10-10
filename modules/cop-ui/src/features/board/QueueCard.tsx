@@ -6,6 +6,7 @@ import { postDirect } from "../cards/postDirect";
 import type { Sent } from "../cards/postJson";
 import { choiceGroups } from "./choiceGroups";
 import type { QueueItem } from "./decisionQueue";
+import { clueTags } from "./clueTags";
 
 export type SendState = { state: "sending" } | { state: "sent"; id: string } | { state: "error"; error: string };
 export type Send = (cardId: string, request: () => Promise<Sent>) => void;
@@ -79,7 +80,7 @@ export function QueueCard({ frame, item, sent, send, onGraph }: {
                   return (
                     <button key={ch.id} className={`tchip ${tone(r)}${i === 0 ? " top" : ""}`} disabled={locked(x.id)}
                       onClick={() => send(x.id, () => postDecision(x.id, ch.id))}>
-                      {t?.id ?? ch.label}<em>{r.toFixed(2)}{t?.rf_detected ? " RF" : ""}</em>
+                      {t?.id ?? ch.label}<em>{r.toFixed(2)}{t && clueTags(t).length ? ` ${clueTags(t).join("·")}` : ""}</em>
                     </button>
                   );
                 })}

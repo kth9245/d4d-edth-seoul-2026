@@ -1,6 +1,7 @@
 import type { Frame, TargetKind, VehicleStatus } from "../../contracts.gen";
 import type { Track, TrackKind } from "../board/trackState";
 import { mmss } from "../run/mmss";
+import { clueTags } from "../board/clueTags";
 
 export type BatteryLevel = "ok" | "mid" | "low";
 export interface VehicleMarker {
@@ -36,12 +37,13 @@ export function frameMarkers(frame: Frame, tracks: Record<string, Track> = {}):
       const neutralized = t.neutralized_ms != null;
       const seen = (t.seen_by ?? []).length > 0;
       const k: TrackKind = tr?.k ?? (neutralized ? "gone" : seen ? "seen" : "never");
-      const rf = !neutralized && t.rf_detected === true;
+      const tags = neutralized ? [] : clueTags(t);
+      const rf = tags.length > 0;
       const r = (t.threat ?? 0) / 100;
       const score = r > 0 ? ` ${r.toFixed(2)}` : "";
       const label = neutralized ? `${t.id} · 무력화` : tr && k === "never" ? `${t.id} · 미탐`
         : tr && k === "lost" ? `${t.id}${score} · 놓침 ${mmss(tr.agoMs ?? 0)} · ${DIR_KO[tr.dir ?? "still"]}`
-        : `${t.id}${score}${rf ? " · RF" : ""}`;
+        : `${t.id}${score}${rf ? ` · ${tags.join("·")}` : ""}`;
       const pos = tr?.pos ?? t.pos;
       return { id: t.id, kind: t.kind, lon: pos.lon, lat: pos.lat, seen, neutralized, rf, label, track: k, tone: tone(r) };
     }),

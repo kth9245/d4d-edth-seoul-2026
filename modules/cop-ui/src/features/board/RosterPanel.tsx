@@ -3,6 +3,7 @@ import type { Switch, Target } from "../../contracts.gen";
 import { TARGET_KIND_KO } from "./seenTargets";
 import type { Stage } from "./targetStage";
 import type { VehicleRow } from "./vehicleRows";
+import { clueTags } from "./clueTags";
 
 const tone = (r: number) => (r >= 0.7 ? "hi" : r >= 0.4 ? "mid" : "lo");
 const QUIET: Record<string, number> = { gone: 1, never: 2 };
@@ -52,7 +53,7 @@ export function RosterPanel({ rows, targets, stages, selected, onVehicle, onTarg
           <button key={t.id} type="button" className={`ro en ${quiet ? s.key : tone(r)}`} onClick={() => onTarget(t.id)}>
             <span className="l1">
               <b>{t.id}</b><span className="doing">{TARGET_KIND_KO[t.kind] ?? t.kind}</span>
-              {t.rf_detected && !quiet && <span className="rf-tag">RF</span>}
+              {!quiet && clueTags(t).map((tag) => <span key={tag} className="rf-tag">{tag}</span>)}
               <span className="risk">{quiet ? "—" : r.toFixed(2)}</span>
             </span>
             <span className="l2"><span className={`stg ${s?.key}${s?.away ? " away" : ""}`}>{s?.label}</span><span className="det">{s?.detail}</span></span>

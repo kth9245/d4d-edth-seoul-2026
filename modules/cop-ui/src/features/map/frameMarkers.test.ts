@@ -53,6 +53,9 @@ describe("frameMarkers", () => {
     expect([at({ rf_detected: true }).rf, at({ rf_detected: true }).label]).toEqual([true, "boat1 · RF"]);
     expect([at({ emitting: true }).rf, at({ emitting: true }).label]).toEqual([false, "boat1"]);
     expect(at({ rf_detected: true, neutralized_ms: 1 }).label).toBe("boat1 · 무력화");
+    // decision 0069: heat and noise clues get their own words and the same ring
+    expect([at({ sound_detected: true }).rf, at({ sound_detected: true }).label]).toEqual([true, "boat1 · 소음"]);
+    expect(at({ rf_detected: true, ir_detected: true }).label).toBe("boat1 · RF·열");
   });
 
   it("marks a target nobody sees as not seen", () => {

@@ -1,4 +1,5 @@
 import type { GeoPoint, Target } from "../../contracts.gen";
+import { clueTags } from "./clueTags";
 
 export type TrackKind = "seen" | "rf" | "lost" | "never" | "gone";
 export type LostDir = "still" | "approach" | "away";
@@ -13,7 +14,7 @@ const STILL_MPS = 0.3;
 export function trackState(t: Target, tMs: number, watch: GeoPoint | null): Track {
   if (t.neutralized_ms != null) return { k: "gone", pos: t.pos };
   if ((t.seen_by ?? []).length > 0) return { k: "seen", pos: t.pos };
-  if (t.rf_detected) return { k: "rf", pos: t.pos };
+  if (clueTags(t).length > 0) return { k: "rf", pos: t.pos }; // RF, heat or sound (decision 0069)
   if (!t.first_seen_ms) return { k: "never", pos: t.pos };
   const pos = t.last_seen_pos ?? t.pos;
   const ve = t.last_seen_vel_east_mps ?? 0;

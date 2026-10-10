@@ -11,6 +11,9 @@ describe("trackState", () => {
     expect(trackState(mkTarget({ id: "a", seen_by: ["d1"], first_seen_ms: T0 }), T0, LANDING).k).toBe("seen");
     expect(trackState(mkTarget({ id: "b", rf_detected: true }), T0, LANDING).k).toBe("rf");
     expect(trackState(mkTarget({ id: "c" }), T0, LANDING)).toEqual({ k: "never", pos: at(37.99, 124.72) });
+    // decision 0069: a heat or sound clue is a clue too, so the screen does not call the target never detected
+    expect(trackState(mkTarget({ id: "e", ir_detected: true }), T0, LANDING).k).toBe("rf");
+    expect(trackState(mkTarget({ id: "f", sound_detected: true }), T0, LANDING).k).toBe("rf");
     expect(trackState(mkTarget({ id: "d", neutralized_ms: T0, seen_by: ["usv"] }), T0, LANDING).k).toBe("gone");
   });
 

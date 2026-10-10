@@ -61,6 +61,8 @@ function threatOf(t: Target | undefined): CardThreat | undefined {
     } else if (r === "inside_watch_radius") parts.push("기준점 반경 안 +0.30");
     else if (r === "near_watch_radius") parts.push("기준점 근접 +0.15");
     else if (r === "rf_emission") parts.push("RF 방출 감지 +0.30");
+    else if (r === "ir_signature") parts.push("열 신호 감지 +0.10");
+    else if (r === "sound") parts.push("소음 감지 +0.10");
     else if (r === "speed") parts.push(`속도 ${Math.hypot(t.vel_east_mps, t.vel_north_mps).toFixed(1)} m/s`);
   }
   return { score, rf: reasons.includes("rf_emission"), line: parts.join(" · "), parts };
