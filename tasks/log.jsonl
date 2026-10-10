@@ -155,3 +155,4 @@
 {"at": "2026-10-10T10:59:52+09:00", "by": "kth9245", "op": "add", "id": "Part1-5.1", "title": "프롬프트 틀 build_draft_prompt(PLY-12)·시연 문장 2개", "parent": "Part1-5", "assign": null, "slot": "2", "spec": null}
 {"at": "2026-10-10T11:00:15+09:00", "by": "kth9245", "op": "start", "id": "Part1-5.1", "take": false, "from": null}
 {"at": "2026-10-10T11:00:51+09:00", "by": "kth9245", "op": "done", "id": "Part1-13", "take": false}
+{"at": "2026-10-10T11:00:56+09:00", "by": "최동호", "op": "done", "id": "Part2-5", "take": false}
