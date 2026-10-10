@@ -653,3 +653,4 @@
 {"at": "2026-10-11T08:44:19+09:00", "by": "kth9245", "op": "done", "id": "Part1-15.8", "take": false}
 {"at": "2026-10-11T08:44:31+09:00", "by": "kth9245", "op": "add", "id": "Part1-15.9", "title": "README 실행 방법(clone·설치·demo)", "parent": "Part1-15", "assign": null, "slot": "뒤", "spec": null}
 {"at": "2026-10-11T08:44:36+09:00", "by": "kth9245", "op": "start", "id": "Part1-15.9", "take": false, "from": null}
+{"at": "2026-10-11T08:47:37+09:00", "by": "kth9245", "op": "done", "id": "Part1-15.9", "take": false}
