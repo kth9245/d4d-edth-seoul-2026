@@ -2,7 +2,7 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 11:36 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 11:37 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part2-17** gateway `engine.py` 틱 루프 — 최동호, 10/10 11:32부터 · 하위 5/5 완료
@@ -25,6 +25,7 @@
 - **Part2-19** 시나리오 튜닝
 
 ### 누구나
+- **Part1-18** 타격: 계약 추가 5개 + play 대응표 행 + TS·예시 (한 커밋)
 - **Part3-15** play `compile_mavlink` (결정 0011) · 하위 0/1 완료 · PLY-10
 
 ## 최근 결정
