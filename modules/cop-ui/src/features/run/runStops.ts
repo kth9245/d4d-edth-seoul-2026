@@ -4,16 +4,13 @@ const MIN = 60_000;
 
 // Where "다음 사건" pauses the run: a few seconds after each scene so its card is already up
 // (Part1-13 decision: right after the event, paused). Offsets are ms after operation.started_ms.
-// Times are the real engine's scenes in the strike-phase order (modules/gateway/tests/test_demo_timeline.py,
-// 10/10 after Part2-19 and Part2-19.1): report card s1 16:21, drone 1 returns s3 19:00, d2 sent past the
-// NLL s5 20:00 (the battery block at 20:30 was checked at that battery), fast1 appears 23:00.
-// No stop in the strike (s4 switch, s7 approval cards, s8 neutralized): they follow the operator's clicks,
-// and a jump runs with no operator input, so the strike phase is played (Part1-13.1).
-// 17:05 (Part1-27.1, decisions 0036/0040): boat2 starts emitting at 17:00 while both contact cards are still open,
-// so its risk goes 0.27 -> 0.57 and its card moves above boat1's (0.50), with RF on the map.
+// Times are the real engine's scenes (modules/gateway/tests/test_demo_timeline.py). Since the demo starts on the
+// coast patrol (Part2-33, Part1-30): d1's coast card with the fleet choices s1 17:00, d1 goes home 19:00, d2 sent
+// past the NLL s5 20:00 (the battery block at 20:30 was checked at that battery), fast1 appears 23:00 and d3's card
+// on it comes at 23:04. No stop in the strike (s4 switch, s7 approval cards, s8 neutralized): they follow the
+// operator's clicks, and a jump runs with no operator input, so the strike phase is played (Part1-13.1).
 export const RUN_STOPS: RunStop[] = [
-  { offsetMs: 16 * MIN + 25_000, label: "보고 카드" },
-  { offsetMs: 17 * MIN + 5_000, label: "2번 배 무선 송신" },
+  { offsetMs: 17 * MIN + 5_000, label: "보고 카드" },
   { offsetMs: 19 * MIN + 5_000, label: "드론1 귀환" },
   { offsetMs: 20 * MIN, label: "드론2 직접 조종" },
   { offsetMs: 23 * MIN + 5_000, label: "고속정 등장" },
