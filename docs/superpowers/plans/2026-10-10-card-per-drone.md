@@ -45,9 +45,15 @@
 ```python
 def static_play(pid: str, name: str) -> Play:  # an old-flow patrol: a card with its own choice
     p = coast(pid, name)
-    rep = p.steps[1].model_copy(update={"report": ReportSpec(
-        text="미식별 선박 접근", auto_choices=True,
-        choices=[Choice(id="approach", label="근접 확인", play_by_vehicle={"d1": "watch"})])})
+    rep = p.steps[1].model_copy(
+        update={
+            "report": ReportSpec(
+                text="미식별 선박 접근",
+                auto_choices=True,
+                choices=[Choice(id="approach", label="근접 확인", play_by_vehicle={"d1": "watch"})],
+            )
+        }
+    )
     return p.model_copy(update={"steps": [p.steps[0], rep]})
 
 
@@ -77,21 +83,22 @@ def test_a_drone_with_its_own_open_card_is_not_asked():  # decision 0046: never 
 - [ ] **Step 3: 구현** — `fleet_choices.py`의 `others` 조건과 마지막 줄을 바꾼다.
 
 ```python
-    others = [
-        s
-        for s in crew
-        if s.id not in busy
-        and s.pending_report_id is None  # decision 0046: its own card stays; apply_decision would close it
-        and s.play_id != coast.id
-        and (
-            (s.status.value == "active" and s.play_id in op.rotation_plays)
-            or (s.status.value == "ready" and s.battery_pct >= 99.9)
-        )
-    ]
-    ...
-    planned = list(step.report.choices)  # the card's own choices, read from the step each time
-    keep = [] if planned else [Choice(id="keep", label="전 기체 현 임무 유지")]
-    return rep.model_copy(update={"choices": [*planned, *take, *join, *keep]})
+others = [
+    s
+    for s in crew
+    if s.id not in busy
+    and s.pending_report_id
+    is None  # decision 0046: its own card stays; apply_decision would close it
+    and s.play_id != coast.id
+    and (
+        (s.status.value == "active" and s.play_id in op.rotation_plays)
+        or (s.status.value == "ready" and s.battery_pct >= 99.9)
+    )
+]
+...
+planned = list(step.report.choices)  # the card's own choices, read from the step each time
+keep = [] if planned else [Choice(id="keep", label="전 기체 현 임무 유지")]
+return rep.model_copy(update={"choices": [*planned, *take, *join, *keep]})
 ```
   모듈 docstring 한 줄도 "정해진 선택지가 있으면 그 뒤에 덧붙인다"로 고친다.
 - [ ] **Step 4: 통과 확인** — 같은 명령. 기존 테스트(`test_choices_for_every_other_drone_then_keep` 등)도 모두 통과해야 한다(정해진 선택지가 없는 카드는 그대로).
@@ -122,11 +129,27 @@ from modules.gateway.engine import init_engine, tick
 from modules.sim import load_scenario_json
 
 SC0 = load_scenario_json("demo/scenarios/baengnyeong_night.json")
-OLD_START = SC0.operation.model_copy(update={"assign": {**SC0.operation.assign, "d1": "patrol_a", "d2": "patrol_b"},
-                                              "reserve": {"d1": ["d3"]}})  # the old flow (Task 4 puts it in the JSON)
-PLAYS = [p.model_copy(update={"steps": [
-    s.model_copy(update={"report": s.report.model_copy(update={"auto_choices": True})}) if s.report else s
-    for s in p.steps]}) if p.id in ("patrol_a", "patrol_b") else p for p in SC0.plays]
+OLD_START = SC0.operation.model_copy(
+    update={
+        "assign": {**SC0.operation.assign, "d1": "patrol_a", "d2": "patrol_b"},
+        "reserve": {"d1": ["d3"]},
+    }
+)  # the old flow (Task 4 puts it in the JSON)
+PLAYS = [
+    p.model_copy(
+        update={
+            "steps": [
+                s.model_copy(update={"report": s.report.model_copy(update={"auto_choices": True})})
+                if s.report
+                else s
+                for s in p.steps
+            ]
+        }
+    )
+    if p.id in ("patrol_a", "patrol_b")
+    else p
+    for p in SC0.plays
+]
 SC = SC0.model_copy(update={"operation": OLD_START, "plays": PLAYS})
 
 
@@ -140,7 +163,10 @@ def _first_contact_card():
 def test_a_drone_that_opens_its_own_card_leaves_the_open_cards_choices_next_tick():
     es, card = _first_contact_card()
     assert "take_d4" in [c.id for c in card.choices]
-    busy = [s.model_copy(update={"pending_report_id": "rep-d4-x"}) if s.id == "d4" else s for s in es.states]
+    busy = [
+        s.model_copy(update={"pending_report_id": "rep-d4-x"}) if s.id == "d4" else s
+        for s in es.states
+    ]
     es, _ = tick(replace(es, states=busy), TickInputs())
     now = next(r for r in es.reports if r.id == card.id)
     ids = [c.id for c in now.choices]
@@ -223,8 +249,11 @@ def test_fleet_choice_sends_a_standby_drone_to_watch_with_the_finder():  # decis
 
 ```python
 import json
+
+
 def save(p, d):
     open(p, "w", encoding="utf-8").write(json.dumps(d, indent=1, ensure_ascii=False) + "\n")
+
 
 p = "demo/scenarios/baengnyeong_night.json"
 d = json.load(open(p, encoding="utf-8"))

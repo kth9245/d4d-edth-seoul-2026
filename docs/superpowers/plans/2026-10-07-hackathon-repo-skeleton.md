@@ -481,7 +481,8 @@ def make_module(root: Path) -> Path:
 def run(root: Path, *args: str) -> subprocess.CompletedProcess:
     return subprocess.run(
         [sys.executable, str(SCRIPT), *args, "--root", str(root), "--owner", "철수"],
-        capture_output=True, text=True,
+        capture_output=True,
+        text=True,
     )
 
 
@@ -490,7 +491,9 @@ def test_creates_spec_row_action_and_failing_test(tmp_path):
     r = run(tmp_path, "tracking", "predict_tracks", "1초 뒤 위치 예측")
     assert r.returncode == 0, r.stderr
     action = (mod / "actions" / "predict_tracks.py").read_text(encoding="utf-8")
-    assert action.startswith('"""TRK-01 predict_tracks: 1초 뒤 위치 예측\nSPEC: modules/tracking/SPEC.md#TRK-01')
+    assert action.startswith(
+        '"""TRK-01 predict_tracks: 1초 뒤 위치 예측\nSPEC: modules/tracking/SPEC.md#TRK-01'
+    )
     assert "def predict_tracks(" in action and "raise NotImplementedError" in action
     test = (mod / "tests" / "test_predict_tracks.py").read_text(encoding="utf-8")
     assert "from modules.tracking.actions.predict_tracks import predict_tracks" in test
@@ -569,8 +572,7 @@ from dataclasses import astuple, dataclass
 from pathlib import Path
 
 SPEC_HEADER = (
-    "| id | 액션 | 입력 | 출력 | 완료 기준 | 담당 | 상태 |\n"
-    "|---|---|---|---|---|---|---|\n"
+    "| id | 액션 | 입력 | 출력 | 완료 기준 | 담당 | 상태 |\n|---|---|---|---|---|---|---|\n"
 )
 PREFIX_RE = re.compile(r"<!--\s*prefix:\s*([A-Z]+)\s*-->")
 
@@ -646,7 +648,7 @@ def {name}(*args, **kwargs):
     raise NotImplementedError
 '''
 
-TEST_TMPL = '''import pytest
+TEST_TMPL = """import pytest
 
 from modules.{module}.actions.{name} import {name}
 
@@ -654,7 +656,7 @@ from modules.{module}.actions.{name} import {name}
 def test_{name}():
     pytest.fail("{id}: replace with a real test for {name}")
     {name}()
-'''
+"""
 
 
 def fail(msg: str) -> None:
@@ -802,7 +804,9 @@ def test_decision_index(tmp_path):
 
 
 def test_apply_policy_replaces_block_only():
-    out = sd.apply_policy("a\n<!-- POLICY:BEGIN -->\nold\n<!-- POLICY:END -->\nz\n", "# 정책\n\n1. x\n")
+    out = sd.apply_policy(
+        "a\n<!-- POLICY:BEGIN -->\nold\n<!-- POLICY:END -->\nz\n", "# 정책\n\n1. x\n"
+    )
     assert out == "a\n<!-- POLICY:BEGIN -->\n1. x\n<!-- POLICY:END -->\nz\n"
 
 
@@ -875,12 +879,19 @@ def build_knowledge_index(root: Path) -> str:
 
 
 def build_decision_index(root: Path) -> str:
-    out = [GENERATED, "# 결정 목록\n", "| id | 제목 | 상태 | 결정자 | 모듈 |", "|---|---|---|---|---|"]
+    out = [
+        GENERATED,
+        "# 결정 목록\n",
+        "| id | 제목 | 상태 | 결정자 | 모듈 |",
+        "|---|---|---|---|---|",
+    ]
     for doc in sorted((root / "decisions" / "log").glob("*.md")):
         m, _ = parse(_read(doc))
         mods = ", ".join(m.get("modules") or [])
-        out.append(f"| [{m.get('id', doc.stem)}](log/{doc.name}) | {m.get('title', '')} | "
-                   f"{m.get('status', '')} | {m.get('decided_by') or ''} | {mods} |")
+        out.append(
+            f"| [{m.get('id', doc.stem)}](log/{doc.name}) | {m.get('title', '')} | "
+            f"{m.get('status', '')} | {m.get('decided_by') or ''} | {mods} |"
+        )
     return "\n".join(out) + "\n"
 
 
@@ -971,8 +982,9 @@ SCRIPT = ROOT / "scripts" / "decide.py"
 
 
 def run(root: Path, *args: str) -> subprocess.CompletedProcess:
-    return subprocess.run([sys.executable, str(SCRIPT), *args, "--root", str(root)],
-                          capture_output=True, text=True)
+    return subprocess.run(
+        [sys.executable, str(SCRIPT), *args, "--root", str(root)], capture_output=True, text=True
+    )
 
 
 def test_new_creates_numbered_proposal(tmp_path):
@@ -1059,8 +1071,10 @@ def cmd_new(log: Path, title: str, modules: str) -> None:
     nid = f"{max(nums, default=0) + 1:04d}"
     mods = ", ".join(m.strip() for m in modules.split(",") if m.strip())
     path = log / f"{nid}-{slugify(title)}.md"
-    path.write_text(TEMPLATE.format(id=nid, title=title, date=date.today().isoformat(),
-                                    modules=mods), encoding="utf-8")
+    path.write_text(
+        TEMPLATE.format(id=nid, title=title, date=date.today().isoformat(), modules=mods),
+        encoding="utf-8",
+    )
     print(f"제안 생성: {path}  (확정은 사람이 `python scripts/decide.py accept {nid} --by 이름`)")
 
 
@@ -1161,7 +1175,11 @@ def repo(tmp_path: Path) -> Path:
 
 def claude(path: Path, content: str = "x\n", tool: str = "Write") -> dict:
     key = "content" if tool == "Write" else "new_string"
-    return {"tool_name": tool, "cwd": str(path.parent), "tool_input": {"file_path": str(path), key: content}}
+    return {
+        "tool_name": tool,
+        "cwd": str(path.parent),
+        "tool_input": {"file_path": str(path), key: content},
+    }
 
 
 def codex(cwd: Path, patch: str) -> dict:
@@ -1201,7 +1219,9 @@ def test_infra_branch_owns_scripts(tmp_path):
 
 def test_unregistered_new_action_blocked(tmp_path):
     r = repo(tmp_path)
-    msg = g.check_pre(claude(r / "modules/tracking/actions/smooth_tracks.py"), r, "tracking/x", False)
+    msg = g.check_pre(
+        claude(r / "modules/tracking/actions/smooth_tracks.py"), r, "tracking/x", False
+    )
     assert msg and "new_action.py" in msg
     ok = claude(r / "modules/tracking/actions/predict_tracks.py")
     assert g.check_pre(ok, r, "tracking/x", False) is None
@@ -1215,8 +1235,14 @@ def test_freeze_skips_spec_registration(tmp_path):
 
 def test_protected_files(tmp_path):
     r = repo(tmp_path)
-    for rel in (".env", "decisions/POLICY.md", "tasks/BOARD.md", "knowledge/INDEX.md",
-                "modules/cop-ui/src/contracts.gen.ts", "contracts/schema/track.json"):
+    for rel in (
+        ".env",
+        "decisions/POLICY.md",
+        "tasks/BOARD.md",
+        "knowledge/INDEX.md",
+        "modules/cop-ui/src/contracts.gen.ts",
+        "contracts/schema/track.json",
+    ):
         assert g.check_pre(claude(r / rel), r, "infra/x", False), rel
 
 
@@ -1275,10 +1301,17 @@ def test_branch_during_rebase(tmp_path):
     rb = tmp_path / ".git" / "rebase-merge"
     rb.mkdir()
     (rb / "head-name").write_text("refs/heads/tracking/kalman\n")
-    subprocess.run(["git", "-C", str(tmp_path), "commit", "-q", "--allow-empty", "-m", "x"],
-                   check=True, env={"GIT_AUTHOR_NAME": "a", "GIT_AUTHOR_EMAIL": "a@a",
-                                    "GIT_COMMITTER_NAME": "a", "GIT_COMMITTER_EMAIL": "a@a",
-                                    "PATH": "/usr/bin:/bin"})
+    subprocess.run(
+        ["git", "-C", str(tmp_path), "commit", "-q", "--allow-empty", "-m", "x"],
+        check=True,
+        env={
+            "GIT_AUTHOR_NAME": "a",
+            "GIT_AUTHOR_EMAIL": "a@a",
+            "GIT_COMMITTER_NAME": "a",
+            "GIT_COMMITTER_EMAIL": "a@a",
+            "PATH": "/usr/bin:/bin",
+        },
+    )
     subprocess.run(["git", "-C", str(tmp_path), "checkout", "-q", "--detach"], check=True)
     assert g.current_branch(tmp_path) == "tracking/kalman"
 
@@ -1287,11 +1320,19 @@ def test_cli_exit_codes(tmp_path):
     r = repo(tmp_path)
     subprocess.run(["git", "init", "-q", "-b", "main", str(r)], check=True)
     payload = json.dumps(claude(r / "modules/assess/x.py"))
-    res = subprocess.run([sys.executable, str(ROOT / "tools/guard/check_edit.py"), "pre"],
-                         input=payload, capture_output=True, text=True)
+    res = subprocess.run(
+        [sys.executable, str(ROOT / "tools/guard/check_edit.py"), "pre"],
+        input=payload,
+        capture_output=True,
+        text=True,
+    )
     assert res.returncode == 2 and "assess" in res.stderr
-    res = subprocess.run([sys.executable, str(ROOT / "tools/guard/check_edit.py"), "pre"],
-                         input="not json", capture_output=True, text=True)
+    res = subprocess.run(
+        [sys.executable, str(ROOT / "tools/guard/check_edit.py"), "pre"],
+        input="not json",
+        capture_output=True,
+        text=True,
+    )
     assert res.returncode == 0
 ```
 
@@ -1324,12 +1365,34 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from tools.spec import spec_actions  # noqa: E402
 
-PROTECTED = [".env", ".env.*", "decisions/POLICY.md", "tasks/BOARD.md", "knowledge/INDEX.md",
-             "decisions/INDEX.md", "contracts/schema/*", "modules/cop-ui/src/contracts.gen.ts"]
+PROTECTED = [
+    ".env",
+    ".env.*",
+    "decisions/POLICY.md",
+    "tasks/BOARD.md",
+    "knowledge/INDEX.md",
+    "decisions/INDEX.md",
+    "contracts/schema/*",
+    "modules/cop-ui/src/contracts.gen.ts",
+]
 ALWAYS = ["knowledge/*", "decisions/log/*"]
-INFRA = ["AGENTS.md", "README.md", "pyproject.toml", "uv.lock", ".gitignore", "tests/*", "scripts/*",
-         "tools/*", ".claude/*", ".codex/*", ".agents/*", ".githooks/*", "shared/*", "demo/*",
-         "docs/*"]
+INFRA = [
+    "AGENTS.md",
+    "README.md",
+    "pyproject.toml",
+    "uv.lock",
+    ".gitignore",
+    "tests/*",
+    "scripts/*",
+    "tools/*",
+    ".claude/*",
+    ".codex/*",
+    ".agents/*",
+    ".githooks/*",
+    "shared/*",
+    "demo/*",
+    "docs/*",
+]
 CONTRACTS = ["contracts/*", "modules/cop-ui/src/contracts.gen.ts"]
 PATCH_RE = re.compile(r"^\*\*\* (Add|Update|Delete) File: (.+)$|^\*\*\* Move to: (.+)$", re.M)
 CONFIRMED_RE = re.compile(r"^\+?status:\s*확정", re.M)
@@ -1369,8 +1432,9 @@ def current_branch(root: Path) -> str:
         head = root / ".git" / d / "head-name"
         if head.exists():
             return head.read_text().strip().removeprefix("refs/heads/")
-    r = subprocess.run(["git", "-C", str(root), "branch", "--show-current"],
-                       capture_output=True, text=True)
+    r = subprocess.run(
+        ["git", "-C", str(root), "branch", "--show-current"], capture_output=True, text=True
+    )
     return r.stdout.strip()
 
 
@@ -1388,20 +1452,27 @@ def allowed(rel: str, branch: str, modules: set[str]) -> bool:
 def _block_reason(rel: str, branch: str) -> str:
     owner = rel.split("/")[1] if rel.startswith("modules/") and rel.count("/") >= 2 else None
     need = f"`{owner}/<주제>`" if owner else "`infra/<주제>` 또는 `contracts/<주제>`"
-    return (f"[guard] 현재 브랜치 `{branch or '(없음)'}`에서는 `{rel}`을 수정할 수 없습니다. "
-            f"이 파일은 {need} 브랜치 담당입니다. 다른 사람 영역이면 담당자에게 요청하세요.")
+    return (
+        f"[guard] 현재 브랜치 `{branch or '(없음)'}`에서는 `{rel}`을 수정할 수 없습니다. "
+        f"이 파일은 {need} 브랜치 담당입니다. 다른 사람 영역이면 담당자에게 요청하세요."
+    )
 
 
 def check_pre(payload: dict, root: Path, branch: str, freeze: bool) -> str | None:
-    modules = {p.name for p in (root / "modules").iterdir() if p.is_dir()} \
-        if (root / "modules").is_dir() else set()
+    modules = (
+        {p.name for p in (root / "modules").iterdir() if p.is_dir()}
+        if (root / "modules").is_dir()
+        else set()
+    )
     for e in extract_edits(payload):
         try:
             rel = e.path.relative_to(root.resolve()).as_posix()
         except ValueError:
             continue
         if any(fnmatch(rel, pat) for pat in PROTECTED):
-            return f"[guard] `{rel}`은 보호 파일입니다(자동 생성·정책·비밀값). 직접 수정하지 마세요."
+            return (
+                f"[guard] `{rel}`은 보호 파일입니다(자동 생성·정책·비밀값). 직접 수정하지 마세요."
+            )
         if rel.startswith("decisions/log/"):
             if e.path.exists() and CONFIRMED_RE.search(e.path.read_text(encoding="utf-8")):
                 return f"[guard] `{rel}`은 확정된 결정입니다. 바꾸려면 사람에게 요청하세요."
@@ -1412,8 +1483,10 @@ def check_pre(payload: dict, root: Path, branch: str, freeze: bool) -> str | Non
         m = re.fullmatch(r"modules/([^/]+)/actions/([a-z0-9_]+)\.py", rel)
         if m and e.is_new and not freeze and m.group(2) != "__init__":
             if m.group(2) not in spec_actions(root / "modules" / m.group(1) / "SPEC.md"):
-                return (f"[guard] 액션 `{m.group(2)}`이 modules/{m.group(1)}/SPEC.md에 없습니다. "
-                        f"`python scripts/new_action.py {m.group(1)} {m.group(2)} \"설명\"`으로 만드세요.")
+                return (
+                    f"[guard] 액션 `{m.group(2)}`이 modules/{m.group(1)}/SPEC.md에 없습니다. "
+                    f'`python scripts/new_action.py {m.group(1)} {m.group(2)} "설명"`으로 만드세요.'
+                )
     return None
 
 
@@ -1423,12 +1496,18 @@ def check_post(payload: dict, root: Path, freeze: bool) -> str | None:
     for e in extract_edits(payload):
         if not e.path.exists() or e.path.suffix not in (".py", ".ts", ".tsx"):
             continue
-        rel = e.path.relative_to(root.resolve()).as_posix() if e.path.is_relative_to(root.resolve()) else ""
+        rel = (
+            e.path.relative_to(root.resolve()).as_posix()
+            if e.path.is_relative_to(root.resolve())
+            else ""
+        )
         limit = 80 if re.fullmatch(r"modules/[^/]+/actions/[^/]+\.py", rel) else 200
         n = len(e.path.read_text(encoding="utf-8").splitlines())
         if rel and n > limit and "knowledge/spikes/" not in rel:
-            return (f"[guard] `{rel}`이 {n}줄로 기준 {limit}줄을 넘었습니다. "
-                    "역할별로 액션(새 SPEC 행)이나 파일을 쪼개세요.")
+            return (
+                f"[guard] `{rel}`이 {n}줄로 기준 {limit}줄을 넘었습니다. "
+                "역할별로 액션(새 SPEC 행)이나 파일을 쪼개세요."
+            )
     return None
 
 
@@ -1439,13 +1518,18 @@ def main() -> None:
     except ValueError:
         sys.exit(0)
     cwd = payload.get("cwd") or os.getcwd()
-    r = subprocess.run(["git", "-C", cwd, "rev-parse", "--show-toplevel"], capture_output=True, text=True)
+    r = subprocess.run(
+        ["git", "-C", cwd, "rev-parse", "--show-toplevel"], capture_output=True, text=True
+    )
     if r.returncode != 0:
         sys.exit(0)
     root = Path(r.stdout.strip())
     freeze = os.environ.get("KDTH_FREEZE") == "1"
-    msg = check_pre(payload, root, current_branch(root), freeze) if mode == "pre" \
+    msg = (
+        check_pre(payload, root, current_branch(root), freeze)
+        if mode == "pre"
         else check_post(payload, root, freeze)
+    )
     if msg:
         print(msg, file=sys.stderr)
         sys.exit(2)
@@ -1498,8 +1582,10 @@ from pathlib import Path
 
 from tools.check_specs import problems
 
-HDR = ("<!-- prefix: TRK -->\n| id | 액션 | 입력 | 출력 | 완료 기준 | 담당 | 상태 |\n"
-       "|---|---|---|---|---|---|---|\n")
+HDR = (
+    "<!-- prefix: TRK -->\n| id | 액션 | 입력 | 출력 | 완료 기준 | 담당 | 상태 |\n"
+    "|---|---|---|---|---|---|---|\n"
+)
 
 
 def mod(root: Path, rows: str) -> Path:
@@ -1528,7 +1614,10 @@ def test_unregistered_action_and_missing_test(tmp_path):
 
 
 def test_spec_row_without_file_only_ok_when_planned(tmp_path):
-    mod(tmp_path, "| TRK-01 | a_b | . | . | . | . | 예정 |\n| TRK-02 | c_d | . | . | . | . | 완료 |\n")
+    mod(
+        tmp_path,
+        "| TRK-01 | a_b | . | . | . | . | 예정 |\n| TRK-02 | c_d | . | . | . | . | 완료 |\n",
+    )
     out = problems(tmp_path)
     assert len(out) == 1 and "c_d" in out[0]
 
@@ -1567,9 +1656,12 @@ def write(root: Path, rel: str, code: str) -> None:
 
 
 def test_public_api_imports_ok(tmp_path):
-    write(tmp_path, "modules/gateway/pipeline.py",
-          "from modules.tracking import update\nfrom modules import sim\nimport contracts.models\n"
-          "from shared.geo import distance_m\nfrom modules.gateway.actions.x import x\n")
+    write(
+        tmp_path,
+        "modules/gateway/pipeline.py",
+        "from modules.tracking import update\nfrom modules import sim\nimport contracts.models\n"
+        "from shared.geo import distance_m\nfrom modules.gateway.actions.x import x\n",
+    )
     assert problems(tmp_path) == []
 
 
@@ -1618,17 +1710,27 @@ GENERATED = {"contracts.gen.ts"}
 
 def _spec_problems(mod: Path) -> list[str]:
     out = []
-    rows = parse_spec((mod / "SPEC.md").read_text(encoding="utf-8"))[1] if (mod / "SPEC.md").exists() else []
+    rows = (
+        parse_spec((mod / "SPEC.md").read_text(encoding="utf-8"))[1]
+        if (mod / "SPEC.md").exists()
+        else []
+    )
     registered = {r.action: r for r in rows}
     files = {p.stem for p in (mod / "actions").glob("*.py") if p.stem != "__init__"}
     for name in sorted(files - registered.keys()):
-        out.append(f"modules/{mod.name}/actions/{name}.py: SPEC.md에 없는 액션입니다 (scripts/new_action.py 사용).")
+        out.append(
+            f"modules/{mod.name}/actions/{name}.py: SPEC.md에 없는 액션입니다 (scripts/new_action.py 사용)."
+        )
     for name in sorted(files):
         if not (mod / "tests" / f"test_{name}.py").exists():
-            out.append(f"modules/{mod.name}: 액션 {name}의 테스트 파일 tests/test_{name}.py가 없습니다.")
+            out.append(
+                f"modules/{mod.name}: 액션 {name}의 테스트 파일 tests/test_{name}.py가 없습니다."
+            )
     for name, row in registered.items():
         if name not in files and row.status != "예정":
-            out.append(f"modules/{mod.name}/SPEC.md: {row.id} {name} 상태가 '{row.status}'인데 액션 파일이 없습니다.")
+            out.append(
+                f"modules/{mod.name}/SPEC.md: {row.id} {name} 상태가 '{row.status}'인데 액션 파일이 없습니다."
+            )
     return out
 
 
@@ -1641,7 +1743,11 @@ def _length_problems(root: Path) -> list[str]:
             if SKIP_DIRS & set(p.relative_to(root).parts):
                 continue
             rel = p.relative_to(root).as_posix()
-            limit = 80 if p.parent.name == "actions" and rel.startswith("modules/") and p.suffix == ".py" else 200
+            limit = (
+                80
+                if p.parent.name == "actions" and rel.startswith("modules/") and p.suffix == ".py"
+                else 200
+            )
             n = len(p.read_text(encoding="utf-8").splitlines())
             if n > limit:
                 out.append(f"{rel}: {n}줄 (기준 {limit}줄). 쪼개세요.")
@@ -2219,9 +2325,19 @@ ORIGIN = Origin(lat=37.5665, lon=126.978)
 
 
 def scenario(**kw) -> Scenario:
-    obj = SimObject(id="d1", kind="drone", start_east_m=-100, start_north_m=50, alt_m=100,
-                    vel_east_mps=10, vel_north_mps=0, **kw)
-    return Scenario(name="t", start_ms=1000, duration_s=60, step_ms=500, origin=ORIGIN, objects=[obj])
+    obj = SimObject(
+        id="d1",
+        kind="drone",
+        start_east_m=-100,
+        start_north_m=50,
+        alt_m=100,
+        vel_east_mps=10,
+        vel_north_mps=0,
+        **kw,
+    )
+    return Scenario(
+        name="t", start_ms=1000, duration_s=60, step_ms=500, origin=ORIGIN, objects=[obj]
+    )
 
 
 def test_moves_at_constant_velocity():
@@ -2365,9 +2481,12 @@ def object_positions(scenario: Scenario, t_ms: int) -> list[TruthPoint]:
         if elapsed_s < o.appear_s:
             continue
         t = elapsed_s - o.appear_s
-        lat, lon = offset_latlon(scenario.origin.lat, scenario.origin.lon,
-                                 o.start_east_m + o.vel_east_mps * t,
-                                 o.start_north_m + o.vel_north_mps * t)
+        lat, lon = offset_latlon(
+            scenario.origin.lat,
+            scenario.origin.lon,
+            o.start_east_m + o.vel_east_mps * t,
+            o.start_north_m + o.vel_north_mps * t,
+        )
         points.append(TruthPoint(object_id=o.id, kind=o.kind, lat=lat, lon=lon, alt_m=o.alt_m))
     return points
 ```
@@ -2392,9 +2511,17 @@ def emit_detections(truth: list[TruthPoint], t_ms: int, seed: int) -> list[Detec
     out = []
     for p in truth:
         lat, lon = offset_latlon(p.lat, p.lon, rng.gauss(0, NOISE_M), rng.gauss(0, NOISE_M))
-        out.append(Detection(id=f"{p.object_id}@{t_ms}", sensor=SensorType.RADAR, t_ms=t_ms,
-                             lat=lat, lon=lon, alt_m=max(0.0, p.alt_m + rng.gauss(0, 2)),
-                             strength=round(rng.uniform(0.4, 1.0), 3)))
+        out.append(
+            Detection(
+                id=f"{p.object_id}@{t_ms}",
+                sensor=SensorType.RADAR,
+                t_ms=t_ms,
+                lat=lat,
+                lon=lon,
+                alt_m=max(0.0, p.alt_m + rng.gauss(0, 2)),
+                strength=round(rng.uniform(0.4, 1.0), 3),
+            )
+        )
     return out
 ```
 
@@ -2431,8 +2558,7 @@ from contracts.models import Detection
 
 
 def drop_invalid_detections(detections: list[Detection]) -> list[Detection]:
-    return [d for d in detections
-            if -90 <= d.lat <= 90 and -180 <= d.lon <= 180 and d.alt_m >= 0]
+    return [d for d in detections if -90 <= d.lat <= 90 and -180 <= d.lon <= 180 and d.alt_m >= 0]
 ```
 
 `modules/sensing/pipeline.py`:
@@ -2590,8 +2716,17 @@ from shared.geo import enu_delta_m
 
 
 def test_constant_velocity_prediction():
-    t = Track(id="T-a", t_ms=0, lat=37.5, lon=127.0, alt_m=100, vel_east_mps=10,
-              vel_north_mps=-5, hits=3, last_seen_ms=0)
+    t = Track(
+        id="T-a",
+        t_ms=0,
+        lat=37.5,
+        lon=127.0,
+        alt_m=100,
+        vel_east_mps=10,
+        vel_north_mps=-5,
+        hits=3,
+        last_seen_ms=0,
+    )
     (p,) = predict_tracks([t], t_ms=2000)
     east, north = enu_delta_m(37.5, 127.0, p.lat, p.lon)
     assert math.isclose(east, 20, abs_tol=0.1) and math.isclose(north, -10, abs_tol=0.1)
@@ -2639,7 +2774,9 @@ from shared.geo import offset_latlon
 
 def det_at(east: float, north: float) -> Detection:
     lat, lon = offset_latlon(37.5, 127.0, east, north)
-    return Detection(id="a@1000", sensor="radar", t_ms=1000, lat=lat, lon=lon, alt_m=55, strength=0.5)
+    return Detection(
+        id="a@1000", sensor="radar", t_ms=1000, lat=lat, lon=lon, alt_m=55, strength=0.5
+    )
 
 
 def test_first_update_uses_full_displacement():
@@ -2655,8 +2792,9 @@ def test_first_update_uses_full_displacement():
 
 
 def test_later_updates_smooth_velocity():
-    t = Track(id="T-a", t_ms=1000, lat=37.5, lon=127.0, alt_m=50, hits=3, last_seen_ms=0,
-              vel_east_mps=10)
+    t = Track(
+        id="T-a", t_ms=1000, lat=37.5, lon=127.0, alt_m=50, hits=3, last_seen_ms=0, vel_east_mps=10
+    )
     (a,) = update_tracks([t], {"T-a": det_at(20, 0)}, t_ms=1000)
     assert math.isclose(a.vel_east_mps, 10 + 0.3 * 20, abs_tol=0.1)
 ```
@@ -2668,7 +2806,9 @@ from modules.tracking.actions.initiate_tracks import initiate_tracks
 
 
 def test_new_track_per_detection():
-    d = Detection(id="drone-a@1500", sensor="radar", t_ms=1500, lat=37.5, lon=127.0, alt_m=90, strength=0.5)
+    d = Detection(
+        id="drone-a@1500", sensor="radar", t_ms=1500, lat=37.5, lon=127.0, alt_m=90, strength=0.5
+    )
     (t,) = initiate_tracks([d], t_ms=1500)
     assert t.id == "T-drone-a" and t.hits == 1 and t.last_seen_ms == 1500
     assert (t.lat, t.lon, t.alt_m) == (37.5, 127.0, 90)
@@ -2693,8 +2833,17 @@ from modules.assess.actions.classify_track import classify_track
 
 
 def t(speed_e: float, alt: float, hits: int = 5) -> Track:
-    return Track(id="x", t_ms=0, lat=0, lon=0, alt_m=alt, vel_east_mps=speed_e,
-                 vel_north_mps=0, hits=hits, last_seen_ms=0)
+    return Track(
+        id="x",
+        t_ms=0,
+        lat=0,
+        lon=0,
+        alt_m=alt,
+        vel_east_mps=speed_e,
+        vel_north_mps=0,
+        hits=hits,
+        last_seen_ms=0,
+    )
 
 
 def test_rules():
@@ -2715,8 +2864,17 @@ P = (37.5665, 126.978)
 
 def track_at(east: float, vel_east: float) -> Track:
     lat, lon = offset_latlon(*P, east, 0)
-    return Track(id="x", t_ms=0, lat=lat, lon=lon, alt_m=100, vel_east_mps=vel_east,
-                 vel_north_mps=0, hits=5, last_seen_ms=0)
+    return Track(
+        id="x",
+        t_ms=0,
+        lat=lat,
+        lon=lon,
+        alt_m=100,
+        vel_east_mps=vel_east,
+        vel_north_mps=0,
+        hits=5,
+        last_seen_ms=0,
+    )
 
 
 def test_close_approaching_drone_is_high():
@@ -2833,12 +2991,20 @@ def update_tracks(tracks: list[Track], assigned: dict[str, Detection], t_ms: int
         dt = max((t_ms - t.last_seen_ms) / 1000, 1e-3)
         east, north = enu_delta_m(t.lat, t.lon, d.lat, d.lon)
         beta = 1.0 if t.hits == 1 else BETA
-        out.append(t.model_copy(update={
-            "lat": d.lat, "lon": d.lon, "alt_m": d.alt_m, "t_ms": t_ms, "last_seen_ms": t_ms,
-            "hits": t.hits + 1,
-            "vel_east_mps": t.vel_east_mps + beta * east / dt,
-            "vel_north_mps": t.vel_north_mps + beta * north / dt,
-        }))
+        out.append(
+            t.model_copy(
+                update={
+                    "lat": d.lat,
+                    "lon": d.lon,
+                    "alt_m": d.alt_m,
+                    "t_ms": t_ms,
+                    "last_seen_ms": t_ms,
+                    "hits": t.hits + 1,
+                    "vel_east_mps": t.vel_east_mps + beta * east / dt,
+                    "vel_north_mps": t.vel_north_mps + beta * north / dt,
+                }
+            )
+        )
     return out
 ```
 `t.lat/lon`은 pipeline에서 predict 후 들어오므로 예측 위치다. 따라서 `east/dt`는 예측 오차로 인한 속도 보정량이고, 첫 갱신(hits=1, 속도 0)에서는 β=1로 변위/시간을 그대로 속도로 쓴다.
@@ -2854,8 +3020,15 @@ from contracts.models import Detection, Track
 
 def initiate_tracks(detections: list[Detection], t_ms: int) -> list[Track]:
     return [
-        Track(id=f"T-{d.id.split('@')[0]}", t_ms=t_ms, lat=d.lat, lon=d.lon, alt_m=d.alt_m,
-              hits=1, last_seen_ms=t_ms)
+        Track(
+            id=f"T-{d.id.split('@')[0]}",
+            t_ms=t_ms,
+            lat=d.lat,
+            lon=d.lon,
+            alt_m=d.alt_m,
+            hits=1,
+            last_seen_ms=t_ms,
+        )
         for d in detections
     ]
 ```
@@ -2930,12 +3103,17 @@ SPEC: modules/assess/SPEC.md#ASM-02
 from contracts.models import ObjectClass, Track
 from shared.geo import distance_m, enu_delta_m
 
-CLASS_WEIGHT = {ObjectClass.DRONE: 1.0, ObjectClass.UNKNOWN: 0.6,
-                ObjectClass.BALLOON: 0.4, ObjectClass.BIRD: 0.1}
+CLASS_WEIGHT = {
+    ObjectClass.DRONE: 1.0,
+    ObjectClass.UNKNOWN: 0.6,
+    ObjectClass.BALLOON: 0.4,
+    ObjectClass.BIRD: 0.1,
+}
 
 
-def score_threat(track: Track, object_class: ObjectClass, protected_lat: float,
-                 protected_lon: float) -> tuple[float, str]:
+def score_threat(
+    track: Track, object_class: ObjectClass, protected_lat: float, protected_lon: float
+) -> tuple[float, str]:
     dist = distance_m(track.lat, track.lon, protected_lat, protected_lon)
     east, north = enu_delta_m(track.lat, track.lon, protected_lat, protected_lon)
     closing = (track.vel_east_mps * east + track.vel_north_mps * north) / max(dist, 1.0)
@@ -3144,18 +3322,26 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def test_smoke_passes_on_demo_scenario():
-    r = subprocess.run([sys.executable, str(ROOT / "scripts/smoke.py")], capture_output=True, text=True, cwd=ROOT)
+    r = subprocess.run(
+        [sys.executable, str(ROOT / "scripts/smoke.py")], capture_output=True, text=True, cwd=ROOT
+    )
     assert r.returncode == 0, r.stderr
     assert "smoke OK" in r.stdout
 
 
 def test_smoke_fails_on_bad_scenario(tmp_path):
     bad = tmp_path / "bad.yaml"
-    bad.write_text("name: x\nstart_ms: 0\nduration_s: 5\nstep_ms: 500\norigin: {lat: 0, lon: 0}\n"
-                   "objects: [{id: a, kind: tank, start_east_m: 0, start_north_m: 0, alt_m: 1, "
-                   "vel_east_mps: 0, vel_north_mps: 0}]\n")
-    r = subprocess.run([sys.executable, str(ROOT / "scripts/smoke.py"), "--scenario", str(bad)],
-                       capture_output=True, text=True, cwd=ROOT)
+    bad.write_text(
+        "name: x\nstart_ms: 0\nduration_s: 5\nstep_ms: 500\norigin: {lat: 0, lon: 0}\n"
+        "objects: [{id: a, kind: tank, start_east_m: 0, start_north_m: 0, alt_m: 1, "
+        "vel_east_mps: 0, vel_north_mps: 0}]\n"
+    )
+    r = subprocess.run(
+        [sys.executable, str(ROOT / "scripts/smoke.py"), "--scenario", str(bad)],
+        capture_output=True,
+        text=True,
+        cwd=ROOT,
+    )
     assert r.returncode == 1 and "kind" in r.stderr
 ```
 
@@ -3175,8 +3361,9 @@ SPEC: modules/gateway/SPEC.md#GW-01
 from contracts.models import Assessment, Frame, Response, Track
 
 
-def build_frame(t_ms: int, tracks: list[Track], assessments: list[Assessment],
-                responses: list[Response]) -> Frame:
+def build_frame(
+    t_ms: int, tracks: list[Track], assessments: list[Assessment], responses: list[Response]
+) -> Frame:
     return Frame(t_ms=t_ms, tracks=tracks, assessments=assessments, responses=responses)
 ```
 
@@ -3270,8 +3457,9 @@ def create_app(scenario_path: str, realtime: bool = True, ui_dist: str | None = 
     return app
 
 
-app = create_app(os.environ.get("KDTH_SCENARIO", DEFAULT_SCENARIO),
-                 ui_dist=os.environ.get("KDTH_UI_DIST"))
+app = create_app(
+    os.environ.get("KDTH_SCENARIO", DEFAULT_SCENARIO), ui_dist=os.environ.get("KDTH_UI_DIST")
+)
 ```
 
 `modules/gateway/__init__.py`:
@@ -3420,7 +3608,9 @@ def _ts_type(prop: dict) -> str:
 
 def _emit(name: str, schema: dict, out: dict[str, str]) -> None:
     if "enum" in schema:
-        out[name] = f"export type {name} = " + " | ".join(json.dumps(v) for v in schema["enum"]) + ";"
+        out[name] = (
+            f"export type {name} = " + " | ".join(json.dumps(v) for v in schema["enum"]) + ";"
+        )
         return
     required = set(schema.get("required", []))
     lines = [f"export interface {name} {{"]
@@ -3448,7 +3638,9 @@ def main(argv: list[str] | None = None) -> None:
     out.mkdir(parents=True, exist_ok=True)
     for name, model in ALL_MODELS.items():
         (out / f"{name}.json").write_text(
-            json.dumps(model.model_json_schema(), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            json.dumps(model.model_json_schema(), ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
     ts = root / "modules" / "cop-ui" / "src" / "contracts.gen.ts"
     ts.parent.mkdir(parents=True, exist_ok=True)
     ts.write_text(to_typescript(ALL_MODELS), encoding="utf-8")
@@ -3951,15 +4143,22 @@ ENV_GIT = ["-c", "user.name=t", "-c", "user.email=t@t", "-c", "core.hooksPath=/d
 
 
 def git(cwd: Path, *args: str) -> str:
-    return subprocess.run(["git", *ENV_GIT, *args], cwd=cwd, check=True, capture_output=True, text=True).stdout
+    return subprocess.run(
+        ["git", *ENV_GIT, *args], cwd=cwd, check=True, capture_output=True, text=True
+    ).stdout
 
 
 def make_clone(tmp_path: Path) -> tuple[Path, Path]:
     remote = tmp_path / "remote.git"
     git(tmp_path, "init", "-q", "--bare", "-b", "main", str(remote))
     work = tmp_path / "work"
-    shutil.copytree(ROOT, work, ignore=shutil.ignore_patterns(
-        ".git", "node_modules", "dist", ".venv", "*.pmtiles", ".tools", "__pycache__"))
+    shutil.copytree(
+        ROOT,
+        work,
+        ignore=shutil.ignore_patterns(
+            ".git", "node_modules", "dist", ".venv", "*.pmtiles", ".tools", "__pycache__"
+        ),
+    )
     (work / ".venv").symlink_to(ROOT / ".venv")
     git(work, "init", "-q", "-b", "main")
     git(work, "add", "-A")
@@ -3975,9 +4174,17 @@ def test_ship_pushes_rebased_branch_to_main(tmp_path):
     (work / "knowledge/inbox/note.md").write_text("x\n")
     git(work, "add", "-A")
     git(work, "commit", "-q", "-m", "note")
-    r = subprocess.run(["bash", "scripts/ship.sh"], cwd=work, capture_output=True, text=True,
-                       env={"PATH": "/usr/bin:/bin", "HOME": str(tmp_path),
-                            "GIT_CONFIG_PARAMETERS": "'core.hookspath=/dev/null'"})
+    r = subprocess.run(
+        ["bash", "scripts/ship.sh"],
+        cwd=work,
+        capture_output=True,
+        text=True,
+        env={
+            "PATH": "/usr/bin:/bin",
+            "HOME": str(tmp_path),
+            "GIT_CONFIG_PARAMETERS": "'core.hookspath=/dev/null'",
+        },
+    )
     assert r.returncode == 0, r.stdout + r.stderr
     assert "note" in git(work, "log", "--oneline", "origin/main", "-1")
 
@@ -4167,14 +4374,14 @@ def test_claude_hooks_call_guard():
     cfg = json.loads((ROOT / ".claude/settings.json").read_text())
     pre = cfg["hooks"]["PreToolUse"][0]
     assert pre["matcher"] == "Edit|Write|MultiEdit|NotebookEdit"
-    assert "check_edit.py\" pre" in pre["hooks"][0]["command"]
-    assert "check_edit.py\" post" in cfg["hooks"]["PostToolUse"][0]["hooks"][0]["command"]
+    assert 'check_edit.py" pre' in pre["hooks"][0]["command"]
+    assert 'check_edit.py" post' in cfg["hooks"]["PostToolUse"][0]["hooks"][0]["command"]
 
 
 def test_codex_hooks_call_guard():
     cfg = json.loads((ROOT / ".codex/hooks.json").read_text())
     assert cfg["hooks"]["PreToolUse"][0]["matcher"] == "^apply_patch$"
-    assert "check_edit.py\" pre" in cfg["hooks"]["PreToolUse"][0]["hooks"][0]["command"]
+    assert 'check_edit.py" pre' in cfg["hooks"]["PreToolUse"][0]["hooks"][0]["command"]
 
 
 def test_skills_shared_via_symlink():

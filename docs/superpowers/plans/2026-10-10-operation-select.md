@@ -241,25 +241,26 @@ Expected: FAIL (`TypeError: Live.__init__() takes 4 positional arguments but 5 w
 `save_play` 아래에:
 
 ```python
-    def scenario_infos(self) -> list[ScenarioInfo]:
-        self.scenarios[self.scenario.id] = self.scenario  # saved plays and operation edits
-        return [
-            ScenarioInfo(
-                id=s.id,
-                name=s.operation.name,
-                purpose=s.operation.purpose,
-                active=s.id == self.scenario.id,
-            )
-            for s in self.scenarios.values()
-        ]
+def scenario_infos(self) -> list[ScenarioInfo]:
+    self.scenarios[self.scenario.id] = self.scenario  # saved plays and operation edits
+    return [
+        ScenarioInfo(
+            id=s.id,
+            name=s.operation.name,
+            purpose=s.operation.purpose,
+            active=s.id == self.scenario.id,
+        )
+        for s in self.scenarios.values()
+    ]
 
-    def activate(self, scenario_id: str) -> RunState:
-        """Run another operation from its start, paused. The one left keeps what was saved to it."""
-        if scenario_id not in self.scenarios:
-            raise KeyError(scenario_id)  # 404, before anything changes
-        self.scenarios[self.scenario.id] = self.scenario  # write back first: the same id may come back
-        self.scenario = self.scenarios[scenario_id]
-        return self.reset()
+
+def activate(self, scenario_id: str) -> RunState:
+    """Run another operation from its start, paused. The one left keeps what was saved to it."""
+    if scenario_id not in self.scenarios:
+        raise KeyError(scenario_id)  # 404, before anything changes
+    self.scenarios[self.scenario.id] = self.scenario  # write back first: the same id may come back
+    self.scenario = self.scenarios[scenario_id]
+    return self.reset()
 ```
 
 - [ ] **Step 4: 통과 확인 + gateway 전체**
@@ -357,16 +358,17 @@ DEMO_SCENARIOS = [
 - `@app.get("/enemies")` 핸들러 다음에:
 
 ```python
-    @app.get("/scenarios")
-    async def scenarios():
-        return live.scenario_infos()
+@app.get("/scenarios")
+async def scenarios():
+    return live.scenario_infos()
 
-    @app.post("/scenarios/{scenario_id}/activate")
-    async def activate(scenario_id: str):
-        if scenario_id not in live.scenarios:
-            raise HTTPException(404, f"no scenario {scenario_id}")
-        log.info("POST /scenarios/%s/activate", scenario_id)
-        return live.activate(scenario_id)
+
+@app.post("/scenarios/{scenario_id}/activate")
+async def activate(scenario_id: str):
+    if scenario_id not in live.scenarios:
+        raise HTTPException(404, f"no scenario {scenario_id}")
+    log.info("POST /scenarios/%s/activate", scenario_id)
+    return live.activate(scenario_id)
 ```
 
 - [ ] **Step 4: 통과 확인 + gateway 전체**

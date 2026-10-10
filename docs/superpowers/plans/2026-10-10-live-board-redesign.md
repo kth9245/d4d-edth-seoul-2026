@@ -90,7 +90,11 @@ def test_pointing_request_is_approved_at_once_and_carries_the_target():
     inj = live.request_switch(
         SwitchIn(play_by_vehicle={"d2": "watch"}, target_by_vehicle={"d2": "boat1"}, approve=True)
     )
-    assert (inj.status, inj.target_by_vehicle, inj.label) == ("approved", {"d2": "boat1"}, "표적 감시: d2 → boat1")
+    assert (inj.status, inj.target_by_vehicle, inj.label) == (
+        "approved",
+        {"d2": "boat1"},
+        "표적 감시: d2 → boat1",
+    )
     live.jump(400)
     assert [(i.id, i.status) for i in eng.seen[1].injections] == [(inj.id, "approved")]
 ```
@@ -133,7 +137,9 @@ class SwitchIn(BaseModel):  # POST /injections: a switch button id, or vehicles 
     switch_id: str | None = None
     play_by_vehicle: dict[str, str] = {}
     target_by_vehicle: dict[str, str] = {}  # pointing at a target on the map (decision 0048)
-    approve: bool = False  # the press is the approval: recorded approved, no pending card (decision 0049)
+    approve: bool = (
+        False  # the press is the approval: recorded approved, no pending card (decision 0049)
+    )
 ```
 
 (`GeoPoint`가 events.py에 import되어 있지 않으면 `from .world import GeoPoint`처럼 같은 파일의 기존 import 줄에 더한다.)
@@ -2374,8 +2380,14 @@ def test_records_where_and_how_fast_a_target_was_last_seen():
     # decision 0047: the board draws a lost target at its last seen spot and estimates where it went
     moving = _target(900).model_copy(update={"vel_east_mps": 6.3, "vel_north_mps": 0.5})
     (t,) = observe_targets([D1], {"d1": SPEC}, [moving], T)
-    assert (t.last_seen_pos, t.last_seen_vel_east_mps, t.last_seen_vel_north_mps) == (moving.pos, 6.3, 0.5)
-    gone = _target(1100).model_copy(update={"last_seen_pos": moving.pos, "last_seen_vel_east_mps": 6.3})
+    assert (t.last_seen_pos, t.last_seen_vel_east_mps, t.last_seen_vel_north_mps) == (
+        moving.pos,
+        6.3,
+        0.5,
+    )
+    gone = _target(1100).model_copy(
+        update={"last_seen_pos": moving.pos, "last_seen_vel_east_mps": 6.3}
+    )
     (t,) = observe_targets([D1], {"d1": SPEC}, [gone], T + 1000)
     assert (t.last_seen_pos, t.last_seen_vel_east_mps) == (moving.pos, 6.3)
 ```
@@ -2416,11 +2428,19 @@ Run: `uv run pytest modules/runtime -n 0 -k join_only_with` → FAIL (`join_d3_d
 `modules/runtime/actions/fleet_choices.py`의 `join = [...]`를:
 
 ```python
-    join = [
-        Choice(id=f"join_{x.id}_{me.id}", label=f"{x.id} → {me.id}와 함께 감시({me.target_id})",
-               play_by_vehicle={x.id: WATCH_PLAY}, target_by_vehicle={x.id: me.target_id})
+join = (
+    [
+        Choice(
+            id=f"join_{x.id}_{me.id}",
+            label=f"{x.id} → {me.id}와 함께 감시({me.target_id})",
+            play_by_vehicle={x.id: WATCH_PLAY},
+            target_by_vehicle={x.id: me.target_id},
+        )
         for x in others
-    ] if me.target_id else []  # decision 0048: watch together only with the drone that raised this card
+    ]
+    if me.target_id
+    else []
+)  # decision 0048: watch together only with the drone that raised this card
 ```
 
 모듈 docstring의 `"감시 중인 드론 Y와 함께 감시"(Y마다…)` 를 `"이 카드를 올린 드론과 함께 감시"(결정 0048)` 로. `modules/runtime/SPEC.md` RT-11 완료 기준에 `, 함께 감시는 카드를 올린 드론과만(결정 0048)` 추가.

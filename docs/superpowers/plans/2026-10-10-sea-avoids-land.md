@@ -453,7 +453,9 @@ def mosaic() -> tuple[Image.Image, int, int]:
     img = Image.new("RGB", ((cols[-1] - cols[0] + 1) * 256, (rows[-1] - rows[0] + 1) * 256))
     for c in cols:
         for f in (TILES / str(c)).glob("*.jpg"):
-            img.paste(Image.open(f).convert("RGB"), ((c - cols[0]) * 256, (int(f.stem) - rows[0]) * 256))
+            img.paste(
+                Image.open(f).convert("RGB"), ((c - cols[0]) * 256, (int(f.stem) - rows[0]) * 256)
+            )
     return img, cols[0] * 256, rows[0] * 256
 
 
@@ -951,7 +953,15 @@ SPEC: modules/sim/SPEC.md#SIM-07
 import math
 from collections.abc import Sequence
 
-from contracts.models import CommandKind, GeoPoint, PassedCommand, Polygon, Target, VehicleSpec, VehicleState
+from contracts.models import (
+    CommandKind,
+    GeoPoint,
+    PassedCommand,
+    Polygon,
+    Target,
+    VehicleSpec,
+    VehicleState,
+)
 from modules.sim.actions.sea_aim import sea_aim
 from shared.geo import dist_m, move_toward, offset_latlon
 from shared.land import blocked
@@ -977,7 +987,9 @@ def orbit_or_keep(
         pos = GeoPoint(lat=lat, lon=lon, alt_m=st.pos.alt_m)
         return st.model_copy(update={"heading_deg": math.degrees(ang) % 360, "pos": pos})
     if blocked(st.pos, tg.pos, land):
-        return st.model_copy(update={"pos": move_toward(st.pos, sea_aim(st.pos, tg.pos, land), step_m)})
+        return st.model_copy(
+            update={"pos": move_toward(st.pos, sea_aim(st.pos, tg.pos, land), step_m)}
+        )
     return st.model_copy(update={"pos": move_toward(st.pos, tg.pos, min(step_m, max(d - r, 0)))})
 ```
 
@@ -1027,12 +1039,19 @@ def test_only_sea_vehicles_go_round_the_island():
     to_goal = {"target": goal.model_dump()}
     passed = [
         _passed(CommandKind.move, **to_goal),
-        PassedCommand(command=Command(id="c2", vehicle_id="usv", kind=CommandKind.move,
-                                      params=to_goal), checks=[], passed_ms=0),  # fmt: skip
+        PassedCommand(
+            command=Command(id="c2", vehicle_id="usv", kind=CommandKind.move, params=to_goal),
+            checks=[],
+            passed_ms=0,
+        ),  # fmt: skip
     ]
     air, sea = advance_vehicles(states, {**SPECS, "usv": usv}, passed, 1000, [], island)
-    assert enu_delta_m(start.lat, start.lon, air.pos.lat, air.pos.lon)[1] == pytest.approx(0, abs=0.1)
-    assert enu_delta_m(start.lat, start.lon, sea.pos.lat, sea.pos.lon)[1] < -1  # toward the SW corner
+    assert enu_delta_m(start.lat, start.lon, air.pos.lat, air.pos.lon)[1] == pytest.approx(
+        0, abs=0.1
+    )
+    assert (
+        enu_delta_m(start.lat, start.lon, sea.pos.lat, sea.pos.lon)[1] < -1
+    )  # toward the SW corner
 ```
 
 - [ ] **Step 2: Run it to see it fail**
@@ -1233,7 +1252,9 @@ def test_nothing_at_sea_crosses_the_island():
         es, frame = tick(es, inputs)
         wet = [v.id for v in frame.vehicles if v.id in sea and inside(v.pos, sc.land)]
         wet += [t.id for t in frame.targets if t.kind in boats and inside(t.pos, sc.land)]
-        assert not wet, f"{wet} on the island at T+{(frame.t_ms - sc.operation.started_ms) // 1000} s"
+        assert not wet, (
+            f"{wet} on the island at T+{(frame.t_ms - sc.operation.started_ms) // 1000} s"
+        )
     assert card is not None
     assert next(v for v in frame.vehicles if v.id == "usv").play_id == "approach"
     assert any(t.id == "fast1" for t in frame.targets)
@@ -1268,18 +1289,40 @@ In `SPECS`: `_spec("usv", "수상정", "sea", 8, 720, 500, USV_HOME),`.
 In `PLAYS`, append two enemy plays inside the list (after `go_home`):
 
 ```python
-        _play("enemy_boat1", "boat1 상륙 시도", ["sea"], [
-            Step(id="in", name="상륙 지점으로",
-                 do=Action(kind="move_to", params={"target": LANDING.model_dump()}),
-                 on=[Exit(cond=Condition(kind="arrived"), go_step="wait")]),
+(
+    _play(
+        "enemy_boat1",
+        "boat1 상륙 시도",
+        ["sea"],
+        [
+            Step(
+                id="in",
+                name="상륙 지점으로",
+                do=Action(kind="move_to", params={"target": LANDING.model_dump()}),
+                on=[Exit(cond=Condition(kind="arrived"), go_step="wait")],
+            ),
             Step(id="wait", name="해안 앞 대기", do=Action(kind="hold")),
-        ], template=False),
-        _play("enemy_fast1", "fast1 동쪽 우회 침투", ["sea"], [
-            Step(id="run", name="동쪽 상륙 지점으로",
-                 do=Action(kind="move_to", params={"target": EAST_LANDING.model_dump()}),
-                 on=[Exit(cond=Condition(kind="arrived"), go_step="wait")]),
+        ],
+        template=False,
+    ),
+)
+(
+    _play(
+        "enemy_fast1",
+        "fast1 동쪽 우회 침투",
+        ["sea"],
+        [
+            Step(
+                id="run",
+                name="동쪽 상륙 지점으로",
+                do=Action(kind="move_to", params={"target": EAST_LANDING.model_dump()}),
+                on=[Exit(cond=Condition(kind="arrived"), go_step="wait")],
+            ),
             Step(id="wait", name="상륙", do=Action(kind="hold")),
-        ], template=False),
+        ],
+        template=False,
+    ),
+)
 ```
 
 Replace `EVENTS` and add `ENEMIES`:
@@ -1374,7 +1417,10 @@ from modules.sim import load_scenario_json, sea_aim
 from shared.land import blocked
 
 sc = load_scenario_json("demo/scenarios/baengnyeong_night.json")
-a, b = GeoPoint(lat=37.94, lon=124.59), GeoPoint(lat=37.99, lon=124.76)  # west of the island to the north-east
+a, b = (
+    GeoPoint(lat=37.94, lon=124.59),
+    GeoPoint(lat=37.99, lon=124.76),
+)  # west of the island to the north-east
 print("blocked:", blocked(a, b, sc.land))
 sea_aim(a, b, sc.land)  # build the caches
 t0 = time.perf_counter()

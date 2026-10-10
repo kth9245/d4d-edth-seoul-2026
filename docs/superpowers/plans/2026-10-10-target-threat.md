@@ -53,10 +53,16 @@ P = GeoPoint(lat=37.98, lon=124.7)
 
 
 def test_new_threat_fields_default_off():
-    t = Target(id="b", kind="boat", pos=P, vel_east_mps=0, vel_north_mps=0,
-               first_seen_ms=0, last_seen_ms=0)
+    t = Target(
+        id="b", kind="boat", pos=P, vel_east_mps=0, vel_north_mps=0, first_seen_ms=0, last_seen_ms=0
+    )
     assert (t.emitting, t.rf_detected, t.threat, t.threat_reasons, t.threat_accum) == (
-        False, False, 0, [], 0)
+        False,
+        False,
+        0,
+        [],
+        0,
+    )
 
 
 def test_watch_point_and_rf_fields_exist():

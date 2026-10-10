@@ -89,8 +89,8 @@ def test_enemy_appears_at_a_point_or_from_another_enemy():
 `modules/play/tests/test_expand_action.py`의 parametrize 목록에 세 줄 추가:
 
 ```python
-        ("strike_target", "air", CommandKind.strike),
-        ("strike_target", "sea", CommandKind.strike),
+(("strike_target", "air", CommandKind.strike),)
+(("strike_target", "sea", CommandKind.strike),)
 ```
 
 그리고 파일 끝에:
@@ -733,7 +733,9 @@ def test_strike_next_to_a_target_neutralizes_it_and_logs():
     d1 = es.states[0]
     tg = Target(id="x", kind="boat", pos=d1.pos, vel_east_mps=0, vel_north_mps=0,
                 first_seen_ms=0, last_seen_ms=0)  # fmt: skip
-    cmd = Command(id="c", vehicle_id=d1.id, kind="strike", params={"target_id": "x", "distance_m": 0})
+    cmd = Command(
+        id="c", vehicle_id=d1.id, kind="strike", params={"target_id": "x", "distance_m": 0}
+    )
     # model_copy does not validate: give the enum, not the string (step_vehicle reads .value)
     d1 = d1.model_copy(update={"entered_step": True, "status": VehicleStatus.active,
                                "active": PassedCommand(command=cmd, checks=[], passed_ms=0)})  # fmt: skip
@@ -885,8 +887,19 @@ T1, T2 = START + 660_000, START + 1_380_000
 def test_enemy_appears_only_in_its_tick_with_play_progress():
     assert spawn_enemies(SC, [], T1 - 200, 200) == []
     (tg,) = spawn_enemies(SC, [], T1, 200)
-    assert (tg.id, tg.kind.value, tg.pos, tg.vel_east_mps, tg.vel_north_mps) == ("boat1", "boat", G, 0, 0)
-    assert (tg.play_id, tg.step_id, tg.waypoint_idx, tg.step_since_ms) == ("enemy_boat1", "go", 0, T1)
+    assert (tg.id, tg.kind.value, tg.pos, tg.vel_east_mps, tg.vel_north_mps) == (
+        "boat1",
+        "boat",
+        G,
+        0,
+        0,
+    )
+    assert (tg.play_id, tg.step_id, tg.waypoint_idx, tg.step_since_ms) == (
+        "enemy_boat1",
+        "go",
+        0,
+        T1,
+    )
     assert spawn_enemies(SC, [tg], T1 + 200, 200) == [tg]
 
 
@@ -1089,7 +1102,9 @@ def _steer(tg: Target, step: Step, speed: float, dt_ms: int) -> Target:
         idx = -1 if step.do.kind.value == "move_to" else tg.waypoint_idx + 1
         return tg.model_copy(update={**STOP, "pos": dest, "waypoint_idx": idx})
     east, north = enu_delta_m(tg.pos.lat, tg.pos.lon, dest.lat, dest.lon)
-    return tg.model_copy(update={"vel_east_mps": speed * east / d, "vel_north_mps": speed * north / d})
+    return tg.model_copy(
+        update={"vel_east_mps": speed * east / d, "vel_north_mps": speed * north / d}
+    )
 
 
 def steer_enemies(
@@ -1120,7 +1135,9 @@ Run: `wc -l modules/sim/actions/spawn_enemies.py modules/sim/actions/steer_enemi
 - `states, targets = apply_events(sc, es.states, es.targets, t, dt)  # 1` 다음에:
 
 ```python
-    targets = steer_enemies(sc.enemies, plays, spawn_enemies(sc, targets, t, dt), t, dt)  # 1.5 decision 0032
+targets = steer_enemies(
+    sc.enemies, plays, spawn_enemies(sc, targets, t, dt), t, dt
+)  # 1.5 decision 0032
 ```
 
 `modules/gateway/actions/tick_log.py`의 `lines = [...]` 사건 대본 줄 목록 다음에:

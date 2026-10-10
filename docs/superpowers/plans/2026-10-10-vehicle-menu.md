@@ -57,8 +57,12 @@ def test_pointing_makes_the_press_the_vehicles_decision():
 
 def test_a_switch_without_a_target_leaves_no_decision():
     # whole-operation buttons and target-less menu switches never make a strike source (decision 0033)
-    inj = Injection(id="inj1", t_ms=0, label="전체 귀환", status="approved", role_by_vehicle={"d1": "go_home"})
-    (d1,) = apply_injection([vs("d1").model_copy(update={"decision_id": "dec-1"})], {"go_home": HOME}, inj)
+    inj = Injection(
+        id="inj1", t_ms=0, label="전체 귀환", status="approved", role_by_vehicle={"d1": "go_home"}
+    )
+    (d1,) = apply_injection(
+        [vs("d1").model_copy(update={"decision_id": "dec-1"})], {"go_home": HOME}, inj
+    )
     assert d1.decision_id is None
 ```
 

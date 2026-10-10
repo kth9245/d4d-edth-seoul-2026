@@ -66,16 +66,22 @@ Expected: FAIL (`ImportError: cannot import name 'RouteDef'`)
 `contracts/models/world.py`의 `WatchPoint` 클래스 다음에:
 
 ```python
-class RouteOffset(BaseModel):  # decision 0044: meters from the base point (the vehicle as the card starts)
+class RouteOffset(
+    BaseModel
+):  # decision 0044: meters from the base point (the vehicle as the card starts)
     north_m: float
     east_m: float
 
 
-class RouteDef(BaseModel):  # decision 0044: a named route the editor offers; points or offsets, not both
+class RouteDef(
+    BaseModel
+):  # decision 0044: a named route the editor offers; points or offsets, not both
     id: str
     name: str
     points: list[GeoPoint] = []  # fixed route: these coordinates
-    offsets: list[RouteOffset] = []  # relative route: from where the vehicle is when the card starts
+    offsets: list[
+        RouteOffset
+    ] = []  # relative route: from where the vehicle is when the card starts
 ```
 
 `contracts/models/frame.py`: world import에 `RouteDef` 추가, `Scenario`의 `watch_points` 줄 다음에:
@@ -157,7 +163,11 @@ git commit -m "Part1-31: contract RouteOffset, RouteDef, Scenario.routes and con
 
 ```python
 ONCE = ROUTE.model_copy(
-    update={"command": ROUTE.command.model_copy(update={"params": {**ROUTE.command.params, "loop": False}})}
+    update={
+        "command": ROUTE.command.model_copy(
+            update={"params": {**ROUTE.command.params, "loop": False}}
+        )
+    }
 )
 
 
@@ -241,7 +251,9 @@ SQUARE = [{"north_m": 300, "east_m": 0}, {"north_m": 300, "east_m": 300}]
 
 
 def test_offsets_are_measured_from_where_the_vehicle_is():
-    kind, p = route_command(Action(kind="patrol_route"), "air", HERE, {"offsets": SQUARE, "route_name": "sq"})
+    kind, p = route_command(
+        Action(kind="patrol_route"), "air", HERE, {"offsets": SQUARE, "route_name": "sq"}
+    )
     assert kind == CommandKind.follow_route
     assert "offsets" not in p and p["route_name"] == "sq"
     lat, lon = offset_latlon(HERE.lat, HERE.lon, 300, 300)
@@ -255,19 +267,26 @@ def test_patrol_keeps_looping():
 
 
 def test_a_move_with_a_route_follows_it_once():
-    kind, p = route_command(Action(kind="move_to"), "air", HERE, {"route": FIXED, "route_name": "n"})
+    kind, p = route_command(
+        Action(kind="move_to"), "air", HERE, {"route": FIXED, "route_name": "n"}
+    )
     assert kind == CommandKind.follow_route and p["loop"] is False and p["route"] == FIXED
 
 
 def test_a_relative_move_follows_once_from_here():
-    kind, p = route_command(Action(kind="move_to"), "air", HERE, {"offsets": [{"north_m": 1000, "east_m": 0}]})
+    kind, p = route_command(
+        Action(kind="move_to"), "air", HERE, {"offsets": [{"north_m": 1000, "east_m": 0}]}
+    )
     assert kind == CommandKind.follow_route and p["loop"] is False
     assert dist_m(GeoPoint(**p["route"][0]), HERE) > 999
 
 
 def test_a_point_move_and_other_actions_are_unchanged():
     target = {"lat": 37.99, "lon": 124.70, "alt_m": 0}
-    assert route_command(Action(kind="move_to"), "air", HERE, {"target": target}) == (CommandKind.move, {"target": target})
+    assert route_command(Action(kind="move_to"), "air", HERE, {"target": target}) == (
+        CommandKind.move,
+        {"target": target},
+    )
     assert route_command(Action(kind="hold"), "air", HERE, {}) == (CommandKind.hold, {})
 ```
 
@@ -293,7 +312,9 @@ def route_command(
 ) -> tuple[CommandKind | None, dict]:
     kind = expand_action(action, domain)
     if "offsets" in params:
-        pts = [offset_latlon(pos.lat, pos.lon, o["east_m"], o["north_m"]) for o in params["offsets"]]
+        pts = [
+            offset_latlon(pos.lat, pos.lon, o["east_m"], o["north_m"]) for o in params["offsets"]
+        ]
         route = [GeoPoint(lat=lat, lon=lon).model_dump() for lat, lon in pts]
         params = {k: v for k, v in params.items() if k != "offsets"} | {"route": route}
     if kind is not None and action.kind.value == "move_to" and "route" in params:
@@ -399,7 +420,12 @@ def test_the_engine_gives_step_vehicle_the_operation_start():  # decision 0045
     entry = next(s for s in play.steps if s.id == play.entry)
     other = next(s.id for s in play.steps if s.id != play.entry)
     timed = entry.model_copy(
-        update={"on": [Exit(cond=Condition(kind="at_time", params={"offset_ms": 1000}), go_step=other), *entry.on]}
+        update={
+            "on": [
+                Exit(cond=Condition(kind="at_time", params={"offset_ms": 1000}), go_step=other),
+                *entry.on,
+            ]
+        }
     )
     play = play.model_copy(update={"steps": [timed if s.id == entry.id else s for s in play.steps]})
     sc = SC.model_copy(update={"plays": [play if p.id == pid else p for p in SC.plays]})

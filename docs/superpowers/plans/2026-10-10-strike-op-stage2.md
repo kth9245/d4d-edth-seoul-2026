@@ -65,10 +65,21 @@ from contracts.models import GeoPoint, Target
 
 
 def test_a_new_target_has_no_identification():
-    t = Target(id="site_a", kind="unknown", pos=GeoPoint(lat=37.9, lon=124.7),
-               vel_east_mps=0, vel_north_mps=0, first_seen_ms=0, last_seen_ms=0)
+    t = Target(
+        id="site_a",
+        kind="unknown",
+        pos=GeoPoint(lat=37.9, lon=124.7),
+        vel_east_mps=0,
+        vel_north_mps=0,
+        first_seen_ms=0,
+        last_seen_ms=0,
+    )
     assert (t.ident_state, t.ident_confidence, t.ident_reasons, t.ident_observed_ms) == (
-        "undetected", 0, [], 0)
+        "undetected",
+        0,
+        [],
+        0,
+    )
 ```
 
 - [ ] **Step 3: 실패를 확인한다**
@@ -81,10 +92,12 @@ Expected: FAIL (`AttributeError: ... 'ident_state'`)
 `contracts/models/events.py`의 `Target` 맨 끝(`last_seen_vel_north_mps` 다음)에 같은 주석 스타일로:
 
 ```python
-    ident_state: Literal["undetected", "rf_only", "identifying", "identified"] = "undetected"
-    ident_confidence: int = 0  # sensing: evidence score in 0.01 units, 0..100 (stage 2, unknown kind only)
-    ident_reasons: list[str] = []
-    ident_observed_ms: int = 0  # how long it has been seen without a gap (ms); a gap resets it
+ident_state: Literal["undetected", "rf_only", "identifying", "identified"] = "undetected"
+ident_confidence: int = (
+    0  # sensing: evidence score in 0.01 units, 0..100 (stage 2, unknown kind only)
+)
+ident_reasons: list[str] = []
+ident_observed_ms: int = 0  # how long it has been seen without a gap (ms); a gap resets it
 ```
 
 파일 위쪽 import에 `Literal`이 없으면 `from typing import Literal`을 더한다.
@@ -163,7 +176,11 @@ def test_rf_alone_is_a_source_not_yet_confirmed():
 def test_rf_plus_a_fresh_scan_is_identifying_not_yet_identified():
     r = identify_target(True, 1, 0, 0, TICK)
     assert (r.state, r.confidence, r.reasons, r.observed_ms) == (
-        "identifying", 65, ["rf_emission", "scan"], 200)
+        "identifying",
+        65,
+        ["rf_emission", "scan"],
+        200,
+    )
 
 
 def test_five_seconds_of_unbroken_observation_reaches_the_threshold():
@@ -237,7 +254,12 @@ def identify_target(
     multi = MULTI_PTS if seen_count >= 2 else 0
     sustained = min(SUSTAINED_MAX_PTS, observed // 1000 * SUSTAINED_PER_S)
     confidence = min(100, rf + scan + multi + sustained)
-    parts = [("rf_emission", rf), ("scan", scan), ("multi_observer", multi), ("sustained", sustained)]
+    parts = [
+        ("rf_emission", rf),
+        ("scan", scan),
+        ("multi_observer", multi),
+        ("sustained", sustained),
+    ]
     reasons = [name for name, pts in parts if pts]
     if scan == 0:
         state = "rf_only" if rf else "undetected"
@@ -422,14 +444,28 @@ Run: `uv run python scripts/new_action.py gateway refresh_strike_cards "식별 �
 - [ ] **Step 2: 실패하는 테스트를 쓴다**
 
 ```python
-from contracts.models import (Choice, GeoPoint, Report, Role, Step, Action, Target, VehicleSpec,
-                              VehicleState)
+from contracts.models import (
+    Choice,
+    GeoPoint,
+    Report,
+    Role,
+    Step,
+    Action,
+    Target,
+    VehicleSpec,
+    VehicleState,
+)
 from modules.gateway.actions.refresh_strike_cards import refresh_strike_cards
 
 HOME = GeoPoint(lat=37.978, lon=124.70)
 SITE = GeoPoint(lat=37.982, lon=124.722)
-STRIKE = Role(id="strike", name="표적 타격", domains=["air", "sea"], entry="strike",
-              steps=[Step(id="strike", name="타격", do=Action(kind="strike_target", params={}))])
+STRIKE = Role(
+    id="strike",
+    name="표적 타격",
+    domains=["air", "sea"],
+    entry="strike",
+    steps=[Step(id="strike", name="타격", do=Action(kind="strike_target", params={}))],
+)
 ROLES = {"strike": STRIKE}
 SPECS = {
     "d2": VehicleSpec(id="d2", name="d2", domain="air", speed_mps=15, endurance_min=50,
@@ -440,21 +476,43 @@ SPECS = {
 
 
 def vs(vid, **kw):
-    return VehicleState(id=vid, t_ms=0, pos=HOME, heading_deg=0, battery_pct=100,
-                        status=kw.pop("status", "ready"), **kw)
+    return VehicleState(
+        id=vid,
+        t_ms=0,
+        pos=HOME,
+        heading_deg=0,
+        battery_pct=100,
+        status=kw.pop("status", "ready"),
+        **kw,
+    )
 
 
 def card(**kw):
-    base = dict(id="rep-d1-1", t_ms=1, kind="target_detected", vehicle_id="d1", target_id="site_a",
-                text="미식별 거점 감지 · d1 센서 탐지 · site_a(미상) · 721 m",
-                choices=[Choice(id="keep", label="전 기체 현 임무 유지")])
+    base = dict(
+        id="rep-d1-1",
+        t_ms=1,
+        kind="target_detected",
+        vehicle_id="d1",
+        target_id="site_a",
+        text="미식별 거점 감지 · d1 센서 탐지 · site_a(미상) · 721 m",
+        choices=[Choice(id="keep", label="전 기체 현 임무 유지")],
+    )
     return Report(**(base | kw))
 
 
 def site(**kw):
-    base = dict(id="site_a", kind="unknown", pos=SITE, vel_east_mps=0, vel_north_mps=0,
-                first_seen_ms=1, last_seen_ms=1, ident_state="identified", ident_confidence=80,
-                ident_reasons=["rf_emission", "scan", "multi_observer"])
+    base = dict(
+        id="site_a",
+        kind="unknown",
+        pos=SITE,
+        vel_east_mps=0,
+        vel_north_mps=0,
+        first_seen_ms=1,
+        last_seen_ms=1,
+        ident_state="identified",
+        ident_confidence=80,
+        ident_reasons=["rf_emission", "scan", "multi_observer"],
+    )
     return Target(**(base | kw))
 
 
@@ -481,8 +539,10 @@ def test_two_armed_vehicles_also_get_a_strike_all_choice():
 
 
 def test_before_identification_there_is_no_strike_choice_but_the_clue_line_shows():
-    out = run(card(), site(ident_state="identifying", ident_confidence=65,
-                           ident_reasons=["rf_emission", "scan"]))
+    out = run(
+        card(),
+        site(ident_state="identifying", ident_confidence=65, ident_reasons=["rf_emission", "scan"]),
+    )
     assert [c.id for c in out.choices] == ["keep"]
     assert "식별: 식별 중 0.65" in out.text
 
@@ -490,7 +550,9 @@ def test_before_identification_there_is_no_strike_choice_but_the_clue_line_shows
 def test_losing_the_site_takes_the_strike_choice_away_again():
     first = run(card(), site())
     assert "strike_d2" in [c.id for c in first.choices]
-    lost = run(first, site(ident_state="identifying", ident_confidence=35, ident_reasons=["rf_emission"]))
+    lost = run(
+        first, site(ident_state="identifying", ident_confidence=35, ident_reasons=["rf_emission"])
+    )
     assert [c.id for c in lost.choices] == ["keep"]
     assert lost.text.count("식별:") == 1  # the line is replaced, not stacked
 
@@ -541,7 +603,8 @@ MARK = " · 식별:"
 def _line(tg: Target) -> str:
     why = ", ".join(REASON_KO.get(r, r) for r in tg.ident_reasons)
     return f"{MARK} {STATE_KO[tg.ident_state]} {tg.ident_confidence / 100:.2f}" + (
-        f" · 이유: {why}" if why else "")
+        f" · 이유: {why}" if why else ""
+    )
 
 
 def _strikers(states, specs, roles) -> list[VehicleState]:

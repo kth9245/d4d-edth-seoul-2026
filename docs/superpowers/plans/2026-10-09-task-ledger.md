@@ -186,8 +186,17 @@ AT = "2026-10-10T12:00:00+09:00"
 
 
 def add(iid, parent=None, assign=None, spec=None):
-    return {"at": AT, "by": "kth9245", "op": "add", "id": iid, "title": f"t {iid}",
-            "parent": parent, "assign": assign, "slot": "1", "spec": spec}
+    return {
+        "at": AT,
+        "by": "kth9245",
+        "op": "add",
+        "id": iid,
+        "title": f"t {iid}",
+        "parent": parent,
+        "assign": assign,
+        "slot": "1",
+        "spec": spec,
+    }
 
 
 def ev(op, iid, by="최동호", **kw):
@@ -202,10 +211,20 @@ def test_normalize_id():
 
 
 def test_replay_builds_every_status():
-    items = replay([add("Part1-1"), add("Part1-2"), add("Part1-3"), add("Part1-4"),
-                    ev("start", "Part1-2"), ev("start", "Part1-3"),
-                    ev("block", "Part1-3", text="계약 없음"), ev("start", "Part1-4"),
-                    ev("done", "Part1-4"), ev("drop", "Part1-1", by="kth9245", text="빼는 순서 1")])
+    items = replay(
+        [
+            add("Part1-1"),
+            add("Part1-2"),
+            add("Part1-3"),
+            add("Part1-4"),
+            ev("start", "Part1-2"),
+            ev("start", "Part1-3"),
+            ev("block", "Part1-3", text="계약 없음"),
+            ev("start", "Part1-4"),
+            ev("done", "Part1-4"),
+            ev("drop", "Part1-1", by="kth9245", text="빼는 순서 1"),
+        ]
+    )
     assert [items[f"Part1-{k}"].status for k in (1, 2, 3, 4)] == ["뺌", "진행중", "막힘", "완료"]
     assert items["Part1-2"].owner == "최동호" and items["Part1-2"].since == AT
     assert items["Part1-3"].entries == [(AT, "최동호", "block", "계약 없음")]
@@ -216,13 +235,26 @@ def test_start_refuses_someone_elses_item_until_take():
     with pytest.raises(Refused, match="황승주.*--take"):
         apply(items, "start", "최동호", "2-17")
     e = apply(items, "start", "최동호", "2-17", take=True, at=AT)
-    assert e == {"at": AT, "by": "최동호", "op": "start", "id": "Part2-17",
-                 "take": True, "from": "황승주"}
+    assert e == {
+        "at": AT,
+        "by": "최동호",
+        "op": "start",
+        "id": "Part2-17",
+        "take": True,
+        "from": "황승주",
+    }
 
 
 def test_start_refuses_own_running_and_closed_items():
-    items = replay([add("Part2-1"), add("Part2-2"), ev("start", "Part2-1"),
-                    ev("start", "Part2-2"), ev("done", "Part2-2")])
+    items = replay(
+        [
+            add("Part2-1"),
+            add("Part2-2"),
+            ev("start", "Part2-1"),
+            ev("start", "Part2-2"),
+            ev("done", "Part2-2"),
+        ]
+    )
     with pytest.raises(Refused, match="이미 내가 진행중"):
         apply(items, "start", "최동호", "2-1")
     with pytest.raises(Refused, match="완료"):
@@ -236,12 +268,23 @@ def test_owner_restarts_blocked_item():
 
 
 def test_done_needs_children_closed_and_owner_or_take():
-    items = replay([add("Part2-17"), add("Part2-17.1", parent="Part2-17"),
-                    ev("start", "Part2-17", by="황승주")])
+    items = replay(
+        [
+            add("Part2-17"),
+            add("Part2-17.1", parent="Part2-17"),
+            ev("start", "Part2-17", by="황승주"),
+        ]
+    )
     with pytest.raises(Refused, match="Part2-17.1"):
         apply(items, "done", "황승주", "2-17")
-    items = replay([add("Part2-17"), add("Part2-17.1", parent="Part2-17"),
-                    ev("start", "Part2-17", by="황승주"), ev("done", "Part2-17.1")])
+    items = replay(
+        [
+            add("Part2-17"),
+            add("Part2-17.1", parent="Part2-17"),
+            ev("start", "Part2-17", by="황승주"),
+            ev("done", "Part2-17.1"),
+        ]
+    )
     assert items["Part2-17.1"].owner == "최동호"  # done straight from 예정 sets the owner
     with pytest.raises(Refused, match="황승주 담당"):
         apply(items, "done", "최동호", "2-17")
@@ -253,8 +296,17 @@ def test_add_numbers_children_and_new_top_level_items():
     assert next_id(items, "Part2-17") == "Part2-17.2"
     assert next_id(items, "Part2") == "Part2-21"
     e = apply(items, "add", "황승주", "2-17", text="스텁 Frame", at=AT)
-    assert e == {"at": AT, "by": "황승주", "op": "add", "id": "Part2-17.2", "title": "스텁 Frame",
-                 "parent": "Part2-17", "assign": None, "slot": "1", "spec": None}
+    assert e == {
+        "at": AT,
+        "by": "황승주",
+        "op": "add",
+        "id": "Part2-17.2",
+        "title": "스텁 Frame",
+        "parent": "Part2-17",
+        "assign": None,
+        "slot": "1",
+        "spec": None,
+    }
     top = apply(items, "add", "kth9245", "2", text="통합 버그", assign="최동호", at=AT)
     assert (top["id"], top["parent"], top["slot"]) == ("Part2-21", None, None)
     with pytest.raises(Refused, match="없는 상위"):
@@ -264,8 +316,15 @@ def test_add_numbers_children_and_new_top_level_items():
 
 
 def test_text_ops_need_text_and_block_needs_my_running_item():
-    items = replay([add("Part2-1"), add("Part2-2"), ev("start", "Part2-1", by="황승주"),
-                    ev("start", "Part2-2"), ev("done", "Part2-2")])
+    items = replay(
+        [
+            add("Part2-1"),
+            add("Part2-2"),
+            ev("start", "Part2-1", by="황승주"),
+            ev("start", "Part2-2"),
+            ev("done", "Part2-2"),
+        ]
+    )
     with pytest.raises(Refused, match="내용"):
         apply(items, "decide", "최동호", "2-1", text="  ")
     with pytest.raises(Refused, match="진행중인 항목이 아님"):
@@ -391,8 +450,15 @@ def replay(events: list[dict]) -> dict[str, Item]:
 def _step(items: dict[str, Item], e: dict) -> None:
     op, at, by = e["op"], e["at"], e["by"]
     if op == "add":
-        items[e["id"]] = Item(e["id"], e["title"], e.get("parent"), e.get("assign"),
-                              slot=e.get("slot"), spec=e.get("spec"), since=at)
+        items[e["id"]] = Item(
+            e["id"],
+            e["title"],
+            e.get("parent"),
+            e.get("assign"),
+            slot=e.get("slot"),
+            spec=e.get("spec"),
+            since=at,
+        )
         return
     it = items[e["id"]]
     if op == "start":
@@ -413,8 +479,11 @@ def children(items: dict[str, Item], parent: str) -> list[Item]:
 
 def next_id(items: dict[str, Item], parent: str) -> str:
     if TOP_RE.fullmatch(parent):
-        ks = [int(i.id.split("-")[1]) for i in items.values()
-              if i.parent is None and i.id.startswith(parent + "-")]
+        ks = [
+            int(i.id.split("-")[1])
+            for i in items.values()
+            if i.parent is None and i.id.startswith(parent + "-")
+        ]
         return f"{parent}-{max(ks, default=0) + 1}"
     ns = [int(i.id.rsplit(".", 1)[1]) for i in children(items, parent)]
     return f"{parent}.{max(ns, default=0) + 1}"
@@ -423,8 +492,10 @@ def next_id(items: dict[str, Item], parent: str) -> str:
 def apply(items, op, by, target, text="", take=False, assign=None, at=None) -> dict:
     """Validate one command against the current state and return its event. Raises Refused."""
     if by not in TEAM:
-        raise Refused(f"팀 명단 {TEAM} 밖의 이름 {by!r}: "
-                      "이 저장소에서 `git config user.name <한글 이름>` (리드는 kth9245)")
+        raise Refused(
+            f"팀 명단 {TEAM} 밖의 이름 {by!r}: "
+            "이 저장소에서 `git config user.name <한글 이름>` (리드는 kth9245)"
+        )
     target, text = normalize_id(target), " ".join(text.split())
     ev = {"at": at or now_kst().isoformat(timespec="seconds"), "by": by, "op": op}
     if op == "add":
@@ -456,8 +527,14 @@ def _add(items: dict[str, Item], parent: str, title: str, assign: str | None) ->
         raise Refused(f"없는 상위 번호: {parent}")
     if assign is not None and assign not in TEAM:
         raise Refused(f"팀 명단 밖의 배정: {assign!r}")
-    return {"id": next_id(items, parent), "title": title, "parent": None if top else parent,
-            "assign": assign, "slot": None if top else items[parent].slot, "spec": None}
+    return {
+        "id": next_id(items, parent),
+        "title": title,
+        "parent": None if top else parent,
+        "assign": assign,
+        "slot": None if top else items[parent].slot,
+        "spec": None,
+    }
 
 
 def _start(it: Item, by: str, take: bool) -> dict:
@@ -467,8 +544,10 @@ def _start(it: Item, by: str, take: bool) -> dict:
         raise Refused(f"{it.id}는 이미 내가 진행중")
     if it.status in ("진행중", "막힘") and it.owner != by and not take:
         when = it.since[5:16].replace("T", " ")
-        raise Refused(f"{it.id}는 {it.owner}가 {when}부터 {it.status}. 도우려면 task.py add로 "
-                      "하위 항목을 만들어 start, 넘겨받으려면 채팅에 알리고 --take")
+        raise Refused(
+            f"{it.id}는 {it.owner}가 {when}부터 {it.status}. 도우려면 task.py add로 "
+            "하위 항목을 만들어 start, 넘겨받으려면 채팅에 알리고 --take"
+        )
     return {"take": take, "from": it.owner if it.owner not in (None, by) else None}
 
 
@@ -520,32 +599,49 @@ git commit -m "task ledger: replay and validate model (tools/tasks.py)"
 from tools.tasks import replay
 from tools.tasks_view import HEADER, hhmm, line, render_item, render_now, render_show
 
-T1, T2, T3 = ("2026-10-10T12:03:15+09:00", "2026-10-10T13:20:00+09:00",
-              "2026-10-10T14:00:00+09:00")
+T1, T2, T3 = ("2026-10-10T12:03:15+09:00", "2026-10-10T13:20:00+09:00", "2026-10-10T14:00:00+09:00")
 
 
 def add(iid, parent=None, assign=None, spec=None):
-    return {"at": T1, "by": "kth9245", "op": "add", "id": iid, "title": f"제목 {iid}",
-            "parent": parent, "assign": assign, "slot": "1", "spec": spec}
+    return {
+        "at": T1,
+        "by": "kth9245",
+        "op": "add",
+        "id": iid,
+        "title": f"제목 {iid}",
+        "parent": parent,
+        "assign": assign,
+        "slot": "1",
+        "spec": spec,
+    }
 
 
 def ev(op, iid, by="최동호", at=T1, **kw):
     return {"at": at, "by": by, "op": op, "id": iid, **kw}
 
 
-ITEMS = replay([
-    add("Part2-17", assign="최동호", spec="SIM-08"), add("Part2-17.1", parent="Part2-17"),
-    add("Part2-17.2", parent="Part2-17"), add("Part2-1", assign="최동호"),
-    add("Part3-7", assign="황승주"), add("Part1-9", assign="kth9245"), add("Part3-15"),
-    add("Part1-5", assign="kth9245"), add("Part2-2", assign="최동호"),
-    ev("start", "Part2-17"), ev("done", "Part2-17.1", at=T2),
-    ev("start", "Part2-2"), ev("start", "Part3-7", by="황승주"),
-    ev("block", "Part3-7", by="황승주", text="expand 표 None"),
-    ev("decide", "Part3-7", by="황승주", at=T2, text="watch_point/sea를 hold로"),
-    ev("decide", "Part2-17", at=T3, text="스텁은 예시 JSON"),
-    ev("note", "Part2-17", text="스텁 목록은 engine.py 머리"),
-    ev("drop", "Part1-5", by="kth9245", text="통합 2로"),
-])
+ITEMS = replay(
+    [
+        add("Part2-17", assign="최동호", spec="SIM-08"),
+        add("Part2-17.1", parent="Part2-17"),
+        add("Part2-17.2", parent="Part2-17"),
+        add("Part2-1", assign="최동호"),
+        add("Part3-7", assign="황승주"),
+        add("Part1-9", assign="kth9245"),
+        add("Part3-15"),
+        add("Part1-5", assign="kth9245"),
+        add("Part2-2", assign="최동호"),
+        ev("start", "Part2-17"),
+        ev("done", "Part2-17.1", at=T2),
+        ev("start", "Part2-2"),
+        ev("start", "Part3-7", by="황승주"),
+        ev("block", "Part3-7", by="황승주", text="expand 표 None"),
+        ev("decide", "Part3-7", by="황승주", at=T2, text="watch_point/sea를 hold로"),
+        ev("decide", "Part2-17", at=T3, text="스텁은 예시 JSON"),
+        ev("note", "Part2-17", text="스텁 목록은 engine.py 머리"),
+        ev("drop", "Part1-5", by="kth9245", text="통합 2로"),
+    ]
+)
 
 
 def test_hhmm():
@@ -554,7 +650,8 @@ def test_hhmm():
 
 def test_line_shows_owner_since_children_and_spec():
     assert line(ITEMS["Part2-17"], ITEMS) == (
-        "- **Part2-17** 제목 Part2-17 — 최동호, 10/10 12:03부터 · 하위 1/2 완료 · SIM-08")
+        "- **Part2-17** 제목 Part2-17 — 최동호, 10/10 12:03부터 · 하위 1/2 완료 · SIM-08"
+    )
     assert line(ITEMS["Part3-7"], ITEMS).endswith("— expand 표 None")
     assert line(ITEMS["Part1-5"], ITEMS).endswith("— 통합 2로")
 
@@ -562,14 +659,23 @@ def test_line_shows_owner_since_children_and_spec():
 def test_now_sections_in_order_and_grouped():
     now = render_now(ITEMS, T3)
     assert now.startswith(HEADER)
-    heads = ["## 진행중", "## 막힘", "## 예정", "### kth9245", "### 최동호", "### 누구나",
-             "## 최근 결정", "## 완료", "## 뺌"]
+    heads = [
+        "## 진행중",
+        "## 막힘",
+        "## 예정",
+        "### kth9245",
+        "### 최동호",
+        "### 누구나",
+        "## 최근 결정",
+        "## 완료",
+        "## 뺌",
+    ]
     pos = [now.index(h) for h in heads]
     assert pos == sorted(pos)
     assert "마지막 기록 10/10 14:00 KST" in now
     assert "- ⚠ 최동호 진행중 2개" in now
     assert "### 황승주" not in now  # 황승주 has nothing planned
-    decisions = now[now.index("## 최근 결정"):now.index("## 완료")]
+    decisions = now[now.index("## 최근 결정") : now.index("## 완료")]
     assert decisions.index("스텁은 예시 JSON") < decisions.index("watch_point/sea를 hold로")
     assert "스텁 목록은 engine.py 머리" not in now  # notes only in `show <번호>`
 
@@ -649,12 +755,20 @@ def _doing(items: dict[str, Item]) -> list[str]:
     doing = _of(items, "진행중")
     many = Counter(i.owner for i in doing)
     return [line(i, items) for i in doing] + [
-        f"- ⚠ {who} 진행중 {n}개" for who, n in many.items() if n > 1]
+        f"- ⚠ {who} 진행중 {n}개" for who, n in many.items() if n > 1
+    ]
 
 
 def _decisions(items: dict[str, Item], n: int) -> list[str]:
-    ds = sorted(((e[0], e[1], it.id, e[3]) for it in items.values() for e in it.entries
-                 if e[2] == "decide"), reverse=True)
+    ds = sorted(
+        (
+            (e[0], e[1], it.id, e[3])
+            for it in items.values()
+            for e in it.entries
+            if e[2] == "decide"
+        ),
+        reverse=True,
+    )
     return [f"- {hhmm(at)} {by} · {iid} · {text}" for at, by, iid, text in ds[:n]]
 
 
@@ -663,9 +777,14 @@ def _section(title: str, rows: list[str]) -> list[str]:
 
 
 def render_now(items: dict[str, Item], last_at: str) -> str:
-    out = [HEADER, "", "# 지금 작업판", "",
-           f"마지막 기록 {hhmm(last_at)} KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · "
-           "기록은 `uv run python scripts/task.py`로만"]
+    out = [
+        HEADER,
+        "",
+        "# 지금 작업판",
+        "",
+        f"마지막 기록 {hhmm(last_at)} KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · "
+        "기록은 `uv run python scripts/task.py`로만",
+    ]
     out += _section("진행중", _doing(items))
     out += _section("막힘", [line(i, items) for i in _of(items, "막힘")])
     out += ["", "## 예정"]
@@ -686,18 +805,26 @@ def render_now(items: dict[str, Item], last_at: str) -> str:
 
 def render_show(items: dict[str, Item], me: str) -> str:
     planned = _of(items, "예정")
-    out = ["진행중", *(_doing(items) or [NONE]),
-           "막힘", *([line(i, items) for i in _of(items, "막힘")] or [NONE]),
-           f"내 예정 ({me})", *([line(i, items) for i in planned if i.assign == me] or [NONE]),
-           f"누구나 예정 {sum(i.assign is None for i in planned)}개 · 전체는 task.py show --all",
-           "최근 결정", *(_decisions(items, 5) or [NONE])]
+    out = [
+        "진행중",
+        *(_doing(items) or [NONE]),
+        "막힘",
+        *([line(i, items) for i in _of(items, "막힘")] or [NONE]),
+        f"내 예정 ({me})",
+        *([line(i, items) for i in planned if i.assign == me] or [NONE]),
+        f"누구나 예정 {sum(i.assign is None for i in planned)}개 · 전체는 task.py show --all",
+        "최근 결정",
+        *(_decisions(items, 5) or [NONE]),
+    ]
     return "\n".join(out) + "\n"
 
 
 def render_item(items: dict[str, Item], iid: str) -> str:
     it = items[iid]
-    out = [line(it, items),
-           f"  상태 {it.status} · 배정 {it.assign or '누구나'} · 통합 {it.slot or '-'}"]
+    out = [
+        line(it, items),
+        f"  상태 {it.status} · 배정 {it.assign or '누구나'} · 통합 {it.slot or '-'}",
+    ]
     out += ["  " + line(k, items) for k in sorted(children(items, iid), key=_key)]
     out += [f"  {hhmm(at)} {by} {KIND[kind]}: {text}" for at, by, kind, text in it.entries]
     return "\n".join(out) + "\n"
@@ -749,7 +876,11 @@ from pathlib import Path
 def sh(cwd: Path, *args: str) -> str:
     return subprocess.run(
         ["git", "-c", "core.hooksPath=/dev/null", *args],
-        cwd=cwd, check=True, capture_output=True, text=True, encoding="utf-8",
+        cwd=cwd,
+        check=True,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
     ).stdout
 
 
@@ -780,8 +911,13 @@ def clone(tmp: Path, remote: Path, dirname: str, name: str) -> Path:
 
 
 def remote_file(remote: Path, path: str) -> str:
-    r = subprocess.run(["git", "show", f"main:{path}"], cwd=remote,
-                       capture_output=True, text=True, encoding="utf-8")
+    r = subprocess.run(
+        ["git", "show", f"main:{path}"],
+        cwd=remote,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
     return r.stdout if r.returncode == 0 else ""
 
 
@@ -910,8 +1046,15 @@ class PushFailed(Exception):
 
 
 def _git(root: Path, *args: str, stdin: str | None = None, env: dict | None = None) -> str:
-    r = subprocess.run(["git", *args], cwd=root, input=stdin, env=env,
-                       capture_output=True, text=True, encoding="utf-8")
+    r = subprocess.run(
+        ["git", *args],
+        cwd=root,
+        input=stdin,
+        env=env,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
     if r.returncode != 0:
         raise subprocess.CalledProcessError(r.returncode, ["git", *args], r.stdout, r.stderr)
     return r.stdout
@@ -923,8 +1066,13 @@ def fetch(root: Path) -> bool:
 
 
 def read_remote_file(root: Path, path: str) -> str:
-    r = subprocess.run(["git", "show", f"origin/main:{path}"], cwd=root,
-                       capture_output=True, text=True, encoding="utf-8")
+    r = subprocess.run(
+        ["git", "show", f"origin/main:{path}"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
     return r.stdout if r.returncode == 0 else ""
 
 
@@ -964,8 +1112,13 @@ def push_tasks(root: Path, build: Callable[[str], tuple[str, str, str]], retries
         extra = changed_paths(root, base, sha) - ALLOWED
         if extra:
             raise RuntimeError(f"tasks/ 밖 파일이 바뀜: {sorted(extra)}")
-        r = subprocess.run(["git", "push", "-q", "origin", f"{sha}:refs/heads/main"], cwd=root,
-                           capture_output=True, text=True, encoding="utf-8")
+        r = subprocess.run(
+            ["git", "push", "-q", "origin", f"{sha}:refs/heads/main"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        )
         if r.returncode == 0:
             return sha
         last = r.stderr.strip()
@@ -1016,13 +1169,27 @@ from tests.ledger_fixtures import clone, make_repo, remote_file, seed, sh
 from tools.gitpush import push_tasks
 
 SCRIPT = Path(__file__).resolve().parent.parent / "scripts" / "task.py"
-ITEM = {"at": "2026-10-10T12:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-17",
-        "title": "틱 루프", "parent": None, "assign": "최동호", "slot": "1", "spec": "SIM-08"}
+ITEM = {
+    "at": "2026-10-10T12:00:00+09:00",
+    "by": "kth9245",
+    "op": "add",
+    "id": "Part2-17",
+    "title": "틱 루프",
+    "parent": None,
+    "assign": "최동호",
+    "slot": "1",
+    "spec": "SIM-08",
+}
 
 
 def task(cwd: Path, *args: str) -> subprocess.CompletedProcess:
-    return subprocess.run([sys.executable, str(SCRIPT), *args], cwd=cwd,
-                          capture_output=True, text=True, encoding="utf-8")
+    return subprocess.run(
+        [sys.executable, str(SCRIPT), *args],
+        cwd=cwd,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
 
 
 def setup(tmp_path, name="최동호"):
@@ -1106,9 +1273,12 @@ def test_show_from_subdirectory(tmp_path):
 def test_seed_only_once(tmp_path):
     _, work = setup(tmp_path)
     f = tmp_path / "seed.jsonl"
-    f.write_text('{"at": "2026-10-10T12:00:00+09:00", "by": "kth9245", "op": "add", '
-                 '"id": "Part1-1", "title": "x", "parent": null, "assign": null, '
-                 '"slot": null, "spec": null}\n', encoding="utf-8")
+    f.write_text(
+        '{"at": "2026-10-10T12:00:00+09:00", "by": "kth9245", "op": "add", '
+        '"id": "Part1-1", "title": "x", "parent": null, "assign": null, '
+        '"slot": null, "spec": null}\n',
+        encoding="utf-8",
+    )
     r = task(work, "seed", str(f))
     assert r.returncode == 1 and "이미 기록" in r.stderr
 
@@ -1116,9 +1286,12 @@ def test_seed_only_once(tmp_path):
 def test_seed_pushes_log_and_board(tmp_path):
     remote, work = make_repo(tmp_path)
     f = tmp_path / "seed.jsonl"
-    f.write_text('{"at": "2026-10-10T12:00:00+09:00", "by": "kth9245", "op": "add", '
-                 '"id": "Part1-1", "title": "계약", "parent": null, "assign": "kth9245", '
-                 '"slot": "밤", "spec": null}\n', encoding="utf-8")
+    f.write_text(
+        '{"at": "2026-10-10T12:00:00+09:00", "by": "kth9245", "op": "add", '
+        '"id": "Part1-1", "title": "계약", "parent": null, "assign": "kth9245", '
+        '"slot": "밤", "spec": null}\n',
+        encoding="utf-8",
+    )
     r = task(work, "seed", str(f))
     assert r.returncode == 0 and "항목 1개" in r.stdout
     assert "### kth9245" in remote_file(remote, "tasks/NOW.md")
@@ -1153,14 +1326,20 @@ from tools.tasks_view import render_now
 
 
 def git_name(root: Path) -> str:
-    r = subprocess.run(["git", "config", "user.name"], cwd=root,
-                       capture_output=True, text=True, encoding="utf-8")
+    r = subprocess.run(
+        ["git", "config", "user.name"], cwd=root, capture_output=True, text=True, encoding="utf-8"
+    )
     return r.stdout.strip()
 
 
 def is_repo_top(root: Path) -> bool:
-    r = subprocess.run(["git", "rev-parse", "--show-toplevel"], cwd=root,
-                       capture_output=True, text=True, encoding="utf-8")
+    r = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
     return r.returncode == 0 and Path(r.stdout.strip()).resolve() == root.resolve()
 
 
@@ -1173,8 +1352,15 @@ def load(root: Path) -> tuple[dict[str, Item], str | None]:
     return replay(parse_log(read_remote_file(root, LOG))), note
 
 
-def write(root: Path, op: str, target: str, by: str, text: str = "", take: bool = False,
-          assign: str | None = None) -> tuple[dict, str, dict[str, Item]]:
+def write(
+    root: Path,
+    op: str,
+    target: str,
+    by: str,
+    text: str = "",
+    take: bool = False,
+    assign: str | None = None,
+) -> tuple[dict, str, dict[str, Item]]:
     """Validate against the latest remote log and push one event."""
     out: dict = {}
 
@@ -1184,8 +1370,11 @@ def write(root: Path, op: str, target: str, by: str, text: str = "", take: bool 
         events.append(ev)
         out["ev"], out["items"] = ev, replay(events)
         sep = "" if not old or old.endswith("\n") else "\n"
-        return (old + sep + dump_event(ev) + "\n", render_now(out["items"], ev["at"]),
-                f"task: {op} {ev['id']} {by}")
+        return (
+            old + sep + dump_event(ev) + "\n",
+            render_now(out["items"], ev["at"]),
+            f"task: {op} {ev['id']} {by}",
+        )
 
     sha = push_tasks(root, build)
     return out["ev"], sha, out["items"]
@@ -1227,11 +1416,11 @@ def seed(root: Path, text: str) -> int:
 ```python
 """Task ledger CLI (decision 0013). Run anywhere inside the repo or a worktree.
 
-  uv run python scripts/task.py show [번호] [--all]
-  uv run python scripts/task.py start|done <번호> [--take]
-  uv run python scripts/task.py add <상위 번호|PartN> "제목" [--assign 이름]
-  uv run python scripts/task.py block|decide|note|drop <번호> "내용"
-  uv run python scripts/task.py seed <파일>          (리드, 처음 한 번)
+uv run python scripts/task.py show [번호] [--all]
+uv run python scripts/task.py start|done <번호> [--take]
+uv run python scripts/task.py add <상위 번호|PartN> "제목" [--assign 이름]
+uv run python scripts/task.py block|decide|note|drop <번호> "내용"
+uv run python scripts/task.py seed <파일>          (리드, 처음 한 번)
 """
 
 import argparse
@@ -1245,8 +1434,15 @@ from tools.ledger import git_name, load, seed, write  # noqa: E402
 from tools.tasks import Refused, normalize_id  # noqa: E402
 from tools.tasks_view import render_item, render_show  # noqa: E402
 
-VERB = {"start": "시작", "done": "완료", "add": "추가", "block": "막힘",
-        "decide": "결정 기록", "note": "메모", "drop": "뺌"}
+VERB = {
+    "start": "시작",
+    "done": "완료",
+    "add": "추가",
+    "block": "막힘",
+    "decide": "결정 기록",
+    "note": "메모",
+    "drop": "뺌",
+}
 
 
 def fail(msg: str) -> None:
@@ -1255,8 +1451,9 @@ def fail(msg: str) -> None:
 
 
 def repo_root() -> Path:
-    r = subprocess.run(["git", "rev-parse", "--show-toplevel"],
-                       capture_output=True, text=True, encoding="utf-8")
+    r = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, encoding="utf-8"
+    )
     if r.returncode != 0:
         fail("git 저장소 안에서 실행하세요")
     return Path(r.stdout.strip())
@@ -1342,27 +1539,62 @@ git commit -m "task ledger: scripts/task.py CLI (show/start/done/add/block/decid
 
 `tests/test_new_action.py` 끝에 추가(맨 위 import에 `from tests.ledger_fixtures import clone, make_repo, remote_file, seed`):
 ```python
-LINKED = {"at": "2026-10-10T12:00:00+09:00", "by": "kth9245", "op": "add", "id": "Part2-1",
-          "title": "tracking predict_tracks", "parent": None, "assign": "최동호", "slot": "1",
-          "spec": "TRK-01"}
+LINKED = {
+    "at": "2026-10-10T12:00:00+09:00",
+    "by": "kth9245",
+    "op": "add",
+    "id": "Part2-1",
+    "title": "tracking predict_tracks",
+    "parent": None,
+    "assign": "최동호",
+    "slot": "1",
+    "spec": "TRK-01",
+}
 
 
 def planned_repo(tmp_path, root_sub=""):
     remote, work = make_repo(tmp_path, "최동호")
     root = work / root_sub if root_sub else work
     mod = make_module(root)
-    r = subprocess.run([sys.executable, str(SCRIPT), "tracking", "predict_tracks", "x",
-                        "--planned", "--root", str(root), "--owner", "최동호"],
-                       capture_output=True, text=True)
+    r = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "tracking",
+            "predict_tracks",
+            "x",
+            "--planned",
+            "--root",
+            str(root),
+            "--owner",
+            "최동호",
+        ],
+        capture_output=True,
+        text=True,
+    )
     assert r.returncode == 0, r.stderr
     seed(work, [LINKED])
     return remote, work, root, mod
 
 
 def claim(root, owner, *extra):
-    return subprocess.run([sys.executable, str(SCRIPT), "tracking", "predict_tracks", "x",
-                           *extra, "--root", str(root), "--owner", owner],
-                          capture_output=True, text=True, encoding="utf-8")
+    return subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "tracking",
+            "predict_tracks",
+            "x",
+            *extra,
+            "--root",
+            str(root),
+            "--owner",
+            owner,
+        ],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
 
 
 def test_claim_starts_linked_plan_item(tmp_path):
@@ -1564,8 +1796,8 @@ Expected: FAIL — `test_protected_files`(`AssertionError: tasks/log.jsonl`), `t
 
 `tools/guard/edits.py` PROTECTED의 `"tasks/BOARD.md",` 다음에:
 ```python
-    "tasks/log.jsonl",
-    "tasks/NOW.md",
+("tasks/log.jsonl",)
+("tasks/NOW.md",)
 ```
 
 `.agents/skills/task/SKILL.md`:
@@ -1639,11 +1871,16 @@ import sys
 from pathlib import Path
 
 doc = Path(sys.argv[1]).read_text(encoding="utf-8")
-sec = doc[doc.index("## 6. 사람별 계획"):doc.index("## 7. 빼는 순서")]
-SPEC = {**{f"Part2-{k}": f"SIM-{k + 4:02d}" for k in range(1, 6)}, "Part2-6": "SNS-02",
-        **{f"Part2-{k}": f"SFT-{k - 6:02d}" for k in range(7, 10)},
-        **{f"Part2-{k}": f"RT-{k - 9:02d}" for k in range(10, 17)}, "Part2-20": "SIM-04",
-        **{f"Part3-{k}": f"PLY-{k:02d}" for k in range(1, 10)}, "Part3-15": "PLY-10"}
+sec = doc[doc.index("## 6. 사람별 계획") : doc.index("## 7. 빼는 순서")]
+SPEC = {
+    **{f"Part2-{k}": f"SIM-{k + 4:02d}" for k in range(1, 6)},
+    "Part2-6": "SNS-02",
+    **{f"Part2-{k}": f"SFT-{k - 6:02d}" for k in range(7, 10)},
+    **{f"Part2-{k}": f"RT-{k - 9:02d}" for k in range(10, 17)},
+    "Part2-20": "SIM-04",
+    **{f"Part3-{k}": f"PLY-{k:02d}" for k in range(1, 10)},
+    "Part3-15": "PLY-10",
+}
 
 
 def assign(iid: str) -> str | None:
@@ -1663,15 +1900,36 @@ for row in sec.splitlines():
         continue
     iid = re.match(r"Part\d+-\d+", cells[1]).group()
     slot = re.match(r"[^(]*", cells[-2]).group().strip() or None
-    out.append({"at": AT, "by": "kth9245", "op": "add", "id": iid, "title": cells[2],
-                "parent": None, "assign": assign(iid), "slot": slot, "spec": SPEC.get(iid)})
+    out.append(
+        {
+            "at": AT,
+            "by": "kth9245",
+            "op": "add",
+            "id": iid,
+            "title": cells[2],
+            "parent": None,
+            "assign": assign(iid),
+            "slot": slot,
+            "spec": SPEC.get(iid),
+        }
+    )
 for op in ("start", "done"):  # Part1-3 finished on 10/9 (commit 553d308)
-    out.append({"at": AT_13, "by": "kth9245", "op": op, "id": "Part1-3",
-                **({"take": False, "from": None} if op == "start" else {"take": False})})
-Path(sys.argv[2]).write_text("".join(json.dumps(e, ensure_ascii=False) + "\n" for e in out),
-                             encoding="utf-8")
+    out.append(
+        {
+            "at": AT_13,
+            "by": "kth9245",
+            "op": op,
+            "id": "Part1-3",
+            **({"take": False, "from": None} if op == "start" else {"take": False}),
+        }
+    )
+Path(sys.argv[2]).write_text(
+    "".join(json.dumps(e, ensure_ascii=False) + "\n" for e in out), encoding="utf-8"
+)
 for e in out[:-2]:
-    print(f"{e['id']:9} {e['assign'] or '누구나':7} {e['slot'] or '-':5} {e['spec'] or '':7} {e['title']}")
+    print(
+        f"{e['id']:9} {e['assign'] or '누구나':7} {e['slot'] or '-':5} {e['spec'] or '':7} {e['title']}"
+    )
 ```
 Run: `uv run python <scratchpad>/make_seed.py docs/research/09-rolecall-implementation-foundation.md <scratchpad>/seed.jsonl`
 Expected: 약 48줄(Part1-6·1-8 제외). 번호·배정·통합·SPEC id가 설계 문서 2.5절과 같은지 눈으로 확인.

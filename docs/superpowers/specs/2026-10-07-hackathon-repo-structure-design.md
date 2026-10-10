@@ -144,7 +144,9 @@ modules/tracking/
 """TRK-01 predict_tracks: 기존 표적의 dt초 뒤 위치를 등속 모델로 예측
 SPEC: modules/tracking/SPEC.md#TRK-01
 """
+
 from contracts.models import Track
+
 
 def predict_tracks(tracks: list[Track], dt: float) -> list[Track]:
     raise NotImplementedError

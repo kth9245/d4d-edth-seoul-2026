@@ -60,30 +60,38 @@ class ActionGroup(BaseModel):
     label: str
     actions: list[ActionKind]
 
+
 class VehicleKind(BaseModel):
     id: str
     label: str
     is_a: str | None = None
     provides: list[str] = []  # ActionGroup id or ActionKind value
 
+
 class Ontology(BaseModel):
     groups: list[ActionGroup]
     kinds: list[VehicleKind]
 
+
 class CapabilityReason(BaseModel):
     action: ActionKind
     allowed: bool
-    path: list[str]  # kind ids walked from the vehicle's kind up to the giver (allowed) or the root (denied)
+    path: list[
+        str
+    ]  # kind ids walked from the vehicle's kind up to the giver (allowed) or the root (denied)
     via: str | None = None  # the provides entry that matched (group id or action)
+
 
 class VehicleCapabilities(BaseModel):
     vehicle_id: str
     kind: str
     reasons: list[CapabilityReason]  # one per ActionKind, in enum order
 
+
 class OntologyView(BaseModel):  # GET /ontology
     ontology: Ontology
     vehicles: list[VehicleCapabilities]
+
 
 class ObjectNode(BaseModel):
     id: str
@@ -91,10 +99,12 @@ class ObjectNode(BaseModel):
     label: str
     t_ms: int | None = None
 
+
 class ObjectLink(BaseModel):
     src: str
     dst: str
     rel: Literal["reported", "about", "answers", "from_decision", "sent_to", "aims_at", "blocked"]
+
 
 class ObjectGraph(BaseModel):  # GET /graph
     focus: str

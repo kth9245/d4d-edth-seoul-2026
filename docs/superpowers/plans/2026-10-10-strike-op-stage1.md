@@ -105,13 +105,17 @@ def test_sites_are_inside_the_zone_and_a_strike_boat_can_reach_them(sc):
     for e in sc.enemies:
         assert point_in_polygon(e.pos, sc.operation.zone), e.id
         assert inside(e.pos, sc.land), e.id  # on the island
-        assert dist_m(e.pos, to_sea(e.pos, sc.land)) <= 100, e.id  # the USV aims at the nearest sea point
+        assert dist_m(e.pos, to_sea(e.pos, sc.land)) <= 100, (
+            e.id
+        )  # the USV aims at the nearest sea point
 
 
 def test_sites_are_within_threat_range_of_the_watch_point(sc):
     wp = sc.watch_points[0]
     for e in sc.enemies:
-        assert dist_m(e.pos, wp.pos) <= 3 * wp.radius_m, e.id  # near step, else a silent site never scores 0.40
+        assert dist_m(e.pos, wp.pos) <= 3 * wp.radius_m, (
+            e.id
+        )  # near step, else a silent site never scores 0.40
 
 
 def test_the_operation_passes_the_role_checks(sc):
@@ -123,13 +127,18 @@ def test_the_reference_point_is_the_target_area_not_the_defended_landing_point(s
     night = load_scenario_json(str(ROOT / "demo/scenarios/baengnyeong_night.json"))
     wp, nwp = sc.watch_points[0], night.watch_points[0]
     assert (wp.id, wp.name) == ("target_area", "목표 지역 중심")
-    assert (wp.pos, wp.radius_m) == (nwp.pos, nwp.radius_m)  # same place, so the verified scores hold
+    assert (wp.pos, wp.radius_m) == (
+        nwp.pos,
+        nwp.radius_m,
+    )  # same place, so the verified scores hold
 
 
 def test_the_json_is_what_the_script_builds(sc):
     from scripts.make_strike_scenario import build
 
-    on_disk = json.loads((ROOT / "demo/scenarios/baengnyeong_strike.json").read_text(encoding="utf-8"))
+    on_disk = json.loads(
+        (ROOT / "demo/scenarios/baengnyeong_strike.json").read_text(encoding="utf-8")
+    )
     assert build() == on_disk
 ```
 
@@ -169,7 +178,14 @@ APPEAR_MS = 1000
 
 
 def site_hold() -> dict:
-    step = {"id": "hold", "name": "대기", "do": {"kind": "hold", "params": {}}, "on": [], "report": None, "ui": {}}
+    step = {
+        "id": "hold",
+        "name": "대기",
+        "do": {"kind": "hold", "params": {}},
+        "on": [],
+        "report": None,
+        "ui": {},
+    }
     return {"id": "site_hold", "name": "적: 거점 대기", "domains": ["ground"], "steps": [step],
             "entry": "hold", "origin": "human", "approved": True, "template": False,
             "emergency": {"battery_low_pct": 30.0, "link_lost_step": None, "battery_low_step": None,
@@ -217,7 +233,9 @@ def build() -> dict:
 def main() -> None:
     out = build()
     OUT.write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    print(f"{OUT.name}: {len(out['enemies'])} sites, {len(out['roles'])} roles, {len(out['routes'])} routes")
+    print(
+        f"{OUT.name}: {len(out['enemies'])} sites, {len(out['roles'])} roles, {len(out['routes'])} routes"
+    )
 
 
 if __name__ == "__main__":
@@ -265,7 +283,11 @@ def _run_ten_minutes():
 
 def test_the_sites_spawn_and_the_emitting_one_is_heard_before_it_is_seen():
     es, heard, seen = _run_ten_minutes()
-    assert {t.id for t in es.targets} == {"site_a", "site_b", "site_c"}  # an offset of 0 would leave none
+    assert {t.id for t in es.targets} == {
+        "site_a",
+        "site_b",
+        "site_c",
+    }  # an offset of 0 would leave none
     assert heard is not None and seen is not None and heard < seen
 
 
@@ -275,7 +297,11 @@ def test_only_the_emitting_site_gets_a_card_and_it_has_its_threat_reasons():
     assert [(r.vehicle_id, r.target_id) for r in cards] == [("d1", "site_a")]
     assert cards[0].text.startswith("미식별 거점 감지")
     a = next(t for t in es.targets if t.id == "site_a")
-    assert a.threat == 75 and a.threat_reasons == ["kind_unknown", "near_watch_radius", "rf_emission"]
+    assert a.threat == 75 and a.threat_reasons == [
+        "kind_unknown",
+        "near_watch_radius",
+        "rf_emission",
+    ]
 
 
 def test_the_silent_sites_are_not_heard():
