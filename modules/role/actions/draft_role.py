@@ -1,9 +1,9 @@
 """PLY-09 draft_role: 문장 → AI Role 초안(결정 0028 Grok). 캐시 우선, 미스면 1회 호출·스키마 밖이면 1회 재요청, 실패 시 standby 템플릿
+캐시 키는 draft_cache_key(문장·작전 지역·구역, 결정 0057): 같은 구역의 새 작전·24시간 작전도 캐시를 쓴다.
 프롬프트는 리드의 build_draft_prompt(PLY-12), 호출 규약은 tasks Part3-9 리드 메모.
 SPEC: modules/role/SPEC.md#PLY-09
 """
 
-import hashlib
 import json
 from pathlib import Path
 
@@ -12,6 +12,7 @@ from pydantic import ValidationError
 
 from contracts.models import Operation, Role
 from modules.role.actions.build_draft_prompt import build_draft_prompt
+from modules.role.actions.draft_cache_key import draft_cache_key
 from modules.role.actions.load_role import load_role
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -46,7 +47,7 @@ def _ask(prompt: str, key: str) -> Role:
 
 def draft_role(text: str, op: Operation) -> Role:
     prompt = build_draft_prompt(text, op)
-    path = CACHE / f"{hashlib.sha256(prompt.encode('utf-8')).hexdigest()}.json"
+    path = CACHE / f"{draft_cache_key(text, op)}.json"
     if path.exists():
         return Role.model_validate_json(path.read_text(encoding="utf-8"))
     key = _key()

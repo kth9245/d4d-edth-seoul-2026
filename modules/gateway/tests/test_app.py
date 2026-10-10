@@ -300,3 +300,14 @@ def test_post_routes_adds_a_route_the_editor_can_offer():  # decision 0054
         added = client.post("/routes", json=body)
         assert added.status_code == 200 and added.json()[-1]["name"] == "QA 고정"
         assert client.get("/routes").json()[-1]["id"] == "new_route"
+
+
+def test_draft_hits_the_cache_on_a_new_and_the_24h_operation():  # decision 0057, policy 1
+    import json
+
+    text = json.loads((ROOT / "demo/draft_sentences.json").read_text("utf-8"))[0]["text"]
+    with TestClient(create_app(SCENARIO, period_s=0.01)) as client:
+        client.post("/scenarios", json={"name": "QA 새 작전", "purpose": "캐시 확인"})
+        assert client.post("/roles/draft", json={"text": text}).json()["origin"] == "ai_draft"
+        client.post("/scenarios/baengnyeong_24h/activate")
+        assert client.post("/roles/draft", json={"text": text}).json()["origin"] == "ai_draft"
