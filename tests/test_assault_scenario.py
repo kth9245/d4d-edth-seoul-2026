@@ -15,8 +15,8 @@ ROOT = Path(__file__).resolve().parent.parent
 PATH = ROOT / "demo/scenarios/baengnyeong_assault.json"
 SITES = ("site_n", "site_s", "site_f")
 BEACH = GeoPoint(
-    lat=37.955, lon=124.625, alt_m=0.0
-)  # the operator's click just past the west shore
+    lat=37.951, lon=124.627, alt_m=0.0
+)  # the scripted click: west beach, south of the ground robot (a click on its marker would select it)
 
 
 @pytest.fixture(scope="module")
@@ -54,7 +54,7 @@ def test_drones_and_usv_start_at_sea_and_the_ground_robot_is_already_ashore(sc):
         assert point_in_polygon(by[vid].home, sc.operation.zone), vid
     assert inside(by["ugv"].home, sc.land)
     # it waits right behind the beach where the usv lands, so it reads as the landed ground force
-    assert dist_m(by["ugv"].home, to_sea(BEACH, sc.land)) < 400
+    assert 400 < dist_m(by["ugv"].home, to_sea(BEACH, sc.land)) < 800  # near the landing, markers apart
 
 
 def test_enemies_are_three_fixed_silent_unknown_sites_on_land(sc):
