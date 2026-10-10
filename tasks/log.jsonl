@@ -173,3 +173,4 @@
 {"at": "2026-10-10T11:13:32+09:00", "by": "kth9245", "op": "add", "id": "Part1-9.3", "title": "디자인 v2: D4D 톤, Pretendard·Orbitron·JetBrains Mono 번들", "parent": "Part1-9", "assign": null, "slot": "1", "spec": null}
 {"at": "2026-10-10T11:13:34+09:00", "by": "kth9245", "op": "start", "id": "Part1-9.3", "take": false, "from": null}
 {"at": "2026-10-10T11:13:37+09:00", "by": "kth9245", "op": "decide", "id": "Part1-9.3", "text": "D4D 홈페이지 톤: 검정 바탕, 초록 #4ade80은 시스템 상태(연결·선택·성공), 흰 주 버튼, 각진 1px 선, Orbitron 화면 이름·큰 숫자, JetBrains Mono 대문자 코드, Pretendard 본문. 글꼴은 npm(OFL)으로 번들해 오프라인 동작. 지도 기호는 군 표준 소속 색(아군 시안) 유지. 리드 답 'd4d 홈페이지 느낌', 'ㄱㄱ 디자인 좀 간지나게'"}
+{"at": "2026-10-10T11:15:50+09:00", "by": "kth9245", "op": "done", "id": "Part1-5", "take": false}

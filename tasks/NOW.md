@@ -2,13 +2,11 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 11:13 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 11:15 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- **Part1-5** AI 초안 프롬프트·캐시 2개 — kth9245, 10/10 11:11부터 · 하위 1/1 완료
 - **Part1-9.3** 디자인 v2: D4D 톤, Pretendard·Orbitron·JetBrains Mono 번들 — kth9245, 10/10 11:13부터
 - **Part2-6** sensing `observe_targets`(공개 API 이름 `observe`) — 최동호, 10/10 11:12부터 · SNS-02
-- ⚠ kth9245 진행중 2개
 
 ## 막힘
 - (없음)
@@ -50,6 +48,7 @@
 - 10/10 10:18 kth9245 · Part1-9 · 작전 구역(zone)은 오퍼레이션을 만들 때 한 번만 지정한다. 화면은 시작할 때 GET /operation을 한 번 받아 구역을 그린다(Frame에 zone 칸 추가 안 함). 리드 답 '처음에 한번만 지정 가능하게. 하나의 오퍼레이션만들때 지정'
 
 ## 완료
+- **Part1-5** AI 초안 프롬프트·캐시 2개 — kth9245, 10/10 11:15 · 하위 1/1 완료
 - **Part1-5.1** 프롬프트 틀 build_draft_prompt(PLY-12)·시연 문장 2개 — kth9245, 10/10 11:10
 - **Part3-11** 편집기: 저장 → 검사 결과 표시 — kth9245, 10/10 11:09
 - **Part2-17.3** gateway run_checks · GW-04 (황승주 SFT-03 뒤, 그 전엔 스텁) — 황승주, 10/10 11:09
