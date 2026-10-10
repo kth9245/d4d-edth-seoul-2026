@@ -27,7 +27,7 @@
 | 적(고정 거점 대 침투 보트), Role(탐색·대기), 시작 배정, 이벤트, 작전 이름·목적, 카드 문구 | **다름** | |
 | 지도(`land`), 온톨로지, 틱·시드 설정 | 같음 | 엔진·지도라서 같아야 한다 |
 | 기체 기지(d1~d4 패드, 수상정·지상 로봇 위치) | 물려받음 | 1단계는 유지. 출격 거점을 따로 두는 것은 후속 |
-| **기준점 `watch_points`("상륙 예상 지점")** | **물려받음, 의미가 방어 개념이다** | 방어에서는 "지킬 곳"이다. 공격에서는 "목표 지역 중심"으로 이름과 설명만 바꿀 수 있다(좌표·반경이 같아 위 표의 점수·시각은 그대로). **적용 여부는 최동호가 정한다** |
+| **기준점 `watch_points`** | **다름(적용함)** | 방어의 "상륙 예상 지점"(지킬 곳)을 쓰지 않고 같은 좌표·반경을 **"목표 지역 중심"**(id `target_area`)으로 부른다. 좌표·반경이 같아 위 표의 점수·시각은 그대로다(최동호 결정) |
 | `site_patrol`의 경로 | 방어 해안 순찰과 같은 경로 | 이름만 다르다. 탐색 패턴을 다르게 하는 것은 후속 |
 
 ## Review Focus
@@ -119,6 +119,13 @@ def test_the_operation_passes_the_role_checks(sc):
     assert check_operation(sc.operation, roles, specs).ok
 
 
+def test_the_reference_point_is_the_target_area_not_the_defended_landing_point(sc):
+    night = load_scenario_json(str(ROOT / "demo/scenarios/baengnyeong_night.json"))
+    wp, nwp = sc.watch_points[0], night.watch_points[0]
+    assert (wp.id, wp.name) == ("target_area", "목표 지역 중심")
+    assert (wp.pos, wp.radius_m) == (nwp.pos, nwp.radius_m)  # same place, so the verified scores hold
+
+
 def test_the_json_is_what_the_script_builds(sc):
     from scripts.make_strike_scenario import build
 
@@ -199,6 +206,9 @@ def build() -> dict:
         "events": [],
         "enemies": enemies,
         "routes": [north, *(r for r in night["routes"] if r["id"] not in skip)],
+        # same place and radius as night's "상륙 예상 지점" (so the scores below hold), but here it is the
+        # target area the sites are measured against, not a place to guard
+        "watch_points": [{**night["watch_points"][0], "id": "target_area", "name": "목표 지역 중심"}],
     }  # fmt: skip
     Scenario.model_validate(out)
     return out
@@ -215,7 +225,7 @@ if __name__ == "__main__":
 ```
   (`op`의 `id`는 작전 id, 시나리오 id와 별개다. 야간·24시간과 같은 방식이다.)
 - [ ] **Step 4: 생성** — `uv run python scripts/make_strike_scenario.py` → `baengnyeong_strike.json: 3 sites, 6 roles, N routes`.
-- [ ] **Step 5: 통과 확인** — `uv run pytest tests/test_strike_scenario.py -n 0 -q` → 7개 통과. 실패하면 이유를 읽는다(좌표 검사 실패는 표의 값과 대조).
+- [ ] **Step 5: 통과 확인** — `uv run pytest tests/test_strike_scenario.py -n 0 -q` → 8개 통과. 실패하면 이유를 읽는다(좌표 검사 실패는 표의 값과 대조).
 - [ ] **Step 6: 커밋** — 스크립트, JSON, 테스트.
 
 ---
