@@ -36,7 +36,8 @@ export function MiniMap({ zone, vehicles }: { zone: Polygon; vehicles: VehicleSp
         m.addLayer({ id: "zone-line", type: "line", source: "zone",
           paint: { "line-color": "#80e0ff", "line-opacity": 0.8, "line-width": 1.2, "line-dasharray": [4, 3] } });
       });
-      const homes = vehicles.map((v) => ({ id: v.id, lat: v.home.lat, lon: v.home.lon, status: "ready" as const }));
+      const homes = vehicles.map((v) => ({ id: v.id, lat: v.home.lat, lon: v.home.lon, status: "ready" as const,
+        battery: "ok" as const, label: v.id })); // labels are hidden on the mini map
       syncVehicles(m, store, homes, null, () => {});
       map = m;
     });
