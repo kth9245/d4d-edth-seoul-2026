@@ -59,6 +59,7 @@ function threatOf(t: Target | undefined): CardThreat | undefined {
       const k = r.slice("kind_".length);
       parts.push(k === "unknown" ? "스캔 전: 미상" : `스캔 판별: ${KIND_KO[k] ?? k}`);
     } else if (r === "inside_watch_radius") parts.push("기준점 반경 안 +0.30");
+    else if (r === "near_watch_radius") parts.push("기준점 근접 +0.15");
     else if (r === "rf_emission") parts.push("RF 방출 감지 +0.30");
     else if (r === "speed") parts.push(`속도 ${Math.hypot(t.vel_east_mps, t.vel_north_mps).toFixed(1)} m/s`);
   }
