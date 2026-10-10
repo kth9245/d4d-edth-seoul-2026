@@ -297,3 +297,4 @@
 {"at": "2026-10-10T14:50:20+09:00", "by": "kth9245", "op": "done", "id": "Part1-21", "take": false}
 {"at": "2026-10-10T14:56:15+09:00", "by": "kth9245", "op": "done", "id": "Part2-19.1", "take": false}
 {"at": "2026-10-10T14:58:49+09:00", "by": "kth9245", "op": "add", "id": "Part1-23", "title": "B안(결정 0036): 적 3척 동시 침투, 발견한 기체가 붙어 카드, 표적 보고됨 칸", "parent": null, "assign": "kth9245", "slot": null, "spec": null}
+{"at": "2026-10-10T14:58:56+09:00", "by": "kth9245", "op": "add", "id": "Part1-23.1", "title": "계약: Target.reported_by + TS·예시", "parent": "Part1-23", "assign": "kth9245", "slot": null, "spec": null}
