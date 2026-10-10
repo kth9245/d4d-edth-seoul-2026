@@ -304,3 +304,4 @@
 {"at": "2026-10-10T14:59:08+09:00", "by": "kth9245", "op": "add", "id": "Part1-23.5", "title": "화면 확인: 카드 여러 장 동시 표시, 지도 이름표 겹침", "parent": "Part1-23", "assign": "kth9245", "slot": null, "spec": null}
 {"at": "2026-10-10T14:59:14+09:00", "by": "kth9245", "op": "start", "id": "Part1-23", "take": false, "from": null}
 {"at": "2026-10-10T14:59:17+09:00", "by": "kth9245", "op": "start", "id": "Part1-23.1", "take": false, "from": null}
+{"at": "2026-10-10T15:01:22+09:00", "by": "kth9245", "op": "done", "id": "Part1-23.1", "take": false}
