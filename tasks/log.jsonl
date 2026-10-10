@@ -268,3 +268,4 @@
 {"at": "2026-10-10T13:14:42+09:00", "by": "kth9245", "op": "add", "id": "Part2-19.1", "title": "해상 기체는 육지를 지나지 않음: 섬 다각형(계약)·sim 우회·시나리오 바다 위치", "parent": "Part2-19", "assign": null, "slot": "2", "spec": null}
 {"at": "2026-10-10T13:18:03+09:00", "by": "kth9245", "op": "note", "id": "Part1-14", "text": "리드 13:17 완료 처리: 사건 7·8(타격) 끝까지 확인은 통합 세션이 Part1-19·Part2-19 들어온 뒤 scripts/qa.sh(live.json에 단계 추가)로"}
 {"at": "2026-10-10T13:18:06+09:00", "by": "kth9245", "op": "done", "id": "Part1-14", "take": false}
+{"at": "2026-10-10T13:36:09+09:00", "by": "kth9245", "op": "start", "id": "Part3-14", "take": false, "from": null}
