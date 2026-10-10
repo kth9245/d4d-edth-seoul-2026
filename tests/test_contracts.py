@@ -124,6 +124,15 @@ def test_strike_and_enemy_fields_default_to_empty():
     assert {e.id for e in sc.enemies} == {"boat1", "fast1"}
 
 
+def test_target_reported_by_names_the_vehicle_that_raised_its_card():  # decision 0036
+    g = GeoPoint(lat=37.9, lon=124.7)
+    tg = Target(id="b", kind="boat", pos=g, vel_east_mps=0, vel_north_mps=0,
+                first_seen_ms=0, last_seen_ms=0)  # fmt: skip
+    assert tg.reported_by is None
+    assert tg.model_copy(update={"reported_by": "d1"}).reported_by == "d1"
+    assert Target.model_validate({**tg.model_dump(), "reported_by": "d2"}).reported_by == "d2"
+
+
 def test_enemy_appears_at_a_point_or_from_another_enemy():
     e = EnemySpec(id="fast1", kind="fast_boat", speed_mps=6.3, appear_offset_ms=1_380_000,
                   from_enemy="boat1", play_id="enemy_fast1")  # fmt: skip

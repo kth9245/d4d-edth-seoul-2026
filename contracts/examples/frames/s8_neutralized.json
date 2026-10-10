@@ -273,6 +273,7 @@
     "d3"
    ],
    "neutralized_ms": null,
+   "reported_by": null,
    "play_id": null,
    "step_id": null,
    "waypoint_idx": 0,
@@ -295,6 +296,7 @@
     "usv"
    ],
    "neutralized_ms": 1791635175000,
+   "reported_by": null,
    "play_id": null,
    "step_id": null,
    "waypoint_idx": 0,

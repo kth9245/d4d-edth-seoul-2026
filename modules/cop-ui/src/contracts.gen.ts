@@ -196,6 +196,7 @@ export interface Target {
   last_seen_ms: number;
   seen_by?: string[];
   neutralized_ms?: number | null;
+  reported_by?: string | null;
   play_id?: string | null;
   step_id?: string | null;
   waypoint_idx?: number;

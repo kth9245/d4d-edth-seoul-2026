@@ -18,13 +18,15 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 선택지가 보고한 기체를 `play_by_vehicle`에 넣지 않으면, 그 기체는 같은 플레이에서 지금 step의 탈출 `{cond: {kind: operator_choice, params: {choice: <선택지 id>}}, go_step}`으로 넘어간다. 그런 탈출이 없으면 보고 step에 머문다(결정 0031, 편집기 "보고 카드 끼워 넣기"가 이 모양을 넣는다).
 
 **표적이 필요한 행동**(`watch_target`, `approach_target`, `strike_target`)의 `do.params.target`:
-- `"nearest"`: step에 들어갈 때 그 기체에서 가장 가까운 표적
-- `"operator"`: step에 들어갈 때 명령 없이 `target_select` 카드만 낸다(선택지 id = 표적 id, `play_by_vehicle` 비움). 결정이 오면 `VehicleState.target_id`를 정하고 `entered_step=False`로 되돌려 다음 틱에 명령을 낸다
+- `"nearest"`: step에 들어갈 때 그 기체에서 가장 가까운 표적. 아직 카드가 올라가지 않은 표적(`reported_by` 없음)을 먼저 고르고, 그런 표적이 없으면 전체에서 고른다(결정 0036)
+- `"operator"`: 기체에 `target_id`가 있으면 그 표적(결정으로 옮겨진 기체는 카드의 표적, 예비 이어받기는 빠진 기체의 표적, 결정 0036). 없으면 step에 들어갈 때 명령 없이 `target_select` 카드만 낸다(선택지 id = 표적 id, `play_by_vehicle` 비움). 결정이 오면 `VehicleState.target_id`를 정하고 `entered_step=False`로 되돌려 다음 틱에 명령을 낸다
 - 그 밖의 문자열: 고정 표적 id
 
 정해진 표적은 `VehicleState.target_id`에 둔다. 명령으로 나갈 때는 `params.target_id`가 된다.
 
 **타격(결정 0033).** 선택지가 기체를 다른 플레이로 옮기면 그 기체에 `decision_id`(결정 id)와 `target_id`(카드의 표적)를 적는다. 전환 버튼·예비 이어받기로 옮긴 기체는 `decision_id`가 없다. `strike_target` step의 명령(`strike`)은 출처 `decision_id`와 params `target`(표적의 현재 위치)을 싣고, safety 규칙 1은 `decision_id` 없는 `strike`를 `no_provenance`로 막는다(규칙 2·3은 `target`으로 그대로). 타격 중 기체가 표적 100 m 안이면 sim이 표적을 무력화(`neutralized_ms`, 속도 0)하고 `target_neutralized` 카드(알림만)를 낸다. 결정으로 옮긴 기체가 기다리던 다른 카드는 같이 닫힌다.
+
+**발견한 기체가 붙는다(결정 0036).** `target_found` 조건은 그 기체 센서에 보이는 표적 가운데 아직 카드가 올라가지 않은 것(`Target.reported_by`가 없음)이 있을 때만 참이다. `target_detected` 카드가 생긴 틱에 gateway `engine.py`가 그 카드의 표적에 `reported_by`(카드를 올린 기체 id)를 적는다. 그래서 같은 구역에 여러 척이 오면 두 번째 기체는 이미 카드가 올라간 배가 아니라 새 배에 붙어 카드를 올린다. 예비 이어받기(`apply_reserves`)는 빠진 기체의 `target_id`를 예비 기체에 넘긴다.
 
 ## 2. 시간·단위·id
 

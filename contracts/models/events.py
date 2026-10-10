@@ -19,6 +19,7 @@ class Target(BaseModel):
     last_seen_ms: int
     seen_by: list[str] = []
     neutralized_ms: int | None = None  # struck (decision 0033); it stops moving
+    reported_by: str | None = None  # vehicle that raised its target_detected card (decision 0036)
     play_id: str | None = None  # enemy progress (decision 0032)
     step_id: str | None = None
     waypoint_idx: int = 0  # -1 = arrived at the move_to destination

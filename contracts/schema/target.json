@@ -81,6 +81,18 @@
       "default": null,
       "title": "Neutralized Ms"
     },
+    "reported_by": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reported By"
+    },
     "play_id": {
       "anyOf": [
         {
