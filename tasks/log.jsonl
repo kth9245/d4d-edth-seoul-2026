@@ -564,3 +564,4 @@
 {"at": "2026-10-11T00:36:28+09:00", "by": "황승주", "op": "add", "id": "Part2-65", "title": "멸공 단계별 카드: 남은 사소한 문제 3개(제거된 적, 끼어들기, 발견 기체 대기)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-11T00:36:32+09:00", "by": "황승주", "op": "start", "id": "Part2-65", "take": false, "from": null}
 {"at": "2026-10-11T00:39:46+09:00", "by": "kth9245", "op": "add", "id": "Part1-32.4", "title": "지도 RF 수신 고리 빼기: 기지 대기 드론 4대에 탐지 원·RF 고리가 겹쳐 원이 너무 많음, 탐지 원만 남김", "parent": "Part1-32", "assign": null, "slot": null, "spec": null}
+{"at": "2026-10-11T00:39:52+09:00", "by": "kth9245", "op": "start", "id": "Part1-32.4", "take": false, "from": null}
