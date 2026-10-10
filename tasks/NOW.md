@@ -2,7 +2,7 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 11:44 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 11:45 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - (없음)
@@ -34,6 +34,7 @@
 - **Part1-20** 타격: 화면 (무력화 표적 X·결과 카드·작전 성공·예시 장면 s7·s8)
 
 ## 최근 결정
+- 10/10 11:45 황승주 · Part3-15.1 · compile_mavlink(play, op, specs: dict[id, VehicleSpec]): op.assign에서 이 플레이를 받는 기체마다 (plan, script). .plan = entry step 미션(QGC Plan, ArduPilot, MAV_TYPE 2/11/10, 드론 고도 50 m), 스크립트 = step 그래프 전체(pymavlink, 틀 modules/mavlink/vehicle_script.py.txt). 대응: move/follow_route/zigzag→WAYPOINT 16, return_home→RTL 20, keep_distance→DO_SET_MODE 176 FOLLOW(Copter 23·Rover 6), 지상 hold→DO_SET_MODE HOLD 4, orbit/hold/relay→LOITER_UNLIM 17(좌표 없으면 0,0=현재 위치), expand_action None→빈 미션. 지상 신호는 STATUSTEXT target_found/signal/choice:<id>
 - 10/10 11:37 kth9245 · Part1-11 · 직접 조종은 기체 클릭(선택, 초록 링·안내 줄·십자 커서) → 지도 클릭 → POST /direct, 보낸 뒤 선택 해제, Esc나 같은 기체 다시 누르면 취소. 차단 카드에 대안 지점이 있으면 '대안 지점으로' → 같은 기체로 대안 좌표 POST /direct. 막힘 판단은 서버(safety)만. 리드 답 'ㄱㄱ'
 - 10/10 11:36 kth9245 · Part3-15.1 · 황승주에게 넘김(결정 0019, 황승주 세션이 일손 남는다고 제안). 리드 답 'Part3-15.1 compile_mavlink'. 상위 Part3-15(누구나)는 그대로 두고 3-15.1이 끝나면 같이 done
 - 10/10 11:19 kth9245 · Part1-12 · 사건 4를 화면만으로 끝내려고 Part1-12에 전환 요청 패널(작전 전체 전환 버튼 + 일부 전환: 기체·플레이 고르고 요청 → POST /injections)을 넣는다. 승인 대기 카드에 승인(주)·거부(보조) 버튼과 바뀌는 내용(d2→track_fast)을 붙인다. 리드 답 'ㄱㄱ'
@@ -43,7 +44,6 @@
 - 10/10 10:57 kth9245 · Part3-11 · 플레이 머리 버튼은 '저장' = POST /plays: 서버가 check_play로 검사해 통과하면 gateway 메모리(live.scenario.plays)에 저장하고 실행을 작전 시작 직전(일시정지)으로 되돌림(POST /operation과 같은 방식), 실패면 저장 안 함. 응답은 항상 PlayCheck. 파일에는 쓰지 않음(리허설 재현). 계약의 POST /plays/check(검사만)도 같이 만듦. 리드 답 '저장으로 할건데', '저장하고 오퍼레이션 시작을 해야 실행되는거 아님?'
 - 10/10 10:49 kth9245 · Part1-13 · 다음 사건으로는 사건 시각 직후에서 일시정지한다: 먼저 /run/live?speed=0, 그다음 /run/jump(정지 시각 = 사건 추정 시각 + 몇 초). 카드가 떠 있는 정지 화면에서 설명을 시작한다. 리드 답 '사건 직후, 일시정지'
 - 10/10 10:41 kth9245 · Part1-10 · 카드는 Report(injection_pending·command_blocked 제외) + Frame.injections + Frame.blocks로 만든다. Report에 Injection·Block을 가리키는 칸이 없어서, 원본 항목으로 카드를 만들면 승인·대안 버튼(Part1-11·12)에 필요한 id를 계약 변경 없이 쓸 수 있다. 최신이 위, 처리된 것은 흐리게, 시각은 KST
-- 10/10 10:38 kth9245 · Part1-7 · 리뷰 반영: WS Frame.log는 연결마다 안 보낸 줄 전부(배속 중 유실·일시정지 중 중복 없음), 요청이 아직 틱 전이면 승인·거부를 한 틱 뒤로(엔진 GW-03이 카드를 못 닫던 문제). 스파이크 엔진으로 35분 대본 결과 동일 확인
 
 ## 완료
 - **Part3-15** play `compile_mavlink` (결정 0011) — 황승주, 10/10 11:44 · 하위 1/1 완료 · PLY-10
