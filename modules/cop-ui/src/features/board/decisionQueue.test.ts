@@ -56,6 +56,16 @@ describe("decisionQueue", () => {
     expect(ids(q)).toEqual(["high", "p-usv", "low"]);
   });
 
+  it("shows a report that asks nothing and is not settled (a site found, decision 0080) as a fresh alert", () => {
+    const found = mkCard({ id: "found", text: "거점 발견", t_ms: T0 - 5_000 });
+    const settled = mkCard({ id: "settled", done: "처리됨", t_ms: T0 - 5_000 }); // e.g. a 24h raid alert card
+    const q = decisionQueue([found, settled], T0);
+    expect(ids(q)).toEqual([]); // news, not a decision: nothing waits for the operator
+    expect(q.alerts.map((c) => c.id)).toEqual(["found"]);
+    expect(q.history.map((c) => c.id)).toEqual(["settled"]);
+    expect(decisionQueue([found], T0 + 121_000).history.map((c) => c.id)).toEqual(["found"]); // after 2 min
+  });
+
   it("keeps a fresh strike result as an alert and older events in history, newest first", () => {
     const q = decisionQueue([
       mkCard({ id: "old", kind: "target_neutralized", t_ms: T0 - 200_000 }),

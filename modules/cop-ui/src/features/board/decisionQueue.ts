@@ -33,6 +33,9 @@ export function decisionQueue(cards: Card[], tMs: number, lastCmdMs: Record<stri
   const newest = (a: Card, b: Card) => b.t_ms - a.t_ms;
   action.sort((a, b) => rank(b) - rank(a) || newest(a.cards[0], b.cards[0]));
   const rest = cards.filter((c) => !open.includes(c)).sort(newest);
-  const fresh = (c: Card) => (ALERT_KINDS.includes(c.kind) || c.source === "block") && tMs - c.t_ms < ALERT_MS;
+  // a report that asks nothing and is not settled is news, not a decision (the assault's "거점 발견", decision 0080);
+  // settled ones (a 24h raid alert card is resolved when made) stay in history as before
+  const news = (c: Card) => c.source === "report" && c.kind === "target_detected" && c.choices.length === 0 && !c.done;
+  const fresh = (c: Card) => (ALERT_KINDS.includes(c.kind) || c.source === "block" || news(c)) && tMs - c.t_ms < ALERT_MS;
   return { action, alerts: rest.filter(fresh), history: rest.filter((c) => !fresh(c)) };
 }

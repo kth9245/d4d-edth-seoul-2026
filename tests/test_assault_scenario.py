@@ -207,6 +207,7 @@ def test_r1_finds_the_north_site_and_r2_the_south_one_as_plain_alerts(sc):
     assert _card(es, "site_f", "r1") is None  # the forest comes later
     for site, by in (("site_n", "r1"), ("site_s", "r2")):
         assert not _card(es, site, by).choices  # an alert: the strike goes through the vehicle menu
+        assert _card(es, site, by).resolved_ms is None  # unsettled, so the board shows it under 알림 (decisionQueue news)
     assert _st(es, "r1").target_id == "site_n" and _st(es, "r2").target_id == "site_s"
 
 
