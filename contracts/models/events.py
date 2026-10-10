@@ -29,10 +29,8 @@ class Target(BaseModel):
     threat: int = 0  # sensing: score in 0.01 units, 0..100 (decision 0039)
     threat_reasons: list[str] = []
     threat_accum: int = 0  # score (0.01) x ms while at or above the threshold and observed
-    last_seen_pos: GeoPoint | None = (
-        None  # sensing: where a live vehicle last saw it (decision 0047)
-    )
-    last_seen_vel_east_mps: float = 0  # its velocity at that moment, for approaching / fleeing
+    last_seen_pos: GeoPoint | None = None  # where a vehicle last saw it (decision 0047)
+    last_seen_vel_east_mps: float = 0  # its velocity then: approaching or fleeing
     last_seen_vel_north_mps: float = 0
 
 
@@ -69,9 +67,7 @@ class Injection(BaseModel):  # a switch request: previewed, then approved or rej
     label: str
     play_by_vehicle: dict[str, str]
     switch_id: str | None = None  # set when it comes from an Operation switch button
-    target_by_vehicle: dict[
-        str, str
-    ] = {}  # vehicle id -> target it works (pointing, decision 0048)
+    target_by_vehicle: dict[str, str] = {}  # pointed target per vehicle (decision 0048)
     status: Literal["pending", "approved", "rejected"] = "pending"
 
 

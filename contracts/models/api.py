@@ -19,9 +19,7 @@ class SwitchIn(BaseModel):  # POST /injections: a switch button id, or vehicles 
     switch_id: str | None = None
     play_by_vehicle: dict[str, str] = {}
     target_by_vehicle: dict[str, str] = {}  # pointing at a target on the map (decision 0048)
-    approve: bool = (
-        False  # the press is the approval: recorded approved, no pending card (decision 0049)
-    )
+    approve: bool = False  # the press is the approval, no pending card (decision 0049)
 
 
 class DraftIn(BaseModel):  # POST /plays/draft
