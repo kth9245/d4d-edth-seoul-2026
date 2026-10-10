@@ -3,6 +3,7 @@ import type { Play } from "../../contracts.gen";
 import type { SaveResult } from "./checkView";
 import { forSave } from "./draftRequests";
 import { groupPlays } from "./groupPlays";
+import { zoneCentre } from "./editStep";
 import { insertReportStep } from "./insertReportStep";
 import { type EditorData, loadEditorData } from "./loadEditorData";
 import { NewPlayMenu } from "./NewPlayMenu";
@@ -54,6 +55,12 @@ export function EditorScreen() {
     if (added) setFresh((all) => ({ ...all, [p.id]: added }));
     setResults((all) => without(all, p.id));
   };
+  // A card edited on the panel (Part3-12.1): the play becomes unsaved, its old check result goes.
+  const editPlay = (p: Play, next: Play, added?: string) => {
+    setEdits((all) => ({ ...all, [p.id]: next }));
+    if (added) setFresh((all) => ({ ...all, [p.id]: added }));
+    setResults((all) => without(all, p.id));
+  };
   // A new play (AI draft or written by hand) arrives unsaved in the list (or replaces one with the same id) and opens.
   const created = (p: Play) => {
     setData((d) => d && { ...d, plays: d.plays.some((x) => x.id === p.id) ? d.plays.map((x) => (x.id === p.id ? p : x)) : [...d.plays, p] });
@@ -86,6 +93,7 @@ export function EditorScreen() {
       <main className="editor-main">
         {play ? (
           <PlayWorkflow
+            key={play.id}
             play={play}
             usage={view.usage[play.id] ?? []}
             playName={playName}
@@ -97,6 +105,10 @@ export function EditorScreen() {
             edited={!!edits[play.id]}
             freshStep={fresh[play.id]}
             onInsertReport={(stepId) => insertReport(play, stepId)}
+            onEdit={(next, added) => editPlay(play, next, added)}
+            vehicleIds={data.operation.vehicle_ids}
+            fallbackPoint={zoneCentre(data.operation.zone)}
+            plays={data.plays.map((p) => ({ id: p.id, name: p.name }))}
           />
         ) : (
           <OperationOverview op={data.operation} columns={view.columns} playName={playName} onOpen={open} />

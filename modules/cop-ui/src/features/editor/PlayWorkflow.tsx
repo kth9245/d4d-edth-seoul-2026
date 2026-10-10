@@ -1,8 +1,11 @@
-import type { Play } from "../../contracts.gen";
+import { useState } from "react";
+import type { GeoPoint, Play } from "../../contracts.gen";
 import { batteryText, issuesByStep, saveErrorText, type SaveResult } from "./checkView";
 import { DOMAIN_LABEL } from "./describe";
 import type { Usage } from "./playUsage";
+import { addStepAfter, removeStep } from "./editStep";
 import { PlayGraph } from "./PlayGraph";
+import { StepEditor } from "./StepEditor";
 
 type Props = {
   play: Play;
@@ -16,6 +19,11 @@ type Props = {
   onInsertReport?: (stepId: string) => void;
   onBack?: () => void;
   backLabel?: string;
+  // Card editing (Part3-12.1): the changed play goes up unsaved; freshStep marks a card just added.
+  onEdit?: (next: Play, freshStep?: string) => void;
+  vehicleIds?: string[];
+  plays?: { id: string; name: string }[];
+  fallbackPoint?: GeoPoint | null;
 };
 
 function SaveStatus({ result }: { result?: SaveResult }) {
@@ -36,8 +44,11 @@ function SaveStatus({ result }: { result?: SaveResult }) {
   );
 }
 
-export function PlayWorkflow({ play, usage, playName, onOpen, result, onSave, edited, freshStep, onInsertReport, onBack, backLabel }: Props) {
+export function PlayWorkflow({ play, usage, playName, onOpen, result, onSave, edited, freshStep, onInsertReport, onBack, backLabel,
+  onEdit, vehicleIds = [], plays = [], fallbackPoint = null }: Props) {
   const view = result?.state === "done" ? issuesByStep(result.check, play) : null;
+  const [picked, setPicked] = useState<string | null>(null);
+  const step = onEdit ? play.steps.find((s) => s.id === picked) : undefined;
   return (
     <section className="workflow">
       {onBack && <button className="back" onClick={onBack}>← 뒤로 · {backLabel}</button>}
@@ -66,8 +77,23 @@ export function PlayWorkflow({ play, usage, playName, onOpen, result, onSave, ed
           ⚠ {i.message}
         </div>
       ))}
-      <PlayGraph play={play} issues={view?.byStep ?? {}} freshStep={freshStep} playName={playName} onOpen={onOpen}
-        onInsertReport={onInsertReport} />
+      <div className="workflow-body">
+        <PlayGraph play={play} issues={view?.byStep ?? {}} freshStep={freshStep} playName={playName} onOpen={onOpen}
+          onInsertReport={onInsertReport} selectedStep={step?.id ?? null} onSelectStep={setPicked} />
+        {step && onEdit && (
+          <StepEditor play={play} step={step} vehicleIds={vehicleIds} plays={plays} fallbackPoint={fallbackPoint} onChange={(next) => onEdit(next)}
+            onAddAfter={() => {
+              const { play: next, id } = addStepAfter(play, step.id);
+              onEdit(next, id);
+              setPicked(id);
+            }}
+            onRemove={() => {
+              onEdit(removeStep(play, step.id));
+              setPicked(null);
+            }}
+            onClose={() => setPicked(null)} />
+        )}
+      </div>
     </section>
   );
 }

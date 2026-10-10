@@ -26,7 +26,7 @@ if ! curl -sf -o /dev/null "http://127.0.0.1:$PORT/json/version"; then
   for _ in $(seq 50); do curl -sf -o /dev/null "http://127.0.0.1:$PORT/json/version" && break; sleep 0.2; done
 fi
 
-if [ "$#" -gt 0 ]; then lists=("$@"); else lists=(scripts/qa/editor.json scripts/qa/draft_to_live.json scripts/qa/live.json scripts/qa/scenes.json); fi
+if [ "$#" -gt 0 ]; then lists=("$@"); else lists=(scripts/qa/editor.json scripts/qa/card_edit.json scripts/qa/draft_to_live.json scripts/qa/live.json scripts/qa/scenes.json); fi
 node scripts/qa/run.mjs "${lists[@]}" 2>&1 | tee "$QA_OUT/qa.log"
 rc=${PIPESTATUS[0]}
 [ "$rc" = 0 ] && echo "[qa] 전부 통과. 스크린샷: $QA_OUT/" || echo "[qa] 실패 있음. FAIL 줄과 $QA_OUT/qa.log 확인."

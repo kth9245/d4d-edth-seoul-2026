@@ -13,7 +13,7 @@ export const ACTION_LABEL: Record<ActionKind, string> = {
   strike_target: "표적 타격",
 };
 
-const CONDITION_LABEL: Record<ConditionKind, string> = {
+export const CONDITION_LABEL: Record<ConditionKind, string> = {
   target_found: "표적 발견",
   arrived: "도착",
   time_elapsed: "시간 경과",

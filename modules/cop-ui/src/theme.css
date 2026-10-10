@@ -238,3 +238,19 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .link { color: var(--text); text-decoration-color: var(--line2); text-underline-offset: 3px; }
 .link:hover { color: var(--live); text-decoration-color: var(--live); }
 .missing { color: var(--hostile); }
+/* Card edit panel (Part3-12.1) */
+.step-editor { border: 1px solid var(--line); background: var(--s1); }
+.step-editor .se-head { padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.step-editor .se-head b { font-weight: 700; }
+.step-editor .se-head code { color: var(--dim); font-family: var(--font-mono); }
+.step-editor .se-field, .step-editor .se-title, .step-editor .se-num { color: var(--muted); font-family: var(--font-mono); letter-spacing: 0.04em; }
+.step-editor input, .step-editor select, .step-editor textarea { border: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); color: var(--text); }
+.step-editor input:focus, .step-editor select:focus, .step-editor textarea:focus { border-color: var(--live); outline: none; }
+.step-editor .se-choice { border: 1px solid var(--line); background: var(--s2); }
+.step-editor .se-arrow, .step-editor .se-note { color: var(--muted); }
+.step-editor button { border: 1px solid var(--line2); border-radius: var(--r); background: transparent; color: var(--text2); }
+.step-editor button:hover:not(:disabled) { border-color: var(--text); color: var(--text); }
+.step-editor .se-remove { border-color: rgba(239, 68, 68, 0.5); color: var(--hostile); }
+.step-editor .se-remove:hover:not(:disabled) { border-color: var(--hostile); color: var(--hostile); background: var(--hostile-soft); }
+.step-editor button:disabled { border-color: var(--line); color: var(--dim); cursor: default; }
+.react-flow__node.selected .step-node { border-color: var(--friend); box-shadow: 0 0 0 1px var(--friend), 0 0 18px rgba(128, 224, 255, 0.25); }

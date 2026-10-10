@@ -48,3 +48,4 @@
 | UI-43 | blankPlay·NewPlayMenu | 이름, 영역 | Play / 새로 만들기 메뉴 | '새로 만들기' → 'AI로 생성'(초안 칸) 또는 '직접 생성'(시작 카드 하나, 겹치지 않는 id, 사람 작성이라 승인됨), 둘 다 미저장으로 열림 | 리드 | 완료 |
 | UI-44 | openView·backFrom | 보던 화면, 다음 화면 | 화면 기록 | 연 순서를 기억해 '← 뒤로'가 같은 길로 돌아감(목록·카드 안 플레이 링크), 기록 없으면 작전 개요 | 리드 | 완료 |
 | UI-45 | directAims | Frame, 방금 보낸 명령 | 십자 목록 | 직접 조종 십자는 프레임 기준(operator_direct move 실행 중이고 step 밖인 기체의 목표). 차단된 명령은 십자 없음, 대안 지점이면 그쪽, 도착하면 없어짐. 방금 보낸 명령은 다음 프레임 전까지만 | 리드 | 완료 |
+| UI-46 | updateStep·setActionKind·addStepAfter·removeStep·addChoice·removeChoice·defaultCondition·zoneCentre | Play, 카드 id | 새 Play | 카드 편집(Part3-12.1, StepEditor 패널): 이름·행동(대상·거리, 이동·경로 좌표는 플레이의 점 또는 구역 중심)·연결(조건·값·다음 카드)·보고(문구·선택지·기체별 플레이)·카드 추가(도착 연결)·삭제(들어오는 연결·비상 연결도 정리, 시작 카드 제외). 선택지를 지우면 그 선택 연결도 지움 | 리드 | 완료 |

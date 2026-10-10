@@ -27,6 +27,7 @@ def _check(*files: Path) -> subprocess.CompletedProcess:
 def test_repo_checklists_exist_and_pass_the_check():
     assert {p.name for p in CHECKLISTS} >= {
         "editor.json",
+        "card_edit.json",
         "draft_to_live.json",
         "live.json",
         "scenes.json",

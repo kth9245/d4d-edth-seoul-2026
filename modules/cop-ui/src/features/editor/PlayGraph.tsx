@@ -1,4 +1,4 @@
-import { Background, BackgroundVariant, Controls, type Edge, MarkerType, ReactFlow, type ReactFlowInstance } from "@xyflow/react";
+import { Background, BackgroundVariant, Controls, type Edge, MarkerType, ReactFlow, type ReactFlowInstance, useNodesState } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useEffect, useMemo, useRef } from "react";
 import type { Play, ValidationIssue } from "../../contracts.gen";
@@ -17,11 +17,14 @@ type Props = {
   playName: (id: string) => string | null;
   onOpen: (playId: string) => void;
   onInsertReport?: (stepId: string) => void;
+  selectedStep?: string | null;
+  onSelectStep?: (stepId: string | null) => void;
 };
 
 // Steps on a canvas, left to right from the entry, joined by one dashed edge per exit labelled by its condition.
-// The layout is computed (not saved); the canvas is rebuilt when the play or its check result changes.
-export function PlayGraph({ play, issues, freshStep, playName, onOpen, onInsertReport }: Props) {
+// The layout is computed (not saved). The canvas is rebuilt (and refit) when the play, its set of steps or its
+// check result changes; edits inside a card update the nodes in place. Clicking a card selects it for editing.
+export function PlayGraph({ play, issues, freshStep, playName, onOpen, onInsertReport, selectedStep, onSelectStep }: Props) {
   // React Flow fits the view only when it mounts; refit whenever the box changes size (window resize, sidebar).
   const box = useRef<HTMLDivElement>(null);
   const flow = useRef<ReactFlowInstance<StepNodeType, Edge> | null>(null);
@@ -35,7 +38,7 @@ export function PlayGraph({ play, issues, freshStep, playName, onOpen, onInsertR
   const { nodes, edges, key } = useMemo(() => {
     const pos = layoutSteps(play);
     const nodes: StepNodeType[] = play.steps.map((step) => ({
-      id: step.id, type: "step", position: pos[step.id],
+      id: step.id, type: "step", position: pos[step.id], selected: step.id === selectedStep,
       data: { step, play, issues: issues[step.id] ?? [], fresh: step.id === freshStep, playName, onOpen,
         onInsertReport: onInsertReport && (() => onInsertReport(step.id)) },
     }));
@@ -51,11 +54,17 @@ export function PlayGraph({ play, issues, freshStep, playName, onOpen, onInsertR
     }));
     const key = `${play.id}|${play.steps.map((s) => s.id).join(",")}|${Object.keys(issues).join(",")}|${freshStep ?? ""}`;
     return { nodes, edges, key };
-  }, [play, issues, freshStep, playName, onOpen, onInsertReport]);
+  }, [play, issues, freshStep, playName, onOpen, onInsertReport, selectedStep]);
+  // Controlled nodes, so a card shows its edited content; keep the measured size until it is measured again.
+  const [rfNodes, setRfNodes, onNodesChange] = useNodesState<StepNodeType>(nodes);
+  useEffect(() => {
+    setRfNodes((prev) => nodes.map((n) => ({ ...n, measured: prev.find((p) => p.id === n.id)?.measured })));
+  }, [nodes, setRfNodes]);
 
   return (
     <div className="workflow-graph" ref={box}>
-      <ReactFlow key={key} defaultNodes={nodes} defaultEdges={edges} nodeTypes={nodeTypes} colorMode="dark"
+      <ReactFlow key={key} nodes={rfNodes} edges={edges} onNodesChange={onNodesChange} nodeTypes={nodeTypes} colorMode="dark"
+        onNodeClick={(_, n) => onSelectStep?.(n.id)} onPaneClick={() => onSelectStep?.(null)}
         fitView fitViewOptions={FIT} minZoom={0.3} nodesConnectable={false} onInit={(i) => (flow.current = i)}
         edgesFocusable={false} proOptions={{ hideAttribution: true }}>
         <Background variant={BackgroundVariant.Lines} gap={32} color="#ffffff0a" />

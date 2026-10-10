@@ -1,0 +1,113 @@
+import { describe, expect, it } from "vitest";
+import type { Play } from "../../contracts.gen";
+import { addChoice, addStepAfter, defaultCondition, removeChoice, removeStep, setActionKind, updateStep, zoneCentre } from "./editStep";
+
+const play: Play = {
+  id: "p", name: "순찰", domains: ["air"], entry: "patrol", origin: "human", approved: true, template: false,
+  emergency: { battery_low_pct: 30, battery_low_step: "home" },
+  steps: [
+    { id: "patrol", name: "순찰", do: { kind: "patrol_route", params: { route: [{ lat: 37.9, lon: 124.6 }, { lat: 37.95, lon: 124.65 }] } },
+      on: [{ cond: { kind: "target_found", params: {} }, go_step: "report" }], ui: {} },
+    { id: "report", name: "보고", do: { kind: "hold", params: {} },
+      on: [{ cond: { kind: "operator_choice", params: { choice: "go" } }, go_step: "watch" }],
+      report: { text: "표적 발견", choices: [{ id: "go", label: "감시", play_by_vehicle: {} }] }, ui: {} },
+    { id: "watch", name: "감시", do: { kind: "watch_target", params: { target: "nearest", distance_m: 150 } },
+      on: [{ cond: { kind: "battery_below", params: { pct: 30 } }, go_step: "home" }], ui: {} },
+    { id: "home", name: "귀환", do: { kind: "return_home", params: {} }, on: [], ui: {} },
+  ],
+};
+const step = (p: Play, id: string) => p.steps.find((s) => s.id === id)!;
+
+describe("updateStep", () => {
+  it("changes one step and leaves the input play as it was", () => {
+    const next = updateStep(play, "watch", (s) => ({ ...s, name: "근접 감시" }));
+    expect(step(next, "watch").name).toBe("근접 감시");
+    expect(step(play, "watch").name).toBe("감시");
+  });
+});
+
+describe("setActionKind", () => {
+  it("keeps the target and distance between target actions", () => {
+    expect(step(setActionKind(play, "watch", "approach_target"), "watch").do).toEqual(
+      { kind: "approach_target", params: { target: "nearest", distance_m: 150 } });
+  });
+  it("gives a target action the nearest target and a distance when it had none", () => {
+    expect(step(setActionKind(play, "home", "watch_target"), "home").do.params).toEqual({ target: "nearest", distance_m: 150 });
+  });
+  it("strikes the same target without a distance", () => {
+    expect(step(setActionKind(play, "watch", "strike_target"), "watch").do.params).toEqual({ target: "nearest" });
+  });
+  it("moves to a point taken from the play's route (coordinates are not typed in)", () => {
+    expect(step(setActionKind(play, "home", "move_to"), "home").do.params).toEqual({ target: { lat: 37.9, lon: 124.6 } });
+  });
+  it("makes a one-point route from a move target", () => {
+    const moved = setActionKind(play, "home", "move_to");
+    expect(step(setActionKind(moved, "home", "patrol_route"), "home").do.params).toEqual({ route: [{ lat: 37.9, lon: 124.6 }] });
+  });
+  it("falls back to the given point (the zone centre) when the play has no point yet", () => {
+    const blank: Play = { ...play, steps: [{ id: "start", name: "시작", do: { kind: "hold", params: {} }, on: [], ui: {} }], entry: "start" };
+    const centre = { lat: 37.96, lon: 124.67 };
+    expect(step(setActionKind(blank, "start", "move_to", centre), "start").do.params).toEqual({ target: centre });
+    expect(step(setActionKind(blank, "start", "patrol_route", centre), "start").do.params).toEqual({ route: [centre] });
+  });
+  it("prefers the play's own point over the fallback", () => {
+    expect(step(setActionKind(play, "home", "move_to", { lat: 0, lon: 0 }), "home").do.params).toEqual({ target: { lat: 37.9, lon: 124.6 } });
+  });
+  it("clears the params for hold and return home", () => {
+    expect(step(setActionKind(play, "watch", "hold"), "watch").do).toEqual({ kind: "hold", params: {} });
+  });
+});
+
+describe("defaultCondition", () => {
+  it("starts the battery threshold at 30 %", () => {
+    expect(defaultCondition("battery_below", step(play, "watch"))).toEqual({ kind: "battery_below", params: { pct: 30 } });
+  });
+  it("points an operator choice at the step's first report choice", () => {
+    expect(defaultCondition("operator_choice", step(play, "report"))).toEqual({ kind: "operator_choice", params: { choice: "go" } });
+  });
+});
+
+describe("addStepAfter", () => {
+  it("puts a hold card right after the step and links to it on arrival", () => {
+    const { play: next, id } = addStepAfter(play, "patrol");
+    expect(next.steps.map((s) => s.id)).toEqual(["patrol", id, "report", "watch", "home"]);
+    expect(step(next, id)).toMatchObject({ name: "새 카드", do: { kind: "hold", params: {} }, on: [] });
+    expect(step(next, "patrol").on.at(-1)).toEqual({ cond: { kind: "arrived", params: {} }, go_step: id });
+  });
+  it("never reuses an existing id", () => {
+    const once = addStepAfter(play, "patrol");
+    const twice = addStepAfter(once.play, "patrol");
+    expect(twice.id).not.toBe(once.id);
+  });
+});
+
+describe("removeStep", () => {
+  it("drops the step, the exits into it and an emergency link to it", () => {
+    const next = removeStep(play, "home");
+    expect(next.steps.map((s) => s.id)).toEqual(["patrol", "report", "watch"]);
+    expect(step(next, "watch").on).toEqual([]);
+    expect(next.emergency.battery_low_step).toBeNull();
+  });
+  it("keeps the entry step", () => {
+    expect(removeStep(play, "patrol")).toBe(play);
+  });
+});
+
+describe("report choices", () => {
+  it("adds a choice with a fresh id", () => {
+    const choices = step(addChoice(play, "report"), "report").report!.choices;
+    expect(choices.map((c) => c.id)).toEqual(["go", "c1"]);
+    expect(choices[1]).toEqual({ id: "c1", label: "선택 2", play_by_vehicle: {} });
+  });
+  it("removes a choice and the exit that waited for it", () => {
+    const s = step(removeChoice(play, "report", "go"), "report");
+    expect(s.report!.choices).toEqual([]);
+    expect(s.on).toEqual([]);
+  });
+});
+
+describe("zoneCentre", () => {
+  it("averages the zone's points", () => {
+    expect(zoneCentre({ points: [{ lat: 0, lon: 0 }, { lat: 2, lon: 0 }, { lat: 2, lon: 4 }, { lat: 0, lon: 4 }] })).toEqual({ lat: 1, lon: 2 });
+  });
+});
