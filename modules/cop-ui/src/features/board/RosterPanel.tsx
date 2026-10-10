@@ -1,4 +1,5 @@
-import type { Target } from "../../contracts.gen";
+import { Fragment, type ReactNode } from "react";
+import type { Switch, Target } from "../../contracts.gen";
 import { TARGET_KIND_KO } from "./seenTargets";
 import type { Stage } from "./targetStage";
 import type { VehicleRow } from "./vehicleRows";
@@ -7,10 +8,13 @@ const tone = (r: number) => (r >= 0.7 ? "hi" : r >= 0.4 ? "mid" : "lo");
 const QUIET: Record<string, number> = { gone: 1, never: 2 };
 
 // Left column (Part1-32): our vehicles (what each does, its target, battery) and the targets by risk with their
-// own stage. A vehicle row selects it like its map marker; with a vehicle selected a target row points at it.
-export function RosterPanel({ rows, targets, stages, selected, onVehicle, onTarget }: {
+// own stage. A vehicle row selects it like its map marker and opens the vehicle menu under it (Part1-32.1); with a
+// vehicle selected a target row points at it. The operation's switch buttons sit in the head (decision 0060).
+// The menu is the row's sibling, not its child: a row is a button and buttons cannot nest.
+export function RosterPanel({ rows, targets, stages, selected, onVehicle, onTarget, menu, switches, onSwitch, switchNote }: {
   rows: VehicleRow[]; targets: Target[]; stages: Record<string, Stage>; selected: string | null;
   onVehicle: (id: string) => void; onTarget: (id: string) => void;
+  menu: ReactNode; switches: Switch[]; onSwitch: (id: string) => void; switchNote: string | null;
 }) {
   const busy = rows.filter((r) => r.status === "active").length;
   const back = rows.filter((r) => r.status === "returning").length;
@@ -21,9 +25,13 @@ export function RosterPanel({ rows, targets, stages, selected, onVehicle, onTarg
   const gone = targets.filter((t) => t.neutralized_ms != null).length;
   return (
     <aside className="roster">
-      <h3>아군 <b>{rows.length}</b><small>{counts}</small></h3>
+      <h3>아군 <b>{rows.length}</b><small>{counts}</small>
+        {switches.map((s) => <button key={s.id} type="button" className="sw-btn" onClick={() => onSwitch(s.id)}>{s.label}</button>)}
+      </h3>
+      {switchNote && <div className="sw-note">{switchNote}</div>}
       {rows.map((r) => (
-        <button key={r.id} type="button" className={`ro st-${r.status}${r.id === selected ? " sel" : ""}`} onClick={() => onVehicle(r.id)}>
+        <Fragment key={r.id}>
+        <button type="button" className={`ro st-${r.status}${r.id === selected ? " sel" : ""}`} onClick={() => onVehicle(r.id)}>
           <span className="l1"><b>{r.id}</b><span className="doing">{r.doing}</span>{r.waiting && <span className="chip">결정 대기</span>}</span>
           <span className="l2">
             <span className="kind">{r.kind}</span>
@@ -32,6 +40,8 @@ export function RosterPanel({ rows, targets, stages, selected, onVehicle, onTarg
             <em className={r.low ? "low" : ""}>{r.battery}%</em>
           </span>
         </button>
+        {r.id === selected && menu}
+        </Fragment>
       ))}
       <h3 className="en">적 <b>{targets.length - gone}</b><small>{gone ? `무력화 ${gone} · ` : ""}위험도 순</small></h3>
       {ts.map((t) => {

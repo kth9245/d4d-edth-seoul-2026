@@ -3,7 +3,7 @@ import { type BoardData, fetchBoardData, NO_BOARD_DATA } from "./fetchBoardData"
 
 const RETRY_MS = 3000;
 
-// Reads roles, specs and watch points once the gateway answers (ready = a Frame arrived), and again every 3 s
+// Reads roles, specs, watch points, enemies' roles and the switch buttons once the gateway answers (ready = a Frame arrived), and again every 3 s
 // while they are still empty (the gateway was still starting), so role names and the landing ring come back.
 export function useBoardData(ready: boolean): BoardData {
   const [data, setData] = useState<BoardData>(NO_BOARD_DATA);

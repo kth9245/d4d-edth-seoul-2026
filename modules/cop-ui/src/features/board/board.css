@@ -8,7 +8,7 @@
 .header-slot .loadbar span { display: flex; align-items: center; gap: 6px; }
 .header-slot .status { margin: 0; }
 .layout.board { grid-template-columns: 236px 1fr 384px; }
-.board .roster { display: flex; flex-direction: column; overflow: hidden; padding: 12px 10px 12px 12px; border-left: 0; }
+.board .roster { display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto; padding: 12px 10px 12px 12px; border-left: 0; }
 .board .roster h3 { display: flex; align-items: baseline; gap: 8px; margin: 0 0 6px; }
 .board .roster h3 small { margin-left: auto; }
 .board .roster h3.en { margin-top: 16px; }
@@ -76,3 +76,13 @@
 .board .pickpop button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; margin-top: 6px;
   padding: 7px 10px; text-align: left; cursor: pointer; }
 .board .pickpop .pn { margin-top: 8px; }
+/* Vehicle menu under the picked roster row (Part1-32.1) and the operation's buttons in the roster head (decision 0060). */
+.board .roster h3 .sw-btn { flex: none; padding: 3px 8px; font-size: 11px; cursor: pointer; }
+.board .roster .sw-note { margin: -2px 0 6px; font-size: 11px; }
+.board .vmenu { display: flex; flex: none; flex-direction: column; gap: 4px; padding: 6px 4px 10px 10px; }
+.board .vmenu .vm-h { margin-top: 6px; }
+.board .vmenu .vm-plain, .board .vmenu .vm-t { display: flex; flex-direction: column; gap: 4px; }
+.board .vmenu button { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; width: 100%; padding: 5px 8px; text-align: left; cursor: pointer; }
+.board .vmenu .vm-pick { flex-direction: row; align-items: baseline; gap: 8px; margin-left: 10px; width: calc(100% - 10px); }
+.board .vmenu .vm-pick em { margin-left: auto; font-style: normal; }
+.board .vmenu .vm-none { margin-left: 10px; }

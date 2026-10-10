@@ -36,9 +36,9 @@
 | UI-31 | postJson | url, body? | {ok, id} \| {ok: false, error} | POST 공통: 실패해도 throw 없이 상태·detail, postDecision이 씀 | 리드 | 완료 |
 | UI-32 | postSwitch·postSettle | SwitchIn / injection id, 승인 여부 | {ok, id} \| 오류 | POST /injections, /injections/{id}/approve·reject | 리드 | 완료 |
 | UI-33 | fetchRoles | — | Role[] | GET /roles, 실패·목록 아님이면 [] | 리드 | 완료 |
-| UI-34 | SwitchPanel | frame | 전환 요청 패널 | 작전 전체 전환 버튼 + 일부 전환(기체·Role) → 승인 대기 생성 | 리드 | 완료 |
+| UI-34 | SwitchPanel | frame | 전환 요청 패널 | 작전 전체 전환 버튼 + 일부 전환(기체·Role) → 승인 대기 생성 | 리드 | 폐기(Part1-32.1, 결정 0060: 작전 전환 칸 삭제, 기체 하나는 기체 메뉴 UI-101, 전 기체 버튼은 아군 머리줄 UI-94) |
 | UI-35 | postDirect | vehicle_id, GeoPoint | {ok, id} \| 오류 | POST /direct {vehicle_id, target} | 리드 | 완료 |
-| UI-36 | useDirectControl | — | 선택·목표·안내 줄 | 기체 클릭 선택, 지도 클릭 → POST /direct 뒤 해제, Esc·같은 기체 다시 누르면 취소, 기체 클릭은 지도 클릭으로 안 샘 | 리드 | 완료 |
+| UI-36 | useDirectControl | — | 선택·목표·안내 줄 | 기체 클릭 선택, 지도 클릭 → POST /direct 뒤 해제, Esc·같은 기체 다시 누르면 취소, 기체 클릭은 지도 클릭으로 안 샘, 기체 메뉴의 Role(onRole → postRole)·포착 적 지목(onPointTarget → postPoint)도 보낸 뒤 해제하고 안내 줄에 결과(Part1-32.1) | 리드 | 완료 |
 | UI-37 | insertReportStep | Role, 접근 step id | Role | 접근 앞에 hold + 선택지 하나 보고 step, 선택지의 operator_choice 탈출이 접근으로(결정 0031), 접근으로 가던 탈출은 보고로, 원본 안 바꿈 | 리드 | 완료 |
 | UI-38 | saveErrorText | 저장 오류 문구 | 화면 문구 | 게이트웨이 응답 상태 코드 표시, 응답 없으면 서버 응답 없음 | 리드 | 완료 |
 | UI-39 | postDraft·forSave | 문장 / Role | {ok, role} \| 오류 / Role | POST /roles/draft, AI 초안은 저장 때 approved=true(검사 통과 + 사람이 저장 = 승인) | 리드 | 완료 |
@@ -67,7 +67,7 @@
 | UI-62 | routeGeoJSON | GeoPoint[] | GeoJSON | 경로 추가 창 지도: 찍은 점을 잇는 선(2개부터)과 점(찍은 순서 n, 첫 점은 크게)(결정 0054) | 리드 | 완료 |
 | UI-63 | offsetPad | RouteOffset[], 크기(px) | {half, grid, toXY, fromXY} | 경로 추가 창의 상대 경로 격자판(Part1-40): 가운데 = 기체 위치, 북쪽 위, 최소 1 km(넘는 점이 있으면 500 m 단위로 넓힘), 격자 100/250/500 m, 누른 곳은 10 m 단위 북·동 거리 · 점 번호는 한 자리에 "1·2"로 모으고 위쪽 끝(30 px 안) 점은 번호를 점 아래에, "북" 표시는 세로축 왼쪽(QA 발견 4) | 리드 | 완료 |
 | UI-64 | addUnlessSame | 목록, 새 항목, 비교 키 | 목록 | 경로 추가 창(Part1-41): 바로 앞 점과 같은 자리(두 번 누르기·더블클릭)는 더하지 않음. 상대 격자판은 같은 자리 점 번호를 "1·2"로 함께 표시(offsetPad.labels), 고정 지도는 더블클릭 확대를 끔 | 리드 | 완료 |
-| UI-65 | switchRoleOptions | Role[], VehicleSpec[], EnemySpec[], 기체 id | {id, name}[] | 상황판 작전 전환의 새 Role 목록(QA 발견 2): 고른 기체 영역의 Role, 적 Role 제외(startRoleOptions와 같은 규칙), 기체를 안 골랐으면 빈 목록 | 리드 | 완료 |
+| UI-65 | switchRoleOptions | Role[], VehicleSpec[], EnemySpec[], 기체 id | {id, name}[] | 상황판 작전 전환의 새 Role 목록(QA 발견 2): 고른 기체 영역의 Role, 적 Role 제외(startRoleOptions와 같은 규칙), 기체를 안 골랐으면 빈 목록 | 리드 | 폐기(Part1-32.1: SwitchPanel과 함께 삭제, 기체 메뉴는 vehicleMenuRoles UI-98) |
 | UI-66 | speedPress·playRequest | 재생 중 여부, 누른 배속 / 기억한 배속 | 요청 또는 기억 / 요청 주소 | 상황판 배속 버튼(QA 발견 3): 재생 중엔 바로 바꿈, 멈춘 상태에선 속도만 기억(흐린 강조), ▶ 재생이 그 속도로 시작, ⏸는 0 | 리드 | 완료 |
 | UI-80 | decisionQueue | Card[], t_ms | {action, alerts, history} | 선택지 있는 미처리 보고·대기 전환·대안 있는 차단(그 기체에 차단 뒤 새 명령이 나갈 때까지, 최대 2분)이 대기열, 같은 전환의 표적 선택 여러 장은 한 항목, 순서 타격 허락 > 차단 > 전환 > 위험도(표적 선택은 0.55, 같으면 최신), 2분 안의 무력화·공백·배터리·차단은 알림, 나머지 최신 위(Part1-32) | 리드 | 완료 |
 | UI-81 | choiceGroups | CardChoice[] | {planned, requests} | 정해진 선택지 먼저 엔진 순서(결정 0046), "X → 무엇" 한 기체 선택지는 무엇별 묶음(발생 지역 순찰 → "… 이어받기", 함께 감시 → "Y와 함께 T 감시") | 리드 | 완료 |
@@ -75,7 +75,7 @@
 | UI-83 | targetStage | Frame, Target, Track | {key, label, detail, away} | 무력화 > 타격 중 > 허락 대기 > 놓침(경과·방향·속도, 이탈이면 away) > RF 탐지 > 미탐 > 추적(임무 중 기체만) > 발견 | 리드 | 완료 |
 | UI-84 | situationCounts | Stage[], Queue | {targets, stages, decisions} | 단계별 개수 급한 순, 0개 뺌, 결정 수는 합친 표적 선택의 기체 수만큼 | 리드 | 완료 |
 | UI-85 | vehicleRows | Frame, Role 이름, VehicleSpec[] | VehicleRow[] | 하는 일(귀환 중·기지 정비·Role 이름·대기), 종류 한글, 표적·타격은 임무 중일 때만, 배터리(35% 미만 low), 결정 대기(Part1-32) | 리드 | 완료 |
-| UI-86 | targetRoles | Role[], 도메인 | Role[] | 첫 step이 watch_target·approach_target이고 그 도메인을 쓰는 Role, strike_target 없음(결정 0048) | 리드 | 완료 |
+| UI-86 | targetRoles | Role[], 도메인 | Role[] | 첫 step이 watch_target·approach_target이고 그 도메인을 쓰는 Role, strike_target 없음(결정 0048) | 리드 | 폐기(Part1-32.1, 결정 0058: vehicleMenuRoles UI-98의 target이 대신, 무장 기체는 타격 포함) |
 | UI-88 | postPoint | 기체, Role, 표적 | Sent | POST /injections {role_by_vehicle, target_by_vehicle, approve: true}(결정 0049), throw 없음 | 리드 | 완료 |
 | UI-87 | cameraPoints | Frame, Track 묶음, Queue | GeoPoint[] | 표적 표시 위치·추정 위치(2분 넘은 무력화 제외), 임무 중 표적 맡은 기체, 열린 카드가 부르는 기체(보고·선택지 미리 보기), 차단 대안 지점, 없으면 빈 목록(Part1-32) | 리드 | 완료 |
 | UI-89 | fetchBoardData | — | {roles, vehicles, watch, enemyRoles, switches} | GET /roles·/vehicles·/watch_points·/enemies(적 Role id)·/operation(전환 버튼), 실패·목록 아님·연결 실패는 빈 목록 | 리드 | 완료 |
@@ -83,10 +83,11 @@
 | UI-92 | watchCircles | WatchPoint[] | FeatureCollection | 기준점 반경 고리(64칸, 닫힘) | 리드 | 완료 |
 | UI-90 | boardView | Frame, BoardData | {tracks, stages, queue, situation, rows} | 데이터가 오기 전(빈 목록)에도 그려짐, 기체별 현재 명령 시각을 대기열에 넘겨 대안 보낸 차단이 빠짐(Part1-32) | 리드 | 완료 |
 | UI-93 | SituationBar·LoadBar | Situation / Metrics | 머리 한 줄 | 앱 머리 자리(#header-slot)에 단계별 개수·결정 대기(흰색)·운용자 조작 대 수동 기준(나머지는 툴팁)·LIVE | 리드 | 완료 |
-| UI-94 | RosterPanel | VehicleRow[], Target[], Stage | 왼쪽 열 | 아군 줄(하는 일·표적·배터리·결정 대기), 적 줄 위험도 순(무력화·미탐 아래), 단계 표시, 줄 누르면 기체 선택 | 리드 | 완료 |
+| UI-94 | RosterPanel | VehicleRow[], Target[], Stage | 왼쪽 열 | 아군 줄(하는 일·표적·배터리·결정 대기), 적 줄 위험도 순(무력화·미탐 아래), 단계 표시, 줄 누르면 기체 선택, 고른 기체 줄 아래 기체 메뉴(UI-101), 머리줄에 작전 전환 버튼(승인 카드)과 결과 줄(결정 0060), 칸은 세로 스크롤 | 리드 | 완료 |
 | UI-95 | DecisionQueue·QueueCard | Frame, Queue | 오른쪽 열 | 한 장 펼침(나머지 한 줄), 정해진 선택지 먼저·드론 요청 묶음, 표적 선택 위험도 순 칩, 타격 빨강, 승인·거부, 대안 지점, 보내기 잠금(UI-20), 결정 없으면 할 일 없음·무력화 결과, 알림 2분 | 리드 | 완료 |
-| UI-96 | PointMenu·지목(useDirectControl) | 선택 기체, 표적 | Role 메뉴 | 기체를 고른 동안만 살아 있는 표적이 클릭을 받음(기체 위), 표적 옆 메뉴에 targetRoles 버튼("지금 → 새 · 표적"), 누르면 postPoint(승인된 전환, 조작 1번), 메뉴가 열린 채 지도 클릭은 메뉴만 닫음, Esc 취소, 목록의 적 줄로도 지목, 타격 없음(결정 0048·0049) | 리드 | 완료 |
+| UI-96 | PointMenu·지목(useDirectControl) | 선택 기체, 표적 | Role 메뉴 | 기체를 고른 동안만 살아 있는 표적이 클릭을 받음(기체 위), 표적 옆 메뉴에 vehicleMenuRoles의 target 버튼("지금 → 새 · 표적"), 누르면 postPoint(승인된 전환, 조작 1번), 메뉴가 열린 채 지도 클릭은 메뉴만 닫음, Esc 취소, 목록의 적 줄로도 지목, 무장 기체는 타격 Role 빨강(결정 0048·0049·0058) | 리드 | 완료 |
 | UI-97 | MavlinkPanel·MavlinkButton·fetchMavlink | GET /mavlink | 가운데 로그 패널 | 헤더 MAVLink 버튼이 지도 칸 가운데에 로그 패널을 열고 닫음(다시 누르거나 닫기, 오른쪽 결정 대기열은 가리지 않음), 열린 동안 1초마다 GET /mavlink 줄을 그려 마지막 줄을 보인다, 조회 실패면 직전 줄 유지. 탭 이름 상황판 → 시뮬레이션(결정 0064·0065) | 리드 | 완료 |
 | UI-98 | vehicleMenuRoles | Role[], VehicleSpec, 적 Role id[], 지금 Role id | {plain, target}: {id, name, strike}[] | 기체 메뉴(결정 0058·0059): 그 기체 영역·능력(모든 step 행동, 능력 목록이 비면 건너뜀)의 Role, 적 Role 제외. 첫 step이 표적을 operator로 받는 감시·근접·타격이거나 표적 본 지점 기준 순찰(anchor target, 24시간 집중 순찰)이면 target(strike 표시), 나머지는 plain(지금 Role 제외) | 리드 | 완료 |
 | UI-99 | seenTargets | Target[], Track 묶음, 기체 위치 | {id, kind, threat, distM}[] | 기체 메뉴 표적 Role의 포착 목록: 표적 상태 seen만(놓침·RF만·미탐·무력화 제외), 위험도 높은 순·가까운 순, 종류 한글, 거리 m 정수 | 리드 | 완료 |
 | UI-100 | postRole | 기체, Role | Sent | POST /injections {role_by_vehicle, approve: true}(기체 메뉴 표적 없는 Role, 결정 0059), throw 없음 | 리드 | 완료 |
+| UI-101 | VehicleMenu | 지금 Role 이름, MenuRole[]×2, SeenTarget[] | 기체 메뉴 | 고른 아군 줄 아래(결정 0058·0059): 이동 안내, 표적 없는 Role 버튼("지금 → 새", 누르면 바로), 표적 Role 버튼(타격 빨강)을 누르면 그 아래 포착 적 목록(종류·위험도·거리)·없으면 안내, 고르면 바로 지목 | 리드 | 완료 |

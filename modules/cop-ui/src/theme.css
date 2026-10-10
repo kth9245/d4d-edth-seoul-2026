@@ -65,22 +65,9 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .status.down { color: var(--hostile); }
 @keyframes live-pulse { 50% { opacity: 0.35; } }
 @media (prefers-reduced-motion: reduce) { .status.ok::before { animation: none; } }
-.switchpanel::before { display: block; margin-bottom: 8px; font-family: var(--font-mono); font-size: 10px;
-  letter-spacing: var(--ls); color: var(--dim); }
-.switchpanel::before { content: "ROLE SWITCH"; }
 
 
 /* Switch request panel (Part1-12): whole-operation switches are big moves, so amber; the request is the primary button */
-.switchpanel select { border: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); color: var(--text); font-family: var(--font); }
-.switchpanel select:hover { border-color: var(--text); }
-.switchpanel button { border: 1px solid var(--line2); border-radius: var(--r); background: transparent; color: var(--text2); font-weight: 600; }
-.switchpanel .whole button { border-color: rgba(245, 158, 11, 0.45); color: var(--warn); }
-.switchpanel .whole button:hover:not(:disabled) { background: var(--warn-soft); border-color: var(--warn); }
-.switchpanel .partial button { border-color: var(--text); background: var(--text); color: var(--bg); font-weight: 700; }
-.switchpanel .partial button:hover:not(:disabled) { border-color: var(--live); background: var(--live); }
-.switchpanel button:disabled, .switchpanel .partial button:disabled { border-color: var(--line2); background: var(--s3); color: var(--muted); }
-.switchpanel .note { color: var(--muted); font-family: var(--font-mono); }
-.switchpanel .note.error { color: var(--hostile); }
 
 /* Map symbols: friendly vehicles share one color and show status by fill and ring; targets by affiliation */
 .mk i { border: 2px solid var(--bg); }
@@ -444,7 +431,6 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .board .fold[open] summary::before { content: "▾"; }
 .board .fold summary small { color: var(--muted); font-size: 12px; font-weight: 500; }
 .board .fold summary b { color: var(--muted); font-family: var(--font-mono); font-size: 12px; }
-.board .fold .switchpanel::before { content: none; }
 .board .hist-row { color: var(--muted); font-size: 12px; }
 .board .hist-row time { font-family: var(--font-mono); }
 /* Start role per vehicle on the overview (decision 0053): same look as the other editor selects, one width */
@@ -506,6 +492,18 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .board .pickpop button small { color: var(--s3); font-family: var(--font-mono); font-size: 11px; font-weight: 500; }
 .board .pickpop button.x { border-color: var(--line2); background: transparent; color: var(--text2); }
 .board .pickpop .pn { color: var(--muted); font-size: 11px; line-height: 1.45; }
+.board .roster h3 .sw-btn { border: 1px solid var(--warn); border-radius: var(--r); background: transparent; color: var(--warn); font-weight: 700; }
+.board .roster h3 .sw-btn:hover { background: var(--warn-soft); }
+.board .roster .sw-note { color: var(--muted); font-family: var(--font-mono); }
+.board .vmenu { border-bottom: 1px solid var(--line); background: var(--s2); }
+.board .vmenu .vm-move, .board .vmenu .vm-h, .board .vmenu .vm-none { color: var(--muted); font-size: 11px; }
+.board .vmenu button { border: 1px solid var(--line2); border-radius: var(--r); background: var(--s1); color: var(--text); font-size: 12px; font-weight: 600; }
+.board .vmenu button:hover { border-color: var(--text); }
+.board .vmenu button small { color: var(--muted); font-family: var(--font-mono); font-size: 10px; font-weight: 500; }
+.board .vmenu button.strike, .board .pickpop button.strike { border-color: var(--hostile); color: var(--hostile); }
+.board .pickpop button.strike { background: var(--hostile-soft); }
+.board .vmenu .vm-pick b { font-family: var(--font-mono); }
+.board .vmenu .vm-pick span { color: var(--text2); font-size: 11px; }
 .map.picking .mk.target:hover i { outline: 2px solid var(--live); outline-offset: 4px; }
 /* MAVLink log panel and its header button (decisions 0064, 0065): the same frame as the object graph panel */
 .mavlink-log { border: 1px solid var(--line2); background: rgba(0, 0, 0, 0.94); color: var(--text2); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); }
