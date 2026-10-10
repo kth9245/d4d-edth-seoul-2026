@@ -309,3 +309,4 @@
 {"at": "2026-10-10T15:01:28+09:00", "by": "kth9245", "op": "start", "id": "Part1-23.2", "take": false, "from": null}
 {"at": "2026-10-10T15:02:23+09:00", "by": "kth9245", "op": "add", "id": "Part1-21.1", "title": "vite proxy에 /enemies 추가 (dev 편집기 깨짐)", "parent": "Part1-21", "assign": null, "slot": null, "spec": null}
 {"at": "2026-10-10T15:02:30+09:00", "by": "kth9245", "op": "start", "id": "Part1-21.1", "take": false, "from": null}
+{"at": "2026-10-10T15:03:04+09:00", "by": "kth9245", "op": "done", "id": "Part1-23.2", "take": false}
