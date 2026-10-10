@@ -140,3 +140,4 @@
 {"at": "2026-10-10T10:44:30+09:00", "by": "황승주", "op": "done", "id": "Part3-6", "take": false}
 {"at": "2026-10-10T10:48:41+09:00", "by": "kth9245", "op": "done", "id": "Part3-10", "take": false}
 {"at": "2026-10-10T10:48:59+09:00", "by": "kth9245", "op": "note", "id": "Part3-11", "text": "편집기 데이터는 loadEditorData(UI-15)가 GET /operation·/plays 실패 시 demo/scenarios 예시로 대체한다. 통합 2(00:00) 전에 이 대체를 걷어낼 것(09 4.5절). Part1-7이 main에 있으니 지금 걷어내도 됨"}
+{"at": "2026-10-10T10:49:13+09:00", "by": "최동호", "op": "start", "id": "Part2-3", "take": false, "from": null}

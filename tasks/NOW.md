@@ -2,10 +2,11 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 10:48 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 10:49 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part1-10** 상황판 카드 열 + 결정 버튼 — kth9245, 10/10 10:40부터
+- **Part2-3** sim `orbit_or_keep` — 최동호, 10/10 10:49부터 · SIM-07
 
 ## 막힘
 - (없음)
@@ -29,7 +30,6 @@
 - **Part3-9** play `draft_play` · PLY-09
 
 ### 최동호
-- **Part2-3** sim `orbit_or_keep` · SIM-07
 - **Part2-4** sim `advance_vehicles`(공개 API 이름 `advance`) · SIM-08
 - **Part2-5** sim `apply_events` · SIM-09
 - **Part2-6** sensing `observe_targets`(공개 API 이름 `observe`) · SNS-02
