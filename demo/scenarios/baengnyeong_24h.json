@@ -107,7 +107,7 @@
    },
    "recharge_min": 5,
    "rf_range_m": 2000.0,
-   "kind": "recon_drone"
+   "kind": "armed_drone"
   },
   {
    "id": "d2",
@@ -139,7 +139,7 @@
    },
    "recharge_min": 5,
    "rf_range_m": 2000.0,
-   "kind": "recon_drone"
+   "kind": "armed_drone"
   },
   {
    "id": "d4",
@@ -155,7 +155,7 @@
    },
    "recharge_min": 5,
    "rf_range_m": 2000.0,
-   "kind": "recon_drone"
+   "kind": "armed_drone"
   },
   {
    "id": "usv",

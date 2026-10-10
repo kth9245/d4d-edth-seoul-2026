@@ -66,11 +66,12 @@ def test_scenario_without_ontology_keeps_hand_written_capabilities(tmp_path):  #
     assert all(v.capabilities == ["move_to", "hold"] and v.kind_path == [] for v in sc.vehicles)
 
 
-def test_the_24h_drones_get_the_night_capabilities_from_the_ontology():  # decision 0051
-    night = {v.id: v for v in load_scenario_json(DEMO).vehicles}
+def test_the_24h_drones_get_the_night_armed_drone_capabilities_from_the_ontology():  # 0051, user 10/10
+    armed = {v.id: v for v in load_scenario_json(DEMO).vehicles}["d2"]  # the night armed drone
     day = load_scenario_json(ROOT / "demo" / "scenarios" / "baengnyeong_24h.json")
     assert day.ontology is not None
-    assert all(v.kind_path and v.capabilities == night[v.id].capabilities for v in day.vehicles)
+    drones = [v for v in day.vehicles if v.domain.value == "air"]
+    assert all(v.kind_path and v.capabilities == armed.capabilities for v in drones)
 
 
 def test_the_24h_usv_and_ugv_stand_by_at_their_night_spots():  # user, 10/10

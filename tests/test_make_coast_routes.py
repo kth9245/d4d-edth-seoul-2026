@@ -27,12 +27,13 @@ def test_rerunning_the_24h_script_keeps_the_route_list_and_route_names():  # dec
     assert names == ["해안 A(북)", "해안 B(남)"]
 
 
-def test_the_24h_scenario_takes_the_night_ontology_and_drone_kinds():  # decision 0051
+def test_the_24h_scenario_takes_the_night_ontology_with_every_drone_armed():  # decision 0051, user 10/10
     night = json.loads((ROOT / "demo/scenarios/baengnyeong_night.json").read_text("utf-8"))
-    kinds = {v["id"]: v["kind"] for v in night["vehicles"]}
     out = _script().build()
     assert out["ontology"] == night["ontology"]
-    assert all(v["kind"] == kinds[v["id"]] and "capabilities" not in v for v in out["vehicles"])
+    drones = [v for v in out["vehicles"] if v["domain"] == "air"]
+    assert [v["id"] for v in drones] == ["d1", "d2", "d3", "d4"]
+    assert all(v["kind"] == "armed_drone" and "capabilities" not in v for v in drones)
     committed = json.loads((ROOT / "demo/scenarios/baengnyeong_24h.json").read_text("utf-8"))
     assert committed["ontology"] == out["ontology"]
     assert committed["vehicles"] == out["vehicles"]

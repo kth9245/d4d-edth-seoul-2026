@@ -6,8 +6,8 @@ Each route runs end to end and back, so follow_route's wrap to the first point n
 The JSON is the source afterwards (decision 0035); rerun only to rebuild the routes.
 The editor's route list (decision 0044) comes from the night scenario's `routes`, with the coast routes
 replaced by the ones built here, and the coast cards carry their route names.
-The drones keep their night `kind` and the night `ontology` comes along, so the loader fills the same
-capabilities and the editor's ontology view works on this operation too (decision 0051).
+The night `ontology` comes along and every drone is an `armed_drone` (user, 10/10), so the loader fills
+their capabilities (strike_target included) and the editor's ontology view works here too (decision 0051).
 Usage: uv run python scripts/make_coast_routes.py
 """
 
@@ -95,7 +95,12 @@ def build() -> dict:
         lat, lon = offset_latlon(base.lat, base.lon, e, n)
         home[k] = {"lat": round(lat, 7), "lon": round(lon, 7), "alt_m": 0.0}
     drones = [
-        v | {"recharge_min": 5, "home": home[v["id"]]}
+        v
+        | {
+            "recharge_min": 5,
+            "home": home[v["id"]],
+            "kind": "armed_drone",
+        }  # all armed (user, 10/10)
         for v in night["vehicles"]
         if v["domain"] == "air"
     ]
