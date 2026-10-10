@@ -27,7 +27,7 @@ export function RouteMap({ zone, points, onAdd }: { zone: Polygon; points: GeoPo
       const lons = zone.points.map((p) => p.lon);
       const lats = zone.points.map((p) => p.lat);
       const m = new MapLibreMap({
-        container: el.current, style: basemapStyle(ok), attributionControl: false,
+        container: el.current, style: basemapStyle(ok), attributionControl: false, doubleClickZoom: false,
         bounds: [Math.min(...lons), Math.min(...lats), Math.max(...lons), Math.max(...lats)], fitBoundsOptions: { padding: 20 },
       });
       m.on("load", () => {

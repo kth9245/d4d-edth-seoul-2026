@@ -37,8 +37,10 @@ export function OffsetPad({ offsets, onAdd }: { offsets: RouteOffset[]; onAdd: (
         {pts.map(([x, y], i) => (
           <g key={i} className="pad-point">
             <circle cx={x} cy={y} r={5} />
-            <text x={x + 7} y={y - 7}>{i + 1}</text>
           </g>
+        ))}
+        {pad.labels.map((l) => (
+          <text key={l.text} className="pad-number" x={l.at[0] + 7} y={l.at[1] - 7}>{l.text}</text>
         ))}
         <circle className="pad-origin" cx={cx} cy={cy} r={6} />
         <text x={cx + 8} y={cy + 16} className="pad-label">기체 위치</text>

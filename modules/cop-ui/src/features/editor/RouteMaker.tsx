@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { GeoPoint, Polygon, RouteDef } from "../../contracts.gen";
 import { RouteMap } from "../map/RouteMap";
+import { addUnlessSame } from "./addUnlessSame";
 import { newRoute } from "./newRoute";
 import { OffsetPad } from "./OffsetPad";
 
@@ -42,7 +43,7 @@ export function RouteMaker({ zone, existingIds, onSave, onCancel }: Props) {
         {kind === "fixed" ? (
           <>
             <p className="rm-hint">지도를 누른 순서대로 점이 이어집니다. 큰 점이 시작입니다.</p>
-            <RouteMap zone={zone} points={points} onAdd={(p) => setPoints((ps) => [...ps, p])} />
+            <RouteMap zone={zone} points={points} onAdd={(p) => setPoints((ps) => addUnlessSame(ps, p, (q) => `${q.lat.toFixed(5)},${q.lon.toFixed(5)}`))} />
             <div className="rm-row">
               <span className="rm-count">점 {points.length}개</span>
               <button disabled={!points.length} onClick={() => setPoints((ps) => ps.slice(0, -1))}>마지막 점 지우기</button>
@@ -53,7 +54,7 @@ export function RouteMaker({ zone, existingIds, onSave, onCancel }: Props) {
           <>
             <p className="rm-hint">가운데가 카드에 들어선 기체 위치입니다. 격자판을 누르거나 표에 거리(m)를 적습니다. 남쪽·서쪽은 음수입니다.</p>
             <div className="rm-relative">
-              <OffsetPad offsets={offsets} onAdd={(o) => setRows((rs) => [...rs, { north: String(o.north_m), east: String(o.east_m) }])} />
+              <OffsetPad offsets={offsets} onAdd={(o) => setRows((rs) => addUnlessSame(rs, { north: String(o.north_m), east: String(o.east_m) }, (r) => `${Number(r.north) || 0},${Number(r.east) || 0}`))} />
               <div className="rm-table">
                 <table className="rm-offsets">
                   <thead><tr><th>점</th><th>북쪽 m</th><th>동쪽 m</th><th /></tr></thead>

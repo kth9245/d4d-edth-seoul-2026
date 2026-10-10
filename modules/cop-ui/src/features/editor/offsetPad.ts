@@ -5,6 +5,7 @@ export type OffsetPad = {
   grid: number; // metres between grid lines
   toXY: (o: RouteOffset) => [number, number];
   fromXY: (x: number, y: number) => RouteOffset;
+  labels: { at: [number, number]; text: string }[]; // one per spot: points on one spot read "1·2" (Part1-41)
 };
 
 // The relative route's drawing pad (Part1-40): a square of `size` px with the vehicle at the centre, north up.
@@ -15,10 +16,18 @@ export function offsetPad(offsets: RouteOffset[], size: number): OffsetPad {
   const grid = half <= 1000 ? 100 : half <= 2500 ? 250 : 500;
   const c = size / 2;
   const snap = (m: number) => Math.round(m / 10) * 10 || 0;
+  const toXY = (o: RouteOffset): [number, number] => [c + (o.east_m / half) * c, c - (o.north_m / half) * c];
+  const spots = new Map<string, { at: [number, number]; numbers: number[] }>();
+  offsets.forEach((o, i) => {
+    const k = `${o.north_m},${o.east_m}`;
+    if (!spots.has(k)) spots.set(k, { at: toXY(o), numbers: [] });
+    spots.get(k)!.numbers.push(i + 1);
+  });
   return {
     half,
     grid,
-    toXY: (o) => [c + (o.east_m / half) * c, c - (o.north_m / half) * c],
+    toXY,
     fromXY: (x, y) => ({ north_m: snap(((c - y) / c) * half), east_m: snap(((x - c) / c) * half) }),
+    labels: [...spots.values()].map((s) => ({ at: s.at, text: s.numbers.join("·") })),
   };
 }
