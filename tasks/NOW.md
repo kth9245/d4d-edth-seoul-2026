@@ -2,10 +2,11 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 10:55 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 10:56 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part1-13** 지표 패널 + 배속 + 다음 사건 — kth9245, 10/10 10:55부터
+- **Part2-5** sim `apply_events` — 최동호, 10/10 10:56부터 · SIM-09
 
 ## 막힘
 - (없음)
@@ -28,7 +29,6 @@
 - **Part3-9** play `draft_play` · PLY-09
 
 ### 최동호
-- **Part2-5** sim `apply_events` · SIM-09
 - **Part2-6** sensing `observe_targets`(공개 API 이름 `observe`) · SNS-02
 - **Part2-17** gateway `engine.py` 틱 루프 · 하위 0/5 완료
 - **Part2-17.1** gateway init_engine · GW-02 (묶음 A, engine_state.py 먼저)
