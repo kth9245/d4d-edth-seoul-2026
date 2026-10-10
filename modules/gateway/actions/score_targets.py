@@ -1,5 +1,5 @@
 """GW-10 score_targets: 표적마다 sensing score_target을 불러 threat·threat_reasons·rf_detected·threat_accum을 쓴다
-종류는 seen_by가 비어 있으면 unknown(스캔 판별, 결정 0040). 무력화된 표적은 그대로 둔다.
+종류는 한 번도 스캔되지 않았으면(seen_by가 비고 first_seen_ms가 0) unknown(스캔 판별, 결정 0040). 한 번 식별되면 지금 안 보여도 유지. 무력화된 표적은 그대로 둔다.
 SPEC: modules/gateway/SPEC.md#GW-10
 """
 
@@ -26,8 +26,9 @@ def score_targets(
             out.append(tg)
             continue
         observed = bool(tg.seen_by)
+        identified = observed or tg.first_seen_ms != 0  # once scanned, the kind stays known
         r = score_target(
-            tg.kind.value if observed else "unknown",
+            tg.kind.value if identified else "unknown",
             tg.pos,
             hypot(tg.vel_east_mps, tg.vel_north_mps),
             observed,

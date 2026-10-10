@@ -42,3 +42,11 @@ def test_kind_is_unknown_until_a_vehicle_scans_it():
 def test_neutralized_target_is_left_as_it_was():
     t = fast(neutralized_ms=5)
     assert run(t) == t
+
+
+def test_a_target_scanned_once_keeps_its_kind_when_nobody_sees_it_now():  # decision 0040: "once caught"
+    lost = fast(seen_by=[], first_seen_ms=5000, emitting=True)
+    t = run(lost)
+    assert t.threat_reasons[0] == "kind_fast_boat"  # still known, not 'kind_unknown'
+    assert "speed" not in t.threat_reasons and t.threat_accum == 0  # these need a scan right now
+    assert t.threat == 100  # fast_boat 0.40 + inside the radius 0.30 + RF 0.30, no speed
