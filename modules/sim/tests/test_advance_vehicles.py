@@ -104,3 +104,32 @@ def test_only_sea_vehicles_go_round_the_island():
     _, sea_north = enu_delta_m(start.lat, start.lon, sea.pos.lat, sea.pos.lon)
     assert air_north == pytest.approx(0, abs=0.1)  # air: straight east over the island
     assert sea_north < -1  # sea: toward the south-west corner
+
+
+def _charging(recharge_min: float, battery: float = 30) -> tuple[dict, VehicleState]:
+    specs = {"d1": SPECS["d1"].model_copy(update={"recharge_min": recharge_min})}
+    st = _state(status=VehicleStatus.maintenance).model_copy(
+        update={"battery_pct": battery, "play_id": "go_home", "step_id": "return"}
+    )
+    return specs, st
+
+
+def test_maintenance_recharges_to_ready():  # decision 0037: battery swap 10 min
+    specs, st = _charging(10)
+    for _ in range(4):
+        [st] = advance_vehicles([st], specs, [], MIN, [])
+    assert st.status == VehicleStatus.maintenance and st.battery_pct == pytest.approx(70)
+    for _ in range(3):
+        [st] = advance_vehicles([st], specs, [], MIN, [])
+    assert (st.status, st.battery_pct, st.play_id, st.step_id) == (
+        VehicleStatus.ready,
+        100,
+        None,
+        None,
+    )
+
+
+def test_no_recharge_when_recharge_min_is_zero():
+    specs, st = _charging(0)
+    [st] = advance_vehicles([st], specs, [], 10 * MIN, [])
+    assert (st.status, st.battery_pct) == (VehicleStatus.maintenance, 30)
