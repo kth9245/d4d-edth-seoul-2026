@@ -79,3 +79,39 @@ def test_card_without_auto_choices_is_unchanged():
     plays = {**PLAYS, "coast_a": coast("coast_a", "A", auto=False)}
     states = [vs("d1", "coast_a", "report", target="boat1"), vs("d3", None, None, "ready")]
     assert fleet_choices(CARD, states, OP, plays) == CARD
+
+
+def static_play(pid: str, name: str) -> Play:  # an old-flow patrol: a card with its own choice
+    p = coast(pid, name)
+    rep = p.steps[1].model_copy(
+        update={
+            "report": ReportSpec(
+                text="미식별 선박 접근",
+                auto_choices=True,
+                choices=[Choice(id="approach", label="근접 확인", play_by_vehicle={"d1": "watch"})],
+            )
+        }
+    )
+    return p.model_copy(update={"steps": [p.steps[0], rep]})
+
+
+STATIC_PLAYS = {**PLAYS, "coast_a": static_play("coast_a", "해안 순찰 A")}
+
+
+def test_planned_choices_stay_first_and_the_fleet_choices_follow_without_keep():
+    states = [vs("d1", "coast_a", "report", target="boat1"), vs("d3", None, None, "ready")]
+    rep = fleet_choices(CARD, states, OP, STATIC_PLAYS)
+    assert labels(rep) == ["approach", "take_d3", "join_d3_d1"]  # no 'keep': the card has its own
+
+
+def test_choices_are_the_same_when_made_again_for_an_open_card():  # decision 0044: rebuilt every tick
+    states = [vs("d1", "coast_a", "report", target="boat1"), vs("d3", None, None, "ready")]
+    once = fleet_choices(CARD, states, OP, STATIC_PLAYS)
+    assert labels(fleet_choices(once, states, OP, STATIC_PLAYS)) == labels(once)
+
+
+def test_a_drone_with_its_own_open_card_is_not_asked():  # decision 0044: never drop a card
+    states = [vs("d1", "coast_a", "report", target="boat1"), vs("d3", None, None, "ready"),
+              vs("d4", None, None, "ready").model_copy(update={"pending_report_id": "rep-d4-1"})]  # fmt: skip
+    rep = fleet_choices(CARD, states, OP, STATIC_PLAYS)
+    assert labels(rep) == ["approach", "take_d3", "join_d3_d1"]  # nothing for d4

@@ -1,6 +1,8 @@
 """RT-11 fleet_choices: 해안 순찰 발견 카드의 선택지를 그때 함대 상황으로 만든다(사용자 지시, 드론만)
 발견한 드론은 표적 위에서 감시(호버링)를 계속한다. 다른 교대 드론마다 "발생 지역 순찰"(발견한 드론이 비운 해안)과
 "감시 중인 드론 Y와 함께 감시"(Y마다, 표적은 target_by_vehicle), 그리고 "전 기체 현 임무 유지".
+카드에 정해진 선택지(step.report.choices)가 있으면 그것을 맨 앞에 두고 뒤에 덧붙이며 "유지"는 붙이지 않는다(결정 0044).
+자기 카드가 열려 있는 드론(pending_report_id)은 요청 후보에서 뺀다.
 step.report.auto_choices가 아닌 카드는 그대로 돌려준다.
 SPEC: modules/runtime/SPEC.md#RT-11
 """
@@ -36,6 +38,8 @@ def fleet_choices(
         s
         for s in crew
         if s.id not in busy
+        and s.pending_report_id
+        is None  # decision 0044: its own card stays; apply_decision would close it
         and s.play_id != coast.id
         and (
             (s.status.value == "active" and s.play_id in op.rotation_plays)
@@ -53,5 +57,8 @@ def fleet_choices(
         for x in others
         for y in hover
     ]  # fmt: skip
-    keep = Choice(id="keep", label="전 기체 현 임무 유지")
-    return rep.model_copy(update={"choices": [*take, *join, keep]})
+    planned = list(
+        step.report.choices
+    )  # the card's own choices, read from the step every time (0044)
+    keep = [] if planned else [Choice(id="keep", label="전 기체 현 임무 유지")]
+    return rep.model_copy(update={"choices": [*planned, *take, *join, *keep]})
