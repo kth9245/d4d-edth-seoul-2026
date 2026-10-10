@@ -409,7 +409,7 @@ def test_going_home_sends_the_scout_back_to_the_usv_spot(sc):
     assert dist_m(_r1(es).pos, spot) < far - 3000  # it is flying back
 
 
-def test_every_patrol_stops_at_a_site_another_scout_reported(sc):  # decision 0068
+def test_every_patrol_stops_at_a_site_another_scout_reported(sc):  # decision 0070
     roles = {r.id: r for r in sc.roles}
     for drone, role_id in PATROL_OF.items():
         steps = {s.id: s for s in roles[role_id].steps}

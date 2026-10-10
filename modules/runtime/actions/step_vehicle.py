@@ -48,7 +48,7 @@ def step_vehicle(
             upd = {"step_id": ex.go_step, "entered_step": False}
             if (
                 ex.cond.kind == ConditionKind.target_resighted
-            ):  # decision 0068 draft: watch that site
+            ):  # decision 0070 draft: watch that site
                 upd["target_id"] = resighted(st, targets).id
             if step.do.kind.value == "patrol_route":  # decision 0066: remember where it was left
                 upd |= {"patrol_step_id": step.id, "patrol_idx": max(st.waypoint_idx, 0)}

@@ -11,7 +11,7 @@ describe("describeAction", () => {
   it("names the neutralized-target condition (decision 0066)", () => {
     expect(describeCondition({ kind: "target_neutralized", params: {} })).toBe("표적 무력화");
   });
-  it("names the resighted-target condition (decision 0068)", () => {
+  it("names the resighted-target condition (decision 0070)", () => {
     expect(describeCondition({ kind: "target_resighted", params: {} })).toBe("보고된 거점 재탐지");
   });
   it("counts route points", () => {

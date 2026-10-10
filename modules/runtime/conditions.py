@@ -1,6 +1,6 @@
 """Exit conditions of a Role step (moved out of step_vehicle.py so the action file stays under 80 lines).
 Decision 0036: target_found wants a boat nobody reported yet; 0043: once the threat has built up;
-0045: at_time; 0066: target_neutralized; 0068: target_resighted. Pure functions, no state.
+0045: at_time; 0066: target_neutralized; 0070: target_resighted. Pure functions, no state.
 """
 
 from contracts.models import Condition, ConditionKind, Target, VehicleState
@@ -8,7 +8,7 @@ from modules.sensing import CARD_ACCUM
 
 
 def resighted(st: VehicleState, targets: list[Target]) -> Target | None:
-    """A site another vehicle already reported that I see now, that is not my own target (decision 0068)."""
+    """A site another vehicle already reported that I see now, that is not my own target (decision 0070)."""
     return next(
         (
             tg
@@ -43,7 +43,7 @@ def condition_true(
         return any(tg.id == st.target_id and tg.neutralized_ms is not None for tg in targets)
     if (
         cond.kind == ConditionKind.target_resighted
-    ):  # decision 0068: stop at a site another vehicle reported
+    ):  # decision 0070: stop at a site another vehicle reported
         return resighted(st, targets) is not None
     if cond.kind == ConditionKind.battery_below:
         return st.battery_pct < float(cond.params.get("pct", 30))
