@@ -406,3 +406,4 @@
 {"at": "2026-10-10T19:07:57+09:00", "by": "황승주", "op": "start", "id": "Part2-36", "take": false, "from": null}
 {"at": "2026-10-10T19:08:50+09:00", "by": "kth9245", "op": "add", "id": "Part1-36", "title": "play→role 이름 변경(결정 0052): 변환 스크립트로 코드·API·계약·데이터·화면 전부, AI 초안 캐시 새 해시로", "parent": null, "assign": null, "slot": null, "spec": null}
 {"at": "2026-10-10T19:08:53+09:00", "by": "kth9245", "op": "add", "id": "Part1-37", "title": "작전 새로 만들기(결정 0053): 이름·목적으로 빈 작전, 작전 개요에서 기체마다 시작 Role 고르기, 사이드바 버튼 둘", "parent": null, "assign": null, "slot": null, "spec": null}
+{"at": "2026-10-10T19:08:55+09:00", "by": "kth9245", "op": "start", "id": "Part1-36", "take": false, "from": null}
