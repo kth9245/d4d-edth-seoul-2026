@@ -7,6 +7,7 @@ from dataclasses import replace
 
 from contracts.models import Frame, TickInputs, TickOutcome
 from modules.gateway.actions.build_frame_v2 import build_frame_v2
+from modules.gateway.actions.identify_targets import identify_targets
 from modules.gateway.actions.init_engine import init_engine
 from modules.gateway.actions.mark_reported import mark_reported
 from modules.gateway.actions.record_injections import record_injections
@@ -53,6 +54,9 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
     targets = update_emission(sc, targets, t)  # 1.6 (0039)
     targets = observe(states, specs, targets, t)  # 2
     targets = score_targets(states, specs, targets, sc.watch_points, dt)  # 2.5 (0039, 0040)
+    targets = identify_targets(
+        targets, t, dt
+    )  # 2.7 stage 2: identification of unknown-kind sites (0056)
     reports, assigns = list(es.reports), list(es.assignments)  # 3 operator inputs
     for d in inputs.decisions:
         before = {s.id: s.role_id for s in states}

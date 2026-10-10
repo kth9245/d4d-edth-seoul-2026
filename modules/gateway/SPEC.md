@@ -16,3 +16,4 @@
 | GW-09 | mark_reported | targets, new_reports | list[Target] | target_detected 카드의 표적에 reported_by = 카드 기체, 이미 적힌 표적·다른 카드 종류는 그대로 (결정 0036) | kth9245 | 완료 |
 | GW-10 | score_targets | states, specs, targets, watch_points, tick_ms | targets | threat·threat_reasons·rf_detected·threat_accum을 채움. seen_by가 비면 종류 unknown, 무력화된 표적은 그대로 (결정 0039·0040) | 최동호 | 완료 |
 | GW-11 | build_object_graph | EngineState, focus | ObjectGraph | fast1에서 카드→결정→타격 명령→기체, 다른 표적을 겨눈 명령은 안 나옴, 차단은 명령에 붙음, 없는 focus는 ValueError (결정 0038) | kth9245 | 완료 |
+| GW-12 | identify_targets | targets, t_ms, tick_ms | targets | unknown 종류·미무력화 표적마다 sensing identify_target을 불러 ident_state·ident_confidence·ident_reasons·ident_observed_ms를 쓴다(결정 0056). 다른 표적은 그대로 | 최동호 | 진행중 |
