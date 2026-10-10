@@ -2,7 +2,7 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 11:08 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 11:09 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part1-5.1** 프롬프트 틀 build_draft_prompt(PLY-12)·시연 문장 2개 — kth9245, 10/10 11:00부터
@@ -30,9 +30,8 @@
 
 ### 최동호
 - **Part2-6** sensing `observe_targets`(공개 API 이름 `observe`) · SNS-02
-- **Part2-17** gateway `engine.py` 틱 루프 · 하위 3/5 완료
+- **Part2-17** gateway `engine.py` 틱 루프 · 하위 4/5 완료
 - **Part2-17.1** gateway init_engine · GW-02 (묶음 A, engine_state.py 먼저)
-- **Part2-17.3** gateway run_checks · GW-04 (황승주 SFT-03 뒤, 그 전엔 스텁)
 - **Part2-18** gateway `build_frame` 재작성
 - **Part2-19** 시나리오 튜닝
 
@@ -52,6 +51,7 @@
 - 10/9 23:20 kth9245 · Part1-4 · 사건 4 고속 보트 추적 플레이의 표적은 운용자가 고름(target: operator → 승인 뒤 target_select 카드). 리드 답 '운용자가 고름'
 
 ## 완료
+- **Part2-17.3** gateway run_checks · GW-04 (황승주 SFT-03 뒤, 그 전엔 스텁) — 황승주, 10/10 11:09
 - **Part2-17.2** gateway record_injections · GW-03 (묶음 A) — 황승주, 10/10 11:08
 - **Part2-17.5** gateway tick_log · GW-07 (묶음 A) — 황승주, 10/10 11:08
 - **Part2-17.4** gateway track_assignments · GW-05 (묶음 A) — 황승주, 10/10 11:08
