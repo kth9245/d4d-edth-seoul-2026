@@ -31,3 +31,19 @@ def test_target_out_of_range_drops_vehicle_from_seen_by_and_keeps_last_seen():
 def test_vehicle_already_in_seen_by_is_not_duplicated():
     (t,) = observe_targets([D1], {"d1": SPEC}, [_target(100, seen_by=["d1"])], T)
     assert t.seen_by == ["d1"]
+
+
+def test_records_where_and_how_fast_a_target_was_last_seen():
+    # decision 0047: the board draws a lost target at its last seen spot and estimates where it went
+    moving = _target(900).model_copy(update={"vel_east_mps": 6.3, "vel_north_mps": 0.5})
+    (t,) = observe_targets([D1], {"d1": SPEC}, [moving], T)
+    assert (t.last_seen_pos, t.last_seen_vel_east_mps, t.last_seen_vel_north_mps) == (
+        moving.pos,
+        6.3,
+        0.5,
+    )
+    gone = _target(1100).model_copy(
+        update={"last_seen_pos": moving.pos, "last_seen_vel_east_mps": 6.3}
+    )
+    (t,) = observe_targets([D1], {"d1": SPEC}, [gone], T + 1000)
+    assert (t.last_seen_pos, t.last_seen_vel_east_mps) == (moving.pos, 6.3)
