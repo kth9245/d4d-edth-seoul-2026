@@ -489,3 +489,4 @@
 {"at": "2026-10-10T22:28:47+09:00", "by": "kth9245", "op": "add", "id": "Part1-43", "title": "AI 초안 캐시 키를 문장·구역·지역으로(결정 0057): 새 작전·24시간 작전에서도 시연 문장 캐시 적중, 캐시 파일 이름 옮김", "parent": null, "assign": null, "slot": null, "spec": null}
 {"at": "2026-10-10T22:28:51+09:00", "by": "kth9245", "op": "add", "id": "Part1-44", "title": "상황판 작전 전환 Role 목록: 고른 기체 영역만, 적 Role 빼기(QA 발견 2)", "parent": null, "assign": null, "slot": null, "spec": null}
 {"at": "2026-10-10T22:28:53+09:00", "by": "kth9245", "op": "add", "id": "Part1-45", "title": "멈춘 상태에서 배속 버튼은 속도만 기억, ▶ 재생을 눌러야 그 속도로 시작(QA 발견 3)", "parent": null, "assign": null, "slot": null, "spec": null}
+{"at": "2026-10-10T22:28:58+09:00", "by": "kth9245", "op": "add", "id": "Part1-46", "title": "상대 경로 격자판: 위쪽 끝 점 번호가 '북' 글자를 가리지 않게, 점검 기대값(멸공 기체 6대) 갱신(QA 발견 4)", "parent": null, "assign": null, "slot": null, "spec": null}
