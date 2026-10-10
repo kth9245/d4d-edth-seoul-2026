@@ -5,12 +5,14 @@ from contracts.models import (
     CommandKind,
     GeoPoint,
     PassedCommand,
+    Polygon,
     VehicleSpec,
     VehicleState,
     VehicleStatus,
 )
 from modules.sim.actions.follow_route import follow_route
 from shared.geo import dist_m, offset_latlon
+from shared.land import inside
 
 HOME = GeoPoint(lat=37.95, lon=124.70)
 SPEC = VehicleSpec(id="d1", name="d1", domain="air", speed_mps=10, endurance_min=40,
@@ -58,3 +60,21 @@ def test_after_the_last_waypoint_it_goes_back_to_the_first():
     assert at_b.waypoint_idx == 2  # past the end
     nxt = follow_route(at_b, SPEC, ROUTE, 1000)
     assert dist_m(nxt.pos, A) < dist_m(at_b.pos, A)  # heading to the first waypoint again
+
+
+ISLAND = [Polygon(points=[_at(-500, -500), _at(500, -500), _at(500, 500), _at(-500, 500)])]
+
+
+def test_sea_route_goes_round_the_island_to_the_waypoint():
+    east = _at(1000, -200)
+    pc = PassedCommand(command=Command(id="c2", vehicle_id="d1", kind=CommandKind.follow_route,
+                                       params={"route": [east.model_dump()]}),
+                       checks=[], passed_ms=0)  # fmt: skip
+    st = VehicleState(id="d1", t_ms=0, pos=_at(-1000, -200), heading_deg=0, battery_pct=100,
+                      status=VehicleStatus.active, waypoint_idx=0)  # fmt: skip
+    for _ in range(400):
+        st = follow_route(st, SPEC, pc, 1000, ISLAND)
+        assert not inside(st.pos, ISLAND)
+        if st.waypoint_idx == 1:
+            break
+    assert st.waypoint_idx == 1 and dist_m(st.pos, east) < 1

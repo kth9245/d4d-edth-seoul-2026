@@ -5,6 +5,7 @@ from contracts.models import (
     CommandKind,
     GeoPoint,
     PassedCommand,
+    Polygon,
     Target,
     VehicleSpec,
     VehicleState,
@@ -12,6 +13,7 @@ from contracts.models import (
 )
 from modules.sim.actions.orbit_or_keep import orbit_or_keep
 from shared.geo import dist_m, offset_latlon
+from shared.land import inside
 
 HOME = GeoPoint(lat=37.95, lon=124.70)
 SPEC = VehicleSpec(id="d1", name="d1", domain="air", speed_mps=10, endurance_min=40,
@@ -64,3 +66,18 @@ def test_keep_distance_inside_the_distance_stays_put():
     start = _at(north_m=R - 50)
     st = orbit_or_keep(_state(start), SPEC, _passed(CommandKind.keep_distance), [BOAT], 1000)
     assert dist_m(st.pos, start) < 0.01
+
+
+ISLAND = [Polygon(points=[_at(-500, -500), _at(500, -500), _at(500, 500), _at(-500, 500)])]
+
+
+def test_sea_keep_distance_goes_round_the_island_first():
+    boat = BOAT.model_copy(update={"pos": _at(1000, -200)})
+    pc = PassedCommand(command=Command(id="c3", vehicle_id="d1", kind=CommandKind.keep_distance,
+                                       params={"target_id": "boat1", "distance_m": 200}),
+                       checks=[], passed_ms=0)  # fmt: skip
+    st = _state(_at(-1000, -200))
+    for _ in range(400):
+        st = orbit_or_keep(st, SPEC, pc, [boat], 1000, ISLAND)
+        assert not inside(st.pos, ISLAND)
+    assert dist_m(st.pos, boat.pos) == pytest.approx(200, abs=1)

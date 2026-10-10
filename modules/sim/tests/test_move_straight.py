@@ -5,12 +5,14 @@ from contracts.models import (
     CommandKind,
     GeoPoint,
     PassedCommand,
+    Polygon,
     VehicleSpec,
     VehicleState,
     VehicleStatus,
 )
 from modules.sim.actions.move_straight import move_straight
 from shared.geo import dist_m, offset_latlon
+from shared.land import inside
 
 HOME = GeoPoint(lat=37.95, lon=124.70)
 SPEC = VehicleSpec(id="d1", name="d1", domain="air", speed_mps=10, endurance_min=40,
@@ -65,3 +67,18 @@ def test_hold_does_not_move():
     start = _at(east_m=100)
     st = move_straight(_state(start), SPEC, _passed(CommandKind.hold), 1000)
     assert st.pos == start
+
+
+ISLAND = [Polygon(points=[_at(-500, -500), _at(500, -500), _at(500, 500), _at(-500, 500)])]
+SEA = SPEC.model_copy(update={"domain": "sea", "home": _at(-1000, -200)})
+
+
+def test_sea_move_goes_round_the_island_and_arrives():
+    goal = _at(1000, -200)
+    st, pc = _state(SEA.home), _passed(CommandKind.move, target=goal.model_dump())
+    for _ in range(400):
+        st = move_straight(st, SEA, pc, 1000, ISLAND)
+        assert not inside(st.pos, ISLAND)
+        if st.waypoint_idx == -1:
+            break
+    assert st.waypoint_idx == -1 and dist_m(st.pos, goal) < 1
