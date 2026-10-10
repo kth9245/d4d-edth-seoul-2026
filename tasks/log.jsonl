@@ -543,3 +543,4 @@
 {"at": "2026-10-11T00:05:27+09:00", "by": "kth9245", "op": "start", "id": "Part1-32.2", "take": false, "from": null}
 {"at": "2026-10-11T00:06:16+09:00", "by": "황승주", "op": "done", "id": "Part2-60", "take": false}
 {"at": "2026-10-11T00:07:17+09:00", "by": "황승주", "op": "add", "id": "Part2-61", "title": "멸공 단계별 카드: raid_next 단계 진행(RT-19)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
+{"at": "2026-10-11T00:07:21+09:00", "by": "황승주", "op": "start", "id": "Part2-61", "take": false, "from": null}
