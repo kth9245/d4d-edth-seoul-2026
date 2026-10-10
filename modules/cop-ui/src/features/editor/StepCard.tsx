@@ -1,12 +1,18 @@
-import type { Play, Step } from "../../contracts.gen";
+import type { Play, Step, ValidationIssue } from "../../contracts.gen";
 import { describeAction, describeCondition } from "./describe";
 
-type Props = { step: Step; play: Play; playName: (id: string) => string | null; onOpen: (playId: string) => void };
+type Props = {
+  step: Step;
+  play: Play;
+  playName: (id: string) => string | null;
+  onOpen: (playId: string) => void;
+  issues?: ValidationIssue[];
+};
 
-export function StepCard({ step, play, playName, onOpen }: Props) {
+export function StepCard({ step, play, playName, onOpen, issues = [] }: Props) {
   const stepName = (id: string) => play.steps.find((s) => s.id === id)?.name;
   return (
-    <div className="step-card">
+    <div className={issues.length > 0 ? "step-card has-issues" : "step-card"}>
       <div className="step-name">
         {step.id === play.entry ? "▶ " : ""}
         {step.name}
@@ -42,6 +48,11 @@ export function StepCard({ step, play, playName, onOpen }: Props) {
           ))}
         </div>
       )}
+      {issues.map((i, k) => (
+        <div key={k} className="issue">
+          ⚠ {i.message}
+        </div>
+      ))}
     </div>
   );
 }
