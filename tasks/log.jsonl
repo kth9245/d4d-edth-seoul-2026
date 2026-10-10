@@ -186,3 +186,4 @@
 {"at": "2026-10-10T11:26:49+09:00", "by": "최동호", "op": "start", "id": "Part2-18", "take": false, "from": null}
 {"at": "2026-10-10T11:28:15+09:00", "by": "kth9245", "op": "done", "id": "Part1-12", "take": false}
 {"at": "2026-10-10T11:28:18+09:00", "by": "kth9245", "op": "note", "id": "Part1-12", "text": "화면 조작 확인(헤드리스 Chrome, 스텁 엔진): 전환 요청 inj 생성, 승인 200, 거부 200. 스텁은 Frame에 서버 injections를 안 실어서 실제 승인 대기 카드는 engine.py(Part2-17) 뒤 통합에서 확인. 없는 injection id 승인은 서버가 404 대신 500(KeyError, 결정 0024 happy path)"}
+{"at": "2026-10-10T11:30:28+09:00", "by": "최동호", "op": "done", "id": "Part2-18", "take": false}
