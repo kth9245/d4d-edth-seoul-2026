@@ -439,3 +439,4 @@
 {"at": "2026-10-10T20:25:27+09:00", "by": "kth9245", "op": "done", "id": "Part1-37", "take": false}
 {"at": "2026-10-10T20:30:59+09:00", "by": "황승주", "op": "add", "id": "Part2-44", "title": "멸공 d1~d4를 모두 무장 드론(armed_drone)으로", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T20:31:40+09:00", "by": "황승주", "op": "start", "id": "Part2-44", "take": false, "from": null}
+{"at": "2026-10-10T20:35:45+09:00", "by": "kth9245", "op": "done", "id": "Part1-39", "take": false}
