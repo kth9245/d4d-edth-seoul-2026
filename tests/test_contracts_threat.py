@@ -21,4 +21,4 @@ def test_watch_point_and_rf_fields_exist():
 
 
 def test_existing_demo_scenario_still_loads():
-    assert load_scenario_json("demo/scenarios/baengnyeong_night.json").watch_points == []
+    assert load_scenario_json("demo/scenarios/baengnyeong_night.json").id == "baengnyeong_night"

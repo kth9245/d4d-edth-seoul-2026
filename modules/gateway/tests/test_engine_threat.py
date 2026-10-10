@@ -13,7 +13,12 @@ def run_until_first_enemy_appears():
     first = min(SC.enemies, key=lambda e: e.appear_offset_ms)
     enemies = [e.model_copy(update={"emit_start_offset_ms": 0}) if e.id == first.id else e
                for e in SC.enemies]  # fmt: skip
-    sc = SC.model_copy(update={"watch_points": WATCH, "enemies": enemies})
+    silent_drones = [
+        v.model_copy(update={"rf_range_m": 0.0}) for v in SC.vehicles
+    ]  # only the scan matters here
+    sc = SC.model_copy(
+        update={"watch_points": WATCH, "enemies": enemies, "vehicles": silent_drones}
+    )
     es = init_engine(sc)
     for _ in range(first.appear_offset_ms // sc.tick_ms + 2):
         es, _ = tick(es, TickInputs())

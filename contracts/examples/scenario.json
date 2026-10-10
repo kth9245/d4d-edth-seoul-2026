@@ -140,7 +140,7 @@
    "recharge_min": 10.0,
    "kind": "recon_drone",
    "kind_path": [],
-   "rf_range_m": 0.0
+   "rf_range_m": 2000.0
   },
   {
    "id": "d2",
@@ -169,7 +169,7 @@
    "recharge_min": 10.0,
    "kind": "armed_drone",
    "kind_path": [],
-   "rf_range_m": 0.0
+   "rf_range_m": 2000.0
   },
   {
    "id": "d3",
@@ -198,7 +198,7 @@
    "recharge_min": 10.0,
    "kind": "recon_drone",
    "kind_path": [],
-   "rf_range_m": 0.0
+   "rf_range_m": 2000.0
   },
   {
    "id": "usv",
@@ -1511,7 +1511,7 @@
    },
    "from_enemy": null,
    "play_id": "enemy_boat2",
-   "emit_start_offset_ms": null
+   "emit_start_offset_ms": 360000
   },
   {
    "id": "boat3",
@@ -1528,7 +1528,18 @@
    "emit_start_offset_ms": null
   }
  ],
- "watch_points": [],
+ "watch_points": [
+  {
+   "id": "landing",
+   "name": "상륙 예상 지점",
+   "pos": {
+    "lat": 37.978,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "radius_m": 2000.0
+  }
+ ],
  "land": [
   {
    "points": [

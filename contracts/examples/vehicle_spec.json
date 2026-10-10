@@ -25,5 +25,5 @@
  "recharge_min": 10.0,
  "kind": "recon_drone",
  "kind_path": [],
- "rf_range_m": 0.0
+ "rf_range_m": 2000.0
 }
