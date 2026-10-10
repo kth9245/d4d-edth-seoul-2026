@@ -2,7 +2,7 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 12:39 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 12:41 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part1-14** smoke 전환 + 통합 주관 — kth9245, 10/10 12:13부터 · 하위 2/2 완료
@@ -24,6 +24,7 @@
 - **Part1-21** 편집기 적 열 + GET /enemies (결정 0032, 읽기 전용)
 
 ## 최근 결정
+- 10/10 12:41 kth9245 · Part2-19 · 완료 기준에 실제 baengnyeong_night.json으로 전환 승인→표적 선택→타격 승인 카드→함께 타격→fast1 무력화 엔진 테스트와 open_reports_max 타격 전·후 기록 추가(devil-advocate). 12:39 Part1-19 기록을 이쪽으로 옮김(11:57 결정: s7·s8은 Part2-19). 크게 오르면 수상정 표적 고정을 리드와 정함
 - 10/10 12:39 kth9245 · Part1-15 · 타격 장면(약 20초)을 넣느라 줄일 장면은 3분 대본을 쓸 때 리허설로 재고 정한다. RUNBOOK.md의 옛 T1-3 문구(분류·위협도·대응 추천)도 이때 고친다. 리드 답 '대본 쓸 때 정함'
 - 10/10 12:39 kth9245 · Part1-19 · 타격 화면에 '가상' 표시를 하지 않고 승인 카드 문구도 '타격 승인 요청' 그대로(devil-advocate 공격 3). 완료 기준에 실제 시나리오 끝까지(전환 승인→표적 선택→타격 승인→함께 타격→fast1 무력화) 테스트와 open_reports_max 타격 전후 기록 추가. 리드 답 '걍 이런건 필요 ㄴㄴ'
 - 10/10 12:21 최동호 · Part1-19 · Part1-19는 최동호가 맡는다(누구나 항목, 리드 허락). 구조(enemies·적 플레이·track_fast·track_fast_sea·strike·전환 버튼)와 숫자 맞추기(Part2-19)를 한 사람이 같이 한다.
@@ -33,7 +34,6 @@
 - 10/10 11:56 kth9245 · Part2-19 · fast1(사건 4, 적 enemies) 등장 시각·경로점·속도와 타격 시점까지 baengnyeong_night.json의 숫자는 전부 Part2-19가 한 타임라인으로 맞춘다. s5·s6이 s4 앞으로 옮겨져 드론2 배터리가 타격 명령의 귀환 배터리 검사에 걸리므로 숫자를 한 사람이 맡는다. 완료 기준: 틱 루프로 s1·s2·s3·s5·s6·s4·s7·s8이 이 순서로 남. fast1 부분은 Part1-19·Part2-21~25 뒤. 09 6절 행 수정(b2dd55a). 리드 답 'ㅇㅇ 이렇게 ㄱㄱ'
 - 10/10 11:55 kth9245 · Part3-13 · POST /plays/draft는 draft_play를 별도 스레드에서 돌려 WS를 멈추지 않는다. 편집기 AI 초안 칸은 demo/draft_sentences.json 문장 버튼(캐시와 같은 출처)과 입력칸. 초안은 목록에 '아직 저장 안 됨'으로, 'AI 초안 · 승인 전' 표시. 저장 시 approved=true로 보낸다(검사 통과 + 사람이 저장 = 승인, safety가 approved=false 플레이 명령을 막음). origin이 ai_draft가 아니면 대기 템플릿 대체를 알림. 리드 답 'ㄱㄱ'
 - 10/10 11:46 kth9245 · Part3-12 · 결정 0031 참조(보고 선택지가 보고한 기체를 다른 플레이로 안 보내면 같은 플레이의 operator_choice 탈출로 이어짐, runtime apply_decision 수정은 이 세션이 하고 황승주에게 알림)
-- 10/10 11:45 황승주 · Part3-15.1 · compile_mavlink(play, op, specs: dict[id, VehicleSpec]): op.assign에서 이 플레이를 받는 기체마다 (plan, script). .plan = entry step 미션(QGC Plan, ArduPilot, MAV_TYPE 2/11/10, 드론 고도 50 m), 스크립트 = step 그래프 전체(pymavlink, 틀 modules/mavlink/vehicle_script.py.txt). 대응: move/follow_route/zigzag→WAYPOINT 16, return_home→RTL 20, keep_distance→DO_SET_MODE 176 FOLLOW(Copter 23·Rover 6), 지상 hold→DO_SET_MODE HOLD 4, orbit/hold/relay→LOITER_UNLIM 17(좌표 없으면 0,0=현재 위치), expand_action None→빈 미션. 지상 신호는 STATUSTEXT target_found/signal/choice:<id>
 
 ## 완료
 - **Part1-14.2** 화면 QA 스크립트를 저장소에(scripts/qa.sh + 점검 목록) — kth9245, 10/10 12:36
