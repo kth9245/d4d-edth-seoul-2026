@@ -14,11 +14,11 @@ export default defineConfig({
       // contracts/API.md section 5 REST endpoints
       "^/(operation|plays|run|decisions|direct|injections)(/|\\?|$)": { target: GATEWAY },
     },
-    // ?scene=s1..s6 reads contracts/examples and the run bar's event stops read demo/scenarios,
+    // ?scene=s1..s6 reads contracts/examples and the AI draft box reads demo/draft_sentences.json,
     // both outside this package. In a worktree node_modules links to the main checkout, so the bundled
     // font files live outside this package too.
     fs: {
-      allow: [searchForWorkspaceRoot(process.cwd()), outside("../../contracts/examples"), outside("../../demo/scenarios"),
+      allow: [searchForWorkspaceRoot(process.cwd()), outside("../../contracts/examples"),
         outside("../../demo/draft_sentences.json"),
         realpathSync(outside("./node_modules"))],
     },
