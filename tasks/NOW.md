@@ -2,9 +2,10 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 10:16 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 10:18 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
+- **Part1-9** 지도: 위성 raster + 기체·표적·구역 — kth9245, 10/10 10:18부터
 - **Part2-20** sim `load_scenario_json` — 최동호, 10/10 10:11부터 · SIM-04
 
 ## 막힘
@@ -15,7 +16,6 @@
 ### kth9245
 - **Part1-5** AI 초안 프롬프트·캐시 2개
 - **Part1-7** gateway REST + WS
-- **Part1-9** 지도: 위성 raster + 기체·표적·구역
 - **Part1-10** 상황판 카드 열 + 결정 버튼
 - **Part1-11** 직접 조종 + 차단 카드 대안 버튼
 - **Part1-12** 주입 승인 카드
