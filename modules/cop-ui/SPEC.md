@@ -25,7 +25,7 @@
 | UI-20 | pruneSent | 보낸 기록, 보고 id, 시각 역행 | 보낸 기록 | reset으로 사라진 보고·시각이 뒤로 가면 잊음(같은 id 카드가 잠기지 않게) | 리드 | 완료 |
 | UI-21 | CardList | frame | 카드 열 | 선택지 버튼 → POST /decisions, 보낸 뒤 처리될 때까지 잠금, 실패 문구 | 리드 | 완료 |
 | UI-22 | mmss | ms | "m:ss" | 1초 미만 버림, 60분 넘어도 분으로, 음수는 0:00 | 리드 | 완료 |
-| UI-23 | nextStop | 작전 시작 후 ms, RUN_STOPS | RunStop \| null | 현재보다 뒤의 첫 정지 시각(정지 시각 위면 다음 것). 정지 시각은 스파이크 엔진 기준, Part1-14에서 engine.py로 재확인 | 리드 | 완료 |
+| UI-23 | nextStop | 작전 시작 후 ms, RUN_STOPS | RunStop \| null | 현재보다 뒤의 첫 정지 시각(정지 시각 위면 다음 것). 정지 시각은 실제 엔진의 타격 단계 순서 장면 시각(16:25 보고 카드, 19:05 드론1 귀환, 20:00 드론2 직접 조종, 23:05 고속정 등장), 타격 장면은 정지 없이 재생(Part1-13.1) | 리드 | 완료 |
 | UI-24 | postRun·jumpPaused | 경로 / offset_ms | {ok, run} \| {ok: false, error} | POST /run/*, throw 없이 상태·detail 문구. 다음 사건은 speed=0 뒤 jump, 정지 실패면 jump 안 함 | 리드 | 완료 |
 | UI-25 | metricView | Metrics | {operator, manual, rows} | 운용자 조작 대 수동 기준, 기체 공백 m:ss, 빠진 칸 0. 임무 판정 행은 없음(타격 결과는 결과 카드, Part1-20) | 리드 | 완료 |
 | UI-26 | fetchOperation | — | Partial<Operation> \| null | GET /operation 본문, 오류·JSON 아님·실패는 null(fetchZone·RunBar가 씀) | 리드 | 완료 |
