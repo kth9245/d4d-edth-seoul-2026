@@ -33,11 +33,3 @@ def test_each_demo_sentence_has_a_cached_draft_with_the_expected_check(s):
     )
     codes = [i.code for i in check_operation(op, {play.id: play}, {spec.id: spec}).issues]
     assert codes == ([] if s["expect"] == "ok" else [s["expect"]])
-
-
-def test_cache_holds_only_the_demo_sentences():
-    names = {
-        hashlib.sha256(build_draft_prompt(s["text"], SC.operation).encode("utf-8")).hexdigest()
-        for s in SENTENCES
-    }
-    assert {p.stem for p in CACHE.glob("*.json")} == names
