@@ -259,3 +259,14 @@ def test_graph_from_a_vehicle_on_the_real_engine():  # decision 0038
 def test_graph_unknown_focus_is_404():
     client = TestClient(create_app(SCENARIO, period_s=0.01))
     assert client.get("/graph?focus=nope").status_code == 404
+
+
+def test_delete_play_with_the_real_engine():  # decision 0050
+    with TestClient(create_app(SCENARIO, period_s=0.01)) as client:
+        pid = client.get("/operation").json()["assign"]["d1"]
+        left = client.delete(f"/plays/{pid}")
+        assert left.status_code == 200 and pid not in [p["id"] for p in left.json()]
+        assert pid not in [p["id"] for p in client.get("/plays").json()]
+        assert "d1" not in client.get("/operation").json()["assign"]
+        assert client.post("/run/jump?offset_ms=60000").json()["status"] == "paused"
+        assert client.delete("/plays/nope").status_code == 404

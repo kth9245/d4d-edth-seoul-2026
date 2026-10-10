@@ -103,6 +103,13 @@ def create_app(
         log.info("POST /plays %s ok=%s issues=%d", play.id, chk.ok, len(chk.issues))
         return chk
 
+    @app.delete("/plays/{play_id}")
+    async def delete_play(play_id: str):  # decision 0050: from the running operation, reset
+        if all(p.id != play_id for p in live.scenario.plays):
+            raise HTTPException(404, f"no play {play_id}")
+        log.info("DELETE /plays/%s", play_id)
+        return live.delete_play(play_id)
+
     @app.post("/plays/draft")
     async def draft(body: DraftIn):
         # Cache first; a miss may call the LLM for minutes, so run it off the loop that streams /ws.

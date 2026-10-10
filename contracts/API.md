@@ -94,6 +94,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | 엔드포인트 | 요청 | 응답 |
 |---|---|---|
 | `GET /plays` · `POST /plays` | — · `Play` | `Play[]` · `PlayCheck` |
+| `DELETE /plays/{id}` | — | `Play[]`(남은 플레이. 실행 작전에서 지우고 작전 시작 직전 `paused`, 그 플레이로 시작하던 기체는 배정 없이 시작, 다른 쓰임은 검사하지 않음, 결정 0050). 없는 id 404 |
 | `GET /enemies` | — | `EnemySpec[]`(시나리오의 적, Part1-21) |
 | `GET /routes` | — | `RouteDef[]`(실행 작전의 경로 목록, 결정 0044) |
 | `GET /ontology` | — | `OntologyView`(계층 + 기체마다 행동 10개의 판정과 경로, 결정 0038). 시나리오에 온톨로지가 없으면 404 |

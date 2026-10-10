@@ -111,6 +111,20 @@ class Live:
             self.reset()
         return chk
 
+    def delete_play(self, play_id: str) -> list[Play]:
+        """Removed from the running operation (in memory) and reset like save_play (decision 0050).
+        Vehicles that started on it start with no play (the engine cannot start them on a missing one);
+        other uses (choices, switches, enemies) are not checked and stop the run when reached."""
+        if all(p.id != play_id for p in self.scenario.plays):
+            raise KeyError(play_id)  # 404, before anything changes
+        plays = [p for p in self.scenario.plays if p.id != play_id]
+        op = self.scenario.operation
+        assign = {v: p for v, p in op.assign.items() if p != play_id}
+        op = op.model_copy(update={"assign": assign})
+        self.scenario = self.scenario.model_copy(update={"plays": plays, "operation": op})
+        self.reset()
+        return plays
+
     def scenario_infos(self) -> list[ScenarioInfo]:
         self.scenarios[self.scenario.id] = self.scenario  # saved plays and operation edits
         return [

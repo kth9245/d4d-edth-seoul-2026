@@ -64,3 +64,32 @@ def test_save_play_appends_a_new_id():
     live, _ = make()
     assert live.save_play(PATROL_A.model_copy(update={"id": "patrol_c"})).ok
     assert live.scenario.plays[-1].id == "patrol_c"
+
+
+def test_delete_play_removes_it_and_resets_paused():  # decision 0050
+    live, eng = make()
+    live.set_speed(5)
+    inits = len(eng.inits)
+    left = live.delete_play("patrol_a")
+    assert "patrol_a" not in [p.id for p in left]
+    assert [p.id for p in live.scenario.plays] == [p.id for p in left]
+    assert live.run.status == "paused" and len(eng.inits) == inits + 1
+
+
+def test_delete_play_with_an_unknown_id_raises_and_changes_nothing():
+    live, eng = make()
+    before = [p.id for p in live.scenario.plays]
+    try:
+        live.delete_play("nope")
+        raise AssertionError("expected KeyError")
+    except KeyError:
+        pass
+    assert [p.id for p in live.scenario.plays] == before
+
+
+def test_deleting_a_start_play_leaves_its_vehicles_unassigned():  # decision 0050
+    live, _ = make()
+    pid = live.scenario.operation.assign["d1"]
+    live.delete_play(pid)
+    assert pid not in live.scenario.operation.assign.values()
+    assert "d1" not in live.scenario.operation.assign  # starts with no play, waits at home
