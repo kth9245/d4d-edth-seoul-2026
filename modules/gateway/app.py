@@ -1,7 +1,7 @@
 """FastAPI app: REST inputs, WS Frame stream and the static UI (contracts/API.md §5).
 
 Run: uvicorn modules.gateway.app:create_app --factory (env KDTH_SCENARIO, KDTH_UI_DIST).
-The demo operations live in process memory (`Live`, one of them running, decision 0041);
+The demo operations live in process memory (`Live`, one of them running, decision 0042);
 a background task calls `Live.period()` every `period_s`. Handlers are async so all state
 changes happen on the event loop thread.
 """
@@ -28,7 +28,7 @@ from shared.log import get_logger, setup_logging
 log = get_logger("gateway")
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SCENARIO = str(ROOT / "demo/scenarios/baengnyeong_night.json")
-# Operations the editor can pick (decision 0041). The backup baengnyeong_night_before_0036.json
+# Operations the editor can pick (decision 0042). The backup baengnyeong_night_before_0036.json
 # shares the night scenario id, so it is left out.
 DEMO_SCENARIOS = [
     DEFAULT_SCENARIO,

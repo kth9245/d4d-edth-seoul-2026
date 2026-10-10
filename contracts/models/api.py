@@ -29,7 +29,7 @@ class Accepted(BaseModel):  # reply to an operator input; it applies on the next
     t_ms: int
 
 
-class ScenarioInfo(BaseModel):  # GET /scenarios: an operation the gateway can run (decision 0041)
+class ScenarioInfo(BaseModel):  # GET /scenarios: an operation the gateway can run (decision 0042)
     id: str  # Scenario.id
     name: str  # Operation.name
     purpose: str = ""  # Operation.purpose

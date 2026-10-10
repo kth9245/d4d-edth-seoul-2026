@@ -51,6 +51,6 @@
 | UI-46 | updateStep·setActionKind·addStepAfter·removeStep·addChoice·removeChoice·defaultCondition·zoneCentre | Play, 카드 id | 새 Play | 카드 편집(Part3-12.1, StepEditor 패널): 이름·행동(대상·거리, 이동·경로 좌표는 플레이의 점 또는 구역 중심)·연결(조건·값·다음 카드)·보고(문구·선택지·기체별 플레이)·카드 추가(도착 연결)·삭제(들어오는 연결·비상 연결도 정리, 시작 카드 제외). 선택지를 지우면 그 선택 연결도 지움 | 리드 | 완료 |
 | UI-47 | vehicleRows·switchRows·startText | Operation, VehicleSpec[] | 패널 줄 | 작전 설정 패널(Part3-14, 보여 주기만): 기체별 종류·처음 플레이·예비 순서, 전환 버튼별 기체→플레이, 시작 시각 KST. OperationPanel이 편집기 작전 개요 위에, MiniMap(작전 구역 + 출발 위치, 조작 없음, 영상 출처는 지도 아래) | 리드 | 완료 |
 | UI-48 | enemyRows·appearText | EnemySpec[], 작전 시작 시각, Play[] | 적 열 머리 | 편집기 작전 개요 아군 열 아래 '적' 구역(Part1-21, 결정 0032, 읽기 전용): 적마다 종류·등장 시각 KST(+분)·위치 좌표 또는 'boat1 위치에서'·속도, 그 아래 플레이 카드(StepCard). 플레이가 없으면 없는 플레이로 표시. 데이터는 GET /enemies | 리드 | 완료 |
-| UI-49 | fetchScenarios | — | ScenarioInfo[] | GET /scenarios(결정 0041), 오류·연결 실패·목록 아님이면 빈 목록 | 리드 | 완료 |
+| UI-49 | fetchScenarios | — | ScenarioInfo[] | GET /scenarios(결정 0042), 오류·연결 실패·목록 아님이면 빈 목록 | 리드 | 완료 |
 | UI-50 | activateScenario | 작전 id | RunState | POST /scenarios/{id}/activate(그 작전을 실행 작전으로, 시작 전 멈춤), 2xx 아니면·연결 실패면 오류 | 리드 | 완료 |
-| UI-51 | stopsFor | 실행 작전 id | RunStop[] | 야간 시연(baengnyeong_night)이면 RUN_STOPS, 그 밖은 없음(다음 사건 없음, 결정 0041) | 리드 | 완료 |
+| UI-51 | stopsFor | 실행 작전 id | RunStop[] | 야간 시연(baengnyeong_night)이면 RUN_STOPS, 그 밖은 없음(다음 사건 없음, 결정 0042) | 리드 | 완료 |

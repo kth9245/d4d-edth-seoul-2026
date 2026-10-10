@@ -3,7 +3,7 @@
 The app calls `period()` every 0.2 s. Inputs queued between periods go into the next tick
 (contracts/API.md §5). Pause = speed 0, which keeps the last speed (decision 0026).
 Depends only on `init(scenario) -> state` and `tick(state, inputs) -> (state, Frame)`.
-Other demo operations wait in `scenarios`; `activate` swaps the running one (decision 0041).
+Other demo operations wait in `scenarios`; `activate` swaps the running one (decision 0042).
 """
 
 from collections.abc import Callable, Sequence
@@ -38,7 +38,7 @@ class Live:
         catalog: Sequence[Scenario] = (),
     ):
         self.scenario, self._init, self._tick = scenario, init, tick
-        # Operations the editor can pick (decision 0041), in catalog order; the running one is put
+        # Operations the editor can pick (decision 0042), in catalog order; the running one is put
         # first when the catalog lacks its id and replaces a catalog entry that has it.
         ids = [s.id for s in catalog]
         self.scenarios: dict[str, Scenario] = {} if scenario.id in ids else {scenario.id: scenario}

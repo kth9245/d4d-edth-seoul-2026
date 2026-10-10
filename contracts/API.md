@@ -97,7 +97,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | `POST /plays/draft` | `DraftIn{text}` | `Play`(origin=ai_draft, approved=false) |
 | `GET /operation` · `POST /operation` | — · `Operation` | `Operation` |
 | `GET /vehicles` | — | `VehicleSpec[]`(시나리오의 기체 제원·출발 위치, Part3-14 작전 패널) |
-| `GET /scenarios` | — | `ScenarioInfo[]`(gateway가 켤 때 읽은 시연 작전, 실행 작전은 `active`, 결정 0041) |
+| `GET /scenarios` | — | `ScenarioInfo[]`(gateway가 켤 때 읽은 시연 작전, 실행 작전은 `active`, 결정 0042) |
 | `POST /scenarios/{id}/activate` | — | `RunState`(그 작전을 실행 작전으로, 작전 시작 직전 `paused`). 없는 id 404 |
 | `POST /run/live?speed=` · `POST /run/reset` · `POST /run/jump?offset_ms=` | — | `RunState` |
 | `POST /decisions` | `DecisionIn{report_id, choice_id}` | `Accepted{id, t_ms}` |
@@ -108,7 +108,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 
 `POST /plays/check`와 `POST /plays`의 검사는 `check_play`에 "이 플레이로 바꾸면 `check_operation`에 새로 생기는 오류"를 더한 것이다(gateway GW-08 `check_saved_play`). `POST /plays`는 검사를 통과할 때만 gateway 메모리의 플레이 목록에 저장하고(같은 id는 제자리 교체, 새 id는 뒤에 추가) 실행을 작전 시작 직전(`paused`)으로 되돌린다. 저장한 플레이는 그다음 작전 시작에 쓰인다. 파일에는 쓰지 않아 gateway를 다시 켜면 시나리오 원본으로 돌아간다. 실패면 아무것도 바꾸지 않는다. 둘 다 응답은 항상 `PlayCheck`다(결정 0030).
 
-`GET /scenarios`는 gateway가 켤 때 읽은 시연 작전 목록이다(`baengnyeong_night`, `baengnyeong_24h`. 처음 실행 작전은 `KDTH_SCENARIO`, 목록에 없는 파일이면 맨 앞에 붙는다). `POST /scenarios/{id}/activate`는 지금 실행 작전(저장한 플레이·작전 수정 포함)을 메모리 목록에 남겨 두고 그 작전으로 바꾼 뒤 `/run/reset`처럼 작전 시작 직전(`paused`)으로 되돌린다. 나머지 엔드포인트와 `/ws`는 바뀐 실행 작전을 쓴다(결정 0041).
+`GET /scenarios`는 gateway가 켤 때 읽은 시연 작전 목록이다(`baengnyeong_night`, `baengnyeong_24h`. 처음 실행 작전은 `KDTH_SCENARIO`, 목록에 없는 파일이면 맨 앞에 붙는다). `POST /scenarios/{id}/activate`는 지금 실행 작전(저장한 플레이·작전 수정 포함)을 메모리 목록에 남겨 두고 그 작전으로 바꾼 뒤 `/run/reset`처럼 작전 시작 직전(`paused`)으로 되돌린다. 나머지 엔드포인트와 `/ws`는 바뀐 실행 작전을 쓴다(결정 0042).
 
 `/run/live?speed=0`은 일시정지다. `status`는 `paused`가 되고 `speed`는 멈추기 전 배속을 그대로 둔다(결정 0026). `/run/reset` 뒤에는 `paused`이고, 빈 입력으로 틱 하나를 돌려 첫 Frame을 만든다. WS Frame의 `log`는 그 연결에 아직 보내지 않은 기록 줄 전부다(배속으로 돈 틱들의 줄을 모두 담고, 일시정지 중에는 빈 목록, 새 연결의 첫 Frame은 reset 뒤 전부). 전환 요청이 아직 틱에 들어가기 전에 승인·거부가 오면 서버가 그 판정을 한 틱 뒤에 넣는다. 서버는 `gateway`를 `uvicorn modules.gateway.app:create_app --factory`로 띄운다.
 

@@ -47,7 +47,7 @@ def test_enemies_come_from_the_scenario():
 
 
 def test_scenarios_lists_the_demo_operations_with_the_running_one_active():
-    # decision 0041: the editor picks one of the demo operations
+    # decision 0042: the editor picks one of the demo operations
     client, _ = fake_app()
     got = client.get("/scenarios").json()
     assert [(s["id"], s["active"]) for s in got] == [

@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3 · FastAPI · pydantic(contracts) · pytest / React · TypeScript · Vite · vitest
 
-**Spec:** `docs/superpowers/specs/2026-10-10-operation-select-design.md` (결정 0041)
+**Spec:** `docs/superpowers/specs/2026-10-10-operation-select-design.md` (결정 0042)
 
 ## Global Constraints
 
@@ -49,7 +49,7 @@
 `contracts/models/api.py` 끝에 추가:
 
 ```python
-class ScenarioInfo(BaseModel):  # GET /scenarios: an operation the gateway can run (decision 0041)
+class ScenarioInfo(BaseModel):  # GET /scenarios: an operation the gateway can run (decision 0042)
     id: str  # Scenario.id
     name: str  # Operation.name
     purpose: str = ""  # Operation.purpose
@@ -81,14 +81,14 @@ Expected: PASS
 `contracts/API.md` 5절 표의 `` | `POST /run/live?speed=` · ... `` 줄 바로 위에 두 줄:
 
 ```markdown
-| `GET /scenarios` | — | `ScenarioInfo[]`(gateway가 켤 때 읽은 시연 작전, 실행 작전은 `active`, 결정 0041) |
+| `GET /scenarios` | — | `ScenarioInfo[]`(gateway가 켤 때 읽은 시연 작전, 실행 작전은 `active`, 결정 0042) |
 | `POST /scenarios/{id}/activate` | — | `RunState`(그 작전을 실행 작전으로, 작전 시작 직전 `paused`). 없는 id 404 |
 ```
 
 표 아래 `POST /plays/check`… 문단 다음에 문단 하나:
 
 ```markdown
-`GET /scenarios`는 gateway가 켤 때 읽은 시연 작전 목록이다(`baengnyeong_night`, `baengnyeong_24h`. 처음 실행 작전은 `KDTH_SCENARIO`, 목록에 없는 파일이면 맨 앞에 붙는다). `POST /scenarios/{id}/activate`는 지금 실행 작전(저장한 플레이·작전 수정 포함)을 메모리 목록에 남겨 두고 그 작전으로 바꾼 뒤 `/run/reset`처럼 작전 시작 직전(`paused`)으로 되돌린다. 나머지 엔드포인트와 `/ws`는 바뀐 실행 작전을 쓴다(결정 0041).
+`GET /scenarios`는 gateway가 켤 때 읽은 시연 작전 목록이다(`baengnyeong_night`, `baengnyeong_24h`. 처음 실행 작전은 `KDTH_SCENARIO`, 목록에 없는 파일이면 맨 앞에 붙는다). `POST /scenarios/{id}/activate`는 지금 실행 작전(저장한 플레이·작전 수정 포함)을 메모리 목록에 남겨 두고 그 작전으로 바꾼 뒤 `/run/reset`처럼 작전 시작 직전(`paused`)으로 되돌린다. 나머지 엔드포인트와 `/ws`는 바뀐 실행 작전을 쓴다(결정 0042).
 ```
 
 `contracts/README.md` 표 `api.py` 줄을 `DecisionIn, DirectIn, SwitchIn, DraftIn, Accepted, ScenarioInfo`로.
@@ -111,7 +111,7 @@ Expected: PASS
 
 ```bash
 git add contracts scripts/gen_examples.py modules/cop-ui/vite.config.ts modules/cop-ui/src/contracts.gen.ts
-git commit -m "Part1-29: contract ScenarioInfo, GET /scenarios and POST /scenarios/{id}/activate in API.md, dev proxy (decision 0041)"
+git commit -m "Part1-29: contract ScenarioInfo, GET /scenarios and POST /scenarios/{id}/activate in API.md, dev proxy (decision 0042)"
 ```
 
 ---
@@ -215,7 +215,7 @@ Expected: FAIL (`TypeError: Live.__init__() takes 4 positional arguments but 5 w
 - [ ] **Step 3: 구현**
 
 `modules/gateway/live.py`:
-- 모듈 docstring 첫 줄을 `"""The running operation in process memory: run state, queued operator inputs and the last Frame.`로, 끝에 한 줄 `Other demo operations wait in `scenarios`; `activate` swaps the running one (decision 0041).` 추가.
+- 모듈 docstring 첫 줄을 `"""The running operation in process memory: run state, queued operator inputs and the last Frame.`로, 끝에 한 줄 `Other demo operations wait in `scenarios`; `activate` swaps the running one (decision 0042).` 추가.
 - import에 `from collections.abc import Callable, Sequence`, contracts import 목록에 `ScenarioInfo`.
 - `__init__`과 새 메서드 두 개:
 
@@ -228,7 +228,7 @@ Expected: FAIL (`TypeError: Live.__init__() takes 4 positional arguments but 5 w
         catalog: Sequence[Scenario] = (),
     ):
         self.scenario, self._init, self._tick = scenario, init, tick
-        # Operations the editor can pick (decision 0041), in catalog order; the running one is put
+        # Operations the editor can pick (decision 0042), in catalog order; the running one is put
         # first when the catalog lacks its id and replaces a catalog entry that has it.
         ids = [s.id for s in catalog]
         self.scenarios: dict[str, Scenario] = {} if scenario.id in ids else {scenario.id: scenario}
@@ -273,7 +273,7 @@ Expected: PASS (기존 테스트 깨짐 없음)
 
 ```bash
 git add modules/gateway/live.py modules/gateway/tests/test_live_scenarios.py
-git commit -m "Part1-29: Live keeps the demo operations and activate swaps the running one, paused at its start; saved plays stay with their operation (decision 0041)"
+git commit -m "Part1-29: Live keeps the demo operations and activate swaps the running one, paused at its start; saved plays stay with their operation (decision 0042)"
 ```
 
 ---
@@ -294,7 +294,7 @@ git commit -m "Part1-29: Live keeps the demo operations and activate swaps the r
 
 ```python
 def test_scenarios_lists_the_demo_operations_with_the_running_one_active():
-    # decision 0041: the editor picks one of the demo operations
+    # decision 0042: the editor picks one of the demo operations
     client, _ = fake_app()
     got = client.get("/scenarios").json()
     assert [(s["id"], s["active"]) for s in got] == [
@@ -331,12 +331,12 @@ Expected: FAIL (`/scenarios` 404, `create_app() got an unexpected keyword argume
 - [ ] **Step 3: 구현**
 
 `modules/gateway/app.py`:
-- docstring 셋째 줄 `One operation lives in process memory (`Live`)`를 `The demo operations live in process memory (`Live`, one of them running, decision 0041)`로.
+- docstring 셋째 줄 `One operation lives in process memory (`Live`)`를 `The demo operations live in process memory (`Live`, one of them running, decision 0042)`로.
 - `from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect`
 - `DEFAULT_SCENARIO` 아래:
 
 ```python
-# Operations the editor can pick (decision 0041). The backup baengnyeong_night_before_0036.json
+# Operations the editor can pick (decision 0042). The backup baengnyeong_night_before_0036.json
 # shares the night scenario id, so it is left out.
 DEMO_SCENARIOS = [
     DEFAULT_SCENARIO,
@@ -380,7 +380,7 @@ Expected: PASS
 
 ```bash
 git add modules/gateway/app.py modules/gateway/tests/test_app.py
-git commit -m "Part1-29: gateway reads the demo operations and serves GET /scenarios and POST /scenarios/{id}/activate (decision 0041)"
+git commit -m "Part1-29: gateway reads the demo operations and serves GET /scenarios and POST /scenarios/{id}/activate (decision 0042)"
 ```
 
 Run: `scripts/ship.sh` — rebase·테스트·smoke 통과 뒤 main에 push. 실패하면 출력의 실패 테스트를 고치고 다시.
@@ -494,7 +494,7 @@ import type { ScenarioInfo } from "../../contracts.gen";
 
 type Fetch = (url: string) => Promise<Response>;
 
-// GET /scenarios (decision 0041): the operations the gateway can run, the running one active.
+// GET /scenarios (decision 0042): the operations the gateway can run, the running one active.
 // Any failure (old gateway, network, not a list) is [], so the list just does not show.
 export async function fetchScenarios(f: Fetch = (url) => fetch(url)): Promise<ScenarioInfo[]> {
   try {
@@ -515,7 +515,7 @@ import type { RunState } from "../../contracts.gen";
 
 type Fetch = (url: string, init?: RequestInit) => Promise<Response>;
 
-// POST /scenarios/{id}/activate (decision 0041): the gateway runs that operation from its start, paused.
+// POST /scenarios/{id}/activate (decision 0042): the gateway runs that operation from its start, paused.
 export async function activateScenario(id: string, f: Fetch = (url, init) => fetch(url, init)): Promise<RunState> {
   const url = `/scenarios/${encodeURIComponent(id)}/activate`;
   const r = await f(url, { method: "POST" });
@@ -529,7 +529,7 @@ export async function activateScenario(id: string, f: Fetch = (url, init) => fet
 ```ts
 import { RUN_STOPS, type RunStop } from "./runStops";
 
-// "다음 사건" stops are scenes of the night demo (Part1-13.1); other operations have none (decision 0041).
+// "다음 사건" stops are scenes of the night demo (Part1-13.1); other operations have none (decision 0042).
 export function stopsFor(scenarioId: string | null): RunStop[] {
   return scenarioId === "baengnyeong_night" ? RUN_STOPS : [];
 }
@@ -545,16 +545,16 @@ Expected: PASS (9 tests)
 `modules/cop-ui/SPEC.md` 표 끝(UI-48 다음)에:
 
 ```markdown
-| UI-49 | fetchScenarios | — | ScenarioInfo[] | GET /scenarios(결정 0041), 오류·연결 실패·목록 아님이면 빈 목록 | 리드 | 완료 |
+| UI-49 | fetchScenarios | — | ScenarioInfo[] | GET /scenarios(결정 0042), 오류·연결 실패·목록 아님이면 빈 목록 | 리드 | 완료 |
 | UI-50 | activateScenario | 작전 id | RunState | POST /scenarios/{id}/activate(그 작전을 실행 작전으로, 시작 전 멈춤), 2xx 아니면·연결 실패면 오류 | 리드 | 완료 |
-| UI-51 | stopsFor | 실행 작전 id | RunStop[] | 야간 시연(baengnyeong_night)이면 RUN_STOPS, 그 밖은 없음(다음 사건 없음, 결정 0041) | 리드 | 완료 |
+| UI-51 | stopsFor | 실행 작전 id | RunStop[] | 야간 시연(baengnyeong_night)이면 RUN_STOPS, 그 밖은 없음(다음 사건 없음, 결정 0042) | 리드 | 완료 |
 ```
 
 - [ ] **Step 6: Commit**
 
 ```bash
 git add modules/cop-ui/src/features/live/fetchScenarios.ts modules/cop-ui/src/features/live/fetchScenarios.test.ts modules/cop-ui/src/features/editor/activateScenario.ts modules/cop-ui/src/features/editor/activateScenario.test.ts modules/cop-ui/src/features/run/stopsFor.ts modules/cop-ui/src/features/run/stopsFor.test.ts modules/cop-ui/SPEC.md
-git commit -m "Part1-29: UI actions fetchScenarios, activateScenario and stopsFor (decision 0041)"
+git commit -m "Part1-29: UI actions fetchScenarios, activateScenario and stopsFor (decision 0042)"
 ```
 
 ---
@@ -580,7 +580,7 @@ git commit -m "Part1-29: UI actions fetchScenarios, activateScenario and stopsFo
 `PlaySidebar.tsx` import에 `import type { ScenarioInfo } from "../../contracts.gen";`, `Props`에:
 
 ```ts
-  // Decision 0041: the operations the gateway can run; picking another makes it the running one.
+  // Decision 0042: the operations the gateway can run; picking another makes it the running one.
   scenarios?: ScenarioInfo[];
   onPickScenario?: (id: string) => void;
 ```
@@ -630,7 +630,7 @@ import { activateScenario } from "./activateScenario";
 `const [fresh, setFresh] = ...` 다음에:
 
 ```ts
-  // Decision 0041: the operations to pick, and why a pick or "시뮬레이션" failed.
+  // Decision 0042: the operations to pick, and why a pick or "시뮬레이션" failed.
   const [scenarios, setScenarios] = useState<ScenarioInfo[]>([]);
   const [opError, setOpError] = useState<string | null>(null);
 ```
@@ -688,7 +688,7 @@ import { stopsFor } from "./stopsFor";
 `const [armedAt, ...]` 다음에:
 
 ```ts
-  // "다음 사건" stops of the running operation (decision 0041). Like startedMs, read again once a Frame
+  // "다음 사건" stops of the running operation (decision 0042). Like startedMs, read again once a Frame
   // arrives if the gateway was down when the screen opened.
   const [stops, setStops] = useState<RunStop[] | null>(null);
   useEffect(() => {
@@ -739,7 +739,7 @@ Expected: 빌드 성공
 
 ```bash
 git add modules/cop-ui/src
-git commit -m "Part1-29: editor sidebar lists the operations and switches the running one, 시뮬레이션 resets and opens the live tab paused, run bar stops follow the running operation (decision 0041)"
+git commit -m "Part1-29: editor sidebar lists the operations and switches the running one, 시뮬레이션 resets and opens the live tab paused, run bar stops follow the running operation (decision 0042)"
 ```
 
 ---
@@ -754,7 +754,7 @@ git commit -m "Part1-29: editor sidebar lists the operations and switches the ru
 `demo/BUILT_HERE.md` "해커톤 중 만든 것" 표 끝에(시각은 `date '+%m/%d %H:%M'`로 KST):
 
 ```markdown
-| 10/10 HH:MM | gateway, cop-ui | Part1-29 작전 고르기(결정 0041): gateway가 시연 작전 2개(야간 경계·24시간 해안 순찰 교대)를 메모리에 들고 GET /scenarios·POST /scenarios/{id}/activate로 실행 작전을 바꿈(저장한 플레이는 작전별로 남음). 편집기 사이드바 작전 목록, 작전 개요 '▶ 시뮬레이션'(시작 전 멈춤으로 상황판), 다음 사건은 야간 작전만 | kth9245 |
+| 10/10 HH:MM | gateway, cop-ui | Part1-29 작전 고르기(결정 0042): gateway가 시연 작전 2개(야간 경계·24시간 해안 순찰 교대)를 메모리에 들고 GET /scenarios·POST /scenarios/{id}/activate로 실행 작전을 바꿈(저장한 플레이는 작전별로 남음). 편집기 사이드바 작전 목록, 작전 개요 '▶ 시뮬레이션'(시작 전 멈춤으로 상황판), 다음 사건은 야간 작전만 | kth9245 |
 ```
 
 - [ ] **Step 2: Commit, ship, 할 일 완료**
