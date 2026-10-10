@@ -185,6 +185,35 @@
       "default": 0,
       "title": "Last Seen Vel North Mps",
       "type": "number"
+    },
+    "ident_state": {
+      "default": "undetected",
+      "enum": [
+        "undetected",
+        "rf_only",
+        "identifying",
+        "identified"
+      ],
+      "title": "Ident State",
+      "type": "string"
+    },
+    "ident_confidence": {
+      "default": 0,
+      "title": "Ident Confidence",
+      "type": "integer"
+    },
+    "ident_reasons": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Ident Reasons",
+      "type": "array"
+    },
+    "ident_observed_ms": {
+      "default": 0,
+      "title": "Ident Observed Ms",
+      "type": "integer"
     }
   },
   "required": [

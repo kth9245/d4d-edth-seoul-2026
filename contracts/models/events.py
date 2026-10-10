@@ -32,6 +32,12 @@ class Target(BaseModel):
     last_seen_pos: GeoPoint | None = None  # where a vehicle last saw it (decision 0047)
     last_seen_vel_east_mps: float = 0  # its velocity then: approaching or fleeing
     last_seen_vel_north_mps: float = 0
+    ident_state: Literal["undetected", "rf_only", "identifying", "identified"] = "undetected"
+    ident_confidence: int = (
+        0  # sensing: evidence score in 0.01 units, 0..100 (stage 2, unknown kind only)
+    )
+    ident_reasons: list[str] = []
+    ident_observed_ms: int = 0  # how long it has been seen without a gap (ms); a gap resets it
 
 
 class Report(BaseModel):

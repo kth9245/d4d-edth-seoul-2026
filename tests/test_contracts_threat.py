@@ -22,3 +22,11 @@ def test_watch_point_and_rf_fields_exist():
 
 def test_existing_demo_scenario_still_loads():
     assert load_scenario_json("demo/scenarios/baengnyeong_night.json").id == "baengnyeong_night"
+
+
+def test_a_new_target_has_no_identification():
+    t = Target(id="site_a", kind="unknown", pos=P, vel_east_mps=0, vel_north_mps=0,
+               first_seen_ms=0, last_seen_ms=0)  # fmt: skip
+    assert (t.ident_state, t.ident_confidence, t.ident_reasons, t.ident_observed_ms) == (
+        "undetected", 0, [], 0,
+    )  # fmt: skip

@@ -195,7 +195,11 @@
    "threat_accum": 0,
    "last_seen_pos": null,
    "last_seen_vel_east_mps": 0.0,
-   "last_seen_vel_north_mps": 0.0
+   "last_seen_vel_north_mps": 0.0,
+   "ident_state": "undetected",
+   "ident_confidence": 0,
+   "ident_reasons": [],
+   "ident_observed_ms": 0
   }
  ],
  "reports": [

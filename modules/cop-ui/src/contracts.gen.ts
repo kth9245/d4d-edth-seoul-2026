@@ -238,6 +238,10 @@ export interface Target {
   last_seen_pos?: GeoPoint | null;
   last_seen_vel_east_mps?: number;
   last_seen_vel_north_mps?: number;
+  ident_state?: "undetected" | "rf_only" | "identifying" | "identified";
+  ident_confidence?: number;
+  ident_reasons?: string[];
+  ident_observed_ms?: number;
 }
 
 export type ReportKind = "target_detected" | "target_select" | "vehicle_gap" | "vehicle_lost" | "battery_low" | "injection_pending" | "command_blocked" | "target_neutralized";
