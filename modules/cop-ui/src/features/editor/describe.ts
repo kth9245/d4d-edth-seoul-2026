@@ -10,6 +10,7 @@ export const ACTION_LABEL: Record<ActionKind, string> = {
   approach_target: "표적 접근",
   relay_comms: "통신 중계",
   hold: "대기",
+  strike_target: "표적 타격",
 };
 
 const CONDITION_LABEL: Record<ConditionKind, string> = {

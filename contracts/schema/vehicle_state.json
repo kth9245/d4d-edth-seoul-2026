@@ -48,7 +48,8 @@
         "follow_route",
         "zigzag",
         "return_home",
-        "relay"
+        "relay",
+        "strike"
       ],
       "title": "CommandKind",
       "type": "string"
@@ -301,6 +302,18 @@
       ],
       "default": null,
       "title": "Target Id"
+    },
+    "decision_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Decision Id"
     },
     "emergency": {
       "anyOf": [

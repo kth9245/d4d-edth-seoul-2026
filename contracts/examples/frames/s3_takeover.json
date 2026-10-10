@@ -45,6 +45,7 @@
    },
    "pending_report_id": null,
    "target_id": null,
+   "decision_id": null,
    "emergency": null,
    "resume_play_id": null,
    "resume_step_id": null
@@ -102,6 +103,7 @@
    },
    "pending_report_id": null,
    "target_id": null,
+   "decision_id": null,
    "emergency": null,
    "resume_play_id": null,
    "resume_step_id": null
@@ -149,6 +151,7 @@
    },
    "pending_report_id": null,
    "target_id": "boat1",
+   "decision_id": null,
    "emergency": null,
    "resume_play_id": null,
    "resume_step_id": null
@@ -196,6 +199,7 @@
    },
    "pending_report_id": null,
    "target_id": "boat1",
+   "decision_id": null,
    "emergency": null,
    "resume_play_id": null,
    "resume_step_id": null
@@ -246,6 +250,7 @@
    },
    "pending_report_id": null,
    "target_id": null,
+   "decision_id": null,
    "emergency": null,
    "resume_play_id": null,
    "resume_step_id": null
@@ -266,7 +271,12 @@
    "last_seen_ms": 1791634740000,
    "seen_by": [
     "usv"
-   ]
+   ],
+   "neutralized_ms": null,
+   "play_id": null,
+   "step_id": null,
+   "waypoint_idx": 0,
+   "step_since_ms": null
   }
  ],
  "reports": [

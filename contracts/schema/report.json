@@ -34,7 +34,8 @@
         "vehicle_lost",
         "battery_low",
         "injection_pending",
-        "command_blocked"
+        "command_blocked",
+        "target_neutralized"
       ],
       "title": "ReportKind",
       "type": "string"

@@ -12,13 +12,14 @@ const TITLE: Record<Card["kind"], string> = {
   target_detected: "표적 발견", target_select: "표적 선택", vehicle_gap: "감시 공백", vehicle_lost: "기체 상실",
   battery_low: "배터리 부족", injection_pending: "전환 승인 대기", command_blocked: "명령 차단",
   injection: "전환 승인 대기", outside_zone: "차단 · 구역 밖", battery_insufficient: "차단 · 배터리 부족",
-  no_provenance: "차단 · 근거 없음",
+  no_provenance: "차단 · 근거 없음", target_neutralized: "표적 무력화",
 };
 // Short status code in front of the Korean title (D4D tone; theme.css colors it by tone).
 const CODE: Record<Card["kind"], string> = {
   target_detected: "CONTACT", target_select: "SELECT", vehicle_gap: "GAP", vehicle_lost: "LINK LOST",
   battery_low: "BATTERY", injection_pending: "PENDING", command_blocked: "BLOCKED", injection: "PENDING",
   outside_zone: "BLOCKED", battery_insufficient: "BLOCKED", no_provenance: "BLOCKED",
+  target_neutralized: "NEUTRALIZED",
 };
 const TONE: Partial<Record<Card["kind"], string>> = {
   vehicle_gap: "warn", vehicle_lost: "warn", battery_low: "warn", injection: "pending",

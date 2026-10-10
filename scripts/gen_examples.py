@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT), str(ROOT / "scripts")]
 
 from example_scenes import BLK1, INJ, REP1, T1, T2, at, scenes  # noqa: E402
-from example_world import OPERATION, PLAYS, SCENARIO, SPECS, ZONE  # noqa: E402
+from example_world import OPERATION, PLAYS, SCENARIO, SPECS, ZONE, gp  # noqa: E402
 
 from contracts.models import (  # noqa: E402
     ALL_MODELS,
@@ -23,6 +23,7 @@ from contracts.models import (  # noqa: E402
     DirectControl,
     DirectIn,
     DraftIn,
+    EnemySpec,
     PlayCheck,
     SwitchIn,
     TickInputs,
@@ -62,6 +63,14 @@ def examples() -> dict[str, object]:
         "vehicle_spec": SPECS["d1"],
         "vehicle_state": s2.vehicles[0],
         "operation": OPERATION,
+        "enemy_spec": EnemySpec(
+            id="boat1",
+            kind="boat",
+            speed_mps=1.0,
+            appear_offset_ms=660_000,
+            pos=gp(37.985, 124.70),
+            play_id="enemy_boat1",
+        ),  # fmt: skip
         "condition": watch.on[0].cond,
         "action": watch.do,
         "exit": watch.on[0],

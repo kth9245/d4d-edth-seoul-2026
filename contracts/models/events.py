@@ -18,6 +18,11 @@ class Target(BaseModel):
     first_seen_ms: int
     last_seen_ms: int
     seen_by: list[str] = []
+    neutralized_ms: int | None = None  # struck (decision 0033); it stops moving
+    play_id: str | None = None  # enemy progress (decision 0032)
+    step_id: str | None = None
+    waypoint_idx: int = 0  # -1 = arrived at the move_to destination
+    step_since_ms: int | None = None  # when this step began (time_elapsed)
 
 
 class Report(BaseModel):

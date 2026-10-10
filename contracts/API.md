@@ -12,16 +12,19 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | 선택지 | 보고 카드의 버튼. 누르면 `play_by_vehicle`의 기체들이 각자 그 플레이의 첫 step에서 시작 | `Choice` |
 | 오퍼레이션(작전) | 임무 틀(`zone`·`vehicle_ids`·`started_ms`) + 시작 플레이(`assign`) + 예비(`reserve`) + 전체 전환 버튼(`switches`) | `Operation`, `Switch` |
 | 시나리오 | 시연 묶음: 작전 + 기체 제원 + 플레이 목록 + 사건 대본 | `Scenario` |
+| 적 | 대본에 적은 적 하나: 등장 시각(`appear_offset_ms`)·위치(`pos` 또는 `from_enemy`의 현재 위치)·속도 + 따르는 플레이. 행동은 `move_to`·`patrol_route`·`hold`, 조건은 `arrived`·`time_elapsed`(`params.sec`)만. runtime·safety를 거치지 않고 sim이 움직인다(결정 0032) | `EnemySpec`, `Scenario.enemies` |
 
 플레이는 다른 기체를 알지 못하지만, 선택지의 `play_by_vehicle`은 기체 id를 직접 적는다(결정 0016, 사람이 알고 고름).
 선택지가 보고한 기체를 `play_by_vehicle`에 넣지 않으면, 그 기체는 같은 플레이에서 지금 step의 탈출 `{cond: {kind: operator_choice, params: {choice: <선택지 id>}}, go_step}`으로 넘어간다. 그런 탈출이 없으면 보고 step에 머문다(결정 0031, 편집기 "보고 카드 끼워 넣기"가 이 모양을 넣는다).
 
-**표적이 필요한 행동**(`watch_target`, `approach_target`)의 `do.params.target`:
+**표적이 필요한 행동**(`watch_target`, `approach_target`, `strike_target`)의 `do.params.target`:
 - `"nearest"`: step에 들어갈 때 그 기체에서 가장 가까운 표적
 - `"operator"`: step에 들어갈 때 명령 없이 `target_select` 카드만 낸다(선택지 id = 표적 id, `play_by_vehicle` 비움). 결정이 오면 `VehicleState.target_id`를 정하고 `entered_step=False`로 되돌려 다음 틱에 명령을 낸다
 - 그 밖의 문자열: 고정 표적 id
 
 정해진 표적은 `VehicleState.target_id`에 둔다. 명령으로 나갈 때는 `params.target_id`가 된다.
+
+**타격(결정 0033).** 선택지가 기체를 다른 플레이로 옮기면 그 기체에 `decision_id`(결정 id)와 `target_id`(카드의 표적)를 적는다. 전환 버튼·예비 이어받기로 옮긴 기체는 `decision_id`가 없다. `strike_target` step의 명령(`strike`)은 출처 `decision_id`와 params `target`(표적의 현재 위치)을 싣고, safety 규칙 1은 `decision_id` 없는 `strike`를 `no_provenance`로 막는다(규칙 2·3은 `target`으로 그대로). 타격 중 기체가 표적 100 m 안이면 sim이 표적을 무력화(`neutralized_ms`, 속도 0)하고 `target_neutralized` 카드(알림만)를 낸다. 결정으로 옮긴 기체가 기다리던 다른 카드는 같이 닫힌다.
 
 ## 2. 시간·단위·id
 
@@ -32,6 +35,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
   - `watch_target`·`approach_target`: 그 기체가 어느 표적의 `seen_by`에 든 틱
   - `move_to`·`patrol_route`: `waypoint_idx`가 -1 또는 1 이상이 된 틱
   - 그 밖의 행동: 첫 PassedCommand가 나온 틱
+- `mission_success`: 표적 하나라도 무력화되면 참(결정 0033).
 
 ## 3. 틱 한 번 (gateway `engine.py`, 호출 순서만)
 
@@ -40,6 +44,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | 순서 | 모듈 | 함수 |
 |---|---|---|
 | 1 | sim | `apply_events(scenario, states, targets, t_ms, dt_ms) -> (states, targets)` |
+| 1.5 | sim | 적(결정 0032): `spawn_enemies(scenario, targets, t_ms, dt_ms) -> targets`, `steer_enemies(enemies, plays, targets, t_ms, dt_ms) -> targets` |
 | 2 | sensing | `observe(states, specs, targets, t_ms) -> targets` |
 | 3 | runtime | 입력 적용: `apply_decision(states, plays, decision, reports) -> (states, reports)`, 승인된 것만 `apply_injection(states, plays, injection) -> states`, `apply_direct(states, direct, t_ms) -> (states, Command)` |
 | 4 | runtime | `apply_emergency(states, plays) -> states` |
@@ -47,6 +52,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | 6 | runtime | `apply_reserves(states, op, plays, assignments, t_ms) -> (states, assignments, Report \| None)` |
 | 7 | safety | 명령마다 `check_command(cmd, state, spec, op, plays, injections) -> PassedCommand \| Block` |
 | 8 | sim | `advance(states, specs, passed, dt_ms, targets) -> states` |
+| 8.5 | sim | `resolve_strikes(states, targets, t_ms) -> (targets, list[Report])`(결정 0033) |
 | 9 | runtime | `update_metrics(metrics, outcome: TickOutcome) -> Metrics` |
 | 10 | gateway | `build_frame(state, log) -> Frame` |
 
@@ -77,6 +83,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | 엔드포인트 | 요청 | 응답 |
 |---|---|---|
 | `GET /plays` · `POST /plays` | — · `Play` | `Play[]` · `PlayCheck` |
+| `GET /enemies` | — | `EnemySpec[]`(시나리오의 적, Part1-21) |
 | `POST /plays/check` | `Play` | `PlayCheck` |
 | `POST /plays/draft` | `DraftIn{text}` | `Play`(origin=ai_draft, approved=false) |
 | `GET /operation` · `POST /operation` | — · `Operation` | `Operation` |

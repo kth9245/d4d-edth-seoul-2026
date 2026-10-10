@@ -28,7 +28,8 @@
         "watch_point",
         "approach_target",
         "relay_comms",
-        "hold"
+        "hold",
+        "strike_target"
       ],
       "title": "ActionKind",
       "type": "string"
@@ -152,6 +153,61 @@
         }
       },
       "title": "EmergencyRules",
+      "type": "object"
+    },
+    "EnemySpec": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/TargetKind"
+        },
+        "speed_mps": {
+          "title": "Speed Mps",
+          "type": "number"
+        },
+        "appear_offset_ms": {
+          "title": "Appear Offset Ms",
+          "type": "integer"
+        },
+        "pos": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GeoPoint"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "from_enemy": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "From Enemy"
+        },
+        "play_id": {
+          "title": "Play Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "speed_mps",
+        "appear_offset_ms",
+        "play_id"
+      ],
+      "title": "EnemySpec",
       "type": "object"
     },
     "Exit": {
@@ -481,6 +537,16 @@
       "title": "Switch",
       "type": "object"
     },
+    "TargetKind": {
+      "enum": [
+        "boat",
+        "fast_boat",
+        "person",
+        "unknown"
+      ],
+      "title": "TargetKind",
+      "type": "string"
+    },
     "VehicleSpec": {
       "properties": {
         "id": {
@@ -559,6 +625,14 @@
         "$ref": "#/$defs/ScenarioEvent"
       },
       "title": "Events",
+      "type": "array"
+    },
+    "enemies": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/EnemySpec"
+      },
+      "title": "Enemies",
       "type": "array"
     },
     "seed": {

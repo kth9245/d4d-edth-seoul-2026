@@ -27,6 +27,7 @@ class ActionKind(str, Enum):  # the one action of a step; also the AI draft voca
     approach_target = "approach_target"
     relay_comms = "relay_comms"
     hold = "hold"
+    strike_target = "strike_target"  # decision 0033: strike the approved target
 
 
 class ConditionKind(str, Enum):
@@ -47,6 +48,7 @@ class CommandKind(str, Enum):  # what goes out to a vehicle
     zigzag = "zigzag"
     return_home = "return_home"
     relay = "relay"
+    strike = "strike"
 
 
 class CommandSource(str, Enum):
@@ -71,6 +73,7 @@ class ReportKind(str, Enum):
     battery_low = "battery_low"
     injection_pending = "injection_pending"
     command_blocked = "command_blocked"
+    target_neutralized = "target_neutralized"  # alert only (decision 0033)
 
 
 class TargetKind(str, Enum):

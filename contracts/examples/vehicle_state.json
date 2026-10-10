@@ -41,6 +41,7 @@
  },
  "pending_report_id": null,
  "target_id": "boat1",
+ "decision_id": null,
  "emergency": null,
  "resume_play_id": null,
  "resume_step_id": null

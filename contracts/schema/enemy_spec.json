@@ -1,0 +1,90 @@
+{
+  "$defs": {
+    "GeoPoint": {
+      "properties": {
+        "lat": {
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "title": "Lon",
+          "type": "number"
+        },
+        "alt_m": {
+          "default": 0,
+          "title": "Alt M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ],
+      "title": "GeoPoint",
+      "type": "object"
+    },
+    "TargetKind": {
+      "enum": [
+        "boat",
+        "fast_boat",
+        "person",
+        "unknown"
+      ],
+      "title": "TargetKind",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "kind": {
+      "$ref": "#/$defs/TargetKind"
+    },
+    "speed_mps": {
+      "title": "Speed Mps",
+      "type": "number"
+    },
+    "appear_offset_ms": {
+      "title": "Appear Offset Ms",
+      "type": "integer"
+    },
+    "pos": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/GeoPoint"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "from_enemy": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "From Enemy"
+    },
+    "play_id": {
+      "title": "Play Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "kind",
+    "speed_mps",
+    "appear_offset_ms",
+    "play_id"
+  ],
+  "title": "EnemySpec",
+  "type": "object"
+}

@@ -16,6 +16,7 @@ TABLE: dict[str, tuple[CommandKind | None, ...]] = {  # (air, sea, ground)
     "approach_target": (K.keep_distance, K.keep_distance, None),
     "relay_comms": (K.relay,) * 3,
     "hold": (K.hold,) * 3,
+    "strike_target": (K.strike, K.strike, None),  # decision 0033
 }
 ORDER = ("air", "sea", "ground")
 

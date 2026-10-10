@@ -14,6 +14,8 @@ from modules.play.actions.expand_action import TABLE, expand_action
         ("watch_point", "ground", CommandKind.hold),
         ("approach_target", "sea", CommandKind.keep_distance),
         ("return_home", "air", CommandKind.return_home),
+        ("strike_target", "air", CommandKind.strike),
+        ("strike_target", "sea", CommandKind.strike),
     ],
 )
 def test_action_becomes_the_domain_command(kind, domain, want):
@@ -28,3 +30,7 @@ def test_none_when_the_domain_cannot_do_it():
 def test_table_covers_every_action_for_three_domains():
     assert set(TABLE) == {k.value for k in ActionKind}
     assert all(len(row) == len(Domain) for row in TABLE.values())
+
+
+def test_ground_cannot_strike():
+    assert expand_action(Action(kind="strike_target"), Domain.ground) is None

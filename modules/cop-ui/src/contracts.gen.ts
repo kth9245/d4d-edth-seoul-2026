@@ -9,7 +9,7 @@ export interface Polygon {
   points: GeoPoint[];
 }
 
-export type ActionKind = "move_to" | "patrol_route" | "search_area" | "return_home" | "watch_target" | "watch_point" | "approach_target" | "relay_comms" | "hold";
+export type ActionKind = "move_to" | "patrol_route" | "search_area" | "return_home" | "watch_target" | "watch_point" | "approach_target" | "relay_comms" | "hold" | "strike_target";
 
 export type Domain = "air" | "sea" | "ground";
 
@@ -32,7 +32,7 @@ export interface Command {
   provenance?: Provenance | null;
 }
 
-export type CommandKind = "move" | "orbit" | "keep_distance" | "hold" | "follow_route" | "zigzag" | "return_home" | "relay";
+export type CommandKind = "move" | "orbit" | "keep_distance" | "hold" | "follow_route" | "zigzag" | "return_home" | "relay" | "strike";
 
 export type CommandSource = "play_step" | "operator_decision" | "operator_direct" | "injected_plan" | "emergency";
 
@@ -70,6 +70,7 @@ export interface VehicleState {
   active?: PassedCommand | null;
   pending_report_id?: string | null;
   target_id?: string | null;
+  decision_id?: string | null;
   emergency?: EmergencyKind | null;
   resume_play_id?: string | null;
   resume_step_id?: string | null;
@@ -92,6 +93,18 @@ export interface Operation {
   assign?: Record<string, string>;
   reserve?: Record<string, string[]>;
   switches?: Switch[];
+}
+
+export type TargetKind = "boat" | "fast_boat" | "person" | "unknown";
+
+export interface EnemySpec {
+  id: string;
+  kind: TargetKind;
+  speed_mps: number;
+  appear_offset_ms: number;
+  pos?: GeoPoint | null;
+  from_enemy?: string | null;
+  play_id: string;
 }
 
 export type ConditionKind = "target_found" | "arrived" | "time_elapsed" | "battery_below" | "operator_choice" | "signal_received";
@@ -173,8 +186,6 @@ export interface Block {
   t_ms: number;
 }
 
-export type TargetKind = "boat" | "fast_boat" | "person" | "unknown";
-
 export interface Target {
   id: string;
   kind: TargetKind;
@@ -184,9 +195,14 @@ export interface Target {
   first_seen_ms: number;
   last_seen_ms: number;
   seen_by?: string[];
+  neutralized_ms?: number | null;
+  play_id?: string | null;
+  step_id?: string | null;
+  waypoint_idx?: number;
+  step_since_ms?: number | null;
 }
 
-export type ReportKind = "target_detected" | "target_select" | "vehicle_gap" | "vehicle_lost" | "battery_low" | "injection_pending" | "command_blocked";
+export type ReportKind = "target_detected" | "target_select" | "vehicle_gap" | "vehicle_lost" | "battery_low" | "injection_pending" | "command_blocked" | "target_neutralized";
 
 export interface Report {
   id: string;
@@ -274,6 +290,7 @@ export interface Scenario {
   vehicles: VehicleSpec[];
   plays: Play[];
   events?: ScenarioEvent[];
+  enemies?: EnemySpec[];
   seed?: number;
   tick_ms?: number;
   speed?: number;

@@ -12,5 +12,10 @@
  "last_seen_ms": 1791634270000,
  "seen_by": [
   "d1"
- ]
+ ],
+ "neutralized_ms": null,
+ "play_id": null,
+ "step_id": null,
+ "waypoint_idx": 0,
+ "step_since_ms": null
 }

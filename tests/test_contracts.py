@@ -8,11 +8,13 @@ from contracts.models import (
     ALL_MODELS,
     Action,
     Detection,
+    EnemySpec,
     Frame,
     GeoPoint,
     Polygon,
     Scenario,
     ScenarioEvent,
+    Target,
     TickOutcome,
     VehicleState,
 )
@@ -93,3 +95,29 @@ def test_unknown_sensor_rejected():
 
 def test_tick_outcome_carries_all_reports_for_open_report_counting():
     assert "reports" in TickOutcome.model_fields
+
+
+def test_strike_and_enemy_enum_values():
+    from contracts.models import ActionKind, CommandKind, ReportKind
+
+    assert ActionKind("strike_target") and CommandKind("strike")
+    assert ReportKind("target_neutralized")
+
+
+def test_strike_and_enemy_fields_default_to_empty():
+    g = GeoPoint(lat=37.9, lon=124.7)
+    st = VehicleState(id="d1", t_ms=0, pos=g, heading_deg=0, battery_pct=90, status="ready")
+    assert st.decision_id is None
+    tg = Target(id="b", kind="boat", pos=g, vel_east_mps=0, vel_north_mps=0,
+                first_seen_ms=0, last_seen_ms=0)  # fmt: skip
+    assert (tg.neutralized_ms, tg.play_id, tg.step_id, tg.waypoint_idx, tg.step_since_ms) == (
+        None, None, None, 0, None,
+    )  # fmt: skip
+    sc = Scenario.model_validate(_load(EXAMPLES / "scenario.json"))
+    assert sc.enemies == []
+
+
+def test_enemy_appears_at_a_point_or_from_another_enemy():
+    e = EnemySpec(id="fast1", kind="fast_boat", speed_mps=6.3, appear_offset_ms=1_380_000,
+                  from_enemy="boat1", play_id="enemy_fast1")  # fmt: skip
+    assert e.pos is None and e.from_enemy == "boat1"

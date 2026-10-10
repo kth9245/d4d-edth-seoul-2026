@@ -57,7 +57,8 @@
         "follow_route",
         "zigzag",
         "return_home",
-        "relay"
+        "relay",
+        "strike"
       ],
       "title": "CommandKind",
       "type": "string"

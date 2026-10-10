@@ -38,6 +38,7 @@
 - search_area: 이 시뮬레이터에서 아직 움직이지 않는다. 쓰지 않는다.
 - watch_point: 이 시뮬레이터에서 아직 움직이지 않는다. 쓰지 않는다.
 - relay_comms: 이 시뮬레이터에서 아직 움직이지 않는다. 쓰지 않는다.
+- strike_target: 표적 타격. 운용자가 승인 카드에서 고른 뒤에만 들어가는 행동이다. 초안에서는 쓰지 않는다.
 
 ## 탈출 조건(on[].cond.kind)과 params
 - target_found: 이 기체가 표적을 발견함. params {}.

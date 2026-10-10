@@ -68,6 +68,59 @@
       },
       "title": "Seen By",
       "type": "array"
+    },
+    "neutralized_ms": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Neutralized Ms"
+    },
+    "play_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Play Id"
+    },
+    "step_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Step Id"
+    },
+    "waypoint_idx": {
+      "default": 0,
+      "title": "Waypoint Idx",
+      "type": "integer"
+    },
+    "step_since_ms": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Step Since Ms"
     }
   },
   "required": [

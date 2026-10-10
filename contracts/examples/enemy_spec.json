@@ -1,0 +1,13 @@
+{
+ "id": "boat1",
+ "kind": "boat",
+ "speed_mps": 1.0,
+ "appear_offset_ms": 660000,
+ "pos": {
+  "lat": 37.985,
+  "lon": 124.7,
+  "alt_m": 0.0
+ },
+ "from_enemy": null,
+ "play_id": "enemy_boat1"
+}

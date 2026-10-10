@@ -10,7 +10,8 @@
         "watch_point",
         "approach_target",
         "relay_comms",
-        "hold"
+        "hold",
+        "strike_target"
       ],
       "title": "ActionKind",
       "type": "string"

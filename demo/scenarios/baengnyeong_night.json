@@ -103,7 +103,8 @@
     "watch_point",
     "approach_target",
     "relay_comms",
-    "hold"
+    "hold",
+    "strike_target"
    ],
    "home": {
     "lat": 37.95,
@@ -127,7 +128,8 @@
     "watch_point",
     "approach_target",
     "relay_comms",
-    "hold"
+    "hold",
+    "strike_target"
    ],
    "home": {
     "lat": 37.955,
@@ -151,7 +153,8 @@
     "watch_point",
     "approach_target",
     "relay_comms",
-    "hold"
+    "hold",
+    "strike_target"
    ],
    "home": {
     "lat": 37.945,
@@ -175,7 +178,8 @@
     "watch_point",
     "approach_target",
     "relay_comms",
-    "hold"
+    "hold",
+    "strike_target"
    ],
    "home": {
     "lat": 37.94,
@@ -199,7 +203,8 @@
     "watch_point",
     "approach_target",
     "relay_comms",
-    "hold"
+    "hold",
+    "strike_target"
    ],
    "home": {
     "lat": 37.955,
@@ -585,6 +590,7 @@
    }
   }
  ],
+ "enemies": [],
  "seed": 7,
  "tick_ms": 200,
  "speed": 1.0

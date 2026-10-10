@@ -3,7 +3,7 @@
 from pydantic import BaseModel, Field
 
 from .command import PassedCommand
-from .enums import ActionKind, Domain, EmergencyKind, VehicleStatus
+from .enums import ActionKind, Domain, EmergencyKind, TargetKind, VehicleStatus
 from .play import Switch
 
 
@@ -28,6 +28,16 @@ class VehicleSpec(BaseModel):
     home: GeoPoint
 
 
+class EnemySpec(BaseModel):  # decision 0032: an enemy follows its own play, no safety checks
+    id: str
+    kind: TargetKind
+    speed_mps: float
+    appear_offset_ms: int  # ms after operation.started_ms
+    pos: GeoPoint | None = None  # where it appears, or
+    from_enemy: str | None = None  # at that enemy's current position
+    play_id: str
+
+
 class VehicleState(BaseModel):
     id: str
     t_ms: int
@@ -42,6 +52,7 @@ class VehicleState(BaseModel):
     active: PassedCommand | None = None  # sim keeps executing this between commands
     pending_report_id: str | None = None  # waiting for a Decision; no transitions meanwhile
     target_id: str | None = None  # target resolved for this step (nearest / operator / fixed)
+    decision_id: str | None = None  # operator decision that moved it into this play (decision 0033)
     emergency: EmergencyKind | None = None
     resume_play_id: str | None = None  # where to return after direct control
     resume_step_id: str | None = None
