@@ -146,3 +146,55 @@ def test_site_is_identified_then_approved_then_neutralized(sc):
     es = _run_until(es, lambda e: _site(e).neutralized_ms is not None, limit=15000)
     assert any(r.kind == "target_neutralized" and r.target_id == "site_rf" for r in es.reports)
     assert not es.blocks  # no safety rule (provenance, zone, battery) stopped the strike
+
+
+# ---- Act 2 acceptance: enemy unmanned gear; one decision moves air + sea + ground ----
+def _e_usv(es):
+    return next((t for t in es.targets if t.id == "e_usv"), None)
+
+
+def e_usv_down(es):
+    t = _e_usv(es)
+    return t is not None and t.neutralized_ms is not None
+
+
+def _sea_card(es):
+    return next((r for r in es.reports if r.kind == "target_detected"
+                 and r.target_id == "e_usv" and not r.resolved_ms), None)
+
+
+def test_enemy_usv_spawns_and_drops_two_ground_robots(sc):
+    es = init_engine(sc)
+    es = _run_until(es, lambda e: _e_usv(e) is not None, limit=20000)
+    es = _run_until(es, lambda e: {"e_ugv1", "e_ugv2"} <= {t.id for t in e.targets}, limit=20000)
+    ugv1 = next(t for t in es.targets if t.id == "e_ugv1")
+    assert ugv1.kind.value == "ugv"  # dropped by the enemy usv (from_enemy)
+
+
+def test_one_decision_moves_air_sea_and_ground_and_neutralizes_the_enemy_usv(sc):
+    es = init_engine(sc)
+    es = _run_until(es, lambda e: _sea_card(e) is not None, limit=25000)
+    card = _sea_card(es)
+    assert any(c.id == "strike_all_domains" for c in card.choices)
+    dec = Decision(id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=card.id,
+                   choice_id="strike_all_domains")
+    es, _ = tick(es, TickInputs(decisions=[dec]))
+    moved = {s.id: s.role_id for s in es.states}
+    assert moved["a1"] == "strike" and moved["a2"] == "strike" and moved["usv"] == "strike"
+    assert moved["ugv"] == "watch_landing"  # the ground robot moves on the same decision
+    strikers = {s.id: s for s in es.states}
+    for vid in ("a1", "a2", "usv"):  # the operator decision id rides each strike command
+        assert strikers[vid].decision_id == "dec-1" and strikers[vid].target_id == "e_usv", vid
+    es = _run_until(es, e_usv_down, limit=25000)
+    assert not es.blocks  # no provenance/zone/battery block on the whole-domain strike
+
+
+def test_mission_success_when_the_enemy_usv_is_down(sc):
+    es = init_engine(sc)
+    es = _run_until(es, lambda e: _sea_card(e) is not None, limit=25000)
+    card = _sea_card(es)
+    dec = Decision(id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=card.id,
+                   choice_id="strike_all_domains")
+    es, _ = tick(es, TickInputs(decisions=[dec]))
+    es = _run_until(es, e_usv_down, limit=25000)
+    assert es.metrics.mission_success  # a target was neutralized
