@@ -44,6 +44,7 @@
 - **Part3-15** play `compile_mavlink` (결정 0011) · 하위 0/1 완료 · PLY-10
 
 ## 최근 결정
+- 10/10 10:57 kth9245 · Part3-11 · 예시 데이터 대체 경로(UI-15)는 통합 2 직전까지 둠. 리드 답 '통합 2 직전까지 둠'
 - 10/10 10:57 kth9245 · Part3-11 · 플레이 머리 버튼은 '저장' = POST /plays: 서버가 check_play로 검사해 통과하면 gateway 메모리(live.scenario.plays)에 저장하고 실행을 작전 시작 직전(일시정지)으로 되돌림(POST /operation과 같은 방식), 실패면 저장 안 함. 응답은 항상 PlayCheck. 파일에는 쓰지 않음(리허설 재현). 계약의 POST /plays/check(검사만)도 같이 만듦. 리드 답 '저장으로 할건데', '저장하고 오퍼레이션 시작을 해야 실행되는거 아님?'
 - 10/10 10:49 kth9245 · Part1-13 · 다음 사건으로는 사건 시각 직후에서 일시정지한다: 먼저 /run/live?speed=0, 그다음 /run/jump(정지 시각 = 사건 추정 시각 + 몇 초). 카드가 떠 있는 정지 화면에서 설명을 시작한다. 리드 답 '사건 직후, 일시정지'
 - 10/10 10:41 kth9245 · Part1-10 · 카드는 Report(injection_pending·command_blocked 제외) + Frame.injections + Frame.blocks로 만든다. Report에 Injection·Block을 가리키는 칸이 없어서, 원본 항목으로 카드를 만들면 승인·대안 버튼(Part1-11·12)에 필요한 id를 계약 변경 없이 쓸 수 있다. 최신이 위, 처리된 것은 흐리게, 시각은 KST
