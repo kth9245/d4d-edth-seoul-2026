@@ -14,6 +14,7 @@ from modules.gateway.engine import init_engine, tick
 from modules.play import check_operation, load_play
 from modules.sim import load_scenario_json
 from shared.geo import dist_m
+from shared.land import inside, to_sea
 
 SC = load_scenario_json("demo/scenarios/baengnyeong_night.json")
 START, MIN = SC.operation.started_ms, 60_000
@@ -154,5 +155,6 @@ def test_demo_play_files_match_scenario_plays():
 def test_ugv_waits_near_the_shore_where_boat1_stops():
     plays = {p.id: p for p in SC.plays}
     ugv_at = GeoPoint(**plays["landing"].steps[0].do.params["target"])
-    boat_at = GeoPoint(**plays["enemy_boat1"].steps[0].do.params["target"])
-    assert dist_m(ugv_at, boat_at) < 500
+    # boat1's target may be on land; sim stops it at the sea point off that coast (decision 0034)
+    boat_at = to_sea(GeoPoint(**plays["enemy_boat1"].steps[0].do.params["target"]), SC.land)
+    assert inside(ugv_at, SC.land) and dist_m(ugv_at, boat_at) < 500
