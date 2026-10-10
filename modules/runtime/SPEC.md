@@ -11,4 +11,4 @@
 | RT-06 | apply_direct | states, DirectControl, t_ms | (states, Command) | operator_direct 명령 생성, 도착 시 resume 복귀 | 황승주 | 예정 |
 | RT-07 | apply_emergency | states, plays | states | 기체의 현재 플레이 emergency 규칙(battery_low_pct 등)에 걸리면 그 플레이의 지정 step으로 | 황승주 | 예정 |
 | RT-08 | enter_step | VehicleState, VehicleSpec, Play, Step, targets, t_ms | (state, Command/None, Report/None) | nearest·operator·고정 표적 각 1테스트, move_to의 target 좌표는 그대로, 귀환 step이면 returning. 원본: 스파이크 port/modules/runtime/actions/enter_step.py | 황승주 | 예정 |
-| RT-09 | switch_play | VehicleState, Play | VehicleState | play_id·step_id=entry·entered_step False·target·pending·resume 비움 1테스트. 원본: 스파이크 port | 황승주 | 예정 |
+| RT-09 | switch_play | VehicleState, Play | VehicleState | play_id·step_id=entry·entered_step False·target·pending·resume 비움 1테스트. 원본: 스파이크 port | 황승주 | 완료 |
