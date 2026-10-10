@@ -17,10 +17,12 @@ describe("decisionQueue", () => {
     expect(q.history.map((c) => c.id)).toEqual(["answered", "inj-2"]);
   });
 
-  it("asks about a block with an alternative for 30 s, then shows it as an alert for 2 min, then history", () => {
-    const block = mkCard({ id: "cmd-1", source: "block", kind: "outside_zone", alternative: { lat: 38, lon: 124.6 } });
-    expect(ids(decisionQueue([block], T0 + 29_000))).toEqual(["cmd-1"]);
-    expect(decisionQueue([block], T0 + 31_000).alerts.map((c) => c.id)).toEqual(["cmd-1"]);
+  it("asks about a block with an alternative until its vehicle gets a newer command, at most 2 min", () => {
+    // Speed-proof (review of Task 2): at ×10 a fixed 30 s would give the presenter 3 s to press the alternative.
+    const block = mkCard({ id: "cmd-1", source: "block", kind: "outside_zone", vehicle: "d2", alternative: { lat: 38, lon: 124.6 } });
+    expect(ids(decisionQueue([block], T0 + 90_000, { d2: T0 - 60_000 }))).toEqual(["cmd-1"]);
+    const sent = decisionQueue([block], T0 + 5_000, { d2: T0 + 4_000 }); // the alternative (or anything new) went out
+    expect([ids(sent), sent.alerts.map((c) => c.id)]).toEqual([[], ["cmd-1"]]);
     expect(decisionQueue([block], T0 + 121_000).history.map((c) => c.id)).toEqual(["cmd-1"]);
   });
 
@@ -42,6 +44,16 @@ describe("decisionQueue", () => {
     const q = decisionQueue([pick("p-d2", "d2"), pick("p-usv", "usv")], T0);
     expect(ids(q)).toEqual(["p-d2+p-usv"]);
     expect(decisionQueue([pick("p-d2", "d2")], T0).action[0].key).toBe("p-d2");
+  });
+
+  it("keeps a lone target pick at the same rank as merged ones, between threatening and watched boats", () => {
+    const risk = (s: number) => ({ score: s, rf: false, line: "", parts: [] });
+    const q = decisionQueue([
+      mkCard({ id: "low", choices: [ask], threat: risk(0.42) }),
+      mkCard({ id: "p-usv", kind: "target_select", vehicle: "usv", choices: [ask] }),
+      mkCard({ id: "high", choices: [ask], threat: risk(0.75) }),
+    ], T0);
+    expect(ids(q)).toEqual(["high", "p-usv", "low"]);
   });
 
   it("keeps a fresh strike result as an alert and older events in history, newest first", () => {
