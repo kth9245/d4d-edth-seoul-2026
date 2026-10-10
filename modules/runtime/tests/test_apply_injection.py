@@ -34,7 +34,7 @@ def test_pointing_switch_records_the_target():
 
 def test_pointing_makes_the_press_the_vehicles_decision():
     # decision 0058: the operator picked d2, a target role and boat1; that press is the decision on boat1,
-    # so a strike step of that role carries inj2 as its source and passes safety rule 1
+    # so any later strike step of the role carries inj2 as its source and passes safety rule 1
     inj = Injection(id="inj2", t_ms=0, label="표적 감시: d2 → boat1", status="approved",
                     role_by_vehicle={"d2": "watch"}, target_by_vehicle={"d2": "boat1"})  # fmt: skip
     (d2,) = apply_injection([vs("d2")], {"watch": WATCH}, inj)

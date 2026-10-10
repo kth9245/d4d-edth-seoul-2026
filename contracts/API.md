@@ -25,7 +25,7 @@ Role은 다른 기체를 알지 못하지만, 선택지의 `role_by_vehicle`은 
 
 정해진 표적은 `VehicleState.target_id`에 둔다. 명령으로 나갈 때는 `params.target_id`가 된다.
 
-**타격(결정 0033).** 선택지가 기체를 다른 Role로 옮기면 그 기체에 `decision_id`(결정 id)와 `target_id`(카드의 표적)를 적는다. 표적을 지목한 전환(`target_by_vehicle`이 있는 Injection)은 그 기체에 `decision_id` = 그 Injection id(`inj-n`)를 적는다. 운용자가 기체·표적·Role을 골라 누른 것이 그 표적에 대한 결정이다(결정 0058). 전환 버튼·표적 없는 전환·예비 이어받기로 옮긴 기체는 `decision_id`가 없다. `strike_target` step의 명령(`strike`)은 출처 `decision_id`와 params `target`(표적의 현재 위치)을 싣고, safety 규칙 1은 `decision_id` 없는 `strike`를 `no_provenance`로 막는다(규칙 2·3은 `target`으로 그대로). 타격 중 기체가 표적 100 m 안이면 sim이 표적을 무력화(`neutralized_ms`, 속도 0)하고 `target_neutralized` 카드(알림만)를 낸다. 결정으로 옮긴 기체가 기다리던 다른 카드는 같이 닫힌다.
+**타격(결정 0033).** 선택지가 기체를 다른 Role로 옮기면 그 기체에 `decision_id`(결정 id)와 `target_id`(카드의 표적)를 적는다. 표적을 지목한 전환(`target_by_vehicle`이 있는 Injection)은 그 기체에 `decision_id` = 그 Injection id(`inj-n`)를 적는다. 운용자가 기체·표적·Role을 골라 누른 것이 그 표적에 대한 결정이다(결정 0058). 전환 버튼·표적 없는 전환·예비 이어받기로 옮긴 기체는 `decision_id`가 없다. `strike_target` step의 명령(`strike`)은 출처 `decision_id`와 params `target`(표적의 현재 위치)을 싣고, safety 규칙 1은 `decision_id` 없는 `strike`를 `no_provenance`로 막는다(규칙 2·3은 `target`으로 그대로). 타격 중 기체가 표적 100 m 안이면 sim이 표적을 무력화(`neutralized_ms`, 속도 0)하고 `target_neutralized` 카드(알림만)를 낸다. 카드 선택지로 옮긴 기체가 기다리던 다른 카드는 같이 닫힌다(지목 전환은 카드를 닫지 않는다).
 
 **발견한 기체가 붙는다(결정 0036).** `target_found` 조건은 지금 step의 행동이 표적 행동(`watch_target`·`approach_target`·`strike_target`, 추적)이면 그 기체의 `target_id` 표적이 센서에 보일 때 참이고, 아니면(순찰·이동·대기) 센서에 보이는 표적 가운데 아직 카드가 올라가지 않은 것(`Target.reported_by`가 없음)이 있을 때만 참이다. 그래서 감시를 넘기고 순찰로 돌아온 기체는 예전 표적을 다시 보고하지 않고 새 배를 찾는다. `target_detected` 카드가 생긴 틱에 gateway `engine.py`가 그 카드의 표적에 `reported_by`(카드를 올린 기체 id)를 적는다. 그래서 같은 구역에 여러 척이 오면 두 번째 기체는 이미 카드가 올라간 배가 아니라 새 배에 붙어 카드를 올린다. 예비 이어받기(`apply_reserves`)는 빠진 기체의 `target_id`를 예비 기체에 넘긴다.
 
@@ -78,7 +78,7 @@ Role은 다른 기체를 알지 못하지만, 선택지의 `role_by_vehicle`은 
 - ontology(리드, 결정 0038): `kind_chain(kind, onto) -> list[VehicleKind]`, `explain_capability(kind, action, onto) -> CapabilityReason`, `infer_capabilities(kind, onto) -> list[ActionKind]`, `fill_vehicle_kinds(scenario) -> Scenario`, `ontology_view(scenario) -> OntologyView`
 - `PassedCommand`는 `safety.check_command`만 만든다.
 
-## 4. 전환 세 경로 (결정 0015·0016)
+## 4. 전환 경로 (결정 0015·0016)
 
 | 경로 | 시작 | 적용 |
 |---|---|---|
