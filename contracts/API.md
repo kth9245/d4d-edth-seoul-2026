@@ -60,7 +60,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 작전 시작(`/run/reset`) 상태: 모든 기체는 home 위치, `ready` 상태, `play_id = op.assign.get(id)`, `step_id`는 그 플레이의 `entry`, `entered_step=False`, `t_ms = op.started_ms`이고, 배정 사유는 "작전 배정"이다.
 
 **그 밖의 공개 API**
-- sim: `load_scenario_json(path) -> Scenario`. 레거시 `load_scenario`·`simulate`는 통합 1까지 그대로 둔다.
+- sim: `load_scenario_json(path) -> Scenario`. 레거시 `load_scenario`·`simulate`는 통합 1까지 그대로 둔다. `sea_aim(pos, goal, land) -> GeoPoint`(결정 0034): 해상 기체(domain sea)와 적 배(boat·fast_boat)는 직선이 `Scenario.land`를 지나면 섬 모서리(바다 쪽 100 m)를 돌아가고, 목표가 육지 안이면 해안에서 50 m 바다 점까지 간다.
 - safety: `point_in_polygon(p, poly) -> bool`, `return_feasible(state, spec, dest) -> (bool, GeoPoint | None)`
 - play: `load_play(path) -> Play`, `check_play(play, op, specs) -> PlayCheck`(플레이 하나만 본다: step 연결, 보고 지점, 작전 구역, 이 플레이를 assign·switches·reserve로 받는 기체의 영역·능력, 귀환 배터리. 다른 플레이를 받지 않으므로 선택지가 가리키는 플레이의 존재는 보지 않는다), `check_operation(op, plays, specs) -> PlayCheck`(작전 전체: assign·reserve·switches·보고 선택지가 만드는 (기체, 플레이) 쌍마다 check_play, 없는 플레이를 가리키면 `missing_play`. issue 메시지 앞에 `[플레이 id] `가 붙는다. 결정 0030), `expand_action(action, domain) -> CommandKind | None`, `list_templates() -> list[Play]`, `draft_play(text, op) -> Play`
 - mavlink(리드, 결정 0025): `compile_mavlink(play, op, specs) -> dict[기체 id, (plan dict, script str)]`. play는 `expand_action`만 공개 API로 쓴다
