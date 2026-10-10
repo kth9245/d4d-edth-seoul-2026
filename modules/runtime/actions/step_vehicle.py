@@ -18,7 +18,14 @@ from modules.runtime.actions.enter_step import TARGET_ACTIONS, enter_step
 from modules.sensing import CARD_ACCUM
 
 
-def _true(cond: Condition, st: VehicleState, targets: list[Target], tracking: bool) -> bool:
+def _true(
+    cond: Condition,
+    st: VehicleState,
+    targets: list[Target],
+    tracking: bool,
+    t_ms: int,
+    started_ms: int | None,
+) -> bool:
     if cond.kind == ConditionKind.target_found:  # decision 0036: tracking my target, else new boat
         if tracking:
             return any(tg.id == st.target_id and st.id in tg.seen_by for tg in targets)
@@ -30,11 +37,18 @@ def _true(cond: Condition, st: VehicleState, targets: list[Target], tracking: bo
         return st.waypoint_idx < 0
     if cond.kind == ConditionKind.battery_below:
         return st.battery_pct < float(cond.params.get("pct", 30))
+    if cond.kind == ConditionKind.at_time:  # decision 0045: T+ from the operation start
+        return started_ms is not None and t_ms - started_ms >= int(cond.params.get("offset_ms", 0))
     return False  # time_elapsed·operator_choice·signal_received: 시연 플레이에서 안 씀
 
 
 def step_vehicle(
-    st: VehicleState, spec: VehicleSpec, play: Play | None, targets: list[Target], t_ms: int
+    st: VehicleState,
+    spec: VehicleSpec,
+    play: Play | None,
+    targets: list[Target],
+    t_ms: int,
+    started_ms: int | None = None,
 ) -> tuple[VehicleState, Command | None, Report | None]:
     if st.step_id is None and st.resume_step_id and st.waypoint_idx < 0:  # direct control arrived
         back = {"step_id": st.resume_step_id, "entered_step": False}
@@ -50,6 +64,6 @@ def step_vehicle(
         return enter_step(st, spec, play, step, targets, t_ms)
     tracking = step.do.kind.value in TARGET_ACTIONS
     for ex in step.on:
-        if _true(ex.cond, st, targets, tracking):
+        if _true(ex.cond, st, targets, tracking, t_ms, started_ms):
             return st.model_copy(update={"step_id": ex.go_step, "entered_step": False}), None, None
     return st, None, None

@@ -75,7 +75,9 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
     states, assigns = relieve_hover(states, specs, sc.operation, plays, assigns, t)  # 4.6
     stepped = []
     for s in states:  # 5
-        s, cmd, rep = step_vehicle(s, specs[s.id], plays.get(s.play_id), targets, t)
+        s, cmd, rep = step_vehicle(
+            s, specs[s.id], plays.get(s.play_id), targets, t, sc.operation.started_ms
+        )  # 0045: at_time
         targets = mark_reported(targets, [rep] if rep else [])  # 5.1 decision 0036
         stepped.append(s)
         cmds += [cmd] if cmd else []

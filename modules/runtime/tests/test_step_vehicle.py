@@ -108,3 +108,21 @@ def test_direct_control_arrival_resumes_the_saved_step():
 def test_no_exit_true_keeps_the_step():
     st = vs()
     assert step(st) == (st, None, None)
+
+
+TIMED = Play(id="p", name="p", domains=["air"], entry="patrol", approved=True, steps=[
+    Step(id="patrol", name="순찰", do=Action(kind="hold"), on=[ex("at_time", "home", offset_ms=60_000)]),
+    Step(id="home", name="귀환", do=Action(kind="return_home")),
+])  # fmt: skip
+START = 1_000_000
+
+
+def test_at_time_fires_at_its_T_plus_offset():  # decision 0045
+    before, _, _ = step_vehicle(vs(), SPEC, TIMED, [], START + 59_999, START)
+    after, _, _ = step_vehicle(vs(), SPEC, TIMED, [], START + 60_000, START)
+    assert before.step_id == "patrol" and after.step_id == "home"
+
+
+def test_at_time_without_the_operation_start_never_fires():
+    st, _, _ = step_vehicle(vs(), SPEC, TIMED, [], START + 10**9)
+    assert st.step_id == "patrol"
