@@ -177,3 +177,30 @@ def test_another_step_or_a_fresh_start_begins_at_the_first_waypoint():
     )
     held = vs(step="patrol", entered=False, patrol_step_id="patrol", patrol_idx=7)
     assert step_vehicle(held, SPEC, ROLE, [], 3000)[0].waypoint_idx == 0  # ROLE's patrol only holds
+
+
+RESIGHT = Role(id="s", name="s", domains=["air"], entry="patrol", approved=True, steps=[
+    Step(id="patrol", name="순찰", do=Action(kind="patrol_route", params={"route": []}),
+         on=[ex("target_resighted", "assist")]),
+    Step(id="assist", name="함께 관측", do=Action(kind="watch_target", params={"target": "operator"})),
+])  # fmt: skip
+
+
+def reported(by: str = "d2", seen_by: tuple = ("d1",), **kw) -> Target:
+    return boat(list(seen_by)).model_copy(update={"reported_by": by, **kw})
+
+
+def test_target_resighted_stops_at_a_site_another_vehicle_reported():  # decision 0066
+    out = step_vehicle(vs(role_id="s"), SPEC, RESIGHT, [reported()], 3000)[0]
+    assert (out.step_id, out.target_id, out.entered_step) == ("assist", "boat1", False)
+
+
+def test_target_resighted_ignores_everything_else():
+    def stays(st, *targets):
+        return step_vehicle(st, SPEC, RESIGHT, list(targets), 3000)[0].step_id == "patrol"
+
+    assert stays(vs(role_id="s"), reported(by="d1"))  # my own report
+    assert stays(vs(role_id="s"), boat(["d1"]))  # nobody reported it: target_found's job
+    assert stays(vs(role_id="s"), reported(seen_by=("d2",)))  # I do not see it
+    assert stays(vs(role_id="s", target_id="boat1"), reported())  # it is already my target
+    assert stays(vs(role_id="s"), reported(threat_accum=449_999))  # the threat has not built up
