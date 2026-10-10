@@ -583,3 +583,4 @@
 {"at": "2026-10-11T02:11:13+09:00", "by": "kth9245", "op": "add", "id": "Part1-42.4", "title": "결정 번호 겹침: 공격 시연 시나리오 결정 다섯 개(Part1-15.1)를 0069~0073에서 0074~0078로 옮기고 참조를 고친다", "parent": "Part1-42", "assign": null, "slot": null, "spec": null}
 {"at": "2026-10-11T02:11:15+09:00", "by": "kth9245", "op": "start", "id": "Part1-42.4", "take": false, "from": null}
 {"at": "2026-10-11T02:12:12+09:00", "by": "kth9245", "op": "done", "id": "Part1-42.4", "take": false}
+{"at": "2026-10-11T02:27:27+09:00", "by": "황승주", "op": "done", "id": "Part2-66", "take": false}
