@@ -96,7 +96,7 @@ def after_strike(drone: str) -> dict:
 
 
 def assist() -> dict:
-    """A scout that meets a site another scout already reported stops and watches it too (decision 0066)."""
+    """A scout that meets a site another scout already reported stops and watches it too (decision 0067)."""
     stay = {"id": "stay", "label": "계속 관측", "role_by_vehicle": {}, "target_by_vehicle": {}}
     back = {
         "id": "back",
@@ -159,7 +159,7 @@ def coast_patrols(day: dict) -> tuple[list[dict], list[dict]]:
             ]  # decision 0031: the reporter not named in role_by_vehicle takes the operator_choice exit
             role["steps"][0][
                 "on"
-            ].append(  # decision 0066: after target_found (a new site comes first)
+            ].append(  # decision 0067: after target_found (a new site comes first)
                 {"cond": {"kind": "target_resighted", "params": {}}, "go_step": "assist"}
             )
             role["steps"] += [assist(), after_strike(drone)]

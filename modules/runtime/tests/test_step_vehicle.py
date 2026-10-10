@@ -190,7 +190,7 @@ def reported(by: str = "d2", seen_by: tuple = ("d1",), **kw) -> Target:
     return boat(list(seen_by)).model_copy(update={"reported_by": by, **kw})
 
 
-def test_target_resighted_stops_at_a_site_another_vehicle_reported():  # decision 0066
+def test_target_resighted_stops_at_a_site_another_vehicle_reported():  # decision 0067
     out = step_vehicle(vs(role_id="s"), SPEC, RESIGHT, [reported()], 3000)[0]
     assert (out.step_id, out.target_id, out.entered_step) == ("assist", "boat1", False)
 
