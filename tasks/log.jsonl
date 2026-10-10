@@ -593,3 +593,4 @@
 {"at": "2026-10-11T02:36:03+09:00", "by": "황승주", "op": "start", "id": "Part2-68", "take": false, "from": null}
 {"at": "2026-10-11T02:36:10+09:00", "by": "kth9245", "op": "done", "id": "Part1-32.6", "take": false}
 {"at": "2026-10-11T02:42:32+09:00", "by": "황승주", "op": "done", "id": "Part2-68", "take": false}
+{"at": "2026-10-11T02:46:46+09:00", "by": "kth9245", "op": "add", "id": "Part1-32.7", "title": "다음 사건 버튼·정지 시각 삭제(결정 0079)", "parent": "Part1-32", "assign": null, "slot": null, "spec": null}
