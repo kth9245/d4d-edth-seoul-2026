@@ -1,4 +1,4 @@
-"""RT-10 rotate_patrols: 해안 순찰 교대(결정 0037). 기준 배터리에 대기 기체 출발, 경로점 m에 닿으면
+"""RT-10 rotate_patrols: 해안 순찰 교대(결정 0037). 교대 시점은 relief_due(RT-14), 그때 대기 기체 출발, 경로점 m에 닿으면
 인계·나간 기체 귀환(그 전까지 순찰 계속). 하한선 우선, rotation_pools 짝 안에서만, 비면 아무것도 안 함.
 SPEC: modules/runtime/SPEC.md#RT-10
 """
@@ -6,15 +6,12 @@ SPEC: modules/runtime/SPEC.md#RT-10
 import re
 
 from contracts.models import Assignment, GeoPoint, Operation, Play, VehicleSpec, VehicleState
+from modules.runtime.actions.relief_due import FLOOR, _back, relief_due
 from modules.runtime.actions.switch_play import switch_play
 from shared.geo import dist_m
 
-FLOOR, START, MEET_M = 31.0, 35.0, 500.0  # floor 30% + 1 tick slack, relief %, handover m
+MEET_M = 500.0  # handover m; FLOOR and START live in relief_due
 OUT = re.compile(r"교대 출발: (\S+) → (\S+) @(\d+)")
-
-
-def _back(st: VehicleState, spec: VehicleSpec) -> float:  # battery % to fly home from here
-    return 100 / spec.endurance_min * dist_m(st.pos, spec.home) / spec.speed_mps / 60
 
 
 def _point(play: Play, m: int) -> GeoPoint:  # route point m of the patrol (it wraps)
@@ -65,9 +62,12 @@ def rotate_patrols(
     for v in (v for v in on if v not in busy and by[v].play_id in op.rotation_plays):
         st, spec = by[v], specs[v]
         alone = sum(by[w].play_id == st.play_id for w in on) == 1 and st.step_id == plays[st.play_id].entry  # fmt: skip
-        if alone and st.battery_pct - 2 * _back(st, spec) <= START and (r := free(v, st.play_id)):
-            by[r] = switch_play(by[r], plays[st.play_id])
-            note(r, st.play_id, f"교대 출발: {r} → {v} @{max(st.waypoint_idx, 0)}")
+        if alone and (r := free(v, st.play_id)):
+            m = max(st.waypoint_idx, 0)
+            fly = dist_m(by[r].pos, _point(plays[st.play_id], m)) / specs[r].speed_mps / 60  # fmt: skip
+            if relief_due(st, spec, fly):
+                by[r] = switch_play(by[r], plays[st.play_id])
+                note(r, st.play_id, f"교대 출발: {r} → {v} @{m}")
 
     def held(p: str) -> bool:
         return any(by[w].play_id == p and by[w].status.value in ("ready", "active") for w in op.rotation)  # fmt: skip

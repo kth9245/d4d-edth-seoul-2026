@@ -8,7 +8,8 @@ import re
 
 from contracts.models import Assignment, Operation, Play, VehicleSpec, VehicleState
 from modules.runtime.actions.fleet_choices import WATCH_PLAY, watching
-from modules.runtime.actions.rotate_patrols import MEET_M, START, _back
+from modules.runtime.actions.relief_due import START, _back
+from modules.runtime.actions.rotate_patrols import MEET_M
 from modules.runtime.actions.switch_play import switch_play
 from shared.geo import dist_m
 
