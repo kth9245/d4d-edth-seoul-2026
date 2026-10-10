@@ -5,7 +5,7 @@
 마지막 기록 10/10 09:59 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- **Part2-7** safety `point_in_polygon` — 황승주, 10/10 09:59부터 · SFT-01
+- (없음)
 
 ## 막힘
 - (없음)
@@ -77,6 +77,7 @@
 - 10/9 23:14 kth9245 · Part1-1 · 결정 0015·0016·0017·0018 참조(두 층 구조, contracts 세부, API 규약)
 
 ## 완료
+- **Part2-7** safety `point_in_polygon` — 황승주, 10/10 09:59 · SFT-01
 - **Part1-17** 스파이크를 이식 모양으로 재배치(devil-advocate: SPEC 행마다 포맷된 파일, tick 계산 액션화, build_frame 새 이름, geo를 shared로, 모듈 AGENTS.md 정리) — kth9245, 10/10 00:22
 - **Part1-16** 스파이크를 두 층 구조로 갱신(contracts 모델·시연 시나리오 사용, API.md 함수 이름, 35분 대본 테스트) — kth9245, 10/9 23:56
 - **Part1-4** 시나리오 JSON + 템플릿 2개 — kth9245, 10/9 23:24
