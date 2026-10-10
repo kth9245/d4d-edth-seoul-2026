@@ -85,3 +85,6 @@ class Operation(BaseModel):
     switches: list[Switch] = []
     rotation: list[str] = []  # vehicles that relieve each other on patrol (decision 0037)
     rotation_plays: list[str] = []  # patrol plays the rotation keeps covered
+    rotation_pools: dict[
+        str, list[str]
+    ] = {}  # patrol play -> the drones that relieve each other on it

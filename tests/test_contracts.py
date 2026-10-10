@@ -153,11 +153,12 @@ def test_rotation_fields_default_to_no_rotation():
 
     op = json.loads((EXAMPLES / "operation.json").read_text(encoding="utf-8"))
     spec = json.loads((EXAMPLES / "vehicle_spec.json").read_text(encoding="utf-8"))
-    for k in ("rotation", "rotation_plays"):
+    for k in ("rotation", "rotation_plays", "rotation_pools"):
         op.pop(k, None)
     spec.pop("recharge_min", None)
     got = Operation.model_validate(op), VehicleSpec.model_validate(spec)
     assert (got[0].rotation, got[0].rotation_plays, got[1].recharge_min) == ([], [], 0)
+    assert got[0].rotation_pools == {}
 
 
 def test_ontology_fields_default_to_none_and_the_demo_has_the_hierarchy():  # decision 0038

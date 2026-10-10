@@ -99,6 +99,7 @@ export interface Operation {
   switches?: Switch[];
   rotation?: string[];
   rotation_plays?: string[];
+  rotation_pools?: Record<string, string[]>;
 }
 
 export type TargetKind = "boat" | "fast_boat" | "person" | "unknown";

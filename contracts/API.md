@@ -120,4 +120,5 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 ## 해안 순찰 교대(결정 0037)
 - `VehicleSpec.recharge_min`(0 = 충전 없음): 기지에서 `maintenance`인 동안 배터리가 `100/recharge_min`%/분씩 차고 100%면 `ready`.
 - `Operation.rotation`(교대 기체)·`rotation_plays`(늘 지키는 순찰 플레이): 비면 교대 없음.
+- `Operation.rotation_pools`(순찰 플레이 → 그 해안을 서로 교대하는 드론들, 예: 북 d1·d3 / 남 d2·d4): 있으면 교대·빈 해안 채우기는 그 짝 안에서만. 비면 `rotation` 전체에서.
 - 틱 순서 4.5: `apply_emergency`(4) 다음, `step_vehicle`(5) 전에 runtime `rotate_patrols`.

@@ -394,6 +394,17 @@
           },
           "title": "Rotation Plays",
           "type": "array"
+        },
+        "rotation_pools": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "default": {},
+          "title": "Rotation Pools",
+          "type": "object"
         }
       },
       "required": [
