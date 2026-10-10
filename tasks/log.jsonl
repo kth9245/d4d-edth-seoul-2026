@@ -427,3 +427,4 @@
 {"at": "2026-10-10T20:03:59+09:00", "by": "황승주", "op": "add", "id": "Part2-41", "title": "교대 SPARE 5→10%로 하한선 여유 확대", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T20:04:02+09:00", "by": "황승주", "op": "start", "id": "Part2-41", "take": false, "from": null}
 {"at": "2026-10-10T20:05:44+09:00", "by": "kth9245", "op": "start", "id": "Part1-37", "take": false, "from": null}
+{"at": "2026-10-10T20:07:31+09:00", "by": "kth9245", "op": "done", "id": "Part1-38", "take": false}
