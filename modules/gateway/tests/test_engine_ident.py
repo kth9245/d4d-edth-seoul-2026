@@ -21,14 +21,16 @@ def test_the_night_operation_never_gets_identification_fields():
 
 
 def test_the_strike_operation_identifies_site_a_through_the_tick_loop():
-    seen = _states("demo/scenarios/baengnyeong_strike.json", "site_a", 2400)  # 8 minutes
+    seen = _states(
+        "demo/scenarios/baengnyeong_strike.json", "site_a", 5000
+    )  # 17 minutes: r1 reaches it at 14
     assert {"rf_only", "identified"} <= seen
 
 
 def test_the_tick_loop_opens_strike_choices_only_after_identification():
     sc = load_scenario_json("demo/scenarios/baengnyeong_strike.json")
     es, before, after = init_engine(sc), set(), set()
-    for _ in range(2400):
+    for _ in range(5000):  # r1 identifies site_a at about 15.7 minutes
         es, _ = tick(es, TickInputs())
         site = next((t for t in es.targets if t.id == "site_a"), None)
         card = next(

@@ -88,3 +88,4 @@
 | 10/10 23:40 | cop-ui | Part1-47.1 MAVLink 로그를 브라우저 새 창 대신 지도 칸 가운데 패널로(오른쪽 결정 대기열은 가리지 않음), 닫기·버튼 다시 누르기로 닫음, #mavlink 주소 없앰(결정 0065) | kth9245 |
 | 10/10 22:40 | contracts·sensing·gateway·demo | 공격 작전 2단계 식별·신뢰도(결정 0056 초안): Target에 ident_state·ident_confidence·ident_reasons·ident_observed_ms, sensing identify_target(SNS-04: RF·스캔·두 기체 관측·관측 지속을 합쳐 0.70이면 식별됨), gateway identify_targets(GW-12)·refresh_strike_cards(GW-13: 카드 문구에 식별 줄, 식별된 거점에만 타격 승인 선택지)·decision_applicable(GW-14: 사라진 선택지의 클릭은 건너뛰어 실행이 멈추지 않음), baengnyeong_strike에 strike Role | 최동호 |
 | 10/10 23:00 | demo·scripts·tests | 공격 작전 모선 편대(1번): 정지한 수상정(sea_vehicle, 타격 불가) 한 척에서 정찰 드론 r1~r3와 공격 드론 a1~a3가 같은 자리에서 출발·귀환, 식별된 거점 카드에 a1·a2·a3·전원 타격 승인만 나옴(2~4번: 탐색 경로 선택, 공격 드론 선택 다듬기, 비행 중 재지정은 후속) | 최동호 |
+| 10/10 23:40 | demo·scripts·tests | 공격 작전 모선 편대 변경: 수상정 시작을 서쪽 앞바다(37.955, 124.585)로 옮기고, 정찰 드론 r1·r2·r3가 북동·북서·남쪽 해안 구간을 하나씩 탐색(북동은 바다 경유점을 먼저 지남, 남쪽은 귀환 배터리 규칙 때문에 한 방향) | 최동호 |

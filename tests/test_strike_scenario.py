@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from contracts.models import Decision, TickInputs
+from contracts.models import Decision, GeoPoint, TickInputs
 from modules.gateway.engine import init_engine, tick
 from modules.role import check_operation
 from modules.safety import point_in_polygon
@@ -31,17 +31,43 @@ def test_the_fleet_is_one_usv_three_recon_three_attack_and_the_ugv(sc):
 def test_every_drone_starts_and_returns_at_the_usv_spot_on_the_sea(sc):
     by_id = {v.id: v for v in sc.vehicles}
     spot = by_id["usv"].home
-    assert (spot.lat, spot.lon) == (37.981, 124.691)
+    assert (spot.lat, spot.lon) == (37.955, 124.585)  # the sea west of the island
     assert not inside(spot, sc.land)
+    assert point_in_polygon(spot, sc.operation.zone)
     for vid in ("r1", "r2", "r3", "a1", "a2", "a3"):
         assert by_id[vid].home == spot, vid
 
 
-def test_one_recon_drone_starts_on_the_north_search_patrol(sc):
+def test_each_recon_drone_starts_on_its_own_coast_patrol(sc):
     assert sc.id == "baengnyeong_strike"
-    assert sc.operation.assign["r1"] == "site_patrol"
-    assert {v for k, v in sc.operation.assign.items() if k != "r1"} == {"standby"}
+    patrols = {"r1": "site_patrol_ne", "r2": "site_patrol_nw", "r3": "site_patrol_s"}
+    assert {k: v for k, v in sc.operation.assign.items() if k in patrols} == patrols
+    assert {v for k, v in sc.operation.assign.items() if k not in patrols} == {"standby"}
     assert set(sc.operation.assign) == {v.id for v in sc.vehicles}
+    assert "site_patrol" not in {r.id for r in sc.roles}
+
+
+def _patrol_points(sc, role_id):
+    role = next(r for r in sc.roles if r.id == role_id)
+    return [(p["lat"], p["lon"]) for p in role.steps[0].do.params["route"]]
+
+
+def test_the_three_patrols_cover_the_north_east_north_west_and_south_coast(sc):
+    ne, nw, south = (
+        _patrol_points(sc, r) for r in ("site_patrol_ne", "site_patrol_nw", "site_patrol_s")
+    )
+    ne_coast = ne[1:]  # the first point is the sea waypoint checked in its own test
+    assert max(lon for _, lon in ne_coast) > 124.75  # east tip
+    assert min(lon for _, lon in ne_coast) > 124.68  # and it stays on the east half
+    assert min(lon for _, lon in nw) < 124.61 and max(lon for _, lon in nw) < 124.70  # west tip
+    assert max(lat for lat, _ in south) < 37.975  # the south coast, no site on it
+    for pts in (ne, nw, south):
+        assert all(point_in_polygon(GeoPoint(lat=a, lon=b), sc.operation.zone) for a, b in pts)
+
+
+def test_the_patrol_routes_are_in_the_route_list_for_the_editor(sc):
+    ids = [r.id for r in sc.routes]
+    assert {"site_ne", "site_nw", "site_s"} <= set(ids) and "coast_a" not in ids
 
 
 def test_no_old_vehicle_id_is_left_in_the_json():
@@ -152,11 +178,13 @@ def test_site_a_is_identified_then_approved_then_neutralized(sc):
     assert not es.blocks  # no safety rule stopped it
 
 
-def test_the_silent_sites_stay_unidentified_without_a_clue(sc):
+def test_a_silent_site_seen_by_one_drone_never_reaches_identified(sc):
     es = init_engine(sc)
-    for _ in range(1500):  # five simulated minutes
+    for _ in range(7500):  # 25 simulated minutes: r2 meets site_c, r3 meets site_b
         es, _ = tick(es, TickInputs())
-    assert [_site(es, i).ident_state for i in ("site_b", "site_c")] == ["undetected"] * 2
+    states = [_site(es, i).ident_state for i in ("site_b", "site_c")]
+    assert all(s in ("identifying", "rf_only", "undetected") for s in states), states
+    assert "identifying" in states  # but they were seen
 
 
 def _identified_card_state(sc):
@@ -190,3 +218,10 @@ def test_only_the_chosen_attack_drone_flies_to_the_site(sc):
         assert states[idle].role_id == "standby", idle
         assert dist_m(states[idle].pos, home) < 1.0, idle  # still at the usv spot
     assert not es.blocks  # no safety rule (zone, battery, provenance) stopped the strike
+
+
+def test_the_north_east_patrol_starts_over_the_sea_so_it_does_not_cross_site_c(sc):
+    first = _patrol_points(sc, "site_patrol_ne")[0]
+    assert not inside(GeoPoint(lat=first[0], lon=first[1]), sc.land)  # a waypoint on the sea
+    site_c = next(e for e in sc.enemies if e.id == "site_c").pos
+    assert dist_m(GeoPoint(lat=first[0], lon=first[1]), site_c) > 2000

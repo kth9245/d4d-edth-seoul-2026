@@ -27,6 +27,31 @@ SITES = [
 ]
 # spawn_enemies needs t - dt < start + offset <= t: an offset of 0 would never spawn the enemy
 APPEAR_MS = 1000
+# the carrier USV waits in the sea west of the island (outside the land, inside the zone)
+USV_SPOT = {"lat": 37.955, "lon": 124.585, "alt_m": 0.0}
+# the three coast stretches one recon drone each searches: (role id, route id, name, source route, point slice)
+PATROLS = [
+    (
+        "site_patrol_ne",
+        "site_ne",
+        "북동 해안",
+        "coast_a",
+        slice(0, 13),
+    ),  # centre -> east tip -> centre
+    (
+        "site_patrol_nw",
+        "site_nw",
+        "북서 해안",
+        "coast_a",
+        slice(12, 28),
+    ),  # centre -> west tip -> back
+    # west tip -> east tip along the whole south coast, one way: the full loop would leave r3 under 30% on return
+    ("site_patrol_s", "site_s", "남쪽 해안", "coast_b", slice(11, 26)),
+]
+RECON = {"r1": "site_patrol_ne", "r2": "site_patrol_nw", "r3": "site_patrol_s"}
+# the north-east patrol first flies over the sea north of the island: the straight line from the USV spot to the
+# centre of the north coast would pass right over site_c, which belongs to the north-west patrol
+SEA_LEG = {"site_ne": [{"lat": 37.996, "lon": 124.620, "alt_m": 0.0}]}
 
 
 def site_hold() -> dict:
@@ -47,7 +72,8 @@ def site_hold() -> dict:
 def fleet(night_vehicles: list[dict]) -> list[dict]:
     """One stationary carrier USV, three recon and three attack drones that start and return at its spot."""
     by_id = {v["id"]: v for v in night_vehicles}
-    usv = copy.deepcopy(by_id["usv"]) | {"name": "수상정(모선)", "kind": "sea_vehicle"}
+    usv = copy.deepcopy(by_id["usv"]) | {"name": "수상정(모선)", "kind": "sea_vehicle",
+                                         "home": dict(USV_SPOT)}  # fmt: skip
 
     def drone(src: str, vid: str, name: str) -> dict:
         return copy.deepcopy(by_id[src]) | {"id": vid, "name": name, "home": dict(usv["home"])}
@@ -57,22 +83,40 @@ def fleet(night_vehicles: list[dict]) -> list[dict]:
     return [usv, *recon, *armed, copy.deepcopy(by_id["ugv"])]
 
 
+def coast_patrols(day: dict) -> tuple[list[dict], list[dict]]:
+    """One search Role and one editor route per coast stretch, cut from the 24h operation's coast routes."""
+    base_role = next(r for r in day["roles"] if r["id"] == "coast_a")
+    routes_by_id = {r["id"]: r for r in day["routes"]}
+    roles, routes = [], []
+    for role_id, route_id, name, src, cut in PATROLS:
+        points = SEA_LEG.get(route_id, []) + copy.deepcopy(routes_by_id[src]["points"][cut])
+        route = copy.deepcopy(routes_by_id[src]) | {"id": route_id, "name": name, "points": points}
+        role = copy.deepcopy(base_role)
+        role["id"], role["name"] = role_id, f"거점 탐색 순찰 · {name}"
+        role["steps"][0]["do"]["params"] = {"route": points, "route_name": name}
+        role["steps"][1]["report"] = {
+            "text": "미식별 거점 감지",
+            "choices": [],
+            "auto_choices": True,
+        }
+        roles.append(role)
+        routes.append(route)
+    return roles, routes
+
+
 def build() -> dict:
     night = json.loads(NIGHT.read_text(encoding="utf-8"))
     day = json.loads(DAY.read_text(encoding="utf-8"))
     roles = {r["id"]: r for r in night["roles"]}
-    patrol = copy.deepcopy(next(r for r in day["roles"] if r["id"] == "coast_a"))
-    patrol["id"], patrol["name"] = "site_patrol", "거점 탐색 순찰 · 북"
-    patrol["steps"][1]["report"] = {"text": "미식별 거점 감지", "choices": [], "auto_choices": True}
-    north = next(r for r in day["routes"] if r["id"] == "coast_a")
+    patrols, patrol_routes = coast_patrols(day)
     skip = ("patrol_a", "patrol_b", "coast_a", "coast_b")
     vehicles = fleet(night["vehicles"])
     op = night["operation"] | {
         "id": "op_strike",
         "name": "해안 거점 무력화(가상)",
-        "purpose": "정찰 드론이 가상 해안 거점을 RF 방출로 먼저 찾고 스캔해서 식별한다. 식별된 거점에만 타격 승인을 연다(2단계). 수상정 한 척에서 정찰 드론 3대와 공격 드론 3대가 출발한다",
+        "purpose": "정찰 드론이 가상 해안 거점을 RF 방출로 먼저 찾고 스캔해서 식별한다. 식별된 거점에만 타격 승인을 연다(2단계). 서쪽 앞바다의 수상정 한 척에서 정찰 드론 3대(북동·북서·남쪽 해안)와 공격 드론 3대가 출발한다",
         "vehicle_ids": [v["id"] for v in vehicles],
-        "assign": {v["id"]: ("site_patrol" if v["id"] == "r1" else "standby") for v in vehicles},
+        "assign": {v["id"]: RECON.get(v["id"], "standby") for v in vehicles},
         "reserve": {}, "switches": [], "rotation": [], "rotation_pools": {}, "rotation_roles": [],
     }  # fmt: skip
     enemies = [
@@ -85,11 +129,11 @@ def build() -> dict:
         "id": "baengnyeong_strike",
         "operation": op,
         "vehicles": vehicles,
-        "roles": [patrol, roles["standby"], roles["go_home"], roles["watch"], roles["approach"],
+        "roles": [*patrols, roles["standby"], roles["go_home"], roles["watch"], roles["approach"],
                   roles["strike"], site_hold()],
         "events": [],
         "enemies": enemies,
-        "routes": [north, *(r for r in night["routes"] if r["id"] not in skip)],
+        "routes": [*patrol_routes, *(r for r in night["routes"] if r["id"] not in skip)],
         # same place and radius as night's "상륙 예상 지점" (so the scores below hold), but here it is the
         # target area the sites are measured against, not a place to guard
         "watch_points": [{**night["watch_points"][0], "id": "target_area", "name": "목표 지역 중심"}],

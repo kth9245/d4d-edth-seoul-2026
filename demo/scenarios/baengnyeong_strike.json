@@ -3,7 +3,7 @@
  "operation": {
   "id": "op_strike",
   "name": "해안 거점 무력화(가상)",
-  "purpose": "정찰 드론이 가상 해안 거점을 RF 방출로 먼저 찾고 스캔해서 식별한다. 식별된 거점에만 타격 승인을 연다(2단계). 수상정 한 척에서 정찰 드론 3대와 공격 드론 3대가 출발한다",
+  "purpose": "정찰 드론이 가상 해안 거점을 RF 방출로 먼저 찾고 스캔해서 식별한다. 식별된 거점에만 타격 승인을 연다(2단계). 서쪽 앞바다의 수상정 한 척에서 정찰 드론 3대(북동·북서·남쪽 해안)와 공격 드론 3대가 출발한다",
   "area": {
    "points": [
     {
@@ -65,9 +65,9 @@
   "started_ms": 1791633600000,
   "assign": {
    "usv": "standby",
-   "r1": "site_patrol",
-   "r2": "standby",
-   "r3": "standby",
+   "r1": "site_patrol_ne",
+   "r2": "site_patrol_nw",
+   "r3": "site_patrol_s",
    "a1": "standby",
    "a2": "standby",
    "a3": "standby",
@@ -88,8 +88,8 @@
    "endurance_min": 720.0,
    "sensor_range_m": 500.0,
    "home": {
-    "lat": 37.981,
-    "lon": 124.691,
+    "lat": 37.955,
+    "lon": 124.585,
     "alt_m": 0.0
    },
    "recharge_min": 0.0,
@@ -104,8 +104,8 @@
    "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "home": {
-    "lat": 37.981,
-    "lon": 124.691,
+    "lat": 37.955,
+    "lon": 124.585,
     "alt_m": 0.0
    },
    "recharge_min": 5.0,
@@ -120,8 +120,8 @@
    "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "home": {
-    "lat": 37.981,
-    "lon": 124.691,
+    "lat": 37.955,
+    "lon": 124.585,
     "alt_m": 0.0
    },
    "recharge_min": 5.0,
@@ -136,8 +136,8 @@
    "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "home": {
-    "lat": 37.981,
-    "lon": 124.691,
+    "lat": 37.955,
+    "lon": 124.585,
     "alt_m": 0.0
    },
    "recharge_min": 5.0,
@@ -152,8 +152,8 @@
    "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "home": {
-    "lat": 37.981,
-    "lon": 124.691,
+    "lat": 37.955,
+    "lon": 124.585,
     "alt_m": 0.0
    },
    "recharge_min": 5.0,
@@ -168,8 +168,8 @@
    "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "home": {
-    "lat": 37.981,
-    "lon": 124.691,
+    "lat": 37.955,
+    "lon": 124.585,
     "alt_m": 0.0
    },
    "recharge_min": 5.0,
@@ -184,8 +184,8 @@
    "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "home": {
-    "lat": 37.981,
-    "lon": 124.691,
+    "lat": 37.955,
+    "lon": 124.585,
     "alt_m": 0.0
    },
    "recharge_min": 5.0,
@@ -211,8 +211,8 @@
  ],
  "roles": [
   {
-   "id": "site_patrol",
-   "name": "거점 탐색 순찰 · 북",
+   "id": "site_patrol_ne",
+   "name": "거점 탐색 순찰 · 북동 해안",
    "domains": [
     "air"
    ],
@@ -224,6 +224,11 @@
       "kind": "patrol_route",
       "params": {
        "route": [
+        {
+         "lat": 37.996,
+         "lon": 124.62,
+         "alt_m": 0.0
+        },
         {
          "lat": 37.98375,
          "lon": 124.69246,
@@ -284,6 +289,65 @@
          "lon": 124.70404,
          "alt_m": 0
         },
+        {
+         "lat": 37.98375,
+         "lon": 124.69246,
+         "alt_m": 0
+        }
+       ],
+       "route_name": "북동 해안"
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "target_found",
+        "params": {}
+       },
+       "go_step": "report"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "report",
+     "name": "발견·감시·보고",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "nearest",
+       "distance_m": 150
+      }
+     },
+     "on": [],
+     "report": {
+      "text": "미식별 거점 감지",
+      "choices": [],
+      "auto_choices": true
+     },
+     "ui": {}
+    }
+   ],
+   "entry": "patrol",
+   "origin": "human",
+   "approved": true,
+   "template": false
+  },
+  {
+   "id": "site_patrol_nw",
+   "name": "거점 탐색 순찰 · 북서 해안",
+   "domains": [
+    "air"
+   ],
+   "steps": [
+    {
+     "id": "patrol",
+     "name": "해안 순찰",
+     "do": {
+      "kind": "patrol_route",
+      "params": {
+       "route": [
         {
          "lat": 37.98375,
          "lon": 124.69246,
@@ -365,7 +429,136 @@
          "alt_m": 0
         }
        ],
-       "route_name": "해안 A(북)"
+       "route_name": "북서 해안"
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "target_found",
+        "params": {}
+       },
+       "go_step": "report"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "report",
+     "name": "발견·감시·보고",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "nearest",
+       "distance_m": 150
+      }
+     },
+     "on": [],
+     "report": {
+      "text": "미식별 거점 감지",
+      "choices": [],
+      "auto_choices": true
+     },
+     "ui": {}
+    }
+   ],
+   "entry": "patrol",
+   "origin": "human",
+   "approved": true,
+   "template": false
+  },
+  {
+   "id": "site_patrol_s",
+   "name": "거점 탐색 순찰 · 남쪽 해안",
+   "domains": [
+    "air"
+   ],
+   "steps": [
+    {
+     "id": "patrol",
+     "name": "해안 순찰",
+     "do": {
+      "kind": "patrol_route",
+      "params": {
+       "route": [
+        {
+         "lat": 37.97093,
+         "lon": 124.60522,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.95958,
+         "lon": 124.60804,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.95347,
+         "lon": 124.62042,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.93785,
+         "lon": 124.62475,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.92056,
+         "lon": 124.63337,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.91722,
+         "lon": 124.65331,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.91641,
+         "lon": 124.67295,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.91663,
+         "lon": 124.68346,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.90963,
+         "lon": 124.69121,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.91592,
+         "lon": 124.7021,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.92779,
+         "lon": 124.7073,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.94315,
+         "lon": 124.72037,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.94986,
+         "lon": 124.73431,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.958,
+         "lon": 124.74127,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.96147,
+         "lon": 124.75156,
+         "alt_m": 0
+        }
+       ],
+       "route_name": "남쪽 해안"
       }
      },
      "on": [
@@ -679,9 +872,14 @@
  ],
  "routes": [
   {
-   "id": "coast_a",
-   "name": "해안 A(북)",
+   "id": "site_ne",
+   "name": "북동 해안",
    "points": [
+    {
+     "lat": 37.996,
+     "lon": 124.62,
+     "alt_m": 0.0
+    },
     {
      "lat": 37.98375,
      "lon": 124.69246,
@@ -742,6 +940,17 @@
      "lon": 124.70404,
      "alt_m": 0
     },
+    {
+     "lat": 37.98375,
+     "lon": 124.69246,
+     "alt_m": 0
+    }
+   ]
+  },
+  {
+   "id": "site_nw",
+   "name": "북서 해안",
+   "points": [
     {
      "lat": 37.98375,
      "lon": 124.69246,
@@ -820,6 +1029,87 @@
     {
      "lat": 37.98407,
      "lon": 124.68076,
+     "alt_m": 0
+    }
+   ]
+  },
+  {
+   "id": "site_s",
+   "name": "남쪽 해안",
+   "points": [
+    {
+     "lat": 37.97093,
+     "lon": 124.60522,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.95958,
+     "lon": 124.60804,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.95347,
+     "lon": 124.62042,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.93785,
+     "lon": 124.62475,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.92056,
+     "lon": 124.63337,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.91722,
+     "lon": 124.65331,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.91641,
+     "lon": 124.67295,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.91663,
+     "lon": 124.68346,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.90963,
+     "lon": 124.69121,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.91592,
+     "lon": 124.7021,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.92779,
+     "lon": 124.7073,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.94315,
+     "lon": 124.72037,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.94986,
+     "lon": 124.73431,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.958,
+     "lon": 124.74127,
+     "alt_m": 0
+    },
+    {
+     "lat": 37.96147,
+     "lon": 124.75156,
      "alt_m": 0
     }
    ]
