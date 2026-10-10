@@ -19,6 +19,15 @@ def sc():
     return load_scenario_json(str(ROOT / "demo/scenarios/baengnyeong_strike.json"))
 
 
+STRETCH_OF = {"r1": "ne", "r2": "nw", "r3": "s"}  # the coast stretch each scout searches
+DEFAULT = {"r1": "site_patrol_ne_cw", "r2": "site_patrol_nw_ccw", "r3": "site_patrol_s_ccw"}
+DIRECTIONS = ("cw", "ccw")  # clockwise, counter-clockwise (seen from above)
+
+
+def patrol_role(drone: str, direction: str) -> str:
+    return f"site_patrol_{STRETCH_OF[drone]}_{direction}"
+
+
 def test_the_fleet_is_one_usv_three_recon_three_attack_and_the_ugv(sc):
     assert [v.id for v in sc.vehicles] == ["usv", "r1", "r2", "r3", "a1", "a2", "a3", "ugv"]
     kinds = {v.id: v.kind for v in sc.vehicles}
@@ -40,11 +49,13 @@ def test_every_drone_starts_and_returns_at_the_usv_spot_on_the_sea(sc):
 
 def test_each_recon_drone_starts_on_its_own_coast_patrol(sc):
     assert sc.id == "baengnyeong_strike"
-    patrols = {"r1": "site_patrol_ne", "r2": "site_patrol_nw", "r3": "site_patrol_s"}
+    patrols = DEFAULT
     assert {k: v for k, v in sc.operation.assign.items() if k in patrols} == patrols
     assert {v for k, v in sc.operation.assign.items() if k not in patrols} == {"standby"}
     assert set(sc.operation.assign) == {v.id for v in sc.vehicles}
-    assert "site_patrol" not in {r.id for r in sc.roles}
+    assert {"site_patrol", "site_patrol_ne", "site_patrol_nw", "site_patrol_s"}.isdisjoint(
+        {r.id for r in sc.roles}
+    )  # replaced by the clockwise and counter-clockwise variants
 
 
 def _patrol_points(sc, role_id):
@@ -53,21 +64,53 @@ def _patrol_points(sc, role_id):
 
 
 def test_the_three_patrols_cover_the_north_east_north_west_and_south_coast(sc):
-    ne, nw, south = (
-        _patrol_points(sc, r) for r in ("site_patrol_ne", "site_patrol_nw", "site_patrol_s")
-    )
-    ne_coast = ne[1:]  # the first point is the sea waypoint checked in its own test
-    assert max(lon for _, lon in ne_coast) > 124.75  # east tip
-    assert min(lon for _, lon in ne_coast) > 124.68  # and it stays on the east half
-    assert min(lon for _, lon in nw) < 124.61 and max(lon for _, lon in nw) < 124.70  # west tip
-    assert max(lat for lat, _ in south) < 37.975  # the south coast, no site on it
-    for pts in (ne, nw, south):
-        assert all(point_in_polygon(GeoPoint(lat=a, lon=b), sc.operation.zone) for a, b in pts)
+    for direction in DIRECTIONS:
+        ne, nw, south = (_patrol_points(sc, patrol_role(d, direction)) for d in ("r1", "r2", "r3"))
+        ne_coast = [p for p in ne if p[0] < 37.99]  # leave out the sea waypoint north of the island
+        assert max(lon for _, lon in ne_coast) > 124.75  # east tip
+        assert min(lon for _, lon in ne_coast) > 124.68  # and it stays on the east half
+        assert min(lon for _, lon in nw) < 124.61 and max(lon for _, lon in nw) < 124.70  # west tip
+        assert max(lat for lat, _ in south) < 37.975  # the south coast, no site on it
+        for pts in (ne, nw, south):
+            assert all(point_in_polygon(GeoPoint(lat=a, lon=b), sc.operation.zone) for a, b in pts)
+
+
+def test_clockwise_and_counter_clockwise_are_the_same_stretch_the_other_way_round(sc):
+    for drone in STRETCH_OF:
+        cw = _patrol_points(sc, patrol_role(drone, "cw"))
+        ccw = _patrol_points(sc, patrol_role(drone, "ccw"))
+        sea = [
+            p for p in cw if p[0] >= 37.99
+        ]  # the north-east clockwise patrol starts over the sea
+        assert cw[len(sea) :] == ccw[::-1], drone
+
+
+def test_the_directions_start_at_the_expected_end_of_each_stretch(sc):
+    def first(drone, direction):
+        return _patrol_points(sc, patrol_role(drone, direction))[0]
+
+    assert first("r1", "cw")[0] > 37.99  # sea waypoint, then the centre of the north coast
+    assert first("r1", "ccw")[1] > 124.75  # east tip
+    assert first("r2", "cw")[1] < 124.61  # west tip
+    assert first("r2", "ccw")[1] > 124.68  # centre of the north coast
+    assert first("r3", "cw")[1] > 124.75  # east tip of the south coast
+    assert first("r3", "ccw")[1] < 124.61  # west tip
+
+
+def test_any_direction_the_operator_picks_before_the_start_passes_the_operation_checks(sc):
+    roles, specs = {r.id: r for r in sc.roles}, {v.id: v for v in sc.vehicles}
+    for drone in STRETCH_OF:
+        for direction in DIRECTIONS:
+            assign = {**sc.operation.assign, drone: patrol_role(drone, direction)}
+            op = sc.operation.model_copy(update={"assign": assign})
+            res = check_operation(op, roles, specs)
+            assert res.ok, (drone, direction, [i.message for i in res.issues])
 
 
 def test_the_patrol_routes_are_in_the_route_list_for_the_editor(sc):
     ids = [r.id for r in sc.routes]
-    assert {"site_ne", "site_nw", "site_s"} <= set(ids) and "coast_a" not in ids
+    want = {f"site_{k}_{d}" for k in ("ne", "nw", "s") for d in DIRECTIONS}
+    assert want <= set(ids) and "coast_a" not in ids
 
 
 def test_no_old_vehicle_id_is_left_in_the_json():
@@ -221,32 +264,34 @@ def test_only_the_chosen_attack_drone_flies_to_the_site(sc):
 
 
 def test_the_north_east_patrol_starts_over_the_sea_so_it_does_not_cross_site_c(sc):
-    first = _patrol_points(sc, "site_patrol_ne")[0]
+    first = _patrol_points(sc, "site_patrol_ne_cw")[0]
     assert not inside(GeoPoint(lat=first[0], lon=first[1]), sc.land)  # a waypoint on the sea
     site_c = next(e for e in sc.enemies if e.id == "site_c").pos
     assert dist_m(GeoPoint(lat=first[0], lon=first[1]), site_c) > 2000
 
 
-PATROL_OF = {"r1": "site_patrol_ne", "r2": "site_patrol_nw", "r3": "site_patrol_s"}
-ROUTE_OF = {"site_patrol_ne": "site_ne", "site_patrol_nw": "site_nw", "site_patrol_s": "site_s"}
+PATROL_OF = DEFAULT
 
 
 def test_every_patrol_card_lets_its_drone_leave_the_site_for_any_stretch(sc):
     roles = {r.id: r for r in sc.roles}
-    for drone, role_id in PATROL_OF.items():
-        step = roles[role_id].steps[1]
-        choices = {c.id: c for c in step.report.choices}
-        others = [r for r in PATROL_OF.values() if r != role_id]
-        assert set(choices) == {"resume", *(f"go_{ROUTE_OF[o]}" for o in others)}, drone
-        assert choices["resume"].role_by_vehicle == {}, drone
-        for o in others:
-            assert choices[f"go_{ROUTE_OF[o]}"].role_by_vehicle == {drone: o}, drone
-        assert any(
-            e.cond.kind.value == "operator_choice"
-            and e.cond.params == {"choice": "resume"}
-            and e.go_step == "patrol"
-            for e in step.on
-        ), drone
+    for drone in STRETCH_OF:
+        for direction in DIRECTIONS:
+            step = roles[patrol_role(drone, direction)].steps[1]
+            choices = {c.id: c for c in step.report.choices}
+            others = [d for d in STRETCH_OF if d != drone]
+            want = {"resume", *(f"go_site_{STRETCH_OF[o]}" for o in others)}
+            assert set(choices) == want, (drone, direction)
+            assert choices["resume"].role_by_vehicle == {}, (drone, direction)
+            for o in others:  # another stretch, the same way round
+                got = choices[f"go_site_{STRETCH_OF[o]}"].role_by_vehicle
+                assert got == {drone: patrol_role(o, direction)}, (drone, direction)
+            assert any(
+                e.cond.kind.value == "operator_choice"
+                and e.cond.params == {"choice": "resume"}
+                and e.go_step == "patrol"
+                for e in step.on
+            ), (drone, direction)
 
 
 def _site_c_card(sc):
@@ -263,9 +308,9 @@ def _site_c_card(sc):
 @pytest.mark.parametrize(
     "choice,role_id",
     [
-        ("resume", "site_patrol_nw"),
-        ("go_site_ne", "site_patrol_ne"),
-        ("go_site_s", "site_patrol_s"),
+        ("resume", "site_patrol_nw_ccw"),
+        ("go_site_ne", "site_patrol_ne_ccw"),
+        ("go_site_s", "site_patrol_s_ccw"),
     ],
 )
 def test_leaving_a_site_frees_the_drone_and_its_card_does_not_come_back(sc, choice, role_id):
@@ -343,7 +388,7 @@ def test_scouting_more_continues_the_stretch_from_where_it_was_left(sc):
                    report_id=_after_strike_card(es).id, choice_id="more")  # fmt: skip
     es, _ = tick(es, TickInputs(decisions=[dec]))
     es, _ = tick(es, TickInputs())
-    assert (_r1(es).role_id, _r1(es).step_id) == ("site_patrol_ne", "patrol")
+    assert (_r1(es).role_id, _r1(es).step_id) == ("site_patrol_ne_cw", "patrol")
     assert _r1(es).waypoint_idx >= left  # not back at the first waypoint
     for _ in range(60 * 1000 // sc.tick_ms):
         es, _ = tick(es, TickInputs())

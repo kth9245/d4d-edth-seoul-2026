@@ -29,29 +29,27 @@ SITES = [
 APPEAR_MS = 1000
 # the carrier USV waits in the sea west of the island (outside the land, inside the zone)
 USV_SPOT = {"lat": 37.955, "lon": 124.585, "alt_m": 0.0}
-# the three coast stretches one recon drone each searches: (role id, route id, name, source route, point slice)
-PATROLS = [
-    (
-        "site_patrol_ne",
-        "site_ne",
+# The three coast stretches, one recon drone each. Points are indices into the 24h operation's coast routes,
+# listed clockwise (seen from above); counter-clockwise is the same list reversed. The operator picks the
+# direction per drone before the start by assigning its clockwise or counter-clockwise Role.
+STRETCHES = {
+    "ne": (
+        "r1",
         "북동 해안",
         "coast_a",
-        slice(0, 13),
-    ),  # centre -> east tip -> centre
-    (
-        "site_patrol_nw",
-        "site_nw",
-        "북서 해안",
-        "coast_a",
-        slice(12, 28),
-    ),  # centre -> west tip -> back
-    # west tip -> east tip along the whole south coast, one way: the full loop would leave r3 under 30% on return
-    ("site_patrol_s", "site_s", "남쪽 해안", "coast_b", slice(11, 26)),
-]
-RECON = {"r1": "site_patrol_ne", "r2": "site_patrol_nw", "r3": "site_patrol_s"}
-# the north-east patrol first flies over the sea north of the island: the straight line from the USV spot to the
-# centre of the north coast would pass right over site_c, which belongs to the north-west patrol
-SEA_LEG = {"site_ne": [{"lat": 37.996, "lon": 124.620, "alt_m": 0.0}]}
+        [0, 1, 2, 3, 4, 5, 6],
+    ),  # centre of the north coast -> east tip
+    "nw": ("r2", "북서 해안", "coast_a", [20, 19, 18, 17, 16, 15, 14, 13, 0]),  # west tip -> centre
+    # east tip -> west tip along the whole south coast, one way: a full lap would leave a scout under 30% on return
+    "s": ("r3", "남쪽 해안", "coast_b", list(range(25, 10, -1))),
+}
+DIRECTIONS = {"cw": "시계방향", "ccw": "반시계방향"}
+# before the start each scout flies one of its two directions (the others are picked in the start assignment)
+DEFAULT_DIRECTION = {"r1": "cw", "r2": "ccw", "r3": "ccw"}
+RECON = {d: f"site_patrol_{k}_{DEFAULT_DIRECTION[d]}" for k, (d, *_) in STRETCHES.items()}
+# the clockwise north-east patrol first flies over the sea north of the island: the straight line from the USV spot
+# to the centre of the north coast would pass right over site_c, which belongs to the north-west patrol
+SEA_LEG = {"site_ne_cw": [{"lat": 37.996, "lon": 124.620, "alt_m": 0.0}]}
 
 
 def site_hold() -> dict:
@@ -119,45 +117,53 @@ def assist() -> dict:
 
 
 def coast_patrols(day: dict) -> tuple[list[dict], list[dict]]:
-    """One search Role and one editor route per coast stretch, cut from the 24h operation's coast routes."""
+    """A search Role and an editor route per coast stretch and direction, cut from the 24h coast routes."""
     base_role = next(r for r in day["roles"] if r["id"] == "coast_a")
     routes_by_id = {r["id"]: r for r in day["routes"]}
     roles, routes = [], []
-    for role_id, route_id, name, src, cut in PATROLS:
-        points = SEA_LEG.get(route_id, []) + copy.deepcopy(routes_by_id[src]["points"][cut])
-        route = copy.deepcopy(routes_by_id[src]) | {"id": route_id, "name": name, "points": points}
-        role = copy.deepcopy(base_role)
-        role["id"], role["name"] = role_id, f"거점 탐색 순찰 · {name}"
-        role["steps"][0]["do"]["params"] = {"route": points, "route_name": name}
-        # the drone that raises this card may leave the site: back to its own stretch, or to another stretch
-        drone = next(d for d, r in RECON.items() if r == role_id)
-        leave = [{"id": "resume", "label": "이 거점은 두고 계속 정찰", "role_by_vehicle": {},
-                  "target_by_vehicle": {}}]  # fmt: skip
-        leave += [
-            {"id": f"go_{rid}", "label": f"{nm} 쪽으로 이동해 정찰", "role_by_vehicle": {drone: rl},
-             "target_by_vehicle": {}}
-            for rl, rid, nm, _, _ in PATROLS
-            if rl != role_id
-        ]  # fmt: skip
-        role["steps"][1]["report"] = {
-            "text": "미식별 거점 감지",
-            "choices": leave,
-            "auto_choices": True,
-        }
-        role["steps"][1]["on"] = [
-            {
-                "cond": {"kind": "operator_choice", "params": {"choice": "resume"}},
-                "go_step": "patrol",
-            },
-            # decision 0066: once the site is struck the scout asks what next instead of hovering forever
-            {"cond": {"kind": "target_neutralized", "params": {}}, "go_step": "after_strike"},
-        ]  # decision 0031: the reporter not named in role_by_vehicle takes the operator_choice exit
-        role["steps"][0]["on"].append(  # decision 0066: after target_found (a new site comes first)
-            {"cond": {"kind": "target_resighted", "params": {}}, "go_step": "assist"}
-        )
-        role["steps"] += [assist(), after_strike(drone)]
-        roles.append(role)
-        routes.append(route)
+    for key, (drone, name, src, idx) in STRETCHES.items():
+        for direction, dir_name in DIRECTIONS.items():
+            order = idx if direction == "cw" else idx[::-1]
+            route_id, role_id = f"site_{key}_{direction}", f"site_patrol_{key}_{direction}"
+            label = f"{name} {dir_name}"
+            pts = [routes_by_id[src]["points"][i] for i in order]
+            points = SEA_LEG.get(route_id, []) + copy.deepcopy(pts)
+            routes.append(
+                copy.deepcopy(routes_by_id[src]) | {"id": route_id, "name": label, "points": points}
+            )
+            role = copy.deepcopy(base_role)
+            role["id"], role["name"] = role_id, f"거점 탐색 순찰 · {label}"
+            role["steps"][0]["do"]["params"] = {"route": points, "route_name": label}
+            # the drone that raises this card may leave the site: back to its own stretch, or to another one
+            # (the same way round), where it takes the other stretch's Role
+            leave = [{"id": "resume", "label": "이 거점은 두고 계속 정찰", "role_by_vehicle": {},
+                      "target_by_vehicle": {}}]  # fmt: skip
+            leave += [
+                {"id": f"go_site_{k}", "label": f"{nm} 쪽으로 이동해 정찰",
+                 "role_by_vehicle": {drone: f"site_patrol_{k}_{direction}"}, "target_by_vehicle": {}}
+                for k, (_, nm, _, _) in STRETCHES.items()
+                if k != key
+            ]  # fmt: skip
+            role["steps"][1]["report"] = {
+                "text": "미식별 거점 감지",
+                "choices": leave,
+                "auto_choices": True,
+            }
+            role["steps"][1]["on"] = [
+                {
+                    "cond": {"kind": "operator_choice", "params": {"choice": "resume"}},
+                    "go_step": "patrol",
+                },
+                # decision 0066: once the site is struck the scout asks what next instead of hovering forever
+                {"cond": {"kind": "target_neutralized", "params": {}}, "go_step": "after_strike"},
+            ]  # decision 0031: the reporter not named in role_by_vehicle takes the operator_choice exit
+            role["steps"][0][
+                "on"
+            ].append(  # decision 0066: after target_found (a new site comes first)
+                {"cond": {"kind": "target_resighted", "params": {}}, "go_step": "assist"}
+            )
+            role["steps"] += [assist(), after_strike(drone)]
+            roles.append(role)
     return roles, routes
 
 
