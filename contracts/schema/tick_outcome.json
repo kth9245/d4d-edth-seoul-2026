@@ -248,7 +248,8 @@
         "battery_below",
         "operator_choice",
         "signal_received",
-        "at_time"
+        "at_time",
+        "target_neutralized"
       ],
       "title": "ConditionKind",
       "type": "string"
@@ -1192,6 +1193,23 @@
           ],
           "default": null,
           "title": "Resume Step Id"
+        },
+        "patrol_step_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Patrol Step Id"
+        },
+        "patrol_idx": {
+          "default": 0,
+          "title": "Patrol Idx",
+          "type": "integer"
         }
       },
       "required": [

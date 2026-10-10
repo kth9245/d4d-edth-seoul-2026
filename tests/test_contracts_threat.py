@@ -30,3 +30,17 @@ def test_a_new_target_has_no_identification():
     assert (t.ident_state, t.ident_confidence, t.ident_reasons, t.ident_observed_ms) == (
         "undetected", 0, [], 0,
     )  # fmt: skip
+
+
+def test_a_condition_can_wait_for_the_target_to_be_neutralized():  # decision 0058
+    from contracts.models import ConditionKind
+
+    assert ConditionKind("target_neutralized") is ConditionKind.target_neutralized
+
+
+def test_a_vehicle_remembers_where_it_left_its_patrol_route():  # decision 0058
+    from contracts.models import GeoPoint, VehicleState
+
+    st = VehicleState(id="r1", t_ms=0, pos=GeoPoint(lat=37.9, lon=124.7), heading_deg=0,
+                      battery_pct=100, status="ready")  # fmt: skip
+    assert (st.patrol_step_id, st.patrol_idx) == (None, 0)

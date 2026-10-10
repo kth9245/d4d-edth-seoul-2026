@@ -8,6 +8,9 @@ describe("describeAction", () => {
       .toBe("경로 비행 · 북쪽으로 1km · 한 번 · 기체 위치 기준");
     expect(describeCondition({ kind: "at_time", params: { offset_ms: 90_000 } })).toBe("T+1:30");
   });
+  it("names the neutralized-target condition (decision 0058)", () => {
+    expect(describeCondition({ kind: "target_neutralized", params: {} })).toBe("표적 무력화");
+  });
   it("counts route points", () => {
     const route = [{ lat: 37.98, lon: 124.66 }, { lat: 37.98, lon: 124.74 }];
     expect(describeAction({ kind: "patrol_route", params: { route } })).toBe("경로 비행 · 경로 2곳 · 반복");

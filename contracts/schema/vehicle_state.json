@@ -349,6 +349,23 @@
       ],
       "default": null,
       "title": "Resume Step Id"
+    },
+    "patrol_step_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Patrol Step Id"
+    },
+    "patrol_idx": {
+      "default": 0,
+      "title": "Patrol Idx",
+      "type": "integer"
     }
   },
   "required": [

@@ -103,7 +103,8 @@
         "battery_below",
         "operator_choice",
         "signal_received",
-        "at_time"
+        "at_time",
+        "target_neutralized"
       ],
       "title": "ConditionKind",
       "type": "string"

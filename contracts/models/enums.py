@@ -38,6 +38,9 @@ class ConditionKind(str, Enum):
     operator_choice = "operator_choice"
     signal_received = "signal_received"
     at_time = "at_time"  # decision 0045: T+ params.offset_ms after operation.started_ms
+    target_neutralized = (
+        "target_neutralized"  # decision 0058: my target (target_id) has been struck
+    )
 
 
 class CommandKind(str, Enum):  # what goes out to a vehicle

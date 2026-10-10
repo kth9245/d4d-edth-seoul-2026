@@ -44,5 +44,7 @@
  "decision_id": null,
  "emergency": null,
  "resume_role_id": null,
- "resume_step_id": null
+ "resume_step_id": null,
+ "patrol_step_id": null,
+ "patrol_idx": 0
 }

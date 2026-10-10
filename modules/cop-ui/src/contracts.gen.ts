@@ -78,6 +78,8 @@ export interface VehicleState {
   emergency?: EmergencyKind | null;
   resume_role_id?: string | null;
   resume_step_id?: string | null;
+  patrol_step_id?: string | null;
+  patrol_idx?: number;
 }
 
 export interface Switch {
@@ -134,7 +136,7 @@ export interface RouteDef {
   offsets?: RouteOffset[];
 }
 
-export type ConditionKind = "target_found" | "arrived" | "time_elapsed" | "battery_below" | "operator_choice" | "signal_received" | "at_time";
+export type ConditionKind = "target_found" | "arrived" | "time_elapsed" | "battery_below" | "operator_choice" | "signal_received" | "at_time" | "target_neutralized";
 
 export interface Condition {
   kind: ConditionKind;

@@ -302,7 +302,9 @@
    "decision_id": null,
    "emergency": null,
    "resume_role_id": null,
-   "resume_step_id": null
+   "resume_step_id": null,
+   "patrol_step_id": null,
+   "patrol_idx": 0
   },
   {
    "id": "d2",
@@ -361,7 +363,9 @@
    "decision_id": null,
    "emergency": null,
    "resume_role_id": null,
-   "resume_step_id": null
+   "resume_step_id": null,
+   "patrol_step_id": null,
+   "patrol_idx": 0
   },
   {
    "id": "d3",
@@ -384,7 +388,9 @@
    "decision_id": null,
    "emergency": null,
    "resume_role_id": null,
-   "resume_step_id": null
+   "resume_step_id": null,
+   "patrol_step_id": null,
+   "patrol_idx": 0
   },
   {
    "id": "usv",
@@ -432,7 +438,9 @@
    "decision_id": null,
    "emergency": null,
    "resume_role_id": null,
-   "resume_step_id": null
+   "resume_step_id": null,
+   "patrol_step_id": null,
+   "patrol_idx": 0
   },
   {
    "id": "ugv",
@@ -483,7 +491,9 @@
    "decision_id": null,
    "emergency": null,
    "resume_role_id": null,
-   "resume_step_id": null
+   "resume_step_id": null,
+   "patrol_step_id": null,
+   "patrol_idx": 0
   },
   {
    "id": "d4",
@@ -506,7 +516,9 @@
    "decision_id": null,
    "emergency": null,
    "resume_role_id": null,
-   "resume_step_id": null
+   "resume_step_id": null,
+   "patrol_step_id": null,
+   "patrol_idx": 0
   }
  ],
  "targets": [
