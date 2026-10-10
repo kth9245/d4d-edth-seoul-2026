@@ -2,7 +2,7 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 11:41 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 11:44 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - (없음)
@@ -18,7 +18,6 @@
 - **Part3-12** 편집기: 카드 편집
 - **Part3-13** 편집기: AI 초안 입력 칸
 - **Part3-14** 작전 설정 패널
-- **Part3-15.1** mavlink compile_mavlink · MAV-01 (리드, 결정 0025, 통합 2 뒤)
 
 ### 황승주
 - **Part2-21** 타격 runtime: enter_step·apply_decision·switch_play (결정 id·승인 표적·카드 닫기)
@@ -33,7 +32,7 @@
 - **Part1-18** 타격: 계약 추가 5개 + play 대응표 행 + TS·예시 (한 커밋)
 - **Part1-19** 타격: 시나리오·플레이 JSON (fast1 동쪽 해안 우회, track_fast 수정·track_fast_sea·strike, 고속 보트 추적 전환 버튼)
 - **Part1-20** 타격: 화면 (무력화 표적 X·결과 카드·작전 성공·예시 장면 s7·s8)
-- **Part3-15** play `compile_mavlink` (결정 0011) · 하위 0/1 완료 · PLY-10
+- **Part3-15** play `compile_mavlink` (결정 0011) · 하위 1/1 완료 · PLY-10
 
 ## 최근 결정
 - 10/10 11:37 kth9245 · Part1-11 · 직접 조종은 기체 클릭(선택, 초록 링·안내 줄·십자 커서) → 지도 클릭 → POST /direct, 보낸 뒤 선택 해제, Esc나 같은 기체 다시 누르면 취소. 차단 카드에 대안 지점이 있으면 '대안 지점으로' → 같은 기체로 대안 좌표 POST /direct. 막힘 판단은 서버(safety)만. 리드 답 'ㄱㄱ'
@@ -48,6 +47,7 @@
 - 10/10 10:38 kth9245 · Part1-7 · 리뷰 반영: WS Frame.log는 연결마다 안 보낸 줄 전부(배속 중 유실·일시정지 중 중복 없음), 요청이 아직 틱 전이면 승인·거부를 한 틱 뒤로(엔진 GW-03이 카드를 못 닫던 문제). 스파이크 엔진으로 35분 대본 결과 동일 확인
 
 ## 완료
+- **Part3-15.1** mavlink compile_mavlink · MAV-01 (리드, 결정 0025, 통합 2 뒤) — 황승주, 10/10 11:44
 - **Part1-11** 직접 조종 + 차단 카드 대안 버튼 — kth9245, 10/10 11:41
 - **Part2-17** gateway `engine.py` 틱 루프 — 최동호, 10/10 11:38 · 하위 5/5 완료
 - **Part2-18** gateway `build_frame` 재작성 — 최동호, 10/10 11:30
