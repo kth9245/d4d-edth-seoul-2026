@@ -168,3 +168,16 @@ def test_hold_on_an_idle_card_leaves_the_vehicles_raid_question_open():  # revie
     d = Decision(id="dec-h", t_ms=60, report_id=card.id, choice_id="hold_d1")
     _, reports = apply_decision(STATES, roles, d, [act, card])
     assert reports[0].resolved_ms is None and reports[1].resolved_ms == 60
+
+
+def test_an_enemy_down_before_its_turn_gets_no_card():  # user 10/11
+    gone = tg("e_usv", "usv", SEA.pos, 10, seen=("d2",), threat=10, neutralized_ms=5)
+    assert nxt([], [], targets=(gone, DRONE)).id == "raid-e_drone-act"
+    assert nxt([], [], targets=(gone,)) is None
+
+
+def test_a_started_flow_finishes_before_a_higher_threat_enemy():  # user 10/11
+    boat = tg("e_usv", "usv", SEA.pos, 10, seen=("d2",), threat=10)
+    reports, decisions, _ = walk("observe_d1")
+    low = DRONE.model_copy(update={"threat": 5})
+    assert nxt(reports, decisions, targets=(low, boat)).id == "raid-e_drone-track-0"

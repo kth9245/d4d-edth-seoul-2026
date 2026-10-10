@@ -79,3 +79,16 @@ def test_a_card_from_outside_a_patrol_is_an_alert_too():  # decision 0057 card i
     rep = raid_spot(spot, base(), OPX, RAID, [SEA], LAND, SPECS)
     assert rep.choices == [] and rep.resolved_ms == spot.t_ms
     assert raid_spot(spot, base(), OPX, ROLES, [SEA], LAND, SPECS) == spot  # night: untouched
+
+
+def test_a_drone_waiting_on_an_alert_card_is_released():  # user 10/11: never frozen while its enemy waits
+    from modules.runtime.actions.raid_choices import release
+
+    alert = run(base(), [SEA])
+    states = [
+        s.model_copy(update={"pending_report_id": CARD.id}) if s.id == "d1" else s for s in base()
+    ]
+    out = release(states, [alert], RAID)
+    assert out[0].pending_report_id is None and out[1:] == states[1:]
+    assert release(states, [alert], ROLES) == states  # night: untouched
+    assert release(states, [CARD], RAID) == states  # an open card keeps its drone waiting

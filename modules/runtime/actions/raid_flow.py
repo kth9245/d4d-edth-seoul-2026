@@ -29,14 +29,14 @@ def raid_next(reports: list[Report], decisions: list[Decision], states: list[Veh
     asked = {r.vehicle_id for r in opened if r.id.startswith("raid-idle-")}  # idle cards never block  # fmt: skip
     q = next((r for r in opened if not r.id.startswith("raid-idle-")), None)
     raid.pop(q.id) if q else None  # the open question is rebuilt so moved candidates drop off
+    acted = {r.id[5:-4] for r in reports if r.id.endswith("-act")}  # enemies whose flow has started
     chose = {d.id: d.choice_id for d in decisions}
     pick = {rid: chose.get(r.decision_id or "", "") for rid, r in raid.items() if r.resolved_ms}
-    for t in sorted((t for t in targets if t.seen_by or t.reported_by), key=lambda t: (-t.threat, t.first_seen_ms)):  # fmt: skip
+    live = [t for t in targets if (t.seen_by or t.reported_by) and (t.neutralized_ms is None or t.id in acted)]  # fmt: skip
+    for t in sorted(live, key=lambda t: (t.id not in acted, -t.threat, t.first_seen_ms)):  # started flow first  # fmt: skip
         if f"raid-{t.id}-done" not in raid:
             rep = _next(t, raid, pick, states, targets, op, specs, land, asked, t_ms)
-            if q is None:
-                return rep
-            return rep.model_copy(update={"t_ms": q.t_ms}) if rep.id == q.id and rep.choices != q.choices else None  # fmt: skip
+            return rep if q is None else rep.model_copy(update={"t_ms": q.t_ms}) if rep.id == q.id and rep.choices != q.choices else None  # fmt: skip
     return None
 
 

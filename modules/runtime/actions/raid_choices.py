@@ -32,3 +32,16 @@ def raid_spot(rep: Report, states: list[VehicleState], op: Operation, roles: dic
     return rep.model_copy(
         update={"choices": [], "resolved_ms": rep.t_ms}
     )  # the step cards ask (RT-19)
+
+
+def release(
+    states: list[VehicleState], reports: list[Report], roles: dict[str, Role]
+) -> list[VehicleState]:
+    """24h only: a vehicle still waiting on a card that became a resolved alert goes on with its job (user 10/11)."""
+    if FOCUS not in roles:
+        return states
+    done = {r.id for r in reports if r.resolved_ms and not r.decision_id}
+    return [
+        s.model_copy(update={"pending_report_id": None}) if s.pending_report_id in done else s
+        for s in states
+    ]

@@ -28,6 +28,7 @@ from modules.runtime import (
     raid_idle,
     raid_next,
     raid_spot,
+    release,
     relieve_hover,
     rotate_patrols,
     spot_reports,
@@ -114,6 +115,9 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
         else r
         for r in reports
     ]  # 5.3 open cards follow the fleet (decision 0046)
+    stepped = release(
+        stepped, reports + new_reports, roles
+    )  # 5.35 alert cards hold no vehicle (24h)
     decs = es.decisions + list(inputs.decisions)  # 5.4 24h step-by-step raid cards (RT-19, RT-20)
     new_reports += raid_idle(reports + new_reports, stepped, targets, specs, sc.land, roles, t)
     ask = raid_next(
