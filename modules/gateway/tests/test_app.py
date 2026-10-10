@@ -61,7 +61,15 @@ def test_scenarios_lists_the_demo_operations_with_the_running_one_active():
         ("baengnyeong_night", True),
         ("baengnyeong_24h", False),
         ("baengnyeong_strike", False),
+        ("baengnyeong_assault", False),
     ]
+
+
+def test_assault_operation_is_in_the_pick_list():
+    # Part1-15.1 (decision 0069): the presentation assault operation is pickable
+    client, _ = fake_app()
+    ids = [s["id"] for s in client.get("/scenarios").json()]
+    assert "baengnyeong_assault" in ids
 
 
 def test_activate_switches_what_the_editor_endpoints_answer():
@@ -71,7 +79,7 @@ def test_activate_switches_what_the_editor_endpoints_answer():
     day = sim.load_scenario_json(str(ROOT / "demo/scenarios/baengnyeong_24h.json"))
     assert client.get("/operation").json()["name"] == day.operation.name
     assert [v["id"] for v in client.get("/vehicles").json()] == [v.id for v in day.vehicles]
-    assert [s["active"] for s in client.get("/scenarios").json()] == [False, True, False]
+    assert [s["active"] for s in client.get("/scenarios").json()] == [False, True, False, False]
 
 
 def test_activate_an_unknown_scenario_is_404():

@@ -44,6 +44,7 @@ DEMO_SCENARIOS = [
     DEFAULT_SCENARIO,
     str(ROOT / "demo/scenarios/baengnyeong_24h.json"),
     str(ROOT / "demo/scenarios/baengnyeong_strike.json"),
+    str(ROOT / "demo/scenarios/baengnyeong_assault.json"),  # Part1-15.1, decision 0069
 ]
 
 
