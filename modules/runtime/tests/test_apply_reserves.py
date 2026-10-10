@@ -60,3 +60,11 @@ def test_reserve_keeps_watching_the_target_of_the_vehicle_it_replaces():  # deci
     gone = vs("d1", "returning", "watch", "w2").model_copy(update={"target_id": "boat2"})
     out, _, _ = apply_reserves([gone, vs("d3", "active", "standby", "s1")], OP, PLAYS, START, 1000)
     assert (out[1].play_id, out[1].target_id, out[1].decision_id) == ("watch", "boat2", None)
+
+
+def test_no_takeover_of_a_go_home_play():  # a drone sent home (patrol floor, all home) has no task left
+    home = Play(id="go_home", name="h", domains=["air"], entry="r",
+                steps=[Step(id="r", name="r", do=Action(kind="return_home"))])  # fmt: skip
+    states = [vs("d1", "returning", "go_home", "r"), vs("d3", "ready", "standby", "s1")]
+    out, asg, rep = apply_reserves(states, OP, {"go_home": home}, START, 1_140_000)
+    assert out == states and asg == START and rep is None

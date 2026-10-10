@@ -100,8 +100,14 @@ def test_patrol_all_switch_rotates_the_three_drones():  # decision 0037: "전 �
     sc = load_scenario_json(str(SCENARIO))
     sw = next(s for s in sc.operation.switches if s.id == "patrol_all")
     assert sw.label == "전 기체 순찰"
-    assert sw.play_by_vehicle == {"d1": "coast_a", "d2": "coast_b", "d3": "go_home"}
-    assert sc.operation.rotation == ["d1", "d2", "d3"]
+    assert sw.play_by_vehicle == {
+        "d1": "coast_a",
+        "d2": "coast_b",
+        "d3": "go_home",
+        "d4": "go_home",
+    }
+    assert sc.operation.rotation == ["d1", "d2", "d3", "d4"]
+    assert sc.operation.rotation_pools == {"coast_a": ["d1", "d3"], "coast_b": ["d2", "d4"]}
     assert sc.operation.rotation_plays == ["coast_a", "coast_b"]
     specs = {v.id: v for v in sc.vehicles}
     assert check_operation(sc.operation, {p.id: p for p in sc.plays}, specs).ok
@@ -111,4 +117,9 @@ def test_patrol_all_switch_rotates_the_three_drones():  # decision 0037: "전 �
     es, _ = tick(es, TickInputs(injections=[inj]))
     es, f = tick(es, TickInputs(injections=[inj.model_copy(update={"status": "approved"})]))
     plays = {v.id: v.play_id for v in f.vehicles}
-    assert (plays["d1"], plays["d2"], plays["d3"]) == ("coast_a", "coast_b", "go_home")
+    assert (plays["d1"], plays["d2"], plays["d3"], plays["d4"]) == (
+        "coast_a",
+        "coast_b",
+        "go_home",
+        "go_home",
+    )

@@ -3,7 +3,7 @@
  "operation": {
   "id": "op1",
   "name": "백령도 해안 순찰 24시간 교대(가상)",
-  "purpose": "드론 3대가 북(A)·남(B) 해안을 교대로 늘 1대씩 순찰(결정 0037)",
+  "purpose": "드론 4대가 북(A: d1·d3)·남(B: d2·d4) 해안을 짝끼리 교대로 늘 1대씩 순찰(결정 0037, 0041)",
   "area": {
    "points": [
     {
@@ -55,25 +55,38 @@
   "vehicle_ids": [
    "d1",
    "d2",
-   "d3"
+   "d3",
+   "d4"
   ],
   "started_ms": 1791633600000,
   "assign": {
    "d1": "coast_a",
    "d2": "coast_b",
-   "d3": "standby"
+   "d3": "standby",
+   "d4": "standby"
   },
   "reserve": {},
   "switches": [],
   "rotation": [
    "d1",
    "d2",
-   "d3"
+   "d3",
+   "d4"
   ],
   "rotation_plays": [
    "coast_a",
    "coast_b"
-  ]
+  ],
+  "rotation_pools": {
+   "coast_a": [
+    "d1",
+    "d3"
+   ],
+   "coast_b": [
+    "d2",
+    "d4"
+   ]
+  }
  },
  "vehicles": [
   {
@@ -81,7 +94,7 @@
    "name": "드론1",
    "domain": "air",
    "speed_mps": 15.0,
-   "endurance_min": 90,
+   "endurance_min": 50.0,
    "sensor_range_m": 800.0,
    "capabilities": [
     "move_to",
@@ -92,22 +105,22 @@
     "watch_point",
     "approach_target",
     "relay_comms",
-    "hold",
-    "strike_target"
+    "hold"
    ],
    "home": {
     "lat": 37.95,
     "lon": 124.7,
     "alt_m": 0.0
    },
-   "recharge_min": 10
+   "recharge_min": 10,
+   "rf_range_m": 2000.0
   },
   {
    "id": "d2",
    "name": "드론2",
    "domain": "air",
    "speed_mps": 15.0,
-   "endurance_min": 90,
+   "endurance_min": 50.0,
    "sensor_range_m": 800.0,
    "capabilities": [
     "move_to",
@@ -126,14 +139,15 @@
     "lon": 124.7,
     "alt_m": 0.0
    },
-   "recharge_min": 10
+   "recharge_min": 10,
+   "rf_range_m": 2000.0
   },
   {
    "id": "d3",
    "name": "드론3",
    "domain": "air",
    "speed_mps": 15.0,
-   "endurance_min": 90,
+   "endurance_min": 50.0,
    "sensor_range_m": 800.0,
    "capabilities": [
     "move_to",
@@ -144,15 +158,41 @@
     "watch_point",
     "approach_target",
     "relay_comms",
-    "hold",
-    "strike_target"
+    "hold"
    ],
    "home": {
     "lat": 37.945,
     "lon": 124.7,
     "alt_m": 0.0
    },
-   "recharge_min": 10
+   "recharge_min": 10,
+   "rf_range_m": 2000.0
+  },
+  {
+   "id": "d4",
+   "name": "드론4",
+   "domain": "air",
+   "speed_mps": 15.0,
+   "endurance_min": 50.0,
+   "sensor_range_m": 800.0,
+   "capabilities": [
+    "move_to",
+    "patrol_route",
+    "search_area",
+    "return_home",
+    "watch_target",
+    "watch_point",
+    "approach_target",
+    "relay_comms",
+    "hold"
+   ],
+   "home": {
+    "lat": 37.94,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "recharge_min": 10,
+   "rf_range_m": 2000.0
   }
  ],
  "plays": [
@@ -555,16 +595,7 @@
    "template": true
   }
  ],
- "events": [
-  {
-   "offset_ms": 1000,
-   "kind": "vehicle_battery_set",
-   "params": {
-    "id": "d2",
-    "pct": 60
-   }
-  }
- ],
+ "events": [],
  "enemies": [],
  "land": [
   {

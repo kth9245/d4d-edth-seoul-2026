@@ -22,6 +22,9 @@ def apply_reserves(
         reason, gone = f"예비 투입: {vid} 대신", by.get(vid)
         if gone is None or gone.status not in GONE or any(a.reason == reason for a in assignments):
             continue
+        play = plays.get(gone.play_id)
+        if play is None or play.steps[0].do.kind.value == "return_home":  # sent home: no task left
+            continue
         nxt = next((r for r in reserves if by[r].status in LIVE), None)
         if nxt is None:
             continue

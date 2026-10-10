@@ -8,7 +8,7 @@ import { frameMarkers } from "./frameMarkers";
 describe("frameMarkers", () => {
   it("makes one marker per vehicle with its position and status", () => {
     const { vehicles } = frameMarkers(s1 as Frame);
-    expect(vehicles.map((v) => v.id)).toEqual(["d1", "d2", "d3", "usv", "ugv"]);
+    expect(vehicles.map((v) => v.id)).toEqual(["d1", "d2", "d3", "usv", "ugv", "d4"]); // d4 waits at base in the example scene
     expect(vehicles[0]).toEqual({ id: "d1", lon: 124.695, lat: 37.98, status: "active" });
     expect(vehicles[1].status).toBe("ready");
   });

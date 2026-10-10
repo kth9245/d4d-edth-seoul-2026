@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT)]
 
 from contracts.models import GeoPoint, Scenario  # noqa: E402
+from modules.sim import load_scenario_json  # noqa: E402
 from shared.geo import dist_m, enu_delta_m, offset_latlon  # noqa: E402
 
 NIGHT = ROOT / "demo" / "scenarios" / "baengnyeong_night.json"
@@ -70,20 +71,24 @@ def main() -> None:
     night = json.loads(NIGHT.read_text(encoding="utf-8"))
     sc = Scenario.model_validate(night)
     a, b = coast_routes(sc.land)
+    plain = ("kind", "kind_path")  # the 24h scenario has no ontology; same drones as the demo
+    resolved = load_scenario_json(str(NIGHT)).vehicles  # capabilities filled from the ontology
     drones = [
-        v | {"endurance_min": 90, "recharge_min": 10}
-        for v in night["vehicles"]
-        if v["domain"] == "air"
+        {k: x for k, x in v.model_dump(mode="json").items() if k not in plain}
+        | {"recharge_min": 10}
+        for v in resolved
+        if v.domain.value == "air"
     ]
     plays = {p["id"]: p for p in night["plays"]}
     op = night["operation"] | {
         "name": "백령도 해안 순찰 24시간 교대(가상)",
-        "purpose": "드론 3대가 북(A)·남(B) 해안을 교대로 늘 1대씩 순찰(결정 0037)",
+        "purpose": "드론 4대가 북(A: d1·d3)·남(B: d2·d4) 해안을 짝끼리 교대로 늘 1대씩 순찰(결정 0037, 0041)",
         "vehicle_ids": [v["id"] for v in drones],
-        "assign": {"d1": "coast_a", "d2": "coast_b", "d3": "standby"},
+        "assign": {"d1": "coast_a", "d2": "coast_b", "d3": "standby", "d4": "standby"},
         "reserve": {},
         "switches": [],
-        "rotation": ["d1", "d2", "d3"],
+        "rotation": ["d1", "d2", "d3", "d4"],
+        "rotation_pools": {"coast_a": ["d1", "d3"], "coast_b": ["d2", "d4"]},
         "rotation_plays": ["coast_a", "coast_b"],
     }
     out = {
@@ -96,11 +101,7 @@ def main() -> None:
             plays["standby"],
             plays["go_home"],
         ],  # fmt: skip
-        # B starts half a cycle ahead so A and B never need the one spare at once. 1 s, not 0: events
-        # fire in (t - dt, t] and the first tick is started_ms + tick_ms.
-        "events": [
-            {"offset_ms": 1000, "kind": "vehicle_battery_set", "params": {"id": "d2", "pct": 60}}
-        ],
+        "events": [],
         "enemies": [],
         "land": night["land"],
         "seed": 0,

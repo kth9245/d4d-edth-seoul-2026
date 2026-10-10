@@ -244,6 +244,29 @@
    "emergency": null,
    "resume_play_id": null,
    "resume_step_id": null
+  },
+  {
+   "id": "d4",
+   "t_ms": 1791635140000,
+   "pos": {
+    "lat": 37.94,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "heading_deg": 0.0,
+   "battery_pct": 100.0,
+   "status": "ready",
+   "play_id": "standby",
+   "step_id": "wait",
+   "entered_step": true,
+   "waypoint_idx": 0,
+   "active": null,
+   "pending_report_id": null,
+   "target_id": null,
+   "decision_id": null,
+   "emergency": null,
+   "resume_play_id": null,
+   "resume_step_id": null
   }
  ],
  "targets": [

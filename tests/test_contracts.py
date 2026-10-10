@@ -173,7 +173,7 @@ def test_ontology_fields_default_to_none_and_the_demo_has_the_hierarchy():  # de
     assert isinstance(sc.ontology, Ontology)
     assert {k.id: k.is_a for k in sc.ontology.kinds}["armed_drone"] == "air_vehicle"
     assert {v.id: v.kind for v in sc.vehicles} == {
-        "d1": "recon_drone", "d2": "armed_drone", "d3": "recon_drone",
+        "d1": "recon_drone", "d2": "armed_drone", "d3": "recon_drone", "d4": "recon_drone",
         "usv": "armed_usv", "ugv": "ground_robot",
     }  # fmt: skip
     g = ObjectGraph.model_validate(_load(EXAMPLES / "object_graph.json"))

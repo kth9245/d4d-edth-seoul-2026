@@ -120,3 +120,23 @@ def test_no_patrol_out_means_no_rotation_yet():  # demo: rotation waits for the 
 def test_two_on_one_play_without_relief_record_is_not_a_handover():
     by, asg = run(fleet(d1_battery=90, d3_play="coast_a", d3_north=5900))
     assert by["d1"].play_id == "coast_a" and by["d3"].play_id == "coast_a" and asg == []
+
+
+POOLS = OP.model_copy(update={"rotation": ["d1", "d2", "d3", "d4"],
+                              "rotation_pools": {"coast_a": ["d1", "d3"], "coast_b": ["d2", "d4"]}})  # fmt: skip
+SPECS["d4"] = SPECS["d3"].model_copy(update={"id": "d4", "name": "d4"})
+
+
+def test_pool_relief_comes_from_the_same_coast_pair():  # north d1·d3, south d2·d4
+    states = [vs("d1", "coast_a", 90, 6000), vs("d2", "coast_b", 49, 6000, wp=4),
+              vs("d3", None, 100, 0, "ready"), vs("d4", None, 100, 0, "ready")]  # fmt: skip
+    by, asg = run(states, op=POOLS)
+    assert (by["d3"].play_id, by["d4"].play_id) == (None, "coast_b")
+    assert [a.reason for a in asg] == ["교대 출발: d4 → d2 @4"]
+
+
+def test_pool_without_a_ready_partner_does_not_borrow_the_other_coast():
+    states = [vs("d1", "coast_a", 49, 6000, wp=2), vs("d2", "coast_b", 90, 6000),
+              vs("d3", "go_home", 40, 0, "returning"), vs("d4", None, 100, 0, "ready")]  # fmt: skip
+    by, asg = run(states, op=POOLS)
+    assert by["d4"].play_id is None and asg == []

@@ -6,7 +6,7 @@ import { parseFrame } from "./parseFrame";
 describe("parseFrame", () => {
   it("reads a Frame message", () => {
     const f = parseFrame(JSON.stringify(frame));
-    expect(f?.vehicles).toHaveLength(5);
+    expect(f?.vehicles).toHaveLength(6); // + d4 (coast pairs)
     expect(f?.t_ms).toBe(frame.t_ms);
   });
 

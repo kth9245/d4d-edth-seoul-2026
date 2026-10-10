@@ -102,6 +102,8 @@ def fast(t, lat, lon, seen, hit=None):
 
 
 def frame(t, vehicles, targets, reports, assignments, metrics, log, blocks=(), injections=()):
+    have = {v.id for v in vehicles}  # vehicles a scene does not mention wait at base (d4, 0037)
+    vehicles = [*vehicles, *(standby(v, t) for v in SPECS if v not in have)]
     return Frame(
         t_ms=t,
         run=RunState(status="running", speed=1.0),

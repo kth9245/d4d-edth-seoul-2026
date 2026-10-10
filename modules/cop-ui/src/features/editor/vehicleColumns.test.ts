@@ -14,6 +14,7 @@ describe("vehicleColumns", () => {
       ["d1", [], [["patrol_a", null], ["watch", "근접 확인"]]],
       ["d2", [], [["patrol_b", null]]], // decision 0036: d2 patrols from the start
       ["d3", ["d1"], [["standby", null]]],
+      ["d4", [], [["standby", null]]], // coast pair partner of d2
       ["usv", [], [["standby", null], ["approach", "근접 확인"]]],
       ["ugv", [], [["standby", null], ["landing", "근접 확인"]]],
     ]);

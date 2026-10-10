@@ -186,7 +186,7 @@ def test_serves_ui_dist(tmp_path):
 def test_ontology_view_from_the_scenario():  # decision 0038
     client, _ = fake_app()
     view = client.get("/ontology").json()
-    assert [v["vehicle_id"] for v in view["vehicles"]] == ["d1", "d2", "d3", "usv", "ugv"]
+    assert [v["vehicle_id"] for v in view["vehicles"]] == ["d1", "d2", "d3", "d4", "usv", "ugv"]
     d1 = {r["action"]: r for r in view["vehicles"][0]["reasons"]}
     assert d1["strike_target"]["allowed"] is False
     assert d1["strike_target"]["path"] == ["recon_drone", "air_vehicle", "vehicle"]

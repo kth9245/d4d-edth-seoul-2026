@@ -1,6 +1,6 @@
 """RT-10 rotate_patrols: 해안 순찰 교대(결정 0037, 초소 근무 교대)
 순찰 기체가 교대 기준 배터리에 닿으면 충전된 대기 기체가 출발해 경로점 m에서 만나 넘겨받고 나간 기체는 귀환.
-하한선(귀환 뒤 30%)이 교대보다 먼저. op.rotation·rotation_plays가 비면 아무것도 하지 않는다.
+하한선(귀환 뒤 30%)이 교대보다 먼저. rotation_pools가 있으면 그 해안 짝 안에서만 교대. op.rotation·rotation_plays가 비면 아무것도 하지 않는다.
 SPEC: modules/runtime/SPEC.md#RT-10
 """
 
@@ -52,9 +52,10 @@ def rotate_patrols(
             by[s] = by[s].model_copy(update={"waypoint_idx": m})
             by[r] = by[r].model_copy(update={"waypoint_idx": m})
 
-    def free(after: str | None) -> str | None:  # first charged, idle rotation drone after `after`
-        k = op.rotation.index(after) + 1 if after else 0
-        order = op.rotation[k:] + op.rotation[:k]
+    def free(after: str | None, play: str) -> str | None:  # first charged idle drone of the pool
+        pool = op.rotation_pools.get(play) or op.rotation
+        k = pool.index(after) + 1 if after in pool else 0
+        order = pool[k:] + pool[:k]
         ok = [w for w in order if by[w].status.value == "ready" and by[w].battery_pct >= 99.9]
         return next((w for w in ok if by[w].play_id not in op.rotation_plays), None)
 
@@ -62,7 +63,7 @@ def rotate_patrols(
     for v in (v for v in on if v not in busy and by[v].play_id in op.rotation_plays):
         st, spec = by[v], specs[v]
         alone = sum(by[w].play_id == st.play_id for w in on) == 1
-        if alone and st.battery_pct - 2 * _back(st, spec) <= START and (r := free(v)):
+        if alone and st.battery_pct - 2 * _back(st, spec) <= START and (r := free(v, st.play_id)):
             by[r] = switch_play(by[r], plays[st.play_id])
             note(r, st.play_id, f"교대 출발: {r} → {v} @{max(st.waypoint_idx, 0)}")
 
@@ -73,7 +74,7 @@ def rotate_patrols(
 
     engaged = any(held(p) for p in op.rotation_plays)  # rotation runs once a patrol is out
     for p in op.rotation_plays:  # a coast nobody holds (a patrol went home at the floor)
-        if engaged and not held(p) and (r := free(None)):
+        if engaged and not held(p) and (r := free(None, p)):
             by[r] = switch_play(by[r], plays[p])
             note(r, p, f"교대 투입(빈 순찰): {r} → {p}")
     return [by[s.id] for s in states], asg

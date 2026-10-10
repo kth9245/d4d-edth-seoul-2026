@@ -11,9 +11,9 @@ const playName = (id: string) => names.get(id) ?? null;
 describe("vehicleRows", () => {
   it("lists the operation's vehicles in order with kind, first play and reserves", () => {
     const rows = vehicleRows(op, vehicles, playName);
-    expect(rows.map((r) => r.id)).toEqual(["d1", "d2", "d3", "usv", "ugv"]);
+    expect(rows.map((r) => r.id)).toEqual(["d1", "d2", "d3", "d4", "usv", "ugv"]);
     expect(rows[0]).toEqual({ id: "d1", name: "드론1", domain: "드론", playId: "patrol_a", playName: "해안 순찰 A", reserves: ["d3"] });
-    expect(rows[3]).toMatchObject({ id: "usv", domain: "수상정", playName: "대기", reserves: [] });
+    expect(rows[4]).toMatchObject({ id: "usv", domain: "수상정", playName: "대기", reserves: [] });
   });
   it("still shows a vehicle the gateway has no spec for", () => {
     expect(vehicleRows(op, [], playName)[0]).toMatchObject({ id: "d1", name: "d1", domain: "" });
@@ -25,7 +25,7 @@ describe("switchRows", () => {
     const [all] = switchRows(op, playName);
     expect(all.label).toBe("전 기체 귀환");
     expect(all.moves[0]).toEqual({ vehicle: "d1", playId: "go_home", playName: "귀환" });
-    expect(all.moves).toHaveLength(5);
+    expect(all.moves).toHaveLength(6); // + d4 (coast pairs)
   });
 });
 

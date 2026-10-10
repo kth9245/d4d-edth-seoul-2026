@@ -27,7 +27,7 @@ def _score(es, tid: str):
 def test_scenario_has_watch_point_and_rf_drones():
     assert [(w.id, w.radius_m) for w in SC.watch_points] == [("landing", 2000.0)]
     assert {v.id: v.rf_range_m for v in SC.vehicles} == {
-        "d1": 2000.0, "d2": 2000.0, "d3": 2000.0, "usv": 0.0, "ugv": 0.0,
+        "d1": 2000.0, "d2": 2000.0, "d3": 2000.0, "d4": 2000.0, "usv": 0.0, "ugv": 0.0,
     }  # fmt: skip
 
 

@@ -6,7 +6,7 @@ describe("sceneFrames", () => {
     expect(Object.keys(SCENES).sort()).toEqual(["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"]);
   });
   it("holds the example Frame of each scene", () => {
-    expect(SCENES.s1.vehicles).toHaveLength(5);
+    expect(SCENES.s1.vehicles).toHaveLength(6); // + d4 (coast pairs)
     expect(SCENES.s5.blocks[0].reason).toBe("outside_zone");
   });
   it("puts the blocks of patrolling d2 before the fast boat (strike-phase order)", () => {

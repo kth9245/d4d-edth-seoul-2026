@@ -56,6 +56,7 @@
    "d1",
    "d2",
    "d3",
+   "d4",
    "usv",
    "ugv"
   ],
@@ -65,7 +66,8 @@
    "d2": "patrol_b",
    "d3": "standby",
    "usv": "standby",
-   "ugv": "standby"
+   "ugv": "standby",
+   "d4": "standby"
   },
   "reserve": {
    "d1": [
@@ -81,7 +83,8 @@
      "d2": "go_home",
      "d3": "go_home",
      "usv": "go_home",
-     "ugv": "go_home"
+     "ugv": "go_home",
+     "d4": "go_home"
     }
    },
    {
@@ -98,19 +101,31 @@
     "play_by_vehicle": {
      "d1": "coast_a",
      "d2": "coast_b",
-     "d3": "go_home"
+     "d3": "go_home",
+     "d4": "go_home"
     }
    }
   ],
   "rotation": [
    "d1",
    "d2",
-   "d3"
+   "d3",
+   "d4"
   ],
   "rotation_plays": [
    "coast_a",
    "coast_b"
-  ]
+  ],
+  "rotation_pools": {
+   "coast_a": [
+    "d1",
+    "d3"
+   ],
+   "coast_b": [
+    "d2",
+    "d4"
+   ]
+  }
  },
  "vehicles": [
   {
@@ -159,6 +174,24 @@
    "capabilities": [],
    "home": {
     "lat": 37.945,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "recharge_min": 10.0,
+   "kind": "recon_drone",
+   "kind_path": [],
+   "rf_range_m": 2000.0
+  },
+  {
+   "id": "d4",
+   "name": "드론4",
+   "domain": "air",
+   "speed_mps": 15.0,
+   "endurance_min": 50.0,
+   "sensor_range_m": 800.0,
+   "capabilities": [],
+   "home": {
+    "lat": 37.94,
     "lon": 124.7,
     "alt_m": 0.0
    },
