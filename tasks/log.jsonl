@@ -605,3 +605,4 @@
 {"at": "2026-10-11T03:07:02+09:00", "by": "kth9245", "op": "done", "id": "Part1-42.5", "take": false}
 {"at": "2026-10-11T03:07:37+09:00", "by": "kth9245", "op": "done", "id": "Part1-15.1", "take": false}
 {"at": "2026-10-11T03:08:23+09:00", "by": "황승주", "op": "add", "id": "Part2-70", "title": "멸공 자동 감시: 복귀 중 기체를 넘길 때 상태 운용 중·복귀 명령 해제(기지 도착 시 추적이 사라지던 문제)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
+{"at": "2026-10-11T03:08:26+09:00", "by": "황승주", "op": "start", "id": "Part2-70", "take": false, "from": null}
