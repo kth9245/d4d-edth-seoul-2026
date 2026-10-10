@@ -47,7 +47,9 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 |---|---|---|
 | 1 | sim | `apply_events(scenario, states, targets, t_ms, dt_ms) -> (states, targets)` |
 | 1.5 | sim | 적(결정 0032): `spawn_enemies(scenario, targets, t_ms, dt_ms) -> targets`, `steer_enemies(enemies, plays, targets, t_ms, dt_ms, land) -> targets`(배는 섬을 돌아감, 결정 0034) |
+| 1.6 | sim | `update_emission(scenario, targets, t_ms) -> targets`: 적이 `appear_offset_ms + emit_start_offset_ms`부터 `emitting`(결정 0039) |
 | 2 | sensing | `observe(states, specs, targets, t_ms) -> targets` |
+| 2.5 | gateway | `score_targets(states, specs, targets, watch_points, tick_ms) -> targets`: sensing `score_target`으로 `threat`·`threat_reasons`·`rf_detected`·`threat_accum`을 씀. 종류는 `seen_by`가 비면 unknown(결정 0039·0040) |
 | 3 | runtime | 입력 적용: `apply_decision(states, plays, decision, reports) -> (states, reports)`, 승인된 것만 `apply_injection(states, plays, injection) -> states`, `apply_direct(states, direct, t_ms) -> (states, Command)` |
 | 4 | runtime | `apply_emergency(states, plays) -> states` |
 | 5 | runtime | 기체마다 `step_vehicle(state, specs[id], plays[state.play_id], targets, t_ms) -> (state, Command \| None, Report \| None)` |

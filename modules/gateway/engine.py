@@ -11,6 +11,7 @@ from modules.gateway.actions.init_engine import init_engine
 from modules.gateway.actions.mark_reported import mark_reported
 from modules.gateway.actions.record_injections import record_injections
 from modules.gateway.actions.run_checks import run_checks
+from modules.gateway.actions.score_targets import score_targets
 from modules.gateway.actions.tick_log import tick_log
 from modules.gateway.actions.track_assignments import track_assignments
 from modules.gateway.engine_state import EngineState
@@ -25,7 +26,14 @@ from modules.runtime import (
     update_metrics,
 )
 from modules.sensing import observe
-from modules.sim import advance, apply_events, resolve_strikes, spawn_enemies, steer_enemies
+from modules.sim import (
+    advance,
+    apply_events,
+    resolve_strikes,
+    spawn_enemies,
+    steer_enemies,
+    update_emission,
+)
 from shared.log import get_logger
 
 __all__ = ["EngineState", "init_engine", "tick"]
@@ -39,7 +47,9 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
     targets = steer_enemies(
         sc.enemies, plays, spawn_enemies(sc, targets, t, dt), t, dt, sc.land
     )  # 1.5 (0032; boats round islands 0034)
+    targets = update_emission(sc, targets, t)  # 1.6 (0039)
     targets = observe(states, specs, targets, t)  # 2
+    targets = score_targets(states, specs, targets, sc.watch_points, dt)  # 2.5 (0039, 0040)
     reports, assigns = list(es.reports), list(es.assignments)  # 3 operator inputs
     for d in inputs.decisions:
         before = {s.id: s.play_id for s in states}
