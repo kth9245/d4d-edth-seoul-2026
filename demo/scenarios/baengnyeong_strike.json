@@ -354,17 +354,7 @@
        "distance_m": 150
       }
      },
-     "on": [
-      {
-       "cond": {
-        "kind": "operator_choice",
-        "params": {
-         "choice": "handoff"
-        }
-       },
-       "go_step": "patrol"
-      }
-     ],
+     "on": [],
      "report": {
       "text": "미식별 거점 감지",
       "choices": [],
