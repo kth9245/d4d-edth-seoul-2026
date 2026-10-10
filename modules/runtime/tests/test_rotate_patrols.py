@@ -163,9 +163,12 @@ def test_24h_a_patrol_taken_by_the_raid_is_not_refilled():  # user 10/11: only t
         vs("d2", "strike", 80, 3000),
         vs("d3", None, 100, 0, "ready"),
     ]
-    out, asg = rotate_patrols(states, SPECS, OP, raid, [], 0)
+    moved = [
+        Assignment(vehicle_id="d2", role_id="strike", since_ms=0, reason="결정 dec-1")
+    ]  # as the engine notes it
+    out, asg = rotate_patrols(states, SPECS, OP, raid, moved, 0)
     by = {s.id: s for s in out}
-    assert by["d3"].role_id is None and asg == []
+    assert by["d3"].role_id is None and asg == moved
 
 
 def test_24h_a_patrol_gone_home_at_the_floor_is_still_refilled():
@@ -177,3 +180,32 @@ def test_24h_a_patrol_gone_home_at_the_floor_is_still_refilled():
     ]
     by = {s.id: s for s in rotate_patrols(states, SPECS, OP, raid, [], 0)[0]}
     assert by["d2"].role_id == "go_home" and by["d3"].role_id == "coast_b"
+
+
+def test_24h_a_floor_gap_is_refilled_when_a_drone_is_charged_later():  # user 10/11: never left empty
+    raid = ROLES | {"focus_orbit": ROLES["go_home"]}
+    states = [
+        vs("d1", "coast_a", 80, 6000),
+        vs("d2", "coast_b", 20, 3000),
+        vs("d3", None, 60, 0, "ready"),
+    ]
+    out, asg = rotate_patrols(
+        states, SPECS, OP, raid, [], 0
+    )  # d3 not charged yet: the gap stays this tick
+    by = {s.id: s for s in out}
+    assert by["d2"].role_id == "go_home" and by["d3"].role_id is None
+    later = [s.model_copy(update={"battery_pct": 100.0}) if s.id == "d3" else s for s in out]
+    by = {s.id: s for s in rotate_patrols(later, SPECS, OP, raid, asg, 1000)[0]}
+    assert by["d3"].role_id == "coast_b"
+
+
+def test_24h_a_gap_left_by_a_raid_decision_stays_until_the_cover_card():  # user 10/11
+    raid = ROLES | {"focus_orbit": ROLES["go_home"]}
+    states = [
+        vs("d1", "coast_a", 80, 6000),
+        vs("d2", "standby", 80, 3000),
+        vs("d3", None, 100, 0, "ready"),
+    ]
+    held = [Assignment(vehicle_id="d2", role_id="standby", since_ms=0, reason="결정 dec-7")]
+    by = {s.id: s for s in rotate_patrols(states, SPECS, OP, raid, held, 1000)[0]}
+    assert by["d3"].role_id is None

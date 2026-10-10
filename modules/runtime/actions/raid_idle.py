@@ -1,12 +1,20 @@
 """RT-20 raid_idle: 멸공에서 적 대응 임무가 사라진 기체에 "기지 복귀 / 현재 위치에서 대기" 카드(설계 2026-10-10-24h-raid-flow).
 사유: 표적 무력화, USV가 쫓는 적이 땅 위, UGV가 쫓는 적이 바다, 드론 배터리가 지금 돌아가야 할 만큼(relief_due 기준, 편도).
-그 기체의 raid-idle 카드가 열려 있으면 새로 만들지 않는다. auto_watch: 공중의 대기·복귀 기체가 본 적을 바로 감시(사용자 10/11).
-SPEC: modules/runtime/SPEC.md#RT-20
-"""
+그 기체의 raid-idle 카드가 열려 있으면 새로 만들지 않는다. auto_watch: 공중의 대기·복귀 기체가 본 적을 바로 감시. raid_held: 적 대응으로 빈 순찰은 ④까지 비움(사용자 10/11).
+SPEC: modules/runtime/SPEC.md#RT-20"""
 
 from collections.abc import Sequence
 
-from contracts.models import Polygon, Report, Role, Target, VehicleSpec, VehicleState
+from contracts.models import (
+    Assignment,
+    Operation,
+    Polygon,
+    Report,
+    Role,
+    Target,
+    VehicleSpec,
+    VehicleState,
+)
 from modules.runtime.actions.raid_cards import TRACK_ROLE, idle_choices
 from modules.runtime.actions.relief_due import START, _back
 from modules.runtime.actions.switch_role import switch_role
@@ -63,3 +71,10 @@ def auto_watch(states: list[VehicleState], targets: list[Target], specs: dict[st
             taken.add(tg.id)
         out.append(s)
     return out
+
+
+def raid_held(p: str, op: Operation, by: dict[str, VehicleState], assignments: list[Assignment],
+              roles: dict[str, Role]) -> bool:  # fmt: skip
+    """24h: coast p waits for the ④ cover card while a pool drone is out on a decision or an auto watch (user 10/11)."""
+    why = {a.vehicle_id: a.reason for a in assignments}
+    return "focus_orbit" in roles and any(by[w].status.value in ("active", "returning") and why.get(w, "").startswith(("결정", "자동 감시")) for w in op.rotation_pools.get(p) or op.rotation if w in by)  # fmt: skip
