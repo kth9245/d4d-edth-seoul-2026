@@ -9,13 +9,14 @@ from contracts.models import (
     CommandKind,
     GeoPoint,
     PassedCommand,
+    Polygon,
     Target,
     VehicleSpec,
     VehicleState,
     VehicleStatus,
 )
 from modules.sim.actions.advance_vehicles import advance_vehicles
-from shared.geo import dist_m, offset_latlon
+from shared.geo import dist_m, enu_delta_m, offset_latlon
 
 HOME = GeoPoint(lat=37.95, lon=124.70)
 SPECS = {
@@ -84,3 +85,22 @@ def test_strike_flies_onto_the_target():
     pc = _passed(CommandKind.strike, target_id="fast1", distance_m=0)
     (st,) = advance_vehicles([_state(status=VehicleStatus.active)], SPECS, [pc], 1000, [tg])
     assert dist_m(st.pos, tg.pos) == pytest.approx(90, abs=0.5)
+
+
+def test_only_sea_vehicles_go_round_the_island():
+    island = [Polygon(points=[_at(-500, -500), _at(500, -500), _at(500, 500), _at(-500, 500)])]
+    start, goal = _at(-1000, -200), _at(1000, -200)
+    usv = SPECS["d1"].model_copy(update={"id": "usv", "domain": "sea"})
+    states = [_state(start, VehicleStatus.active),
+              _state(start, VehicleStatus.active).model_copy(update={"id": "usv"})]  # fmt: skip
+    to_goal = {"target": goal.model_dump()}
+    usv_move = Command(id="c2", vehicle_id="usv", kind=CommandKind.move, params=to_goal)
+    passed = [
+        _passed(CommandKind.move, **to_goal),
+        PassedCommand(command=usv_move, checks=[], passed_ms=0),
+    ]
+    air, sea = advance_vehicles(states, {**SPECS, "usv": usv}, passed, 1000, [], island)
+    _, air_north = enu_delta_m(start.lat, start.lon, air.pos.lat, air.pos.lon)
+    _, sea_north = enu_delta_m(start.lat, start.lon, sea.pos.lat, sea.pos.lon)
+    assert air_north == pytest.approx(0, abs=0.1)  # air: straight east over the island
+    assert sea_north < -1  # sea: toward the south-west corner

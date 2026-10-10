@@ -1,11 +1,16 @@
 """SIM-08 advance_vehicles: 이번 틱 통과 명령(없으면 active)대로 모든 기체를 1틱 진행, 배터리 소모
 기지에서 hold면 배터리가 줄지 않고 ready를 유지한다. 공개 API 이름은 advance.
+land는 해상 기체에만 넘긴다(결정 0034).
 SPEC: modules/sim/SPEC.md#SIM-08
 """
 
+from collections.abc import Sequence
+
 from contracts.models import (
     CommandKind,
+    Domain,
     PassedCommand,
+    Polygon,
     Target,
     VehicleSpec,
     VehicleState,
@@ -25,6 +30,7 @@ def advance_vehicles(
     passed: list[PassedCommand],
     dt_ms: int,
     targets: list[Target],
+    land: Sequence[Polygon] = (),
 ) -> list[VehicleState]:
     by_v = {pc.command.vehicle_id: pc for pc in passed}
     out = []
@@ -39,12 +45,13 @@ def advance_vehicles(
         if kind == K.hold and dist_m(st.pos, spec.home) < 1:  # on the ground at base
             out.append(st)
             continue
+        sea = land if spec.domain == Domain.sea else ()  # only boats go round islands (0034)
         if kind in (K.orbit, K.keep_distance, K.strike):  # strike: fly onto the target (0033)
-            st = orbit_or_keep(st, spec, pc, targets, dt_ms)
+            st = orbit_or_keep(st, spec, pc, targets, dt_ms, sea)
         elif kind == K.follow_route:
-            st = follow_route(st, spec, pc, dt_ms)
+            st = follow_route(st, spec, pc, dt_ms, sea)
         elif kind in (K.move, K.return_home, K.hold):
-            st = move_straight(st, spec, pc, dt_ms)
+            st = move_straight(st, spec, pc, dt_ms, sea)
         drain = 100 / spec.endurance_min * dt_ms / 60000
         upd: dict = {"battery_pct": max(st.battery_pct - drain, 0)}
         if st.status == VehicleStatus.ready:
