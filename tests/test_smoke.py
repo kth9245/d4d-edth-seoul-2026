@@ -5,25 +5,26 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def test_smoke_passes_on_demo_scenario():
-    r = subprocess.run(
-        [sys.executable, str(ROOT / "scripts/smoke.py")], capture_output=True, text=True, cwd=ROOT
-    )
-    assert r.returncode == 0, r.stderr
-    assert "smoke OK" in r.stdout
-
-
-def test_smoke_fails_on_bad_scenario(tmp_path):
-    bad = tmp_path / "bad.yaml"
-    bad.write_text(
-        "name: x\nstart_ms: 0\nduration_s: 5\nstep_ms: 500\norigin: {lat: 0, lon: 0}\n"
-        "objects: [{id: a, kind: tank, start_east_m: 0, start_north_m: 0, alt_m: 1, "
-        "vel_east_mps: 0, vel_north_mps: 0}]\n"
-    )
-    r = subprocess.run(
-        [sys.executable, str(ROOT / "scripts/smoke.py"), "--scenario", str(bad)],
+def run(*args: str) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        [sys.executable, str(ROOT / "scripts/smoke.py"), *args],
         capture_output=True,
         text=True,
         cwd=ROOT,
     )
-    assert r.returncode == 1 and "kind" in r.stderr
+
+
+def test_smoke_runs_the_integration_1_slice_on_the_demo_scenario():
+    # docs/research/09 section 4: target appears -> report card -> one decision switches the choice's
+    # vehicles to their new plays, every resulting command passes safety, operator_actions = 1.
+    r = run()
+    assert r.returncode == 0, r.stderr
+    assert "smoke OK" in r.stdout
+    assert "operator_actions=1" in r.stdout
+
+
+def test_smoke_fails_on_bad_scenario(tmp_path):
+    bad = tmp_path / "bad.json"
+    bad.write_text('{"id": "x"}', encoding="utf-8")
+    r = run("--scenario", str(bad))
+    assert r.returncode == 1 and "smoke FAIL" in r.stderr
