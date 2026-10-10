@@ -123,3 +123,4 @@
 {"at": "2026-10-10T10:25:12+09:00", "by": "kth9245", "op": "start", "id": "Part3-10", "take": false, "from": null}
 {"at": "2026-10-10T10:25:20+09:00", "by": "최동호", "op": "done", "id": "Part2-1", "take": false}
 {"at": "2026-10-10T10:25:41+09:00", "by": "kth9245", "op": "start", "id": "Part1-7", "take": false, "from": null}
+{"at": "2026-10-10T10:25:48+09:00", "by": "kth9245", "op": "decide", "id": "Part1-7", "text": "다음 사건으로(/run/jump)는 계약 그대로 offset_ms 필수, 멈출 시각은 화면(Part1-13)이 적는다. 리드 답 '계약 그대로'. 구현은 직접, ship 전 subagent 리뷰"}
