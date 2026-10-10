@@ -14,6 +14,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | 시나리오 | 시연 묶음: 작전 + 기체 제원 + 플레이 목록 + 사건 대본 | `Scenario` |
 
 플레이는 다른 기체를 알지 못하지만, 선택지의 `play_by_vehicle`은 기체 id를 직접 적는다(결정 0016, 사람이 알고 고름).
+선택지가 보고한 기체를 `play_by_vehicle`에 넣지 않으면, 그 기체는 같은 플레이에서 지금 step의 탈출 `{cond: {kind: operator_choice, params: {choice: <선택지 id>}}, go_step}`으로 넘어간다. 그런 탈출이 없으면 보고 step에 머문다(결정 0031, 편집기 "보고 카드 끼워 넣기"가 이 모양을 넣는다).
 
 **표적이 필요한 행동**(`watch_target`, `approach_target`)의 `do.params.target`:
 - `"nearest"`: step에 들어갈 때 그 기체에서 가장 가까운 표적

@@ -1,4 +1,15 @@
-from contracts.models import Action, Choice, Decision, GeoPoint, Play, Report, Step, VehicleState
+from contracts.models import (
+    Action,
+    Choice,
+    Condition,
+    Decision,
+    Exit,
+    GeoPoint,
+    Play,
+    Report,
+    Step,
+    VehicleState,
+)
 from modules.runtime.actions.apply_decision import apply_decision
 
 
@@ -45,6 +56,20 @@ def test_choice_without_the_reporter_just_releases_it():
     out, _ = apply_decision([vs("d1", "patrol_a", pending_report_id="r1")], PLAYS, decide("ignore"),
                             [CARD])  # fmt: skip
     assert (out[0].play_id, out[0].pending_report_id) == ("patrol_a", None)
+
+
+def test_choice_without_the_reporter_follows_its_operator_choice_exit():
+    # Decision 0031: the reporter stays in its play and takes the exit named by the chosen choice.
+    go = Exit(cond=Condition(kind="operator_choice", params={"choice": "go"}), go_step="approach")
+    draft = Play(id="draft", name="d", domains=["air"], entry="report", steps=[
+        Step(id="report", name="보고", do=Action(kind="hold"), on=[go]),
+        Step(id="approach", name="접근", do=Action(kind="approach_target"))])  # fmt: skip
+    card = Report(id="r3", t_ms=0, kind="target_detected", vehicle_id="d1", text="보트",
+                  choices=[Choice(id="go", label="접근 승인")])  # fmt: skip
+    st = vs("d1", "draft", pending_report_id="r3").model_copy(update={"step_id": "report"})
+    out, _ = apply_decision([st], {**PLAYS, "draft": draft}, decide("go", "r3"), [card])
+    got = (out[0].play_id, out[0].step_id, out[0].entered_step, out[0].pending_report_id)
+    assert got == ("draft", "approach", False, None)
 
 
 def test_target_select_sets_the_target_and_reenters_the_step():

@@ -3,7 +3,7 @@ target_select 카드면 그 기체의 표적을 정한다. 카드에 resolved_ms
 SPEC: modules/runtime/SPEC.md#RT-03
 """
 
-from contracts.models import Decision, Play, Report, VehicleState
+from contracts.models import ConditionKind, Decision, Play, Report, VehicleState
 from modules.runtime.actions.switch_play import switch_play
 
 
@@ -23,6 +23,19 @@ def apply_decision(
         elif s.id in ch.play_by_vehicle:
             s = switch_play(s, plays[ch.play_by_vehicle[s.id]])
         elif s.id == rep.vehicle_id:
-            s = s.model_copy(update={"pending_report_id": None})
+            s = s.model_copy(update={"pending_report_id": None, **_choice_exit(s, plays, ch.id)})
         out.append(s)
     return out, reports
+
+
+def _choice_exit(s: VehicleState, plays: dict[str, Play], choice_id: str) -> dict:
+    """Decision 0031: a reporter left out of play_by_vehicle takes its step's operator_choice exit for this choice."""
+    play = plays.get(s.play_id or "")
+    step = next((st for st in play.steps if st.id == s.step_id), None) if play else None
+    for ex in step.on if step else []:
+        if (
+            ex.cond.kind == ConditionKind.operator_choice
+            and ex.cond.params.get("choice") == choice_id
+        ):
+            return {"step_id": ex.go_step, "entered_step": False}
+    return {}
