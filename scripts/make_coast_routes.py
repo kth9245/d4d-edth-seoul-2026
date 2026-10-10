@@ -123,10 +123,18 @@ def _go(
             "origin": "human", "approved": True, "template": False}  # fmt: skip
 
 
+EMERGENCY = {
+    "battery_low_pct": 30.0,
+    "link_lost_step": None,
+    "battery_low_step": None,
+    "operator_call_step": None,
+}  # as every night role: home at 30% (user 10/11)
+
+
 def _ours(rid: str, name: str, dom: str, do: dict) -> dict:
     step = {"id": "s", "name": name, "do": do, "on": [], "report": None, "ui": {}}
     return {"id": rid, "name": name, "domains": [dom], "steps": [step], "entry": "s", "origin": "human",
-            "approved": True, "template": False}  # fmt: skip
+            "approved": True, "template": False, "emergency": EMERGENCY}  # fmt: skip
 
 
 def _on_land(a: GeoPoint, b: GeoPoint, land) -> bool:  # a straight leg that never leaves the island

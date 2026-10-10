@@ -99,3 +99,11 @@ def test_24h_user_replay_drone_first_no_landing_no_unasked_patrol():  # user 10/
     assert not [a for a in es.assignments if a.reason.startswith("교대 투입(빈 순찰)")]
     by = {s.id: s for s in es.states}
     assert (by["d3"].role_id, by["d3"].target_id) == ("watch", "e_drone")
+
+
+def test_24h_raid_roles_return_at_30_percent_like_the_night():  # user 10/11: a track holds until the battery runs out
+    day = load_scenario_json(DAY)
+    low = {r.id: r.emergency.battery_low_pct if r.emergency else None for r in day.roles}
+    assert [low[r] for r in ("focus_orbit", "track_sea", "track_ground", "watch", "strike")] == [
+        30.0
+    ] * 5
