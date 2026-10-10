@@ -370,3 +370,4 @@
 {"at": "2026-10-10T16:27:20+09:00", "by": "황승주", "op": "start", "id": "Part2-32", "take": false, "from": null}
 {"at": "2026-10-10T16:30:18+09:00", "by": "황승주", "op": "done", "id": "Part2-32", "take": false}
 {"at": "2026-10-10T16:37:29+09:00", "by": "황승주", "op": "add", "id": "Part2-33", "title": "해안 순찰 기본값 + 발견 시 자동 선택지(드론별 발생 지역 순찰·함께 감시·유지) + 감시 드론 교대 (사용자 지시)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
+{"at": "2026-10-10T16:37:32+09:00", "by": "황승주", "op": "start", "id": "Part2-33", "take": false, "from": null}
