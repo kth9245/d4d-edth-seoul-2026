@@ -84,7 +84,7 @@ Role은 다른 기체를 알지 못하지만, 선택지의 `role_by_vehicle`은 
 |---|---|---|
 | 보고 카드 선택지 | `POST /decisions` | 바로 적용한다. 누른 것이 운용자 결정이다(사건 2: 한 번에 기체 4대) |
 | 전체 전환 버튼 | `POST /injections {switch_id}` | `Injection(pending)`과 `injection_pending` 카드를 만들고, 승인 뒤 `apply_injection`으로 적용 |
-| 일부 전환 | `POST /injections {role_by_vehicle}` | 위와 같다(사건 4: 드론 2를 고속 보트 추적으로) |
+| 일부 전환 | `POST /injections {role_by_vehicle}` | 위와 같다. 상황판에는 이 길이 없다(기체 하나는 아래 기체 메뉴 행, 결정 0060) |
 | 기체 메뉴 Role 전환 | `POST /injections {role_by_vehicle, approve: true}` | 상황판에서 기체를 누르고 표적 없는 Role을 누른 것. 버튼의 "지금 Role → 새 Role"이 미리 보기이고 누른 것이 승인이라 `Injection(approved)`로 기록하고 대기 카드 없이 다음 틱에 적용한다. 운용자 조작 1(결정 0059) |
 | 표적 지목 | `POST /injections {role_by_vehicle, target_by_vehicle, approve: true}` | 상황판에서 기체 → 표적 Role → 포착된 적(또는 기체 → 지도 표적 → Role)을 누른 것. 메뉴가 미리 보기이고 누른 것이 승인이라 `Injection(approved)`로 기록하고 다음 틱에 `apply_injection`이 Role·`target_id`·`decision_id`(= Injection id)를 바꾼다. 그래서 무장 기체의 타격 Role('표적 타격')도 출처 검사를 통과한다. 운용자 조작 1(결정 0048·0049·0058) |
 

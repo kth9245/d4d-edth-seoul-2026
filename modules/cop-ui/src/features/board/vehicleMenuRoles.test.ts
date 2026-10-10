@@ -61,7 +61,8 @@ describe("vehicleMenuRoles", () => {
     expect(ids(m.plain)).not.toContain("focus_orbit");
   });
 
-  it("skips the capability rule when the operation has no ontology (no capabilities)", () => {
-    expect(ids(vehicleMenuRoles(ROLES, spec("x", "air"), [], null).target)).toEqual(["watch", "track_fast", "strike"]);
+  it("skips the capability rule when the operation has no ontology (no capabilities), but never offers strike then", () => {
+    // decision 0058: strike only for a vehicle whose capabilities include strike_target; unknown means no strike
+    expect(ids(vehicleMenuRoles(ROLES, spec("x", "air"), [], null).target)).toEqual(["watch", "track_fast"]);
   });
 });
