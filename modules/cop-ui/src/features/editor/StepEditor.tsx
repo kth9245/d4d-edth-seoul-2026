@@ -1,7 +1,11 @@
-import type { ActionKind, Choice, ConditionKind, Exit, GeoPoint, Role, RouteDef, Step } from "../../contracts.gen";
+import { useState } from "react";
+import type { ActionKind, Choice, ConditionKind, Exit, GeoPoint, Polygon, Role, RouteDef, Step } from "../../contracts.gen";
 import { ACTION_LABEL, CONDITION_LABEL, describeAction } from "./describe";
+import { RouteMaker } from "./RouteMaker";
 import { addChoice, applyRoute, cardOptions, defaultCondition, EDIT_ACTIONS, removeChoice, ROUTE_KINDS, routeChoice, setActionKind, setLoop,
   updateStep } from "./editStep";
+
+const NEW_ROUTE = "__new_route__"; // the route select's "＋ 경로 추가" entry (decision 0054)
 
 type Props = {
   role: Role;
@@ -15,6 +19,8 @@ type Props = {
   onAddAfter: () => void;
   onRemove: () => void;
   onClose: () => void;
+  zone?: Polygon | null; // decision 0054: the route window's map
+  onAddRoute?: (route: RouteDef) => Promise<void>;
 };
 
 const TARGET_LABEL: Record<string, string> = { nearest: "가장 가까운 표적", operator: "운용자가 고름" };
@@ -24,7 +30,9 @@ const withCurrent = <T extends string>(list: T[], cur: T) => (list.includes(cur)
 
 // Side panel for the card picked on the graph (Part3-12.1). Every change goes up as a new role; saving and the
 // server check stay as they are.
-export function StepEditor({ role, step, vehicleIds, roles, fallbackPoint = null, routes = [], enemy = false, onChange, onAddAfter, onRemove, onClose }: Props) {
+export function StepEditor({ role, step, vehicleIds, roles, fallbackPoint = null, routes = [], enemy = false, onChange, onAddAfter, onRemove, onClose,
+  zone = null, onAddRoute }: Props) {
+  const [makingRoute, setMakingRoute] = useState(false); // decision 0054
   const set = (change: (s: Step) => Step) => onChange(updateStep(role, step.id, change));
   const params = step.do.params ?? {};
   const setParam = (k: string, v: unknown) => set((s) => ({ ...s, do: { ...s.do, params: { ...(s.do.params ?? {}), [k]: v } } }));
@@ -80,7 +88,11 @@ export function StepEditor({ role, step, vehicleIds, roles, fallbackPoint = null
                 onChange={(e) => onChange(setLoop(role, step.id, e.target.checked))} /> 반복
             </label>
             <select aria-label="경로" value={current}
-              onChange={(e) => { const r = routes.find((x) => x.id === e.target.value); if (r) onChange(applyRoute(role, step.id, r)); }}>
+              onChange={(e) => {
+                if (e.target.value === NEW_ROUTE) return setMakingRoute(true);
+                const r = routes.find((x) => x.id === e.target.value);
+                if (r) onChange(applyRoute(role, step.id, r));
+              }}>
               {current === "" && <option value="">지금 값 유지: {describeAction(step.do)}</option>}
               <optgroup label="고정 경로">
                 {routes.filter((r) => !r.offsets?.length).map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
@@ -88,7 +100,15 @@ export function StepEditor({ role, step, vehicleIds, roles, fallbackPoint = null
               <optgroup label="상대 경로 (기체 위치 기준)">
                 {routes.filter((r) => r.offsets?.length).map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
               </optgroup>
+              {zone && onAddRoute && <option value={NEW_ROUTE}>＋ 경로 추가</option>}
             </select>
+            {makingRoute && zone && onAddRoute && (
+              <RouteMaker zone={zone} existingIds={routes.map((r) => r.id)} onCancel={() => setMakingRoute(false)}
+                onSave={(r) => onAddRoute(r).then(() => {
+                  onChange(applyRoute(role, step.id, r));
+                  setMakingRoute(false);
+                })} />
+            )}
           </div>
         )}
       </div>

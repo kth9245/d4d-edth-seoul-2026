@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Role, ScenarioInfo } from "../../contracts.gen";
+import type { Role, RouteDef, ScenarioInfo } from "../../contracts.gen";
 import { fetchScenarios } from "../live/fetchScenarios";
 import { postRun } from "../run/runApi";
 import { activateScenario } from "./activateScenario";
@@ -15,6 +15,7 @@ import { createOperation } from "./createOperation";
 import { NewOperationMenu } from "./NewOperationMenu";
 import { NewRoleMenu } from "./NewRoleMenu";
 import { postOperation } from "./postOperation";
+import { postRoute } from "./postRoute";
 import { setStartRole } from "./setStartRole";
 import { startRoleOptions } from "./startRoleOptions";
 import { OntologyPanel } from "./OntologyPanel";
@@ -154,6 +155,8 @@ export function EditorScreen() {
         },
       );
   };
+  // "＋ 경로 추가" (decision 0054): the server adds the route; the card puts it on once the list has it.
+  const addRoute = (route: RouteDef) => postRoute(route).then((routes) => setData((d) => d && { ...d, routes }));
   // The overview's start role per vehicle (decision 0053): the server's operation changes and the run resets.
   const startOptions = (vehicleId: string) => {
     const v = data?.vehicles.find((x) => x.id === vehicleId);
@@ -206,6 +209,8 @@ export function EditorScreen() {
             roles={data.roles.map((p) => ({ id: p.id, name: p.name }))}
             routes={data.routes}
             enemy={data.enemies.some((e) => e.role_id === role.id)}
+            zone={data.operation.zone}
+            onAddRoute={addRoute}
           />
         ) : selected === ONTOLOGY ? (
           <OntologyPanel op={data.operation} roles={data.roles} vehicles={data.vehicles} />

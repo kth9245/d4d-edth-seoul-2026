@@ -466,3 +466,21 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .target.never span { border-style: dotted; color: var(--text2); }
 /* A struck target keeps only its grey X: the tone fill above must not come back under it (review of Task 7). */
 .target.neutralized i { background: none; box-shadow: none; }
+/* Route window (decision 0054): over the editor, a map to click for a fixed route, a table for a relative one */
+.route-maker-back { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); }
+.route-maker { width: min(760px, 94vw); max-height: 92vh; overflow-y: auto; padding: 16px 18px; border: 1px solid var(--line2); border-radius: var(--r); background: var(--s1); color: var(--text); }
+.route-maker .rm-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.route-maker .rm-head h3 { margin: 0; font-size: 16px; }
+.route-maker .rm-close { border: 0; background: none; color: var(--muted); font-size: 20px; cursor: pointer; }
+.route-maker .rm-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 8px 0; }
+.route-maker .rm-hint { margin: 6px 0; color: var(--muted); font-size: 12px; }
+.route-maker .rm-count { color: var(--text2); font-family: var(--font-mono); font-size: 12px; }
+.route-maker input, .route-maker button:not(.save):not(.rm-close) { padding: 5px 8px; border: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); color: var(--text); font-family: var(--font); }
+.route-maker input[type="radio"] { padding: 0; }
+.route-maker button:disabled { opacity: 0.5; cursor: default; }
+.route-maker .rm-offsets input { width: 110px; }
+.route-maker .rm-offsets th { color: var(--muted); font-size: 11px; font-weight: 400; text-align: left; }
+.route-maker .rm-foot { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 14px; }
+.route-map-wrap { margin: 0; }
+.route-map { width: 100%; height: 380px; cursor: crosshair; }
+.route-map-wrap figcaption { color: var(--dim); font-size: 10px; }

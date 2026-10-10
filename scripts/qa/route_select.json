@@ -11,7 +11,7 @@
  {"label": "R0 a hold card has no route select or 반복", "eval": "({ route: !!document.querySelector(\"select[aria-label='경로']\"), loop: !!document.querySelector(\"input[aria-label='반복']\") })", "expect": {"route": false, "loop": false}},
  {"click": "+ 뒤에 카드 추가", "wait": 1200},
  {"select": ["select[aria-label='행동']", "route"], "wait": 400},
- {"label": "R1 route flying shows 반복 and the route list (fixed and relative groups)", "eval": "({ loop: document.querySelector(\"input[aria-label='반복']\")?.checked, groups: [...document.querySelectorAll(\"select[aria-label='경로'] optgroup\")].map(g => g.label), relative: [...document.querySelectorAll(\"select[aria-label='경로'] optgroup:last-child option\")].map(o => o.innerText) })", "expect": {"loop": true, "groups": ["고정 경로", "상대 경로 (기체 위치 기준)"], "relative": ["사각형 수색 300m", "지그재그 수색 600m", "원 선회 200m", "북쪽으로 1km"]}},
+ {"label": "R1 route flying shows 반복 and the route list (fixed and relative groups)", "eval": "({ loop: document.querySelector(\"input[aria-label='반복']\")?.checked, groups: [...document.querySelectorAll(\"select[aria-label='경로'] optgroup\")].map(g => g.label), relative: [...document.querySelectorAll(\"select[aria-label='경로'] optgroup:last-of-type option\")].map(o => o.innerText) })", "expect": {"loop": true, "groups": ["고정 경로", "상대 경로 (기체 위치 기준)"], "relative": ["사각형 수색 300m", "지그재그 수색 600m", "원 선회 200m", "북쪽으로 1km"]}},
  {"select": ["select[aria-label='경로']", "square_300"], "wait": 400},
  {"label": "R2 the card names the relative route", "eval": "document.querySelector(\".react-flow__node[data-id='step-1'] .sn-text\")?.innerText", "expect": "경로 비행 · 사각형 수색 300m · 반복 · 기체 위치 기준"},
  {"clickSel": ".react-flow__node", "wait": 500},

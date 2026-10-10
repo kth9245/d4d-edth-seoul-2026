@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { GeoPoint, Role, RouteDef } from "../../contracts.gen";
+import type { GeoPoint, Polygon, Role, RouteDef } from "../../contracts.gen";
 import { batteryText, issuesByStep, saveErrorText, type SaveResult } from "./checkView";
 import { DOMAIN_LABEL } from "./describe";
 import type { Usage } from "./roleUsage";
@@ -27,6 +27,8 @@ type Props = {
   roles?: { id: string; name: string }[];
   fallbackPoint?: GeoPoint | null;
   routes?: RouteDef[]; // decision 0044: for the card panel's route select
+  zone?: Polygon | null; // decision 0054: the route window's map
+  onAddRoute?: (route: RouteDef) => Promise<void>;
   enemy?: boolean; // the role an enemy follows (no route select, no T+)
 };
 
@@ -49,7 +51,7 @@ function SaveStatus({ result }: { result?: SaveResult }) {
 }
 
 export function RoleWorkflow({ role, usage, roleName, onOpen, result, onSave, edited, freshStep, onInsertReport, onHome,
-  onDelete, deleteError = null, onEdit, vehicleIds = [], roles = [], fallbackPoint = null, routes = [], enemy = false }: Props) {
+  onDelete, deleteError = null, onEdit, vehicleIds = [], roles = [], fallbackPoint = null, routes = [], enemy = false, zone = null, onAddRoute }: Props) {
   const view = result?.state === "done" ? issuesByStep(result.check, role) : null;
   const [picked, setPicked] = useState<string | null>(null);
   const step = onEdit ? role.steps.find((s) => s.id === picked) : undefined;
@@ -104,7 +106,7 @@ export function RoleWorkflow({ role, usage, roleName, onOpen, result, onSave, ed
         <RoleGraph role={role} issues={view?.byStep ?? {}} freshStep={freshStep} roleName={roleName} onOpen={onOpen}
           onInsertReport={onInsertReport} selectedStep={step?.id ?? null} onSelectStep={setPicked} />
         {step && onEdit && (
-          <StepEditor role={role} step={step} vehicleIds={vehicleIds} roles={roles} fallbackPoint={fallbackPoint} routes={routes} enemy={enemy} onChange={(next) => onEdit(next)}
+          <StepEditor role={role} step={step} vehicleIds={vehicleIds} roles={roles} fallbackPoint={fallbackPoint} routes={routes} enemy={enemy} zone={zone} onAddRoute={onAddRoute} onChange={(next) => onEdit(next)}
             onAddAfter={() => {
               const { role: next, id } = addStepAfter(role, step.id);
               onEdit(next, id);
