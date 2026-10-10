@@ -246,3 +246,4 @@
 {"at": "2026-10-10T12:29:28+09:00", "by": "kth9245", "op": "done", "id": "Part1-14.1", "take": false}
 {"at": "2026-10-10T12:29:30+09:00", "by": "kth9245", "op": "add", "id": "Part1-14.2", "title": "화면 QA 스크립트를 저장소에(scripts/qa.sh + 점검 목록)", "parent": "Part1-14", "assign": null, "slot": "1·2", "spec": null}
 {"at": "2026-10-10T12:29:33+09:00", "by": "kth9245", "op": "start", "id": "Part1-14.2", "take": false, "from": null}
+{"at": "2026-10-10T12:36:59+09:00", "by": "kth9245", "op": "done", "id": "Part1-14.2", "take": false}
