@@ -607,3 +607,4 @@
 {"at": "2026-10-11T03:08:23+09:00", "by": "황승주", "op": "add", "id": "Part2-70", "title": "멸공 자동 감시: 복귀 중 기체를 넘길 때 상태 운용 중·복귀 명령 해제(기지 도착 시 추적이 사라지던 문제)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-11T03:08:26+09:00", "by": "황승주", "op": "start", "id": "Part2-70", "take": false, "from": null}
 {"at": "2026-10-11T03:11:51+09:00", "by": "kth9245", "op": "add", "id": "Part1-15.2", "title": "작전 이름 셋 바꾸기: 야간 상륙 저지·24시간 침투 대응·해안 거점 타격", "parent": "Part1-15", "assign": null, "slot": "뒤", "spec": null}
+{"at": "2026-10-11T03:11:57+09:00", "by": "kth9245", "op": "start", "id": "Part1-15.2", "take": false, "from": null}
