@@ -404,3 +404,4 @@
 {"at": "2026-10-10T18:59:54+09:00", "by": "황승주", "op": "done", "id": "Part2-35", "take": false}
 {"at": "2026-10-10T19:07:53+09:00", "by": "황승주", "op": "add", "id": "Part2-36", "title": "멸공 작전 시뮬 틱을 야간 작전과 같은 200 ms로", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T19:07:57+09:00", "by": "황승주", "op": "start", "id": "Part2-36", "take": false, "from": null}
+{"at": "2026-10-10T19:08:50+09:00", "by": "kth9245", "op": "add", "id": "Part1-36", "title": "play→role 이름 변경(결정 0052): 변환 스크립트로 코드·API·계약·데이터·화면 전부, AI 초안 캐시 새 해시로", "parent": null, "assign": null, "slot": null, "spec": null}
