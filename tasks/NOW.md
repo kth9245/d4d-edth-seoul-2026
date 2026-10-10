@@ -2,7 +2,7 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 10:07 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 10:09 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - (없음)
@@ -30,8 +30,7 @@
 - **Part3-15.1** mavlink compile_mavlink · MAV-01 (리드, 결정 0025, 통합 2 뒤)
 
 ### 황승주
-- **Part2-10** runtime `step_vehicle` · 하위 0/1 완료 · RT-01
-- **Part2-10.1** runtime enter_step · RT-08 (PLY-07 뒤)
+- **Part2-10** runtime `step_vehicle` · 하위 1/1 완료 · RT-01
 - **Part2-11** runtime `assign_roles` · RT-02
 - **Part2-12** runtime `apply_decision` · 하위 1/1 완료 · RT-03
 - **Part2-14** runtime `apply_injection` · RT-05
@@ -68,6 +67,7 @@
 - 10/9 23:14 kth9245 · Part1-1 · 결정 0015·0016·0017·0018 참조(두 층 구조, contracts 세부, API 규약)
 
 ## 완료
+- **Part2-10.1** runtime enter_step · RT-08 (PLY-07 뒤) — 황승주, 10/10 10:09
 - **Part3-2** play `check_links` — 황승주, 10/10 10:07 · PLY-02
 - **Part3-1** play `load_play` — 황승주, 10/10 10:06 · PLY-01
 - **Part2-13** runtime `update_metrics` — 황승주, 10/10 10:05 · RT-04
