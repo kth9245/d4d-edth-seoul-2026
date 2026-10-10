@@ -219,3 +219,4 @@
 {"at": "2026-10-10T12:02:09+09:00", "by": "최동호", "op": "start", "id": "Part2-19", "take": false, "from": null}
 {"at": "2026-10-10T12:04:41+09:00", "by": "kth9245", "op": "add", "id": "Part3-10.1", "title": "워크플로우 그래프 보기(step 카드 + 조건 연결선, React Flow)", "parent": "Part3-10", "assign": null, "slot": "2", "spec": null}
 {"at": "2026-10-10T12:04:44+09:00", "by": "kth9245", "op": "start", "id": "Part3-10.1", "take": false, "from": null}
+{"at": "2026-10-10T12:04:46+09:00", "by": "kth9245", "op": "decide", "id": "Part3-10.1", "text": "플레이 화면을 React Flow(@xyflow/react, MIT, 번들) 그래프로: 시작 step 왼쪽부터 탈출 조건 깊이로 열 배치(위치 저장 안 함), 카드 = 행동·보고·연결 칸, 연결 줄마다 오른쪽 연결점, 점선 곡선 + 조건 이름, 운용자 선택 선 초록·오류 step으로 가는 선 빨강, 끼워 넣은 카드 '변경' 표시. 보기 전용, D4D 토큰. 리드 답 'ㄲ'(그림처럼 step 구조로)"}
