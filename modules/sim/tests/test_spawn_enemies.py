@@ -45,3 +45,15 @@ def test_from_enemy_appears_at_that_enemys_current_position():
                    first_seen_ms=0, last_seen_ms=0)  # fmt: skip
     out = spawn_enemies(SC, [boat1], T2, 200)
     assert [t.id for t in out] == ["boat1", "fast1"] and out[1].pos == moved
+
+
+def test_a_spawned_enemy_carries_its_heat_and_noise():  # decision 0069
+    def site(i: str, **kw) -> EnemySpec:
+        return EnemySpec(id=i, kind="unknown", speed_mps=0, appear_offset_ms=1000, pos=G,
+                         role_id="enemy_boat1", **kw)  # fmt: skip
+
+    sc = SC.model_copy(update={"enemies": [site("site_a"), site("site_b", heat=True),
+                                           site("site_c", noise=True)]})  # fmt: skip
+    out = spawn_enemies(sc, [], START + 1000, 200)
+    assert {t.id: (t.heat, t.noise) for t in out} == {
+        "site_a": (False, False), "site_b": (True, False), "site_c": (False, True)}  # fmt: skip
