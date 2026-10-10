@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import type { LegacyFrame } from "../../contracts.gen";
+import type { Frame } from "../../contracts.gen";
+import { parseFrame } from "./parseFrame";
 
-export function useFrames(url: string): { frame: LegacyFrame | null; connected: boolean } {
-  const [frame, setFrame] = useState<LegacyFrame | null>(null);
+export function useFrames(url: string): { frame: Frame | null; connected: boolean } {
+  const [frame, setFrame] = useState<Frame | null>(null);
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
@@ -13,11 +14,8 @@ export function useFrames(url: string): { frame: LegacyFrame | null; connected: 
       ws = new WebSocket(url);
       ws.onopen = () => setConnected(true);
       ws.onmessage = (e) => {
-        try {
-          setFrame(JSON.parse(e.data) as LegacyFrame);
-        } catch {
-          // 깨진 메시지는 무시한다.
-        }
+        const f = parseFrame(e.data);
+        if (f) setFrame(f); // 깨진 메시지·옛 LegacyFrame은 무시한다.
       };
       ws.onclose = () => {
         setConnected(false);

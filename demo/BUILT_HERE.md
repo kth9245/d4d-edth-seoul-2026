@@ -8,3 +8,4 @@
 ## 해커톤 중 만든 것
 | 시각 | 모듈 | 내용 | 담당 |
 |---|---|---|---|
+| 10/10 10:40 | cop-ui | Part1-9 지도: 백령도 EOX 위성 raster, 작전 구역(GET /operation), 기체·표적 HTML 마커(상태·종류 색), 개발용 `?scene=s1`~`s6`, MapLibre worker 경로 수정 | kth9245 |

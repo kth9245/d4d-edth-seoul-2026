@@ -1,5 +1,6 @@
+import type { RasterLayerSpecification, RasterSourceSpecification } from "maplibre-gl";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { basemapStyle, tilesExist } from "./basemap";
+import { basemapStyle, TILE_BOUNDS, tilesExist } from "./basemap";
 
 describe("basemapStyle", () => {
   it("returns background-only style when tiles missing", () => {
@@ -8,24 +9,39 @@ describe("basemapStyle", () => {
     expect(s.layers.map((l) => l.type)).toEqual(["background"]);
   });
 
-  it("uses local pmtiles without any symbol layers when tiles exist", () => {
+  it("uses the local Baengnyeong raster tiles z8-14 inside the fetched bounds", () => {
     const s = basemapStyle(true);
-    const src = s.sources.protomaps as { type: string; url: string };
-    expect(src.type).toBe("vector");
-    expect(src.url).toMatch(/^pmtiles:\/\/.*\/tiles\/seoul\.pmtiles$/);
-    expect(s.layers.some((l) => l.type === "symbol")).toBe(false);
+    const src = s.sources.sat as RasterSourceSpecification;
+    expect(src.type).toBe("raster");
+    expect(src.tiles).toEqual(["http://localhost/tiles/baengnyeong/{z}/{x}/{y}.jpg"]);
+    expect([src.minzoom, src.maxzoom, src.tileSize]).toEqual([8, 14, 256]);
+    expect(src.bounds).toEqual(TILE_BOUNDS);
+    expect(src.attribution).toContain("EOX");
+    expect(s.layers.map((l) => l.type)).toEqual(["background", "raster"]);
     expect(s.glyphs).toBeUndefined();
-    expect(s.layers.length).toBeGreaterThan(5);
+  });
+
+  it("dims the raster for the night scene", () => {
+    const sat = basemapStyle(true).layers[1] as RasterLayerSpecification;
+    expect(sat.paint?.["raster-brightness-max"]).toBeLessThan(1);
   });
 });
 
 describe("tilesExist", () => {
   afterEach(() => vi.unstubAllGlobals());
-  const stub = (res: Partial<Response> | Error) =>
-    vi.stubGlobal("fetch", vi.fn(() => (res instanceof Error ? Promise.reject(res) : Promise.resolve(res))));
+  const stub = (res: Partial<Response> | Error) => {
+    const f = vi.fn(() => (res instanceof Error ? Promise.reject(res) : Promise.resolve(res)));
+    vi.stubGlobal("fetch", f);
+    return f;
+  };
   const resp = (status: number, type: string) =>
     ({ ok: status < 400, status, headers: new Headers({ "content-type": type }) }) as Response;
 
+  it("probes a Baengnyeong z8 tile", async () => {
+    const f = stub(resp(200, "image/jpeg"));
+    expect(await tilesExist()).toBe(true);
+    expect(f.mock.calls[0]).toContain("/tiles/baengnyeong/8/216/98.jpg");
+  });
   it("is false for 200 text/html (SPA fallback)", async () => {
     stub(resp(200, "text/html; charset=utf-8"));
     expect(await tilesExist()).toBe(false);
@@ -47,9 +63,5 @@ describe("tilesExist", () => {
     await vi.advanceTimersByTimeAsync(2000);
     expect(await p).toBe(false);
     vi.useRealTimers();
-  });
-  it("is true for 200 application/octet-stream", async () => {
-    stub(resp(200, "application/octet-stream"));
-    expect(await tilesExist()).toBe(true);
   });
 });

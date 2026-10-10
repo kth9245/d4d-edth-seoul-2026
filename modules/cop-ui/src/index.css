@@ -4,6 +4,17 @@ html, body, #root { margin: 0; height: 100%; background: #0b1320; color: #e6e6e6
 aside { overflow-y: auto; padding: 12px; border-left: 1px solid #22304a; }
 .status { font-weight: 700; margin-bottom: 8px; }
 .status.ok { color: #52c41a; } .status.down { color: #ff4d4f; }
-.alert { padding: 8px; margin-bottom: 6px; border-radius: 6px; background: #14213a; }
-.alert.soft_kill { border-left: 4px solid #faad14; } .alert.hard_kill { border-left: 4px solid #ff4d4f; }
-.reason { font-size: 12px; opacity: 0.8; }
+
+/* Map markers: the box is the symbol only, so MapLibre centers the symbol on the position; the label hangs right. */
+.mk { position: relative; width: 14px; height: 14px; }
+.mk i { display: block; width: 100%; height: 100%; box-sizing: border-box; border: 2px solid #fff; }
+.mk span { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); white-space: nowrap;
+  font-size: 12px; font-weight: 700; color: #fff; text-shadow: 0 0 3px #000, 0 0 3px #000; }
+.vehicle i { border-radius: 50%; }
+.vehicle.active i { background: #52c41a; } .vehicle.ready i { background: #8c8c8c; }
+.vehicle.returning i { background: #fa8c16; } .vehicle.maintenance i { background: #434343; }
+.vehicle.lost i { background: #ff4d4f; border-style: dashed; }
+.target { width: 12px; height: 12px; }
+.target i { transform: rotate(45deg); background: #ffffff; }
+.target.boat i { background: #fadb14; } .target.fast_boat i { background: #ff4d4f; }
+.target.unseen { opacity: 0.45; }

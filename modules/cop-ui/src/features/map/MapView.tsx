@@ -1,44 +1,67 @@
-import { addProtocol, Map as MapLibreMap, type ExpressionSpecification, type GeoJSONSource } from "maplibre-gl";
+import { type GeoJSONSource, Map as MapLibreMap, setWorkerUrl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { Protocol } from "pmtiles";
+import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import { useEffect, useRef } from "react";
-import type { LegacyFrame } from "../../contracts.gen";
-import { basemapStyle } from "./basemap";
-import { toGeoJSON } from "./toGeoJSON";
+import type { Frame, Polygon } from "../../contracts.gen";
+import { basemapStyle, TILE_BOUNDS } from "./basemap";
+import { frameMarkers } from "./frameMarkers";
+import { clearMarkers, type MarkerStore, syncTargets, syncVehicles } from "./markers";
+import { zoneGeoJSON } from "./zoneGeoJSON";
 
-const CLASS_COLOR = ["match", ["get", "cls"], "drone", "#ff4d4f", "balloon", "#faad14",
-  "bird", "#52c41a", "#bfbfbf"] as ExpressionSpecification;
+// MapLibre 6 loads its worker from next to its own file, but Vite moves that file when bundling (dev and build),
+// so GeoJSON layers (the zone) silently never draw. Point it at the real worker file instead.
+setWorkerUrl(workerUrl);
 
-// pmtiles:// 주소를 읽으려면 프로토콜 등록이 필요하다(한 번만).
-const protocol = new Protocol();
-addProtocol("pmtiles", protocol.tile);
+const [W, S, E, N] = TILE_BOUNDS;
+const PAD = 0.2; // degrees of panning room beyond the fetched tiles (plain background there)
 
-export function MapView({ frame, center, tilesAvailable = false }:
-  { frame: LegacyFrame | null; center: [number, number]; tilesAvailable?: boolean }) {
+function draw(m: MapLibreMap, vehicles: MarkerStore, targets: MarkerStore, frame: Frame | null): void {
+  const { vehicles: vs, targets: ts } = frame ? frameMarkers(frame) : { vehicles: [], targets: [] };
+  syncVehicles(m, vehicles, vs);
+  syncTargets(m, targets, ts);
+}
+
+export function MapView({ frame, zone, tilesAvailable }:
+  { frame: Frame | null; zone: Polygon | null; tilesAvailable: boolean }) {
   const el = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
-  const latest = useRef<LegacyFrame | null>(frame);
+  const latest = useRef({ frame, zone });
+  const vehicles = useRef<MarkerStore>(new Map());
+  const targets = useRef<MarkerStore>(new Map());
 
   useEffect(() => {
     if (!el.current) return;
-    const m = new MapLibreMap({ container: el.current, style: basemapStyle(tilesAvailable), center, zoom: 13 });
+    const m = new MapLibreMap({
+      container: el.current, style: basemapStyle(tilesAvailable),
+      bounds: TILE_BOUNDS, fitBoundsOptions: { padding: 24 },
+      maxBounds: [W - PAD, S - PAD, E + PAD, N + PAD],
+    });
     m.on("load", () => {
-      m.addSource("tracks", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
-      m.addLayer({ id: "tracks", type: "circle", source: "tracks", paint: {
-        "circle-color": CLASS_COLOR,
-        "circle-radius": ["+", 5, ["*", 10, ["get", "threat"]]],
-        "circle-stroke-color": "#fff", "circle-stroke-width": 1 } });
-      if (latest.current) (m.getSource("tracks") as GeoJSONSource).setData(toGeoJSON(latest.current));
+      m.addSource("zone", { type: "geojson", data: zoneGeoJSON(latest.current.zone) });
+      m.addLayer({ id: "zone-fill", type: "fill", source: "zone", paint: { "fill-color": "#4da3ff", "fill-opacity": 0.08 } });
+      m.addLayer({ id: "zone-line", type: "line", source: "zone",
+        paint: { "line-color": "#4da3ff", "line-width": 2, "line-dasharray": [3, 2] } });
     });
     map.current = m;
-    return () => m.remove();
-  }, [center, tilesAvailable]);
+    draw(m, vehicles.current, targets.current, latest.current.frame);
+    const [vs, ts] = [vehicles.current, targets.current];
+    return () => {
+      clearMarkers(vs);
+      clearMarkers(ts);
+      m.remove();
+      map.current = null;
+    };
+  }, [tilesAvailable]);
 
   useEffect(() => {
-    latest.current = frame;
-    const src = map.current?.getSource("tracks") as GeoJSONSource | undefined;
-    if (src && frame) src.setData(toGeoJSON(frame));
+    latest.current.frame = frame;
+    if (map.current) draw(map.current, vehicles.current, targets.current, frame);
   }, [frame]);
+
+  useEffect(() => {
+    latest.current.zone = zone;
+    (map.current?.getSource("zone") as GeoJSONSource | undefined)?.setData(zoneGeoJSON(zone));
+  }, [zone]);
 
   return <div ref={el} className="map" />;
 }
