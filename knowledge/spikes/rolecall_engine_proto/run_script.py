@@ -18,7 +18,9 @@ from contracts.models import Decision, DirectControl, GeoPoint, Injection, TickI
 from modules.sim import load_scenario_json
 
 ROOT = Path(__file__).resolve().parents[3]
-SCENARIO = ROOT / "demo/scenarios/baengnyeong_night.json"
+# Frozen copy of the demo scenario from before enemies (decision 0032, Part1-19): the port engine
+# only knows the spawn_target/split_target events.
+SCENARIO = Path(__file__).resolve().parent / "baengnyeong_night.json"
 MIN = 60_000
 
 

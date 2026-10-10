@@ -46,7 +46,7 @@ def test_vehicle_homes_are_apart_on_the_map():
             assert dist_m(pa, pb) >= 500, f"{a} and {b} homes are {dist_m(pa, pb):.0f} m apart"
 
 
-def test_split_event_makes_a_fast_boat():
+def test_fast_boat_enemy_comes_out_of_boat1():  # decision 0032: enemies, not split_target
     sc = Scenario.model_validate(_load(SCENARIO))
-    split = next(e for e in sc.events if e.kind == "split_target")
-    assert split.params["kind"] == "fast_boat"
+    fast = next(e for e in sc.enemies if e.id == "fast1")
+    assert (fast.kind, fast.from_enemy) == ("fast_boat", "boat1")

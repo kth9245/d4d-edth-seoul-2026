@@ -83,6 +83,14 @@
      "usv": "go_home",
      "ugv": "go_home"
     }
+   },
+   {
+    "id": "track_fast",
+    "label": "고속 보트 추적",
+    "play_by_vehicle": {
+     "d2": "track_fast",
+     "usv": "track_fast_sea"
+    }
    }
   ]
  },
@@ -505,8 +513,49 @@
        "distance_m": 300
       }
      },
-     "on": [],
+     "on": [
+      {
+       "cond": {
+        "kind": "target_found",
+        "params": {}
+       },
+       "go_step": "ask"
+      }
+     ],
      "report": null,
+     "ui": {}
+    },
+    {
+     "id": "ask",
+     "name": "타격 승인 요청",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 300
+      }
+     },
+     "on": [],
+     "report": {
+      "text": "타격 승인 요청",
+      "choices": [
+       {
+        "id": "strike_d2",
+        "label": "이 기체로 타격",
+        "play_by_vehicle": {
+         "d2": "strike"
+        }
+       },
+       {
+        "id": "strike_both",
+        "label": "함께 타격",
+        "play_by_vehicle": {
+         "d2": "strike",
+         "usv": "strike"
+        }
+       }
+      ]
+     },
      "ui": {}
     }
    ],
@@ -552,24 +601,252 @@
    "origin": "human",
    "approved": true,
    "template": true
+  },
+  {
+   "id": "track_fast_sea",
+   "name": "고속 보트 추적(해상)",
+   "domains": [
+    "sea"
+   ],
+   "steps": [
+    {
+     "id": "track",
+     "name": "추적",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 300
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "target_found",
+        "params": {}
+       },
+       "go_step": "ask"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "ask",
+     "name": "타격 승인 요청",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 300
+      }
+     },
+     "on": [],
+     "report": {
+      "text": "타격 승인 요청",
+      "choices": [
+       {
+        "id": "strike_usv",
+        "label": "이 기체로 타격",
+        "play_by_vehicle": {
+         "usv": "strike"
+        }
+       },
+       {
+        "id": "strike_both",
+        "label": "함께 타격",
+        "play_by_vehicle": {
+         "d2": "strike",
+         "usv": "strike"
+        }
+       }
+      ]
+     },
+     "ui": {}
+    }
+   ],
+   "entry": "track",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "strike",
+   "name": "표적 타격",
+   "domains": [
+    "air",
+    "sea"
+   ],
+   "steps": [
+    {
+     "id": "strike",
+     "name": "타격",
+     "do": {
+      "kind": "strike_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 0
+      }
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "strike",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "enemy_boat1",
+   "name": "적: 상륙 접근",
+   "domains": [
+    "sea"
+   ],
+   "steps": [
+    {
+     "id": "approach",
+     "name": "상륙 접근 지점으로",
+     "do": {
+      "kind": "move_to",
+      "params": {
+       "target": {
+        "lat": 37.976,
+        "lon": 124.7,
+        "alt_m": 0
+       }
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "arrived",
+        "params": {}
+       },
+       "go_step": "wait"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "wait",
+     "name": "대기",
+     "do": {
+      "kind": "hold",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "approach",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": false
+  },
+  {
+   "id": "enemy_fast1",
+   "name": "적: 동쪽 우회 상륙",
+   "domains": [
+    "sea"
+   ],
+   "steps": [
+    {
+     "id": "east",
+     "name": "해안 따라 동쪽으로",
+     "do": {
+      "kind": "move_to",
+      "params": {
+       "target": {
+        "lat": 37.985,
+        "lon": 124.75,
+        "alt_m": 0
+       }
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "arrived",
+        "params": {}
+       },
+       "go_step": "land"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "land",
+     "name": "동쪽 상륙 지점으로",
+     "do": {
+      "kind": "move_to",
+      "params": {
+       "target": {
+        "lat": 37.962,
+        "lon": 124.765,
+        "alt_m": 0
+       }
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "arrived",
+        "params": {}
+       },
+       "go_step": "wait"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "wait",
+     "name": "대기",
+     "do": {
+      "kind": "hold",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "east",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": false
   }
  ],
  "events": [
-  {
-   "offset_ms": 660000,
-   "kind": "spawn_target",
-   "params": {
-    "id": "boat1",
-    "kind": "boat",
-    "pos": {
-     "lat": 37.985,
-     "lon": 124.7,
-     "alt_m": 0
-    },
-    "ve": 0,
-    "vn": -1.0
-   }
-  },
   {
    "offset_ms": 1140000,
    "kind": "vehicle_battery_set",
@@ -577,20 +854,32 @@
     "id": "d1",
     "pct": 21
    }
-  },
-  {
-   "offset_ms": 1380000,
-   "kind": "split_target",
-   "params": {
-    "id": "boat1",
-    "new_id": "fast1",
-    "kind": "fast_boat",
-    "ve": -2.0,
-    "vn": 6.0
-   }
   }
  ],
- "enemies": [],
+ "enemies": [
+  {
+   "id": "boat1",
+   "kind": "boat",
+   "speed_mps": 1.0,
+   "appear_offset_ms": 660000,
+   "pos": {
+    "lat": 37.985,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "from_enemy": null,
+   "play_id": "enemy_boat1"
+  },
+  {
+   "id": "fast1",
+   "kind": "fast_boat",
+   "speed_mps": 6.3,
+   "appear_offset_ms": 1380000,
+   "pos": null,
+   "from_enemy": "boat1",
+   "play_id": "enemy_fast1"
+  }
+ ],
  "seed": 7,
  "tick_ms": 200,
  "speed": 1.0

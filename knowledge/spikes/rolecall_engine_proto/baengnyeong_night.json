@@ -1,0 +1,597 @@
+{
+ "id": "baengnyeong_night",
+ "operation": {
+  "id": "op1",
+  "name": "백령도 야간 해안 경계",
+  "purpose": "서해 접경 섬 야간 해안 경계(가상)",
+  "area": {
+   "points": [
+    {
+     "lat": 37.9,
+     "lon": 124.56,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9,
+     "lon": 124.84,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 38.0,
+     "lon": 124.84,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 38.0,
+     "lon": 124.56,
+     "alt_m": 0.0
+    }
+   ]
+  },
+  "zone": {
+   "points": [
+    {
+     "lat": 37.9,
+     "lon": 124.56,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9,
+     "lon": 124.84,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 38.0,
+     "lon": 124.84,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 38.0,
+     "lon": 124.56,
+     "alt_m": 0.0
+    }
+   ]
+  },
+  "vehicle_ids": [
+   "d1",
+   "d2",
+   "d3",
+   "usv",
+   "ugv"
+  ],
+  "started_ms": 1791633600000,
+  "assign": {
+   "d1": "patrol_a",
+   "d2": "standby",
+   "d3": "standby",
+   "usv": "standby",
+   "ugv": "standby"
+  },
+  "reserve": {
+   "d1": [
+    "d3"
+   ]
+  },
+  "switches": [
+   {
+    "id": "all_home",
+    "label": "전 기체 귀환",
+    "play_by_vehicle": {
+     "d1": "go_home",
+     "d2": "go_home",
+     "d3": "go_home",
+     "usv": "go_home",
+     "ugv": "go_home"
+    }
+   }
+  ]
+ },
+ "vehicles": [
+  {
+   "id": "d1",
+   "name": "드론1",
+   "domain": "air",
+   "speed_mps": 15.0,
+   "endurance_min": 40.0,
+   "sensor_range_m": 800.0,
+   "capabilities": [
+    "move_to",
+    "patrol_route",
+    "search_area",
+    "return_home",
+    "watch_target",
+    "watch_point",
+    "approach_target",
+    "relay_comms",
+    "hold",
+    "strike_target"
+   ],
+   "home": {
+    "lat": 37.95,
+    "lon": 124.7,
+    "alt_m": 0.0
+   }
+  },
+  {
+   "id": "d2",
+   "name": "드론2",
+   "domain": "air",
+   "speed_mps": 15.0,
+   "endurance_min": 40.0,
+   "sensor_range_m": 800.0,
+   "capabilities": [
+    "move_to",
+    "patrol_route",
+    "search_area",
+    "return_home",
+    "watch_target",
+    "watch_point",
+    "approach_target",
+    "relay_comms",
+    "hold",
+    "strike_target"
+   ],
+   "home": {
+    "lat": 37.955,
+    "lon": 124.7,
+    "alt_m": 0.0
+   }
+  },
+  {
+   "id": "d3",
+   "name": "드론3",
+   "domain": "air",
+   "speed_mps": 15.0,
+   "endurance_min": 40.0,
+   "sensor_range_m": 800.0,
+   "capabilities": [
+    "move_to",
+    "patrol_route",
+    "search_area",
+    "return_home",
+    "watch_target",
+    "watch_point",
+    "approach_target",
+    "relay_comms",
+    "hold",
+    "strike_target"
+   ],
+   "home": {
+    "lat": 37.945,
+    "lon": 124.7,
+    "alt_m": 0.0
+   }
+  },
+  {
+   "id": "usv",
+   "name": "수상정",
+   "domain": "sea",
+   "speed_mps": 8.0,
+   "endurance_min": 720.0,
+   "sensor_range_m": 500.0,
+   "capabilities": [
+    "move_to",
+    "patrol_route",
+    "search_area",
+    "return_home",
+    "watch_target",
+    "watch_point",
+    "approach_target",
+    "relay_comms",
+    "hold",
+    "strike_target"
+   ],
+   "home": {
+    "lat": 37.94,
+    "lon": 124.71,
+    "alt_m": 0.0
+   }
+  },
+  {
+   "id": "ugv",
+   "name": "지상로봇",
+   "domain": "ground",
+   "speed_mps": 5.0,
+   "endurance_min": 480.0,
+   "sensor_range_m": 300.0,
+   "capabilities": [
+    "move_to",
+    "patrol_route",
+    "search_area",
+    "return_home",
+    "watch_target",
+    "watch_point",
+    "approach_target",
+    "relay_comms",
+    "hold",
+    "strike_target"
+   ],
+   "home": {
+    "lat": 37.955,
+    "lon": 124.72,
+    "alt_m": 0.0
+   }
+  }
+ ],
+ "plays": [
+  {
+   "id": "standby",
+   "name": "대기",
+   "domains": [
+    "air",
+    "sea",
+    "ground"
+   ],
+   "steps": [
+    {
+     "id": "wait",
+     "name": "대기",
+     "do": {
+      "kind": "hold",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "wait",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "patrol_a",
+   "name": "해안 순찰 A",
+   "domains": [
+    "air"
+   ],
+   "steps": [
+    {
+     "id": "patrol",
+     "name": "경로 A 순찰",
+     "do": {
+      "kind": "patrol_route",
+      "params": {
+       "route": [
+        {
+         "lat": 37.98,
+         "lon": 124.66,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98,
+         "lon": 124.74,
+         "alt_m": 0
+        }
+       ]
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "target_found",
+        "params": {}
+       },
+       "go_step": "report"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "report",
+     "name": "보고",
+     "do": {
+      "kind": "hold",
+      "params": {}
+     },
+     "on": [],
+     "report": {
+      "text": "미식별 선박 접근",
+      "choices": [
+       {
+        "id": "approach",
+        "label": "근접 확인",
+        "play_by_vehicle": {
+         "d1": "watch",
+         "usv": "approach",
+         "ugv": "landing",
+         "d2": "patrol_b"
+        }
+       }
+      ]
+     },
+     "ui": {}
+    }
+   ],
+   "entry": "patrol",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": false
+  },
+  {
+   "id": "watch",
+   "name": "표적 감시",
+   "domains": [
+    "air"
+   ],
+   "steps": [
+    {
+     "id": "watch",
+     "name": "선회 감시",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "nearest",
+       "distance_m": 150
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "battery_below",
+        "params": {
+         "pct": 30.0
+        }
+       },
+       "go_step": "return"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "return",
+     "name": "귀환",
+     "do": {
+      "kind": "return_home",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "watch",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "approach",
+   "name": "근접 확인",
+   "domains": [
+    "sea"
+   ],
+   "steps": [
+    {
+     "id": "approach",
+     "name": "접근",
+     "do": {
+      "kind": "approach_target",
+      "params": {
+       "target": "nearest",
+       "distance_m": 200
+      }
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "approach",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "landing",
+   "name": "상륙 지점 감시",
+   "domains": [
+    "ground"
+   ],
+   "steps": [
+    {
+     "id": "move",
+     "name": "상륙 예상 지점",
+     "do": {
+      "kind": "move_to",
+      "params": {
+       "target": {
+        "lat": 37.975,
+        "lon": 124.7,
+        "alt_m": 0
+       }
+      }
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "move",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": false
+  },
+  {
+   "id": "patrol_b",
+   "name": "해안 순찰 B",
+   "domains": [
+    "air"
+   ],
+   "steps": [
+    {
+     "id": "patrol",
+     "name": "경로 B 순찰",
+     "do": {
+      "kind": "patrol_route",
+      "params": {
+       "route": [
+        {
+         "lat": 37.93,
+         "lon": 124.64,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.93,
+         "lon": 124.76,
+         "alt_m": 0
+        }
+       ]
+      }
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "patrol",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": false
+  },
+  {
+   "id": "track_fast",
+   "name": "고속 보트 추적",
+   "domains": [
+    "air"
+   ],
+   "steps": [
+    {
+     "id": "track",
+     "name": "추적",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 300
+      }
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "track",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "go_home",
+   "name": "귀환",
+   "domains": [
+    "air",
+    "sea",
+    "ground"
+   ],
+   "steps": [
+    {
+     "id": "return",
+     "name": "귀환",
+     "do": {
+      "kind": "return_home",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "return",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  }
+ ],
+ "events": [
+  {
+   "offset_ms": 660000,
+   "kind": "spawn_target",
+   "params": {
+    "id": "boat1",
+    "kind": "boat",
+    "pos": {
+     "lat": 37.985,
+     "lon": 124.7,
+     "alt_m": 0
+    },
+    "ve": 0,
+    "vn": -1.0
+   }
+  },
+  {
+   "offset_ms": 1140000,
+   "kind": "vehicle_battery_set",
+   "params": {
+    "id": "d1",
+    "pct": 21
+   }
+  },
+  {
+   "offset_ms": 1380000,
+   "kind": "split_target",
+   "params": {
+    "id": "boat1",
+    "new_id": "fast1",
+    "kind": "fast_boat",
+    "ve": -2.0,
+    "vn": 6.0
+   }
+  }
+ ],
+ "enemies": [],
+ "seed": 7,
+ "tick_ms": 200,
+ "speed": 1.0
+}

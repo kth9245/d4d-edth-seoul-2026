@@ -1,0 +1,80 @@
+{
+ "id": "enemy_fast1",
+ "name": "적: 동쪽 우회 상륙",
+ "domains": [
+  "sea"
+ ],
+ "steps": [
+  {
+   "id": "east",
+   "name": "해안 따라 동쪽으로",
+   "do": {
+    "kind": "move_to",
+    "params": {
+     "target": {
+      "lat": 37.985,
+      "lon": 124.75,
+      "alt_m": 0
+     }
+    }
+   },
+   "on": [
+    {
+     "cond": {
+      "kind": "arrived",
+      "params": {}
+     },
+     "go_step": "land"
+    }
+   ],
+   "report": null,
+   "ui": {}
+  },
+  {
+   "id": "land",
+   "name": "동쪽 상륙 지점으로",
+   "do": {
+    "kind": "move_to",
+    "params": {
+     "target": {
+      "lat": 37.962,
+      "lon": 124.765,
+      "alt_m": 0
+     }
+    }
+   },
+   "on": [
+    {
+     "cond": {
+      "kind": "arrived",
+      "params": {}
+     },
+     "go_step": "wait"
+    }
+   ],
+   "report": null,
+   "ui": {}
+  },
+  {
+   "id": "wait",
+   "name": "대기",
+   "do": {
+    "kind": "hold",
+    "params": {}
+   },
+   "on": [],
+   "report": null,
+   "ui": {}
+  }
+ ],
+ "entry": "east",
+ "emergency": {
+  "battery_low_pct": 30.0,
+  "link_lost_step": null,
+  "battery_low_step": null,
+  "operator_call_step": null
+ },
+ "origin": "human",
+ "approved": true,
+ "template": false
+}

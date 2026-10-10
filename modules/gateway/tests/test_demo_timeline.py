@@ -9,8 +9,9 @@ import pytest
 
 from contracts.models import Decision, DirectControl, GeoPoint, TickInputs
 from modules.gateway.engine import init_engine, tick
-from modules.play import check_operation
+from modules.play import check_operation, load_play
 from modules.sim import load_scenario_json
+from shared.geo import dist_m
 
 SC = load_scenario_json("demo/scenarios/baengnyeong_night.json")
 START, MIN = SC.operation.started_ms, 60_000
@@ -69,3 +70,46 @@ def test_alternative_after_zone_block_is_not_blocked(scenes):
 def test_operation_passes_play_checks_including_reserve_return_battery():
     plays, specs = {p.id: p for p in SC.plays}, {v.id: v for v in SC.vehicles}
     assert check_operation(SC.operation, plays, specs).ok
+
+
+# Part1-19 (spec section 5 and 10.1): the structure; the numbers are tuned in Part2-19.
+
+
+def test_boat1_and_fast1_are_enemies_not_script_events():
+    assert {e.id: e.from_enemy for e in SC.enemies} == {"boat1": None, "fast1": "boat1"}
+    assert not [e for e in SC.events if e.kind in ("spawn_target", "split_target")]
+
+
+def test_fast1_appears_from_boat1_and_moves():
+    es, at = init_engine(SC), None
+    for _ in range(26 * MIN // SC.tick_ms):
+        es, _ = tick(es, TickInputs())
+        fast = next((t for t in es.targets if t.id == "fast1"), None)
+        if fast and at is None:
+            boat = next(t for t in es.targets if t.id == "boat1")
+            at = fast.pos
+            assert (fast.pos.lat, fast.pos.lon) == pytest.approx((boat.pos.lat, boat.pos.lon))
+    assert fast.play_id == "enemy_fast1"
+    assert dist_m(at, fast.pos) > 1000
+
+
+def test_track_fast_switch_sends_d2_and_usv():
+    sw = next(s for s in SC.operation.switches if s.id == "track_fast")
+    assert (sw.label, sw.play_by_vehicle) == (
+        "고속 보트 추적",
+        {"d2": "track_fast", "usv": "track_fast_sea"},
+    )
+
+
+def test_track_plays_ask_strike_approval_with_three_choices():
+    plays = {p.id: p for p in SC.plays}
+    for pid, mine in (("track_fast", "strike_d2"), ("track_fast_sea", "strike_usv")):
+        ask = next(s for s in plays[pid].steps if s.id == "ask")
+        assert ask.report.text == "타격 승인 요청"
+        assert [c.id for c in ask.report.choices] == [mine, "strike_both"]
+    assert plays["strike"].steps[0].do.kind == "strike_target"
+
+
+def test_demo_play_files_match_scenario_plays():
+    for p in SC.plays:
+        assert load_play(f"demo/plays/{p.id}.json") == p, p.id
