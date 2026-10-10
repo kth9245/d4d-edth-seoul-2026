@@ -92,3 +92,20 @@ def test_no_command_when_the_domain_cannot_do_the_action():
     st, cmd, _ = run(Action(kind="watch_target", params={"target": "nearest"}), [boat("b", 1)],
                      domain="ground")  # fmt: skip
     assert cmd is None and st.entered_step
+
+
+def test_strike_command_carries_decision_and_target_position():
+    tg = boat("fast1", 900)
+    st, cmd, rep = run(Action(kind="strike_target", params={"target": "operator", "distance_m": 0}),
+                       [tg], domain="sea", target_id="fast1", decision_id="dec-3")  # fmt: skip
+    assert cmd.kind == "strike" and cmd.provenance.decision_id == "dec-3"
+    assert cmd.params == {"distance_m": 0, "target_id": "fast1", "target": tg.pos.model_dump()}
+    assert rep is None and st.target_id == "fast1"
+
+
+def test_report_card_names_the_tracked_target():
+    ask = ReportSpec(text="타격 승인 요청", choices=[Choice(id="strike_d2", label="타격")])
+    st, cmd, rep = run(Action(kind="watch_target", params={"target": "operator", "distance_m": 300}),
+                       [boat("boat1", 300, ("d1",)), boat("fast1", 600, ("d1",))],
+                       report=ask, target_id="fast1")  # fmt: skip
+    assert rep.target_id == "fast1" and st.pending_report_id == rep.id

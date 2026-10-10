@@ -84,3 +84,34 @@ def test_target_select_sets_the_target_and_reenters_the_step():
     )
     assert out[0].step_id == st.step_id
     assert reports[0].resolved_ms is None and reports[1].decision_id == "dec1"
+
+
+STRIKE_BOTH = Choice(id="strike_both", label="함께 타격",
+                     play_by_vehicle={"d2": "strike", "usv": "strike"})  # fmt: skip
+ASK_D2 = Report(id="r-d2", t_ms=0, kind="target_detected", vehicle_id="d2", target_id="fast1",
+                text="타격 승인 요청", choices=[STRIKE_BOTH])  # fmt: skip
+ASK_USV = Report(id="r-usv", t_ms=0, kind="target_detected", vehicle_id="usv", target_id="fast1",
+                 text="타격 승인 요청", choices=[STRIKE_BOTH])  # fmt: skip
+
+
+def _strike_world():
+    plays = {**PLAYS, "strike": play("strike")}
+    states = [vs("d2", "track_fast", pending_report_id="r-d2", target_id="fast1"),
+              vs("usv", "track_fast_sea", pending_report_id="r-usv", target_id="fast1")]  # fmt: skip
+    return plays, states
+
+
+def test_moved_vehicles_carry_the_decision_and_the_card_target():
+    plays, states = _strike_world()
+    out, _ = apply_decision(states, plays, decide("strike_both", "r-d2"), [ASK_D2, ASK_USV])
+    got = {s.id: (s.play_id, s.decision_id, s.target_id) for s in out}
+    assert got == {"d2": ("strike", "dec1", "fast1"), "usv": ("strike", "dec1", "fast1")}
+
+
+def test_moved_vehicles_open_cards_close():
+    plays, states = _strike_world()
+    _, reports = apply_decision(states, plays, decide("strike_both", "r-d2"), [ASK_D2, ASK_USV])
+    assert [(r.id, r.resolved_ms, r.decision_id) for r in reports] == [
+        ("r-d2", 660_000, "dec1"),
+        ("r-usv", 660_000, "dec1"),
+    ]

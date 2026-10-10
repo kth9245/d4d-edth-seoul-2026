@@ -21,3 +21,9 @@ def test_switch_starts_the_new_play_from_its_entry_and_clears_step_state():
         out.target_id is out.pending_report_id is out.resume_play_id is out.resume_step_id is None
     )
     assert (out.battery_pct, out.pos, out.heading_deg, out.t_ms) == (55, st.pos, 90, 9)
+
+
+def test_switch_clears_decision_id():
+    st = VehicleState(id="d2", t_ms=0, pos=GeoPoint(lat=37, lon=126), heading_deg=0,
+                      battery_pct=80, status="active", decision_id="dec-3")  # fmt: skip
+    assert switch_play(st, PLAY).decision_id is None

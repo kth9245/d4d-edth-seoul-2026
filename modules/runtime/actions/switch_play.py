@@ -17,5 +17,6 @@ def switch_play(st: VehicleState, play: Play) -> VehicleState:
             "waypoint_idx": 0,
             "resume_play_id": None,
             "resume_step_id": None,
+            "decision_id": None,
         }
     )

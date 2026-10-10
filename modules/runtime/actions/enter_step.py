@@ -19,7 +19,7 @@ from contracts.models import (
 from modules.play import expand_action
 from shared.geo import dist_m
 
-TARGET_ACTIONS = ("watch_target", "approach_target")
+TARGET_ACTIONS = ("watch_target", "approach_target", "strike_target")
 
 
 def _target(st: VehicleState, step: Step, targets: list[Target]) -> tuple[str | None, bool]:
@@ -46,15 +46,19 @@ def enter_step(
                          text=f"추적할 표적 선택({st.id})", choices=picks)  # fmt: skip
             return st.model_copy(update={**upd, "pending_report_id": rid}), None, rep
         params = {k: v for k, v in params.items() if k != "target"} | {"target_id": tid}
+        if step.do.kind.value == "strike_target":  # decision 0033: safety rules 2·3 see where
+            tg = next((t for t in targets if t.id == tid), None)
+            params |= {"target": tg.pos.model_dump()} if tg else {}
     kind = expand_action(step.do, spec.domain)
-    prov = Provenance(source="play_step", play_id=play.id, step_id=step.id, issued_ms=t_ms)
+    prov = Provenance(source="play_step", play_id=play.id, step_id=step.id, issued_ms=t_ms,
+                      decision_id=st.decision_id)  # fmt: skip
     cmd = None if kind is None else Command(id=f"cmd-{st.id}-{t_ms}", vehicle_id=st.id,
                                             kind=kind, params=params, provenance=prov)  # fmt: skip
     if step.do.kind.value == "return_home":
         upd["status"] = VehicleStatus.returning
     rep = None
     if step.report:
-        seen = next((tg.id for tg in targets if st.id in tg.seen_by), None)
+        seen = upd.get("target_id") or next((tg.id for tg in targets if st.id in tg.seen_by), None)
         rep = Report(id=rid, t_ms=t_ms, kind="target_detected", vehicle_id=st.id, target_id=seen,
                      text=step.report.text, choices=step.report.choices)  # fmt: skip
         if step.report.choices:
