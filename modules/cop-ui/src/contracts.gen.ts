@@ -122,7 +122,19 @@ export interface WatchPoint {
   radius_m: number;
 }
 
-export type ConditionKind = "target_found" | "arrived" | "time_elapsed" | "battery_below" | "operator_choice" | "signal_received";
+export interface RouteOffset {
+  north_m: number;
+  east_m: number;
+}
+
+export interface RouteDef {
+  id: string;
+  name: string;
+  points?: GeoPoint[];
+  offsets?: RouteOffset[];
+}
+
+export type ConditionKind = "target_found" | "arrived" | "time_elapsed" | "battery_below" | "operator_choice" | "signal_received" | "at_time";
 
 export interface Condition {
   kind: ConditionKind;
@@ -333,6 +345,7 @@ export interface Scenario {
   events?: ScenarioEvent[];
   enemies?: EnemySpec[];
   watch_points?: WatchPoint[];
+  routes?: RouteDef[];
   land?: Polygon[];
   ontology?: Ontology | null;
   seed?: number;

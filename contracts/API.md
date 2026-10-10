@@ -29,6 +29,8 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 
 **발견한 기체가 붙는다(결정 0036).** `target_found` 조건은 지금 step의 행동이 표적 행동(`watch_target`·`approach_target`·`strike_target`, 추적)이면 그 기체의 `target_id` 표적이 센서에 보일 때 참이고, 아니면(순찰·이동·대기) 센서에 보이는 표적 가운데 아직 카드가 올라가지 않은 것(`Target.reported_by`가 없음)이 있을 때만 참이다. 그래서 감시를 넘기고 순찰로 돌아온 기체는 예전 표적을 다시 보고하지 않고 새 배를 찾는다. `target_detected` 카드가 생긴 틱에 gateway `engine.py`가 그 카드의 표적에 `reported_by`(카드를 올린 기체 id)를 적는다. 그래서 같은 구역에 여러 척이 오면 두 번째 기체는 이미 카드가 올라간 배가 아니라 새 배에 붙어 카드를 올린다. 예비 이어받기(`apply_reserves`)는 빠진 기체의 `target_id`를 예비 기체에 넘긴다.
 
+**경로(결정 0044·0045).** `Scenario.routes`는 편집기가 "경로 비행" 카드에 내놓는 이름 붙은 경로다. `RouteDef`는 `points`(고정 좌표) 또는 `offsets`(카드에 들어가는 순간의 기체 위치에서 북·동 m) 중 하나를 가진다. 카드에는 고른 경로를 복사한다: `move_to`·`patrol_route`의 params `{route: GeoPoint[], route_name}` 또는 `{offsets: RouteOffset[], route_name}`. `patrol_route`는 반복, `move_to`는 한 번 따라가 마지막 점에서 `arrived`. 점 하나 `move_to {target}`는 그대로. runtime `route_command`가 진입 때 offsets를 실제 좌표 route로 바꾸고, 경로를 가진 `move_to`는 `follow_route`(`params.loop: false`)로 낸다. 조건 `at_time`(`params.offset_ms`)은 작전 시작 후 그 시간이 지나면 성립한다(`time_elapsed`는 적 대본의 "카드 시작 후 `sec`").
+
 ## 2. 시간·단위·id
 
 - 모든 `t_ms`는 UTC epoch 밀리초다. 예외는 `ScenarioEvent.offset_ms` 하나로, 작전 시작 후 밀리초다. 사건 시각은 `operation.started_ms + offset_ms`다. 시나리오의 `started_ms`가 비면 `load_scenario_json`이 ValueError를 낸다(결정 0018).
@@ -53,7 +55,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | 2.5 | gateway | `score_targets(states, specs, targets, watch_points, tick_ms) -> targets`: sensing `score_target`으로 `threat`·`threat_reasons`·`rf_detected`·`threat_accum`을 씀. 종류는 `seen_by`가 비면 unknown(결정 0039·0040) |
 | 3 | runtime | 입력 적용: `apply_decision(states, plays, decision, reports) -> (states, reports)`, 승인된 것만 `apply_injection(states, plays, injection) -> states`, `apply_direct(states, direct, t_ms) -> (states, Command)` |
 | 4 | runtime | `apply_emergency(states, plays) -> states` |
-| 5 | runtime | 기체마다 `step_vehicle(state, specs[id], plays[state.play_id], targets, t_ms) -> (state, Command \| None, Report \| None)` |
+| 5 | runtime | 기체마다 `step_vehicle(state, specs[id], plays[state.play_id], targets, t_ms, started_ms=op.started_ms) -> (state, Command \| None, Report \| None)` |
 | 5.1 | gateway | 그 기체가 카드를 냈으면 바로 `mark_reported(targets, [report]) -> targets`: `target_detected` 카드의 표적에 `reported_by`(결정 0036). 다음 기체는 같은 틱에도 그 배를 새 접촉으로 보지 않는다 |
 | 6 | runtime | `apply_reserves(states, op, plays, assignments, t_ms) -> (states, assignments, Report \| None)` |
 | 7 | safety | 명령마다 `check_command(cmd, state, spec, op, plays, injections) -> PassedCommand \| Block` |

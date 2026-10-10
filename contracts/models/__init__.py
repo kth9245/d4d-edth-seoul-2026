@@ -64,13 +64,15 @@ from .world import (
     GeoPoint,
     Operation,
     Polygon,
+    RouteDef,
+    RouteOffset,
     VehicleSpec,
     VehicleState,
     WatchPoint,
 )
 
 _MODELS: list[type[BaseModel]] = [
-    GeoPoint, Polygon, VehicleSpec, VehicleState, Operation, EnemySpec, WatchPoint,
+    GeoPoint, Polygon, VehicleSpec, VehicleState, Operation, EnemySpec, WatchPoint, RouteOffset, RouteDef,
     Condition, Action, Exit, Choice, Switch, ReportSpec, Step, EmergencyRules, Play,
     ValidationIssue, PlayCheck,
     Provenance, Command, PassedCommand, Block,

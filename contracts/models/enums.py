@@ -37,6 +37,7 @@ class ConditionKind(str, Enum):
     battery_below = "battery_below"
     operator_choice = "operator_choice"
     signal_received = "signal_received"
+    at_time = "at_time"  # decision 0045: T+ params.offset_ms after operation.started_ms
 
 
 class CommandKind(str, Enum):  # what goes out to a vehicle

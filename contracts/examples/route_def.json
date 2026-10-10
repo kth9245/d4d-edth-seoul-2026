@@ -1,0 +1,23 @@
+{
+ "id": "square_300",
+ "name": "사각형 수색 300m",
+ "points": [],
+ "offsets": [
+  {
+   "north_m": 300.0,
+   "east_m": 0.0
+  },
+  {
+   "north_m": 300.0,
+   "east_m": 300.0
+  },
+  {
+   "north_m": 0.0,
+   "east_m": 300.0
+  },
+  {
+   "north_m": 0.0,
+   "east_m": 0.0
+  }
+ ]
+}

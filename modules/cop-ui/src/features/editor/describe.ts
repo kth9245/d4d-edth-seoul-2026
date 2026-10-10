@@ -20,6 +20,7 @@ export const CONDITION_LABEL: Record<ConditionKind, string> = {
   battery_below: "배터리",
   operator_choice: "운용자 선택",
   signal_received: "신호 수신",
+  at_time: "T+ 시각",
 };
 
 export const DOMAIN_LABEL: Record<Domain, string> = { air: "드론", sea: "수상정", ground: "지상" };

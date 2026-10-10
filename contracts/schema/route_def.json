@@ -1,0 +1,77 @@
+{
+  "$defs": {
+    "GeoPoint": {
+      "properties": {
+        "lat": {
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "title": "Lon",
+          "type": "number"
+        },
+        "alt_m": {
+          "default": 0,
+          "title": "Alt M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ],
+      "title": "GeoPoint",
+      "type": "object"
+    },
+    "RouteOffset": {
+      "properties": {
+        "north_m": {
+          "title": "North M",
+          "type": "number"
+        },
+        "east_m": {
+          "title": "East M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "north_m",
+        "east_m"
+      ],
+      "title": "RouteOffset",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "points": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/GeoPoint"
+      },
+      "title": "Points",
+      "type": "array"
+    },
+    "offsets": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/RouteOffset"
+      },
+      "title": "Offsets",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "name"
+  ],
+  "title": "RouteDef",
+  "type": "object"
+}

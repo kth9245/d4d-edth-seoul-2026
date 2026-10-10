@@ -128,7 +128,8 @@
         "time_elapsed",
         "battery_below",
         "operator_choice",
-        "signal_received"
+        "signal_received",
+        "at_time"
       ],
       "title": "ConditionKind",
       "type": "string"
@@ -535,6 +536,58 @@
       "title": "ReportSpec",
       "type": "object"
     },
+    "RouteDef": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "points": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/GeoPoint"
+          },
+          "title": "Points",
+          "type": "array"
+        },
+        "offsets": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/RouteOffset"
+          },
+          "title": "Offsets",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "RouteDef",
+      "type": "object"
+    },
+    "RouteOffset": {
+      "properties": {
+        "north_m": {
+          "title": "North M",
+          "type": "number"
+        },
+        "east_m": {
+          "title": "East M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "north_m",
+        "east_m"
+      ],
+      "title": "RouteOffset",
+      "type": "object"
+    },
     "ScenarioEvent": {
       "properties": {
         "offset_ms": {
@@ -838,6 +891,14 @@
         "$ref": "#/$defs/WatchPoint"
       },
       "title": "Watch Points",
+      "type": "array"
+    },
+    "routes": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/RouteDef"
+      },
+      "title": "Routes",
       "type": "array"
     },
     "land": {

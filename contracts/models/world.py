@@ -52,6 +52,18 @@ class WatchPoint(BaseModel):  # a place to guard; inside its radius adds to a ta
     radius_m: float
 
 
+class RouteOffset(BaseModel):  # meters from where the vehicle is as the card starts (0044)
+    north_m: float
+    east_m: float
+
+
+class RouteDef(BaseModel):  # a named route the editor offers: points or offsets, not both (0044)
+    id: str
+    name: str
+    points: list[GeoPoint] = []  # fixed route
+    offsets: list[RouteOffset] = []  # relative route, measured as the card starts
+
+
 class VehicleState(BaseModel):
     id: str
     t_ms: int

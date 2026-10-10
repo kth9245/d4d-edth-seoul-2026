@@ -34,7 +34,8 @@
         "time_elapsed",
         "battery_below",
         "operator_choice",
-        "signal_received"
+        "signal_received",
+        "at_time"
       ],
       "title": "ConditionKind",
       "type": "string"

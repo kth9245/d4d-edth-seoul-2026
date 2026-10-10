@@ -30,6 +30,8 @@ from contracts.models import (  # noqa: E402
     ObjectNode,
     OntologyView,
     PlayCheck,
+    RouteDef,
+    RouteOffset,
     ScenarioInfo,
     SwitchIn,
     TickInputs,
@@ -138,6 +140,17 @@ def examples() -> dict[str, object]:
         "accepted": Accepted(id="dec-1", t_ms=T1),
         "scenario_info": ScenarioInfo(
             id=SCENARIO.id, name=OPERATION.name, purpose=OPERATION.purpose, active=True
+        ),
+        "route_offset": RouteOffset(north_m=300, east_m=0),
+        "route_def": RouteDef(
+            id="square_300",
+            name="사각형 수색 300m",
+            offsets=[
+                RouteOffset(north_m=300, east_m=0),
+                RouteOffset(north_m=300, east_m=300),
+                RouteOffset(north_m=0, east_m=300),
+                RouteOffset(north_m=0, east_m=0),
+            ],
         ),
     }
 

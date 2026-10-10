@@ -178,3 +178,13 @@ def test_ontology_fields_default_to_none_and_the_demo_has_the_hierarchy():  # de
     }  # fmt: skip
     g = ObjectGraph.model_validate(_load(EXAMPLES / "object_graph.json"))
     assert g.focus and g.nodes and g.links
+
+
+def test_scenario_routes_default_empty_and_at_time_condition():  # decisions 0044, 0045
+    from contracts.models import Condition, RouteDef
+
+    sc = Scenario.model_validate(_load(EXAMPLES / "scenario.json"))
+    assert isinstance(sc.routes, list)
+    r = RouteDef(id="sq", name="사각형", offsets=[{"north_m": 300, "east_m": 0}])
+    assert r.points == [] and r.offsets[0].north_m == 300
+    assert Condition(kind="at_time", params={"offset_ms": 60_000}).kind.value == "at_time"

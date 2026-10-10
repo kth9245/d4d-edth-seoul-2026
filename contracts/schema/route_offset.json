@@ -1,0 +1,18 @@
+{
+  "properties": {
+    "north_m": {
+      "title": "North M",
+      "type": "number"
+    },
+    "east_m": {
+      "title": "East M",
+      "type": "number"
+    }
+  },
+  "required": [
+    "north_m",
+    "east_m"
+  ],
+  "title": "RouteOffset",
+  "type": "object"
+}
