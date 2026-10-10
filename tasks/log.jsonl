@@ -337,3 +337,4 @@
 {"at": "2026-10-10T15:32:50+09:00", "by": "황승주", "op": "done", "id": "Part1-26", "take": false}
 {"at": "2026-10-10T15:36:41+09:00", "by": "kth9245", "op": "done", "id": "Part1-23.4", "take": false}
 {"at": "2026-10-10T15:36:43+09:00", "by": "kth9245", "op": "note", "id": "Part1-23", "text": "B 시나리오 main 반영(4b4ee47). 황승주 0037(전 기체 순찰·해안 순찰 coast_a/b·recharge_min)과 최동호 0039/0040 위협도 계약을 합쳐서 올림. 이전 시나리오는 demo/scenarios/baengnyeong_night_before_0036.json (scripts/demo.sh 첫 인자로 실행 가능)"}
+{"at": "2026-10-10T15:38:17+09:00", "by": "kth9245", "op": "add", "id": "Part1-27", "title": "위협도·RF 화면: 발견 카드에 관측 위험 점수·이유, 미결 카드 점수순 정렬, 지도 RF 이름표·고리 (결정 0040)", "parent": null, "assign": "kth9245", "slot": null, "spec": null}
