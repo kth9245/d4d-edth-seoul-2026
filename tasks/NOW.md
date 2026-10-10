@@ -2,7 +2,7 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 16:12 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 16:18 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part1-24** 온톨로지 보강: 기체 종류 is-a 계층·능력 물려받기·검사 추론 경로·편집기 온톨로지 칸 + 객체 그래프 보기 — kth9245, 10/10 15:14부터
