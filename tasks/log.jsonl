@@ -386,3 +386,4 @@
 {"at": "2026-10-10T18:01:38+09:00", "by": "kth9245", "op": "add", "id": "Part1-31.1", "title": "결정 번호 겹침: 카드 하나당 드론 하나 결정(Part2-28)을 0044에서 0046으로 옮기고 참조를 고친다", "parent": "Part1-31", "assign": null, "slot": null, "spec": null}
 {"at": "2026-10-10T18:01:46+09:00", "by": "kth9245", "op": "start", "id": "Part1-31.1", "take": false, "from": null}
 {"at": "2026-10-10T18:03:54+09:00", "by": "kth9245", "op": "done", "id": "Part1-31.1", "take": false}
+{"at": "2026-10-10T18:08:00+09:00", "by": "kth9245", "op": "done", "id": "Part1-31", "take": false}
