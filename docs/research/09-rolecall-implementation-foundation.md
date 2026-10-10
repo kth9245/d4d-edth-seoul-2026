@@ -325,8 +325,9 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | Part1-14 | smoke 전환 + 통합 주관 | `smoke.py`를 백령도 시나리오로; 18:00·00:00 통합 슬라이스 확인 | 4절 두 슬라이스 통과 | Part1-7·1-9·1-10, Part2-4·2-5·2-6·2-9~2-13·2-17·2-18·2-20, Part3-1·3-7(통합 1 전부) | 1·2 |
 | Part1-15 | 3분 대본·BUILT_HERE·제출 설명 | — | 리허설 1회, 사전 준비분(스파이크·contracts) 명시 | 동결 | 뒤 |
 | Part1-18 | 타격 계약(결정 0031, `docs/superpowers/specs/2026-10-10-strike-phase-design.md` 3절) | `ActionKind.strike_target`, `CommandKind.strike`, `ReportKind.target_neutralized`, `VehicleState.decision_id`, `Target.neutralized_ms` + play 대응표 행 + `describe.ts` 이름표 + API.md → TS·예시 재생성 | 한 커밋으로 pytest·smoke·TS 검사 통과(대응표 테스트가 ActionKind 전부를 요구) | Part1-1 | 2(지금) |
-| Part1-19 | 타격 시나리오·플레이(spec 5절) | fast1 동쪽 해안 우회, 전환 버튼 '고속 보트 추적'(d2·usv), `track_fast` 수정·`track_fast_sea`·`strike`, 기체 capabilities | `check_operation` 통과, 틱 루프로 s7·s8까지 감 | Part1-18, Part2-21~23 | 2 |
+| Part1-19 | 타격 시나리오·플레이(spec 5절·10.1) | boat1·fast1을 enemies로(결정 0032), fast1 동쪽 해안 우회, 전환 버튼 '고속 보트 추적'(d2·usv), `track_fast` 수정·`track_fast_sea`·`strike`, 기체 capabilities | `check_operation` 통과, 틱 루프로 s7·s8까지 감 | Part1-18, Part2-21~23, Part2-25 | 2 |
 | Part1-20 | 타격 화면(spec 6절) | 무력화 표적 회색 X, 결과 카드, 작전 성공, 예시 장면 s7·s8 추가·s5·s6 수정 | s7·s8이 화면 조작만으로 남 | Part1-18 | 2 |
+| Part1-21 | 편집기 적 열 + `GET /enemies`(결정 0032, spec 10.3) | Scenario.enemies → 작전 개요 적 열(등장 시각·위치·속도 + 플레이 카드, 읽기 전용) | 백령도 시나리오의 boat1·fast1이 편집기에 보임 | Part1-18 | 2 |
 
 ### Part 2 — 엔진 (sim, sensing, safety, runtime). 원본: `knowledge/spikes/rolecall_engine_proto/port/modules/` (저장소 `modules/`와 같은 경로·파일 하나 = SPEC 행 하나, 포맷 끝난 상태. 2026-10-10 devil-advocate 검토 뒤 재배치)
 
@@ -356,6 +357,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | Part2-22 | 타격 safety(spec 4.2): `check_command` 규칙 1 | strike인데 결정 id 없으면 `no_provenance` | 통과·차단·구역 밖 표적 테스트 | Part1-18 | 2 |
 | Part2-23 | 타격 sim(spec 4.3): `advance` strike 분기, 새 액션 `resolve_strikes`(SIM-10), `update_metrics` 작전 성공 | 100 m 안이면 무력화 + 결과 카드 | spec 4.3 테스트. sim은 최동호 모듈(시작 때 알림) | Part1-18 | 2 |
 | Part2-24 | 타격 gateway(spec 4.4): `engine.py`에 `resolve_strikes`, `tick_log` 두 줄 | 타격 통과·무력화 기록 줄 | 틱 루프로 s8 기록 줄이 나옴 | Part2-17, Part2-23 | 2 |
+| Part2-25 | sim 적 진행(결정 0032, spec 10.2, SIM-11) + engine.py 호출 | Scenario.enemies·plays·targets → 등장·속도·step 전이(위치 적분은 apply_events) | spec 10.2 테스트, 틱 루프로 boat1·fast1이 대본대로 움직임 | Part1-18, Part2-17 | 2 |
 
 통합 1까지 엔진 쪽 16개(Part2-1~2-13, 2-17, 2-18, 2-20). 스파이크 함수를 액션 파일로 옮기고 테스트를 붙이는 일이며, 6절 머리의 "통합 1 배정" 표대로 A(sim·sensing·틱 루프 8개)와 B(safety·runtime 7개 + play 3개)로 가른다. 12절 검사 1: 둘이 가르지 않고 한 사람이 13개를 하면 추정 합계 7.4시간으로 18:00을 넘긴다(19:30).
 
