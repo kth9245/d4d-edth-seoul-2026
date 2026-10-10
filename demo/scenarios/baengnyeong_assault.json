@@ -164,8 +164,8 @@
    "endurance_min": 480.0,
    "sensor_range_m": 300.0,
    "home": {
-    "lat": 37.957,
-    "lon": 124.63,
+    "lat": 37.9555,
+    "lon": 124.6265,
     "alt_m": 0.0
    },
    "recharge_min": 0.0,

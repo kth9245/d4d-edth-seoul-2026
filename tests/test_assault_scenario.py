@@ -53,6 +53,8 @@ def test_drones_and_usv_start_at_sea_and_the_ground_robot_is_already_ashore(sc):
         assert not inside(by[vid].home, sc.land), vid
         assert point_in_polygon(by[vid].home, sc.operation.zone), vid
     assert inside(by["ugv"].home, sc.land)
+    # it waits right behind the beach where the usv lands, so it reads as the landed ground force
+    assert dist_m(by["ugv"].home, to_sea(BEACH, sc.land)) < 400
 
 
 def test_enemies_are_three_fixed_silent_unknown_sites_on_land(sc):
@@ -199,6 +201,33 @@ def test_the_operator_lands_the_usv_on_the_beach_and_it_stays(sc):
         es, _ = tick(es, TickInputs())
     assert dist_m(_st(es, "usv").pos, shore) < 5  # hold keeps it on the beach
     assert not es.blocks
+
+
+INLAND = GeoPoint(lat=37.955, lon=124.640, alt_m=0.0)  # the script's click for the ground robot: 1.4 km inland
+
+
+def test_inland_point_and_the_drive_there_stay_out_of_the_ground_robots_sight_of_every_site(sc):
+    home = next(v for v in sc.vehicles if v.id == "ugv").home
+    path = [GeoPoint(lat=home.lat + (INLAND.lat - home.lat) * i / 40,
+                     lon=home.lon + (INLAND.lon - home.lon) * i / 40) for i in range(41)]  # fmt: skip
+    assert inside(INLAND, sc.land)
+    for e in sc.enemies:  # ugv sensor 300 m: a site it saw first would no longer be found by the recon drones
+        assert min(dist_m(p, e.pos) for p in path) > 300, e.id
+
+
+def test_the_operator_drives_the_ground_robot_inland_after_the_landing(sc):
+    es = init_engine(sc)
+    land_usv = DirectControl(id="dir-1", vehicle_id="usv", t_ms=es.t_ms + sc.tick_ms, target=BEACH)
+    es, _ = tick(es, TickInputs(direct=[land_usv]))
+    es = _run_until(es, lambda e: dist_m(_st(e, "usv").pos, to_sea(BEACH, sc.land)) < 5)
+    drive = DirectControl(id="dir-2", vehicle_id="ugv", t_ms=es.t_ms + sc.tick_ms, target=INLAND)
+    es, _ = tick(es, TickInputs(direct=[drive]))
+    es = _run_until(es, lambda e: dist_m(_st(e, "ugv").pos, INLAND) < 5)
+    for _ in range(300):
+        es, _ = tick(es, TickInputs())
+    assert dist_m(_st(es, "ugv").pos, INLAND) < 5  # back on its hold role, it stays there
+    assert not es.blocks
+    assert all(t.reported_by != "ugv" for t in es.targets)  # it reports no site before the recon drones
 
 
 def test_r1_finds_the_north_site_and_r2_the_south_one_as_plain_alerts(sc):

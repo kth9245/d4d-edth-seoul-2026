@@ -30,7 +30,7 @@ def _p(lat, lon):
 # is already ashore behind the west beach. The three sites are inland (north, south, forest in the middle).
 HOME = _p(37.955, 124.592)
 USV_HOME = _p(37.950, 124.588)
-UGV_HOME = _p(37.957, 124.630)
+UGV_HOME = _p(37.9555, 124.6265)  # right behind the beach where the usv lands; the presenter drives it inland
 SITES = [("site_n", 37.972, 124.655), ("site_s", 37.932, 124.655), ("site_f", 37.952, 124.690)]
 # the formation: r1 and r2 fly the west beach side by side, about 450 m apart, once (move_to along a route, 0045)
 FORMATION = {
