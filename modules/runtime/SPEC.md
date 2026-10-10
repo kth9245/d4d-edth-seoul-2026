@@ -9,6 +9,6 @@
 | RT-04 | update_metrics | Metrics, TickOutcome(contracts) | Metrics | 09 2.3 정의 5개 각 1테스트(role_gap → vehicle_gap_ms). 공백 끝 규칙은 contracts/API.md 2절 | 황승주 | 예정 |
 | RT-05 | apply_injection | states, plays, Injection(approved) | states | play_by_vehicle대로 새 플레이 entry로 전환. 원래 플레이는 끝, 자동 복귀 없음(결정 0016) | 황승주 | 예정 |
 | RT-06 | apply_direct | states, DirectControl, t_ms | (states, Command) | operator_direct 명령 생성, 도착 시 resume 복귀 | 황승주 | 완료 |
-| RT-07 | apply_emergency | states, plays | states | 기체의 현재 플레이 emergency 규칙(battery_low_pct 등)에 걸리면 그 플레이의 지정 step으로 | 황승주 | 예정 |
+| RT-07 | apply_emergency | states, plays | states | 기체의 현재 플레이 emergency 규칙(battery_low_pct 등)에 걸리면 그 플레이의 지정 step으로 | 황승주 | 완료 |
 | RT-08 | enter_step | VehicleState, VehicleSpec, Play, Step, targets, t_ms | (state, Command/None, Report/None) | nearest·operator·고정 표적 각 1테스트, move_to의 target 좌표는 그대로, 귀환 step이면 returning. 원본: 스파이크 port/modules/runtime/actions/enter_step.py | 황승주 | 예정 |
 | RT-09 | switch_play | VehicleState, Play | VehicleState | play_id·step_id=entry·entered_step False·target·pending·resume 비움 1테스트. 원본: 스파이크 port | 황승주 | 완료 |
