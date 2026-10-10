@@ -6,6 +6,7 @@
  {"type": ["input[aria-label='Role 이름']", "QA 삭제 새 Role"]},
  {"click": "만들기", "wait": 1500},
  {"label": "D1 the new role is in the list and has a 삭제 button", "eval": "({ listed: [...document.querySelectorAll('.role-sidebar .item')].some(b => b.innerText === 'QA 삭제 새 Role'), button: document.querySelector('.save-bar .delete')?.innerText })", "expect": {"listed": true, "button": "삭제"}},
+ {"label": "D1 저장 and 삭제 are the same size (Part1-38)", "eval": "(() => { const a = document.querySelector('.save-bar .save').getBoundingClientRect(), b = document.querySelector('.save-bar .delete').getBoundingClientRect(); return { height: Math.round(a.height) === Math.round(b.height), width: Math.round(a.width) === Math.round(b.width) }; })()", "expect": {"height": true, "width": true}},
  {"clickSel": ".save-bar .delete", "wait": 300},
  {"label": "D2 the first press only arms it", "eval": "({ button: document.querySelector('.save-bar .delete')?.innerText, still: !!document.querySelector('.workflow') })", "expect": {"button": "한 번 더 누르면 삭제", "still": true}},
  {"clickSel": ".save-bar .delete", "wait": 1200},
