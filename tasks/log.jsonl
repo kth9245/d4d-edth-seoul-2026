@@ -358,3 +358,4 @@
 {"at": "2026-10-10T15:59:32+09:00", "by": "황승주", "op": "start", "id": "Part1-28", "take": false, "from": null}
 {"at": "2026-10-10T16:00:11+09:00", "by": "황승주", "op": "done", "id": "Part1-28", "take": false}
 {"at": "2026-10-10T16:01:11+09:00", "by": "황승주", "op": "add", "id": "Part2-31", "title": "해안 순찰 드론 4대: 북 d1·d3, 남 d2·d4 짝 교대, 예비 규칙이 귀환 플레이는 이어받지 않음 (사용자 지시)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
+{"at": "2026-10-10T16:01:14+09:00", "by": "황승주", "op": "start", "id": "Part2-31", "take": false, "from": null}
