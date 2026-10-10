@@ -479,3 +479,4 @@
 {"at": "2026-10-10T21:56:22+09:00", "by": "황승주", "op": "add", "id": "Part2-53", "title": "멸공 적 7/7 수정: 적 UGV 2번 정찰 경로가 만을 가로질러 바다로 나가지 않게", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T21:56:25+09:00", "by": "황승주", "op": "start", "id": "Part2-53", "take": false, "from": null}
 {"at": "2026-10-10T22:03:10+09:00", "by": "황승주", "op": "done", "id": "Part2-53", "take": false}
+{"at": "2026-10-10T22:04:24+09:00", "by": "kth9245", "op": "done", "id": "Part1-42", "take": false}
