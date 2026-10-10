@@ -330,3 +330,4 @@
 {"at": "2026-10-10T15:20:11+09:00", "by": "황승주", "op": "done", "id": "Part2-29", "take": false}
 {"at": "2026-10-10T15:21:08+09:00", "by": "황승주", "op": "add", "id": "Part2-30", "title": "해안 순찰 교대: engine 4.5 호출 + 24h 시나리오·경로 스크립트 + 24시간 증명 테스트 (결정 0037)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T15:21:10+09:00", "by": "황승주", "op": "start", "id": "Part2-30", "take": false, "from": null}
+{"at": "2026-10-10T15:25:11+09:00", "by": "황승주", "op": "done", "id": "Part2-30", "take": false}
