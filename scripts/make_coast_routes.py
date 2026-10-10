@@ -89,7 +89,7 @@ def build() -> dict:
     drones = [v | {"recharge_min": 5} for v in night["vehicles"] if v["domain"] == "air"]
     plays = {p["id"]: p for p in night["plays"]}
     op = night["operation"] | {
-        "name": "백령도 해안 순찰 24시간 교대(가상)",
+        "name": "멸공",
         "purpose": "드론 4대가 북(A: d1·d3)·남(B: d2·d4) 해안을 짝끼리 교대로 늘 1대씩 순찰(결정 0037, 0041)",
         "vehicle_ids": [v["id"] for v in drones],
         "assign": {"d1": "coast_a", "d2": "coast_b", "d3": "standby", "d4": "standby"},
