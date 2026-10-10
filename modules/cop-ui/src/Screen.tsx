@@ -67,7 +67,7 @@ export function Screen({ frame, zone, status, ok }:
           menu={menu} switches={data.switches} onSwitch={onSwitch} switchNote={switchNote} />
       ) : <aside className="roster" />}
       <div className="map-col">
-        {tiles === null ? <div className="map" /> : <MapView frame={frame} zone={zone} tilesAvailable={tiles} direct={direct} board={board} watch={data.watch} />}
+        {tiles === null ? <div className="map" /> : <MapView frame={frame} zone={zone} tilesAvailable={tiles} direct={direct} board={board} watch={data.watch} specs={data.vehicles} />}
         {direct.hint && <div className={direct.selected ? "direct-hint on" : "direct-hint"}>{direct.hint}</div>}
         {frame && direct.selected && direct.pick && (
           // Pointing (decisions 0048, 0049, 0058): the selected vehicle's target roles beside the pointed target.

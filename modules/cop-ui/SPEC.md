@@ -92,3 +92,4 @@
 | UI-100 | postRole | 기체, Role | Sent | POST /injections {role_by_vehicle, approve: true}(기체 메뉴 표적 없는 Role, 결정 0059), throw 없음 | 리드 | 완료 |
 | UI-101 | VehicleMenu | 지금 Role 이름, MenuRole[]×2, SeenTarget[] | 기체 메뉴 | 고른 아군 줄 아래(결정 0058·0059): 이동 안내, 표적 없는 Role 버튼("지금 → 새", 누르면 바로), 표적 Role 버튼(타격 빨강)을 누르면 그 아래 포착 적 목록(종류·위험도·거리)·없으면 안내, 고르면 바로 지목 | 리드 | 완료 |
 | UI-102 | pointRoles | MenuRole[], 그 표적의 Track | MenuRole[] | 지도·적 줄 지목 메뉴의 Role: 표적 Role 그대로, 타격은 지금 보이는(seen) 표적에만(놓침·RF만·미탐이면 타격 뺌, 결정 0058, 4·5번 작업 검토) | 리드 | 완료 |
+| UI-103 | sensorCircles | Frame, VehicleSpec[] | FeatureCollection | 지도 탐지 영역(Part1-32.2): ready·active 기체(sensing LIVE와 같음)마다 지금 위치 중심 sensor_range_m 원(64칸, 닫힘, 드론 800·수상정 500·지상로봇 300 m), 귀환·두절·정비와 명세 없는 기체는 없음 | 리드 | 완료 |

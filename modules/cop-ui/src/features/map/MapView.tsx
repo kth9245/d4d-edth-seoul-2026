@@ -2,7 +2,7 @@ import { type GeoJSONSource, LngLatBounds, Map as MapLibreMap, setWorkerUrl } fr
 import "maplibre-gl/dist/maplibre-gl.css";
 import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import { useEffect, useRef } from "react";
-import type { Frame, GeoPoint, Polygon, WatchPoint } from "../../contracts.gen";
+import type { Frame, GeoPoint, Polygon, VehicleSpec, WatchPoint } from "../../contracts.gen";
 import type { BoardView } from "../board/boardView";
 import { cameraPoints } from "../board/cameraPoints";
 import { linkLines } from "../board/linkLines";
@@ -11,6 +11,7 @@ import { basemapStyle, TILE_BOUNDS } from "./basemap";
 import { directAims, type PendingAim } from "./directAims";
 import { frameMarkers } from "./frameMarkers";
 import { clearMarkers, type MarkerStore, syncAim, syncTargets, syncVehicles } from "./markers";
+import { sensorCircles } from "./sensorCircles";
 import { zoneGeoJSON } from "./zoneGeoJSON";
 
 // MapLibre 6 loads its worker from next to its own file, but Vite moves that file when bundling (dev and build),
@@ -41,13 +42,13 @@ const NO_DIRECT: DirectProps = { selected: null, pending: null, pick: null, onVe
 // The live board's map (Part1-32): targets where our side knows them (decision 0047), lines from each vehicle on
 // a mission to its target, lost targets' estimates and a block's alternative, the landing ring, and a camera that
 // fits the open decisions whenever they change (never per frame).
-export function MapView({ frame, zone, tilesAvailable, direct = NO_DIRECT, board = null, watch = [] }: {
+export function MapView({ frame, zone, tilesAvailable, direct = NO_DIRECT, board = null, watch = [], specs = [] }: {
   frame: Frame | null; zone: Polygon | null; tilesAvailable: boolean; direct?: DirectProps;
-  board?: BoardView | null; watch?: WatchPoint[];
+  board?: BoardView | null; watch?: WatchPoint[]; specs?: VehicleSpec[];
 }) {
   const el = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
-  const latest = useRef({ frame, zone, direct, board, watch });
+  const latest = useRef({ frame, zone, direct, board, watch, specs });
   const lastKey = useRef("");
   const userMoved = useRef(0);
   useEffect(() => {
@@ -55,6 +56,7 @@ export function MapView({ frame, zone, tilesAvailable, direct = NO_DIRECT, board
     latest.current.direct = direct;
     latest.current.board = board;
     latest.current.watch = watch;
+    latest.current.specs = specs;
   });
   const vehicles = useRef<MarkerStore>(new Map());
   const targets = useRef<MarkerStore>(new Map());
@@ -76,6 +78,7 @@ export function MapView({ frame, zone, tilesAvailable, direct = NO_DIRECT, board
     m.getCanvas().style.cursor = d.selected ? "crosshair" : "";
     (m.getSource("links") as GeoJSONSource | undefined)?.setData(f && b ? linkLines(f, b.tracks, b.queue) : EMPTY);
     (m.getSource("watch") as GeoJSONSource | undefined)?.setData(watchCircles(latest.current.watch));
+    (m.getSource("sensor") as GeoJSONSource | undefined)?.setData(f ? sensorCircles(f, latest.current.specs) : EMPTY);
   };
 
   useEffect(() => {
@@ -95,6 +98,11 @@ export function MapView({ frame, zone, tilesAvailable, direct = NO_DIRECT, board
       m.addLayer({ id: "zone-fill", type: "fill", source: "zone", paint: { "fill-color": "#80e0ff", "fill-opacity": 0.05 } });
       m.addLayer({ id: "zone-line", type: "line", source: "zone",
         paint: { "line-color": "#80e0ff", "line-opacity": 0.7, "line-width": 1.5, "line-dasharray": [4, 3] } });
+      // Each live vehicle's detection area (Part1-32.2): --friend, faint fill and a thin solid edge under the rest.
+      m.addSource("sensor", { type: "geojson", data: EMPTY });
+      m.addLayer({ id: "sensor-fill", type: "fill", source: "sensor", paint: { "fill-color": "#80e0ff", "fill-opacity": 0.07 } });
+      m.addLayer({ id: "sensor-line", type: "line", source: "sensor",
+        paint: { "line-color": "#80e0ff", "line-opacity": 0.45, "line-width": 1 } });
       // Expected landing radius: --warn, outline only so it never outshines the targets.
       m.addSource("watch", { type: "geojson", data: watchCircles(latest.current.watch) });
       m.addLayer({ id: "watch-line", type: "line", source: "watch",
@@ -124,7 +132,7 @@ export function MapView({ frame, zone, tilesAvailable, direct = NO_DIRECT, board
   useEffect(() => {
     latest.current.frame = frame;
     if (map.current) draw(map.current);
-  }, [frame, board, direct.selected, direct.pending]);
+  }, [frame, board, specs, direct.selected, direct.pending]);
 
   useEffect(() => {
     // Camera follows the open decisions (Part1-32): refit when the set of open items changes, or when one of its
