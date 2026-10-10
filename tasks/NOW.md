@@ -2,10 +2,10 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 10:06 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 10:07 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- **Part3-2** play `check_links` — 황승주, 10/10 10:06부터 · PLY-02
+- (없음)
 
 ## 막힘
 - (없음)
@@ -68,6 +68,7 @@
 - 10/9 23:14 kth9245 · Part1-1 · 결정 0015·0016·0017·0018 참조(두 층 구조, contracts 세부, API 규약)
 
 ## 완료
+- **Part3-2** play `check_links` — 황승주, 10/10 10:07 · PLY-02
 - **Part3-1** play `load_play` — 황승주, 10/10 10:06 · PLY-01
 - **Part2-13** runtime `update_metrics` — 황승주, 10/10 10:05 · RT-04
 - **Part2-16** runtime `apply_emergency` — 황승주, 10/10 10:05 · RT-07
