@@ -17,6 +17,9 @@ WARMUP_S, DAY_S = 30 * 60, 24 * 3600
 @pytest.fixture(scope="module")
 def day():  # checks each frame as it comes: keeping 432,000 frames (200 ms ticks) ran WSL out of memory
     sc = load_scenario_json(str(SCENARIO))
+    sc = sc.model_copy(
+        update={"enemies": []}
+    )  # rotation only: the raid (0055) pulls drones off on purpose
     home = {v.id: v.home for v in sc.vehicles}
     es, gaps, landed, prev = init_engine(sc), [], [], {}
     for _ in range(DAY_S * 1000 // sc.tick_ms):

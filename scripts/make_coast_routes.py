@@ -21,6 +21,7 @@ sys.path[:0] = [str(ROOT)]
 
 from contracts.models import GeoPoint, Scenario  # noqa: E402
 from shared.geo import dist_m, enu_delta_m, offset_latlon  # noqa: E402
+from shared.land import inside, to_sea  # noqa: E402
 
 NIGHT = ROOT / "demo" / "scenarios" / "baengnyeong_night.json"
 OUT = ROOT / "demo" / "scenarios" / "baengnyeong_24h.json"
@@ -69,16 +70,6 @@ def coast_routes(land, home: GeoPoint) -> tuple[list[dict], list[dict]]:
 COAST_NAMES = {"coast_a": "해안 A(북)", "coast_b": "해안 B(남)"}  # route names (decision 0044)
 
 
-# the night cards' usv/ugv choices (patrol_a 근접 확인, patrol_b 수상정 인계), on both coasts (user, 10/10);
-# the spotting drone keeps watching (근접 확인) or goes back to its patrol (수상정 인계)
-USV_UGV_CHOICES = [
-    {
-        "id": "approach",
-        "label": "근접 확인",
-        "role_by_vehicle": {"usv": "approach", "ugv": "landing"},
-    },
-    {"id": "handoff", "label": "수상정 인계", "role_by_vehicle": {"usv": "approach"}},
-]
 USV_UGV_ROLES = (
     "approach",
     "landing",
@@ -94,11 +85,102 @@ def patrol(pid: str, name: str, route: list[dict]) -> dict:
             "report": None, "ui": {}}  # fmt: skip
     found = {"id": "report", "name": "발견·감시·보고",
              "do": {"kind": "watch_target", "params": {"target": "nearest", "distance_m": 150}},
-             "on": [{"cond": {"kind": "operator_choice", "params": {"choice": "handoff"}}, "go_step": "patrol"}],
-             "report": {"text": "미식별 선박 접근", "choices": USV_UGV_CHOICES, "auto_choices": True},
+             "on": [],
+             "report": {"text": "미식별 선박 접근", "choices": [], "auto_choices": True},
              "ui": {}}  # fmt: skip
     return {"id": pid, "name": name, "domains": ["air"], "steps": [step, found], "entry": "patrol",
             "origin": "human", "approved": True, "template": False}  # fmt: skip
+
+
+def _pt(p: GeoPoint) -> dict:
+    return {"lat": round(p.lat, 6), "lon": round(p.lon, 6), "alt_m": 0.0}
+
+
+def _off(p: GeoPoint, east_m: float, north_m: float) -> GeoPoint:
+    lat, lon = offset_latlon(p.lat, p.lon, east_m, north_m)
+    return GeoPoint(lat=lat, lon=lon)
+
+
+def _go(eid: str, name: str, dom: str, target: dict) -> dict:  # enemy role: go there, then hold
+    go = {
+        "id": "go",
+        "name": name,
+        "do": {"kind": "move_to", "params": {"target": target}},
+        "on": [{"cond": {"kind": "arrived", "params": {}}, "go_step": "wait"}],
+        "report": None,
+        "ui": {},
+    }
+    wait = {
+        "id": "wait",
+        "name": "대기",
+        "do": {"kind": "hold", "params": {}},
+        "on": [],
+        "report": None,
+        "ui": {},
+    }
+    return {"id": f"enemy_{eid}", "name": f"적: {name}", "domains": [dom], "steps": [go, wait], "entry": "go",
+            "origin": "human", "approved": True, "template": False}  # fmt: skip
+
+
+def _ours(rid: str, name: str, dom: str, do: dict) -> dict:
+    step = {"id": "s", "name": name, "do": do, "on": [], "report": None, "ui": {}}
+    return {"id": rid, "name": name, "domains": [dom], "steps": [step], "entry": "s", "origin": "human",
+            "approved": True, "template": False}  # fmt: skip
+
+
+def scout_route(land, landing: GeoPoint) -> list[dict]:
+    """Enemy ugv2: the island outline 200 m inland, about 900 m apart, clockwise from the landing (user, 10/10)."""
+    pts = land[0].points
+    c = GeoPoint(lat=sum(p.lat for p in pts) / len(pts), lon=sum(p.lon for p in pts) / len(pts))
+    ring = []
+    for p in pts:
+        e, n = enu_delta_m(p.lat, p.lon, c.lat, c.lon)
+        k = math.hypot(e, n) or 1.0
+        q = _off(p, e / k * 200, n / k * 200)
+        if inside(q, land) and (not ring or dist_m(ring[-1], q) >= SPACING_M):
+            ring.append(q)
+    area = sum(
+        a.lon * b.lat - b.lon * a.lat for a, b in zip(ring, ring[1:] + ring[:1], strict=True)
+    )
+    ring = ring[::-1] if area > 0 else ring  # shoelace > 0 is counter-clockwise
+    k = min(range(len(ring)), key=lambda i: dist_m(ring[i], landing))
+    return [_pt(p) for p in ring[k:] + ring[:k]]
+
+
+def raid(land, base: GeoPoint) -> tuple[list[dict], list[dict]]:
+    """The 24h two-pronged raid (decision 0055): a suicide drone from the north at T+11:00 to the drone base,
+    an enemy usv from the south at T+11:00 that stops at the coast, and its two ugvs at T+23:00 (one to the
+    base, one scouting the coast clockwise). Returns (enemies, enemy roles + our response roles)."""
+    pts = land[0].points
+    north = max(pts, key=lambda p: p.lat)
+    landing = to_sea(min(pts, key=lambda p: p.lat), land)
+    drone0, usv0 = _off(north, 0, 5000), _off(landing, 0, -3000)
+    enemies = [
+        {"id": "e_drone", "kind": "drone", "speed_mps": 8.0, "appear_offset_ms": 660_000, "pos": _pt(drone0), "role_id": "enemy_e_drone"},
+        {"id": "e_usv", "kind": "usv", "speed_mps": 5.0, "appear_offset_ms": 660_000, "pos": _pt(usv0), "role_id": "enemy_e_usv"},
+        {"id": "e_ugv1", "kind": "ugv", "speed_mps": 3.0, "appear_offset_ms": 1_380_000, "from_enemy": "e_usv", "role_id": "enemy_e_ugv1"},
+        {"id": "e_ugv2", "kind": "ugv", "speed_mps": 3.0, "appear_offset_ms": 1_380_000, "from_enemy": "e_usv", "role_id": "enemy_e_ugv2"},
+    ]  # fmt: skip
+    scout = _go("e_ugv2", "해안선 시계 방향 정찰", "ground", _pt(landing))
+    scout["steps"] = [{"id": "go", "name": "해안선 시계 방향 정찰", "on": [], "report": None, "ui": {},
+                       "do": {"kind": "patrol_route", "params": {"route": scout_route(land, landing)}}}]  # fmt: skip
+    circle = [{"east_m": round(800 * math.sin(i * math.pi / 6), 1), "north_m": round(800 * math.cos(i * math.pi / 6), 1)}
+              for i in range(12)]  # fmt: skip
+    watch = {"kind": "watch_target", "params": {"target": "operator", "distance_m": 200}}
+    roles = [
+        _go("e_drone", "드론 기지로 자폭 돌진", "air", _pt(base)),
+        _go("e_usv", "남쪽 해안 상륙", "sea", _pt(landing)),
+        _go("e_ugv1", "드론 기지로", "ground", _pt(base)),
+        scout,
+        _ours("focus_orbit", "발견 지점 집중 순찰", "air", {"kind": "patrol_route", "params": {
+            "offsets": circle, "anchor": "target", "route_name": FOCUS_ROUTE}}),
+        _ours("track_sea", "적기 추적(해상)", "sea", watch),
+        _ours("track_ground", "적기 추적(지상)", "ground", watch),
+    ]  # fmt: skip
+    return enemies, roles
+
+
+FOCUS_ROUTE = "발견 지점 집중 순찰(800 m)"
 
 
 def build() -> dict:
@@ -127,6 +209,13 @@ def build() -> dict:
         v for v in night["vehicles"] if v["domain"] != "air"
     ]  # usv, ugv at their night spots (user, 10/10)
     roles = {p["id"]: p for p in night["roles"]}
+    enemies, raid_roles = raid(sc.land, base)
+    ontology = json.loads(
+        json.dumps(night["ontology"])
+    )  # 24h only: ground robots can track (decision 0055)
+    next(k for k in ontology["kinds"] if k["id"] == "ground_robot")["provides"].append(
+        "watch_target"
+    )
     op = night["operation"] | {
         "name": "멸공",
         "purpose": "드론 4대가 북(A: d1·d3)·남(B: d2·d4) 해안을 짝끼리 교대로 늘 1대씩 순찰(결정 0037, 0041)",
@@ -163,12 +252,20 @@ def build() -> dict:
             roles["go_home"],
             roles["watch"],
             *(roles[r] for r in USV_UGV_ROLES),
+            *raid_roles,
         ],  # fmt: skip
         "events": [],
-        "enemies": [],
+        "enemies": enemies,
         "routes": [
             {"id": "coast_a", "name": COAST_NAMES["coast_a"], "points": a},
             {"id": "coast_b", "name": COAST_NAMES["coast_b"], "points": b},
+            {
+                "id": "focus_800",
+                "name": FOCUS_ROUTE,
+                "offsets": next(r for r in raid_roles if r["id"] == "focus_orbit")["steps"][0][
+                    "do"
+                ]["params"]["offsets"],
+            },
             *(
                 r
                 for r in night["routes"]
@@ -176,7 +273,7 @@ def build() -> dict:
             ),
         ],  # decision 0044: the night list without the night-only patrols
         "land": night["land"],
-        "ontology": night["ontology"],  # decision 0051: same drones, same kinds
+        "ontology": ontology,  # decision 0051: same drones, same kinds
         "seed": 0,
         "tick_ms": 200,
         "speed": 1.0,

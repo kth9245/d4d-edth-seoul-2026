@@ -40,19 +40,28 @@ def build_knowledge_index(root: Path) -> str:
 
 
 def build_decision_index(root: Path) -> str:
-    out = [GENERATED, "# 결정 목록\n", "| id | 제목 | 상태 | 결정자 | 모듈 |", "|---|---|---|---|---|"]
+    out = [
+        GENERATED,
+        "# 결정 목록\n",
+        "| id | 제목 | 상태 | 결정자 | 모듈 |",
+        "|---|---|---|---|---|",
+    ]
     for doc in sorted((root / "decisions" / "log").glob("*.md")):
         m, _ = parse(_read(doc))
         mods = ", ".join(m.get("modules") or [])
-        out.append(f"| [{m.get('id', doc.stem)}](log/{doc.name}) | {m.get('title', '')} | "
-                   f"{m.get('status', '')} | {m.get('decided_by') or ''} | {mods} |")
+        out.append(
+            f"| [{m.get('id', doc.stem)}](log/{doc.name}) | {m.get('title', '')} | "
+            f"{m.get('status', '')} | {m.get('decided_by') or ''} | {mods} |"
+        )
     return "\n".join(out) + "\n"
 
 
 def apply_policy(agents_text: str, policy_text: str) -> str:
     if BEGIN not in agents_text or END not in agents_text:
         return agents_text
-    body = "\n".join(line for line in policy_text.strip().splitlines() if not line.startswith("# ")).strip()
+    body = "\n".join(
+        line for line in policy_text.strip().splitlines() if not line.startswith("# ")
+    ).strip()
     head, rest = agents_text.split(BEGIN, 1)
     _, tail = rest.split(END, 1)
     return f"{head}{BEGIN}\n{body}\n{END}{tail}"

@@ -391,36 +391,10 @@
        "distance_m": 150
       }
      },
-     "on": [
-      {
-       "cond": {
-        "kind": "operator_choice",
-        "params": {
-         "choice": "handoff"
-        }
-       },
-       "go_step": "patrol"
-      }
-     ],
+     "on": [],
      "report": {
       "text": "미식별 선박 접근",
-      "choices": [
-       {
-        "id": "approach",
-        "label": "근접 확인",
-        "role_by_vehicle": {
-         "usv": "approach",
-         "ugv": "landing"
-        }
-       },
-       {
-        "id": "handoff",
-        "label": "수상정 인계",
-        "role_by_vehicle": {
-         "usv": "approach"
-        }
-       }
-      ],
+      "choices": [],
       "auto_choices": true
      },
      "ui": {}
@@ -611,36 +585,10 @@
        "distance_m": 150
       }
      },
-     "on": [
-      {
-       "cond": {
-        "kind": "operator_choice",
-        "params": {
-         "choice": "handoff"
-        }
-       },
-       "go_step": "patrol"
-      }
-     ],
+     "on": [],
      "report": {
       "text": "미식별 선박 접근",
-      "choices": [
-       {
-        "id": "approach",
-        "label": "근접 확인",
-        "role_by_vehicle": {
-         "usv": "approach",
-         "ugv": "landing"
-        }
-       },
-       {
-        "id": "handoff",
-        "label": "수상정 인계",
-        "role_by_vehicle": {
-         "usv": "approach"
-        }
-       }
-      ],
+      "choices": [],
       "auto_choices": true
      },
      "ui": {}
@@ -945,10 +893,491 @@
    "origin": "human",
    "approved": true,
    "template": true
+  },
+  {
+   "id": "enemy_e_drone",
+   "name": "적: 드론 기지로 자폭 돌진",
+   "domains": [
+    "air"
+   ],
+   "steps": [
+    {
+     "id": "go",
+     "name": "드론 기지로 자폭 돌진",
+     "do": {
+      "kind": "move_to",
+      "params": {
+       "target": {
+        "lat": 37.95,
+        "lon": 124.7,
+        "alt_m": 0.0
+       }
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "arrived",
+        "params": {}
+       },
+       "go_step": "wait"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "wait",
+     "name": "대기",
+     "do": {
+      "kind": "hold",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "go",
+   "origin": "human",
+   "approved": true,
+   "template": false
+  },
+  {
+   "id": "enemy_e_usv",
+   "name": "적: 남쪽 해안 상륙",
+   "domains": [
+    "sea"
+   ],
+   "steps": [
+    {
+     "id": "go",
+     "name": "남쪽 해안 상륙",
+     "do": {
+      "kind": "move_to",
+      "params": {
+       "target": {
+        "lat": 37.91319,
+        "lon": 124.69053,
+        "alt_m": 0.0
+       }
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "arrived",
+        "params": {}
+       },
+       "go_step": "wait"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "wait",
+     "name": "대기",
+     "do": {
+      "kind": "hold",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "go",
+   "origin": "human",
+   "approved": true,
+   "template": false
+  },
+  {
+   "id": "enemy_e_ugv1",
+   "name": "적: 드론 기지로",
+   "domains": [
+    "ground"
+   ],
+   "steps": [
+    {
+     "id": "go",
+     "name": "드론 기지로",
+     "do": {
+      "kind": "move_to",
+      "params": {
+       "target": {
+        "lat": 37.95,
+        "lon": 124.7,
+        "alt_m": 0.0
+       }
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "arrived",
+        "params": {}
+       },
+       "go_step": "wait"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "wait",
+     "name": "대기",
+     "do": {
+      "kind": "hold",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "go",
+   "origin": "human",
+   "approved": true,
+   "template": false
+  },
+  {
+   "id": "enemy_e_ugv2",
+   "name": "적: 해안선 시계 방향 정찰",
+   "domains": [
+    "ground"
+   ],
+   "steps": [
+    {
+     "id": "go",
+     "name": "해안선 시계 방향 정찰",
+     "on": [],
+     "report": null,
+     "ui": {},
+     "do": {
+      "kind": "patrol_route",
+      "params": {
+       "route": [
+        {
+         "lat": 37.914968,
+         "lon": 124.690188,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.922028,
+         "lon": 124.683252,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.921311,
+         "lon": 124.67097,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.921945,
+         "lon": 124.656612,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.924339,
+         "lon": 124.638259,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.940056,
+         "lon": 124.630991,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.953979,
+         "lon": 124.627231,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.959443,
+         "lon": 124.61488,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.969805,
+         "lon": 124.611912,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.978444,
+         "lon": 124.618144,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.97494,
+         "lon": 124.627593,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.968773,
+         "lon": 124.643242,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.974421,
+         "lon": 124.652572,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.976712,
+         "lon": 124.669292,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.978672,
+         "lon": 124.680998,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.983278,
+         "lon": 124.684672,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.982624,
+         "lon": 124.696112,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.981827,
+         "lon": 124.708752,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.981543,
+         "lon": 124.721162,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.975774,
+         "lon": 124.729665,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.966561,
+         "lon": 124.7319,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.964005,
+         "lon": 124.741657,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.958002,
+         "lon": 124.734429,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.952335,
+         "lon": 124.727078,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.945533,
+         "lon": 124.714233,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.93229,
+         "lon": 124.703521,
+         "alt_m": 0.0
+        },
+        {
+         "lat": 37.920962,
+         "lon": 124.699683,
+         "alt_m": 0.0
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "entry": "go",
+   "origin": "human",
+   "approved": true,
+   "template": false
+  },
+  {
+   "id": "focus_orbit",
+   "name": "발견 지점 집중 순찰",
+   "domains": [
+    "air"
+   ],
+   "steps": [
+    {
+     "id": "s",
+     "name": "발견 지점 집중 순찰",
+     "do": {
+      "kind": "patrol_route",
+      "params": {
+       "offsets": [
+        {
+         "east_m": 0.0,
+         "north_m": 800.0
+        },
+        {
+         "east_m": 400.0,
+         "north_m": 692.8
+        },
+        {
+         "east_m": 692.8,
+         "north_m": 400.0
+        },
+        {
+         "east_m": 800.0,
+         "north_m": 0.0
+        },
+        {
+         "east_m": 692.8,
+         "north_m": -400.0
+        },
+        {
+         "east_m": 400.0,
+         "north_m": -692.8
+        },
+        {
+         "east_m": 0.0,
+         "north_m": -800.0
+        },
+        {
+         "east_m": -400.0,
+         "north_m": -692.8
+        },
+        {
+         "east_m": -692.8,
+         "north_m": -400.0
+        },
+        {
+         "east_m": -800.0,
+         "north_m": -0.0
+        },
+        {
+         "east_m": -692.8,
+         "north_m": 400.0
+        },
+        {
+         "east_m": -400.0,
+         "north_m": 692.8
+        }
+       ],
+       "anchor": "target",
+       "route_name": "발견 지점 집중 순찰(800 m)"
+      }
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "s",
+   "origin": "human",
+   "approved": true,
+   "template": false
+  },
+  {
+   "id": "track_sea",
+   "name": "적기 추적(해상)",
+   "domains": [
+    "sea"
+   ],
+   "steps": [
+    {
+     "id": "s",
+     "name": "적기 추적(해상)",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 200
+      }
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "s",
+   "origin": "human",
+   "approved": true,
+   "template": false
+  },
+  {
+   "id": "track_ground",
+   "name": "적기 추적(지상)",
+   "domains": [
+    "ground"
+   ],
+   "steps": [
+    {
+     "id": "s",
+     "name": "적기 추적(지상)",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 200
+      }
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "s",
+   "origin": "human",
+   "approved": true,
+   "template": false
   }
  ],
  "events": [],
- "enemies": [],
+ "enemies": [
+  {
+   "id": "e_drone",
+   "kind": "drone",
+   "speed_mps": 8.0,
+   "appear_offset_ms": 660000,
+   "pos": {
+    "lat": 38.030036,
+    "lon": 124.68487,
+    "alt_m": 0.0
+   },
+   "role_id": "enemy_e_drone"
+  },
+  {
+   "id": "e_usv",
+   "kind": "usv",
+   "speed_mps": 5.0,
+   "appear_offset_ms": 660000,
+   "pos": {
+    "lat": 37.88621,
+    "lon": 124.69053,
+    "alt_m": 0.0
+   },
+   "role_id": "enemy_e_usv"
+  },
+  {
+   "id": "e_ugv1",
+   "kind": "ugv",
+   "speed_mps": 3.0,
+   "appear_offset_ms": 1380000,
+   "from_enemy": "e_usv",
+   "role_id": "enemy_e_ugv1"
+  },
+  {
+   "id": "e_ugv2",
+   "kind": "ugv",
+   "speed_mps": 3.0,
+   "appear_offset_ms": 1380000,
+   "from_enemy": "e_usv",
+   "role_id": "enemy_e_ugv2"
+  }
+ ],
  "routes": [
   {
    "id": "coast_a",
@@ -1239,6 +1668,60 @@
      "lat": 37.94986,
      "lon": 124.73431,
      "alt_m": 0
+    }
+   ]
+  },
+  {
+   "id": "focus_800",
+   "name": "발견 지점 집중 순찰(800 m)",
+   "offsets": [
+    {
+     "east_m": 0.0,
+     "north_m": 800.0
+    },
+    {
+     "east_m": 400.0,
+     "north_m": 692.8
+    },
+    {
+     "east_m": 692.8,
+     "north_m": 400.0
+    },
+    {
+     "east_m": 800.0,
+     "north_m": 0.0
+    },
+    {
+     "east_m": 692.8,
+     "north_m": -400.0
+    },
+    {
+     "east_m": 400.0,
+     "north_m": -692.8
+    },
+    {
+     "east_m": 0.0,
+     "north_m": -800.0
+    },
+    {
+     "east_m": -400.0,
+     "north_m": -692.8
+    },
+    {
+     "east_m": -692.8,
+     "north_m": -400.0
+    },
+    {
+     "east_m": -800.0,
+     "north_m": -0.0
+    },
+    {
+     "east_m": -692.8,
+     "north_m": 400.0
+    },
+    {
+     "east_m": -400.0,
+     "north_m": 692.8
     }
    ]
   },
@@ -1940,7 +2423,9 @@
     "id": "ground_robot",
     "label": "지상 로봇",
     "is_a": "ground_vehicle",
-    "provides": []
+    "provides": [
+     "watch_target"
+    ]
    }
   ]
  },

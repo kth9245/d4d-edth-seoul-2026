@@ -56,7 +56,9 @@ def test_decision_index(tmp_path):
 
 
 def test_apply_policy_replaces_block_only():
-    out = sd.apply_policy("a\n<!-- POLICY:BEGIN -->\nold\n<!-- POLICY:END -->\nz\n", "# 정책\n\n1. x\n")
+    out = sd.apply_policy(
+        "a\n<!-- POLICY:BEGIN -->\nold\n<!-- POLICY:END -->\nz\n", "# 정책\n\n1. x\n"
+    )
     assert out == "a\n<!-- POLICY:BEGIN -->\n1. x\n<!-- POLICY:END -->\nz\n"
 
 

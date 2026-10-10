@@ -22,15 +22,21 @@ def test_rerunning_the_24h_script_keeps_the_route_list_and_route_names():  # dec
         s["do"]["params"].get("route_name")
         for p in out["roles"]
         for s in p["steps"]
-        if s["do"]["kind"] == "patrol_route"
+        if s["do"]["kind"] == "patrol_route" and not p["id"].startswith("enemy")
     ]
-    assert names == ["해안 A(북)", "해안 B(남)"]
+    assert names == [
+        "해안 A(북)",
+        "해안 B(남)",
+        "발견 지점 집중 순찰(800 m)",
+    ]  # + raid focus (0055)
 
 
 def test_the_24h_scenario_takes_the_night_ontology_with_every_drone_armed():  # decision 0051, user 10/10
     night = json.loads((ROOT / "demo/scenarios/baengnyeong_night.json").read_text("utf-8"))
     out = _script().build()
-    assert out["ontology"] == night["ontology"]
+    kinds = json.loads(json.dumps(night["ontology"]))  # decision 0055: 24h ground robots also track
+    next(k for k in kinds["kinds"] if k["id"] == "ground_robot")["provides"].append("watch_target")
+    assert out["ontology"] == kinds
     drones = [v for v in out["vehicles"] if v["domain"] == "air"]
     assert [v["id"] for v in drones] == ["d1", "d2", "d3", "d4"]
     assert all(v["kind"] == "armed_drone" and "capabilities" not in v for v in drones)

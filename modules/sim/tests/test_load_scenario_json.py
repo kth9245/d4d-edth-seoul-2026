@@ -3,8 +3,10 @@ from pathlib import Path
 
 import pytest
 
-from contracts.models import Scenario
+from contracts.models import GeoPoint, Scenario
 from modules.sim.actions.load_scenario_json import load_scenario_json
+from shared.geo import dist_m
+from shared.land import inside
 
 ROOT = Path(__file__).resolve().parents[3]
 DEMO = ROOT / "demo" / "scenarios" / "baengnyeong_night.json"
@@ -82,15 +84,59 @@ def test_the_24h_usv_and_ugv_stand_by_at_their_night_spots():  # user, 10/10
     assert day.operation.assign["usv"] == day.operation.assign["ugv"] == "standby"
 
 
-def test_the_24h_coast_cards_call_the_usv_and_ugv_with_the_night_roles():  # user, 10/10
+def test_the_24h_keeps_the_night_usv_ugv_roles_and_live_coast_choices():  # user, 10/10
     night = {r.id: r for r in load_scenario_json(DEMO).roles}
     day = load_scenario_json(ROOT / "demo" / "scenarios" / "baengnyeong_24h.json")
     roles = {r.id: r for r in day.roles}
     assert all(roles[i] == night[i] for i in ("approach", "landing", "track_fast_sea", "strike"))
     for coast in ("coast_a", "coast_b"):
         card = roles[coast].steps[1].report
-        assert [c.label for c in card.choices] == ["근접 확인", "수상정 인계"] and card.auto_choices
+        assert (
+            card.choices == [] and card.auto_choices
+        )  # raid choices are built live (decision 0055)
     track = next(
         s for s in day.operation.switches if s.id == "track_fast"
     )  # after all_home (Part2-46)
     assert track.role_by_vehicle == {"usv": "track_fast_sea"}
+
+
+DAY = ROOT / "demo" / "scenarios" / "baengnyeong_24h.json"
+
+
+def test_24h_raid_enemies():  # decision 0055, user 10/10
+    day = load_scenario_json(DAY)
+    en = {e.id: e for e in day.enemies}
+    assert {i: (e.kind.value, e.appear_offset_ms, e.from_enemy) for i, e in en.items()} == {
+        "e_drone": ("drone", 660_000, None), "e_usv": ("usv", 660_000, None),
+        "e_ugv1": ("ugv", 1_380_000, "e_usv"), "e_ugv2": ("ugv", 1_380_000, "e_usv")}  # fmt: skip
+    north = max(p.lat for p in day.land[0].points)
+    assert not inside(en["e_drone"].pos, day.land) and en["e_drone"].pos.lat > north
+    roles = {r.id: r for r in day.roles}
+    assert all(e.role_id in roles for e in en.values())
+
+
+def test_24h_ugv2_route_is_clockwise_on_land():
+    day = load_scenario_json(DAY)
+    role = next(r for r in day.roles if r.id == "enemy_e_ugv2")
+    pts = [GeoPoint(**p) for p in role.steps[0].do.params["route"]]
+    assert len(pts) >= 6 and all(inside(p, day.land) for p in pts)
+    area = sum(a.lon * b.lat - b.lon * a.lat for a, b in zip(pts, pts[1:] + pts[:1], strict=True))
+    assert area < 0  # clockwise
+
+
+def test_24h_usv_lands_before_the_ugvs():
+    day = load_scenario_json(DAY)
+    usv = next(e for e in day.enemies if e.id == "e_usv")
+    goal = GeoPoint(
+        **next(r for r in day.roles if r.id == "enemy_e_usv").steps[0].do.params["target"]
+    )
+    assert dist_m(usv.pos, goal) / usv.speed_mps < 720
+
+
+def test_24h_ground_robot_can_watch_and_raid_roles_exist():
+    day, night = load_scenario_json(DAY), load_scenario_json(DEMO)
+    assert "watch_target" in next(v for v in day.vehicles if v.id == "ugv").capabilities
+    assert "watch_target" not in next(v for v in night.vehicles if v.id == "ugv").capabilities
+    roles = {r.id: r for r in day.roles}
+    assert {"focus_orbit", "track_sea", "track_ground"} <= set(roles)
+    assert roles["focus_orbit"].steps[0].do.params["anchor"] == "target"

@@ -7,7 +7,15 @@ from typing import NamedTuple
 from contracts.models import GeoPoint
 from shared.geo import dist_m
 
-BASE = {"fast_boat": 40, "boat": 20, "person": 30, "unknown": 30}
+BASE = {
+    "fast_boat": 40,
+    "boat": 20,
+    "person": 30,
+    "unknown": 30,
+    "drone": 50,
+    "usv": 40,
+    "ugv": 40,
+}  # raid kinds 0055
 INSIDE, NEAR, RF, SPEED_CAP, SPEED_PER_MPS, CAP, THRESHOLD = 30, 15, 30, 30, 5, 100, 40
 CARD_ACCUM = 450 * 1000  # threat_accum that lets a contact card go up: score 1.0 for 4.5 s (0043)
 
