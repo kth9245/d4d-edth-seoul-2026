@@ -2,7 +2,7 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 13:41 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 13:42 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part1-19** 타격: 시나리오·플레이 JSON (fast1 동쪽 해안 우회, track_fast 수정·track_fast_sea·strike, 고속 보트 추적 전환 버튼) — 최동호, 10/10 12:21부터
@@ -16,6 +16,9 @@
 
 ### kth9245
 - **Part1-15** 3분 대본·BUILT_HERE·제출 설명
+
+### 황승주
+- **Part2-26** runtime enter_step 카드 근거 표시(탐지 기체·표적·거리, 투명성 SAT 2단계)
 
 ### 누구나
 - **Part1-20** 타격: 화면 (무력화 표적 X·결과 카드·작전 성공·예시 장면 s7·s8)
