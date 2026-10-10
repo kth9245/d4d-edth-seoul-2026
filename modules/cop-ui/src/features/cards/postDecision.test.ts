@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { opsRun } from "../live/opsRun";
 import { postDecision } from "./postDecision";
 
 describe("postDecision", () => {
@@ -32,5 +33,13 @@ describe("postDecision", () => {
   it("says the server is unreachable when fetch fails", async () => {
     stub(new Error("net"));
     expect(await postDecision("r", "c")).toEqual({ ok: false, error: "서버 연결 실패" });
+  });
+
+  it("goes to the 실작전 run while that screen is on (decision 0068)", async () => {
+    const f = stub({ ok: true, json: () => Promise.resolve({ id: "dec-1", t_ms: 0 }) });
+    opsRun.set(true);
+    await postDecision("r", "c");
+    opsRun.set(false);
+    expect(f.mock.calls[0][0]).toBe("/decisions?run=ops");
   });
 });

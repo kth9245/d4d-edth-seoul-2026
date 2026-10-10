@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { opsRun } from "../live/opsRun";
 import { fetchMavlink } from "./fetchMavlink";
 
 describe("fetchMavlink", () => {
@@ -22,5 +23,12 @@ describe("fetchMavlink", () => {
   it("is null when the request fails", async () => {
     stub(new Error("net"));
     expect(await fetchMavlink()).toBeNull();
+  });
+  it("reads the 실작전 run's lines while that screen is on (decision 0068)", async () => {
+    const f = stub({ ok: true, json: () => Promise.resolve([]) });
+    opsRun.set(true);
+    await fetchMavlink();
+    opsRun.set(false);
+    expect(f.mock.calls[0]).toContain("/mavlink?run=ops");
   });
 });

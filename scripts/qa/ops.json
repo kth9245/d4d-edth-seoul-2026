@@ -12,6 +12,6 @@
  {"layout": "O4 layout ops 1366x768"},
  {"shot": "ops.png"},
  {"label": "O5 back to 시뮬레이션 (hash only)", "eval": "(location.hash = '#live', 'ok')", "expect": "ok"},
- {"wait": 1500},
- {"label": "O6 the run bar is back and the run flows at ×1 because entering 실작전 pressed play; the truth is back", "eval": "({ run: document.querySelector('.runbar .run-toggle')?.innerText, speed: document.querySelector('.runbar .speeds button.on')?.innerText, never: document.querySelectorAll('.mk.target.never').length, hint: document.querySelector('.next-act .s')?.innerText ?? null })", "expect": {"run": "⏸ 일시정지", "speed": "×1", "never": 3, "hint": "▶ 재생하거나 다음 사건으로 넘어가세요."}}
+ {"wait": 2000},
+ {"label": "O6 back on 시뮬레이션 nothing moved: still paused at ×10 at T+12:00 (실작전 ran its own copy, decision 0068)", "eval": "({ run: document.querySelector('.runbar .run-toggle')?.innerText, speed: document.querySelector('.runbar .speeds button.on')?.innerText, clock: document.querySelector('.runbar .clock')?.innerText, never: document.querySelectorAll('.mk.target.never').length, hint: document.querySelector('.next-act .s')?.innerText ?? null })", "expect": {"run": "▶ 재생", "speed": "×10", "clock": "T+12:00", "never": 3, "hint": "▶ 재생하거나 다음 사건으로 넘어가세요."}}
 ]

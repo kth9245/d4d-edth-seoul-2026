@@ -94,3 +94,4 @@
 | UI-102 | pointRoles | MenuRole[], 그 표적의 Track | MenuRole[] | 지도·적 줄 지목 메뉴의 Role: 표적 Role 그대로, 타격은 지금 보이는(seen) 표적에만(놓침·RF만·미탐이면 타격 뺌, 결정 0058, 4·5번 작업 검토) | 리드 | 완료 |
 | UI-103 | sensorCircles | Frame, VehicleSpec[] | FeatureCollection | 지도 탐지 영역(Part1-32.2): 임무 중(active) 기체마다 지금 위치 중심 sensor_range_m 원(64칸, 닫힘, 드론 800·수상정 500·지상로봇 300 m), 기지 대기(ready, 엔진은 탐지에 셈)·귀환·두절·정비와 명세 없는 기체는 없음(Part1-32.5) | 리드 | 완료 |
 | UI-104 | sensedFrame | Frame | Frame | 실작전 탭(결정 0067): targets에서 trackState가 never(미탐)인 적만 뺀 새 Frame. seen·rf·lost·gone과 나머지 칸은 그대로, 입력 Frame은 바꾸지 않음 | 리드 | 완료 |
+| UI-105 | runPath | path, ops | path | 실작전이면 run=ops(?가 있으면 &), 아니면 그대로. postJson·fetchMavlink·연결 그래프·WS 주소가 opsRun.get()으로 씀 (결정 0068) | 리드 | 완료 |

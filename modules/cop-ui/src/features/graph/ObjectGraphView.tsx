@@ -2,6 +2,8 @@ import { Background, BackgroundVariant, type Edge, MarkerType, type Node, Positi
 import "@xyflow/react/dist/style.css";
 import { useEffect, useState } from "react";
 import type { ObjectGraph } from "../../contracts.gen";
+import { opsRun } from "../live/opsRun";
+import { runPath } from "../live/runPath";
 import "./graph.css";
 import { layoutObjectGraph, orientLinks } from "./objectGraphLayout";
 
@@ -14,7 +16,7 @@ export function ObjectGraphView({ focus, onClose }: { focus: string; onClose: ()
   const [graph, setGraph] = useState<ObjectGraph | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetch(`/graph?focus=${encodeURIComponent(focus)}`)
+    fetch(runPath(`/graph?focus=${encodeURIComponent(focus)}`, opsRun.get())) // 실작전: its own run (0068)
       .then(async (r) => {
         if (!r.ok) throw new Error(`/graph answered ${r.status}`);
         setGraph((await r.json()) as ObjectGraph);
