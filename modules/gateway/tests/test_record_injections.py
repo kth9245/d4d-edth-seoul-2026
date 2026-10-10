@@ -23,6 +23,16 @@ def test_approval_closes_the_card_and_is_returned():
     assert reports[0].resolved_ms == 2000
 
 
+def test_pointing_approved_on_press_applies_without_a_card():
+    # decision 0049: the play menu was the preview, so the request arrives approved with no card before it
+    other = Report(id="r9", t_ms=0, kind="target_detected", text="보트")
+    point = Injection(id="inj-2", t_ms=1000, label="표적 감시: d3 → boat2", status="approved",
+                      play_by_vehicle={"d3": "watch"}, target_by_vehicle={"d3": "boat2"})  # fmt: skip
+    injections, reports, cards, approved = record_injections([], [other], [point], 1000)
+    assert approved == [point] and cards == [] and injections == [point]
+    assert reports == [other]
+
+
 def test_rejection_closes_the_card_without_approving():
     other = Report(id="r9", t_ms=0, kind="target_detected", text="보트")
     cards = record_injections([], [], [REQ], 1000)[2]
