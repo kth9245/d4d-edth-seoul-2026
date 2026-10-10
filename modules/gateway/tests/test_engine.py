@@ -1,0 +1,50 @@
+"""engine.tick on the real modules: incident 1 -> report -> decision -> switch, no stubs."""
+
+from contracts.models import Decision, Frame, TickInputs
+from modules.gateway.engine import init_engine, tick
+from modules.sim import load_scenario_json
+
+SC = load_scenario_json("demo/scenarios/baengnyeong_night.json")
+MIN = 60_000
+
+
+def _until(es, pred, minutes: int = 20):  # d1's patrol first comes within range at ~16 min
+    for _ in range(minutes * MIN // SC.tick_ms):
+        es, fr = tick(es, TickInputs())
+        if pred(es):
+            return es, fr
+    raise AssertionError("condition never met")
+
+
+def test_tick_advances_time_by_tick_ms_and_returns_frame():
+    es = init_engine(SC)
+    es2, fr = tick(es, TickInputs())
+    assert es2.t_ms == SC.operation.started_ms + SC.tick_ms
+    assert isinstance(fr, Frame) and fr.t_ms == es2.t_ms
+
+
+def test_each_tick_writes_a_debug_line_to_gateway_engine_logger(caplog):
+    caplog.set_level("DEBUG", logger="kdth.gateway.engine")
+    tick(init_engine(SC), TickInputs())
+    assert [r for r in caplog.records if r.name == "kdth.gateway.engine" and r.levelname == "DEBUG"]
+
+
+def test_boat_event_gives_target_detected_card_from_d1():
+    es, _ = _until(init_engine(SC), lambda e: any(r.kind == "target_detected" for r in e.reports))
+    rep = next(r for r in es.reports if r.kind == "target_detected")
+    assert rep.vehicle_id == "d1" and rep.choices
+    assert rep.t_ms - SC.operation.started_ms >= 11 * MIN
+
+
+def test_one_decision_switches_four_vehicles():
+    es, _ = _until(init_engine(SC), lambda e: any(r.kind == "target_detected" for r in e.reports))
+    rep = next(r for r in es.reports if r.kind == "target_detected")
+    dec = Decision(id="dec-1", t_ms=es.t_ms + SC.tick_ms, report_id=rep.id,
+                   choice_id=rep.choices[0].id)  # fmt: skip
+    es, fr = tick(es, TickInputs(decisions=[dec]))
+    for _ in range(5):
+        es, fr = tick(es, TickInputs())
+    plays = {v.id: v.play_id for v in fr.vehicles}
+    want = {"d1": "watch", "usv": "approach", "ugv": "landing", "d2": "patrol_b"}
+    assert {k: plays[k] for k in want} == want
+    assert any(a.reason == "결정 dec-1" for a in fr.assignments)
