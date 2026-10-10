@@ -35,7 +35,7 @@ def _true(
         )  # decision 0043: the card goes up once the threat has built up
     if cond.kind == ConditionKind.arrived:
         return st.waypoint_idx < 0
-    if cond.kind == ConditionKind.target_neutralized:  # decision 0058: my target has been struck
+    if cond.kind == ConditionKind.target_neutralized:  # decision 0066: my target has been struck
         return any(tg.id == st.target_id and tg.neutralized_ms is not None for tg in targets)
     if cond.kind == ConditionKind.battery_below:
         return st.battery_pct < float(cond.params.get("pct", 30))
@@ -64,7 +64,7 @@ def step_vehicle(
         return st, None, None
     if not st.entered_step:
         out, cmd, rep = enter_step(st, spec, role, step, targets, t_ms)
-        if step.do.kind.value == "patrol_route" and st.patrol_step_id == step.id:  # decision 0058
+        if step.do.kind.value == "patrol_route" and st.patrol_step_id == step.id:  # decision 0066
             out = out.model_copy(
                 update={"waypoint_idx": st.patrol_idx, "patrol_step_id": None, "patrol_idx": 0}
             )
@@ -73,7 +73,7 @@ def step_vehicle(
     for ex in step.on:
         if _true(ex.cond, st, targets, tracking, t_ms, started_ms):
             upd = {"step_id": ex.go_step, "entered_step": False}
-            if step.do.kind.value == "patrol_route":  # decision 0058: remember where it was left
+            if step.do.kind.value == "patrol_route":  # decision 0066: remember where it was left
                 upd |= {"patrol_step_id": step.id, "patrol_idx": max(st.waypoint_idx, 0)}
             return st.model_copy(update=upd), None, None
     return st, None, None

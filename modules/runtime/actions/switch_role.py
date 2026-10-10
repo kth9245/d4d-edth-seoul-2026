@@ -17,7 +17,7 @@ def switch_role(st: VehicleState, role: Role) -> VehicleState:
             "waypoint_idx": 0,
             "resume_role_id": None,
             "resume_step_id": None,
-            "patrol_step_id": None,  # decision 0058: step ids repeat across roles
+            "patrol_step_id": None,  # decision 0066: step ids repeat across roles
             "patrol_idx": 0,
             "decision_id": None,
         }

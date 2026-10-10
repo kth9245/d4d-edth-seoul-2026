@@ -39,7 +39,7 @@ class ConditionKind(str, Enum):
     signal_received = "signal_received"
     at_time = "at_time"  # decision 0045: T+ params.offset_ms after operation.started_ms
     target_neutralized = (
-        "target_neutralized"  # decision 0058: my target (target_id) has been struck
+        "target_neutralized"  # decision 0066: my target (target_id) has been struck
     )
 
 

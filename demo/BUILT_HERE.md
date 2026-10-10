@@ -90,4 +90,4 @@
 | 10/10 23:00 | demo·scripts·tests | 공격 작전 모선 편대(1번): 정지한 수상정(sea_vehicle, 타격 불가) 한 척에서 정찰 드론 r1~r3와 공격 드론 a1~a3가 같은 자리에서 출발·귀환, 식별된 거점 카드에 a1·a2·a3·전원 타격 승인만 나옴(2~4번: 탐색 경로 선택, 공격 드론 선택 다듬기, 비행 중 재지정은 후속) | 최동호 |
 | 10/10 23:40 | demo·scripts·tests | 공격 작전 모선 편대 변경: 수상정 시작을 서쪽 앞바다(37.955, 124.585)로 옮기고, 정찰 드론 r1·r2·r3가 북동·북서·남쪽 해안 구간을 하나씩 탐색(북동은 바다 경유점을 먼저 지남, 남쪽은 귀환 배터리 규칙 때문에 한 방향) | 최동호 |
 | 10/10 23:59 | demo·scripts·tests | 공격 작전 발견 카드에 정찰 드론이 거점을 떠나는 선택지 3개(계속 정찰, 다른 두 해안 구간으로 이동), 구간마다 Role을 따로 둠(최동호 요청, 코드·계약 변경 없음) | 최동호 |
-| 10/11 00:30 | contracts·runtime·cop-ui·demo·tests | 공격 작전 무력화 뒤: 정찰 드론이 "더 정찰"(떠난 순찰 위치부터 이어서) 또는 "수상정으로 복귀"를 고르는 카드. 새 조건 target_neutralized와 VehicleState patrol_step_id·patrol_idx(결정 0058 초안), step_vehicle이 평가·저장·복원, switch_role이 기억을 지움, cop-ui 조건 이름 한 줄(리드·황승주 영역 변경, 알림 필요) | 최동호 |
+| 10/11 00:30 | contracts·runtime·cop-ui·demo·tests | 공격 작전 무력화 뒤: 정찰 드론이 "더 정찰"(떠난 순찰 위치부터 이어서) 또는 "수상정으로 복귀"를 고르는 카드. 새 조건 target_neutralized와 VehicleState patrol_step_id·patrol_idx(결정 0066 초안), step_vehicle이 평가·저장·복원, switch_role이 기억을 지움, cop-ui 조건 이름 한 줄(리드·황승주 영역 변경, 알림 필요) | 최동호 |

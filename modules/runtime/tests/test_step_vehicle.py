@@ -135,7 +135,7 @@ NEUTRAL = Role(id="n", name="n", domains=["air"], entry="watch", approved=True, 
 ])  # fmt: skip
 
 
-def test_target_neutralized_waits_for_my_own_target_to_be_struck():  # decision 0058
+def test_target_neutralized_waits_for_my_own_target_to_be_struck():  # decision 0066
     struck = boat(["d1"]).model_copy(update={"neutralized_ms": 5000})
     other = boat(["d1"]).model_copy(update={"id": "boat2", "neutralized_ms": 5000})
     st = vs(step="watch", role_id="n", target_id="boat1")
@@ -151,7 +151,7 @@ PATROL = Role(id="p", name="p", domains=["air"], entry="patrol", approved=True, 
 ])  # fmt: skip
 
 
-def test_leaving_a_patrol_route_step_remembers_where_it_was():  # decision 0058
+def test_leaving_a_patrol_route_step_remembers_where_it_was():  # decision 0066
     out = step_vehicle(vs(waypoint_idx=7), SPEC, PATROL, [boat(["d1"])], 3000)[0]
     assert (out.step_id, out.patrol_step_id, out.patrol_idx) == ("watch", "patrol", 7)
 
@@ -161,7 +161,7 @@ def test_leaving_any_other_step_remembers_nothing():
     assert (out.step_id, out.patrol_step_id, out.patrol_idx) == ("watch", None, 0)
 
 
-def test_coming_back_to_the_patrol_step_continues_from_where_it_was_left():  # decision 0058
+def test_coming_back_to_the_patrol_step_continues_from_where_it_was_left():  # decision 0066
     left = vs(step="patrol", entered=False, patrol_step_id="patrol", patrol_idx=7)
     out, cmd, _ = step_vehicle(left, SPEC, PATROL, [], 3000)
     assert (out.waypoint_idx, out.patrol_step_id, out.patrol_idx) == (7, None, 0)  # used once

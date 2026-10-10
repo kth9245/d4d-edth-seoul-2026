@@ -282,7 +282,7 @@ def test_leaving_a_site_frees_the_drone_and_its_card_does_not_come_back(sc, choi
     assert dist_m(r2.pos, _site(es, "site_c").pos) > 800  # out of its sensor range: it really left
 
 
-def test_every_patrol_asks_what_next_once_its_site_is_neutralized(sc):  # decision 0058
+def test_every_patrol_asks_what_next_once_its_site_is_neutralized(sc):  # decision 0066
     roles = {r.id: r for r in sc.roles}
     for drone, role_id in PATROL_OF.items():
         steps = {s.id: s for s in roles[role_id].steps}

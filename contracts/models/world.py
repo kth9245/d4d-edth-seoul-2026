@@ -82,7 +82,7 @@ class VehicleState(BaseModel):
     emergency: EmergencyKind | None = None
     resume_role_id: str | None = None  # where to return after direct control
     resume_step_id: str | None = None
-    patrol_step_id: str | None = None  # decision 0058: the patrol_route step it left by an exit,
+    patrol_step_id: str | None = None  # decision 0066: the patrol_route step it left by an exit,
     patrol_idx: int = (
         0  # and the waypoint_idx it had then: re-entering that step continues from here
     )

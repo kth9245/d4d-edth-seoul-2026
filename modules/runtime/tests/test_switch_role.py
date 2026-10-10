@@ -29,7 +29,7 @@ def test_switch_clears_decision_id():
     assert switch_role(st, ROLE).decision_id is None
 
 
-def test_switching_role_forgets_where_the_old_patrol_was_left():  # decision 0058
+def test_switching_role_forgets_where_the_old_patrol_was_left():  # decision 0066
     st = VehicleState(id="d1", t_ms=9, pos=GeoPoint(lat=37, lon=126), heading_deg=90,
                       battery_pct=55, status="active", role_id="patrol_a", step_id="s3",
                       patrol_step_id="patrol", patrol_idx=12)  # fmt: skip

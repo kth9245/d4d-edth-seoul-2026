@@ -128,7 +128,7 @@ def coast_patrols(day: dict) -> tuple[list[dict], list[dict]]:
                 "cond": {"kind": "operator_choice", "params": {"choice": "resume"}},
                 "go_step": "patrol",
             },
-            # decision 0058: once the site is struck the scout asks what next instead of hovering forever
+            # decision 0066: once the site is struck the scout asks what next instead of hovering forever
             {"cond": {"kind": "target_neutralized", "params": {}}, "go_step": "after_strike"},
         ]  # decision 0031: the reporter not named in role_by_vehicle takes the operator_choice exit
         role["steps"].append(after_strike(drone))
