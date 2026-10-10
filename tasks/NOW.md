@@ -5,7 +5,7 @@
 마지막 기록 10/10 10:10 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- (없음)
+- **Part2-11** runtime `assign_roles` — 황승주, 10/10 10:10부터 · RT-02
 
 ## 막힘
 - (없음)
@@ -31,7 +31,6 @@
 
 ### 황승주
 - **Part2-10** runtime `step_vehicle` · 하위 1/1 완료 · RT-01
-- **Part2-11** runtime `assign_roles` · RT-02
 - **Part3-3** play `check_report_points` · PLY-03
 - **Part3-4** play `check_return_battery` · PLY-04
 - **Part3-5** play `check_zone` · PLY-05
