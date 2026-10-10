@@ -33,7 +33,7 @@ def test_the_sites_spawn_and_the_emitting_one_is_heard_before_it_is_seen():
 def test_only_the_emitting_site_gets_a_card_and_it_has_its_threat_reasons():
     es, _, _ = _run_ten_minutes()
     cards = [r for r in es.reports if r.kind == "target_detected"]
-    assert [(r.vehicle_id, r.target_id) for r in cards] == [("d1", "site_a")]
+    assert [(r.vehicle_id, r.target_id) for r in cards] == [("r1", "site_a")]
     assert cards[0].text.startswith("미식별 거점 감지")
     a = next(t for t in es.targets if t.id == "site_a")
     assert a.threat == 75 and a.threat_reasons == [

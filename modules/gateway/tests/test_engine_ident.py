@@ -27,9 +27,6 @@ def test_the_strike_operation_identifies_site_a_through_the_tick_loop():
 
 def test_the_tick_loop_opens_strike_choices_only_after_identification():
     sc = load_scenario_json("demo/scenarios/baengnyeong_strike.json")
-    night = load_scenario_json("demo/scenarios/baengnyeong_night.json")
-    strike = next(r for r in night.roles if r.id == "strike")
-    sc = sc.model_copy(update={"roles": [*sc.roles, strike]})  # Task 5 puts it in the JSON
     es, before, after = init_engine(sc), set(), set()
     for _ in range(2400):
         es, _ = tick(es, TickInputs())
@@ -43,17 +40,13 @@ def test_the_tick_loop_opens_strike_choices_only_after_identification():
         (after if site.ident_state == "identified" else before).update(
             i for i in ids if i.startswith("strike_")
         )
-    assert before == set() and {"strike_d2", "strike_usv"} <= after
+    assert before == set() and {"strike_a1", "strike_a2", "strike_a3"} <= after
 
 
 def test_a_click_on_a_strike_choice_that_just_vanished_does_not_stop_the_loop():
     from contracts.models import Decision
 
     sc = load_scenario_json("demo/scenarios/baengnyeong_strike.json")
-    night = load_scenario_json("demo/scenarios/baengnyeong_night.json")
-    sc = sc.model_copy(
-        update={"roles": [*sc.roles, next(r for r in night.roles if r.id == "strike")]}
-    )
     es = init_engine(sc)
     while not any(r.kind == "target_detected" and r.target_id == "site_a" for r in es.reports):
         es, _ = tick(es, TickInputs())

@@ -19,10 +19,35 @@ def sc():
     return load_scenario_json(str(ROOT / "demo/scenarios/baengnyeong_strike.json"))
 
 
-def test_one_drone_starts_on_the_north_search_patrol(sc):
+def test_the_fleet_is_one_usv_three_recon_three_attack_and_the_ugv(sc):
+    assert [v.id for v in sc.vehicles] == ["usv", "r1", "r2", "r3", "a1", "a2", "a3", "ugv"]
+    kinds = {v.id: v.kind for v in sc.vehicles}
+    assert kinds == {"usv": "sea_vehicle", "r1": "recon_drone", "r2": "recon_drone",
+                     "r3": "recon_drone", "a1": "armed_drone", "a2": "armed_drone",
+                     "a3": "armed_drone", "ugv": "ground_robot"}  # fmt: skip
+    assert sc.operation.vehicle_ids == [v.id for v in sc.vehicles]
+
+
+def test_every_drone_starts_and_returns_at_the_usv_spot_on_the_sea(sc):
+    by_id = {v.id: v for v in sc.vehicles}
+    spot = by_id["usv"].home
+    assert (spot.lat, spot.lon) == (37.981, 124.691)
+    assert not inside(spot, sc.land)
+    for vid in ("r1", "r2", "r3", "a1", "a2", "a3"):
+        assert by_id[vid].home == spot, vid
+
+
+def test_one_recon_drone_starts_on_the_north_search_patrol(sc):
     assert sc.id == "baengnyeong_strike"
-    assert sc.operation.assign["d1"] == "site_patrol"
-    assert {v for k, v in sc.operation.assign.items() if k != "d1"} == {"standby"}
+    assert sc.operation.assign["r1"] == "site_patrol"
+    assert {v for k, v in sc.operation.assign.items() if k != "r1"} == {"standby"}
+    assert set(sc.operation.assign) == {v.id for v in sc.vehicles}
+
+
+def test_no_old_vehicle_id_is_left_in_the_json():
+    text = (ROOT / "demo/scenarios/baengnyeong_strike.json").read_text(encoding="utf-8")
+    for old in ('"d1"', '"d2"', '"d3"', '"d4"'):
+        assert old not in text, old
 
 
 def test_three_fixed_unknown_sites_and_only_site_a_emits(sc):
@@ -82,7 +107,7 @@ def test_the_strike_role_is_available_to_the_armed_vehicles(sc):
     roles, specs = {r.id: r for r in sc.roles}, {v.id: v for v in sc.vehicles}
     assert "strike" in roles
     armed = [v for v, s in specs.items() if "strike_target" in [c.value for c in s.capabilities]]
-    assert set(armed) == {"d2", "usv"}  # the ontology comes from night
+    assert set(armed) == {"a1", "a2", "a3"}  # the usv is a carrier now
 
 
 def _run_until(es, pred, limit=6000):
@@ -111,13 +136,15 @@ def test_site_a_is_identified_then_approved_then_neutralized(sc):
     es = _run_until(es, lambda e: any(r.target_id == "site_a" for r in e.reports))
     if _site(es).ident_state != "identified":
         assert not any(c.id.startswith("strike_") for c in _card(es).choices)
-    # 3. identified: d2 and usv can be approved, and the card says why
+    # 3. identified: the three attack drones can be approved, and the card says why
     es = _run_until(es, lambda e: _site(e).ident_state == "identified")
-    assert {"strike_d2", "strike_usv", "strike_all"} <= {c.id for c in _card(es).choices}
+    assert {"strike_a1", "strike_a2", "strike_a3", "strike_all"} <= {
+        c.id for c in _card(es).choices
+    }
     assert "식별: 식별됨" in _card(es).text
-    # 4. the operator approves d2 only; the strike runs through the existing engine path
+    # 4. the operator approves a1 only; the strike runs through the existing engine path
     dec = Decision(
-        id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=_card(es).id, choice_id="strike_d2"
+        id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=_card(es).id, choice_id="strike_a1"
     )
     es, _ = tick(es, TickInputs(decisions=[dec]))
     es = _run_until(es, lambda e: _site(e).neutralized_ms is not None, limit=9000)

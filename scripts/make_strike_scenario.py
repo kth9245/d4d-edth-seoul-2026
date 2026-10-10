@@ -44,6 +44,19 @@ def site_hold() -> dict:
                           "operator_call_step": None}}  # fmt: skip
 
 
+def fleet(night_vehicles: list[dict]) -> list[dict]:
+    """One stationary carrier USV, three recon and three attack drones that start and return at its spot."""
+    by_id = {v["id"]: v for v in night_vehicles}
+    usv = copy.deepcopy(by_id["usv"]) | {"name": "수상정(모선)", "kind": "sea_vehicle"}
+
+    def drone(src: str, vid: str, name: str) -> dict:
+        return copy.deepcopy(by_id[src]) | {"id": vid, "name": name, "home": dict(usv["home"])}
+
+    recon = [drone("d1", f"r{i}", f"정찰 드론{i}") for i in (1, 2, 3)]
+    armed = [drone("d2", f"a{i}", f"공격 드론{i}") for i in (1, 2, 3)]
+    return [usv, *recon, *armed, copy.deepcopy(by_id["ugv"])]
+
+
 def build() -> dict:
     night = json.loads(NIGHT.read_text(encoding="utf-8"))
     day = json.loads(DAY.read_text(encoding="utf-8"))
@@ -53,12 +66,13 @@ def build() -> dict:
     patrol["steps"][1]["report"] = {"text": "미식별 거점 감지", "choices": [], "auto_choices": True}
     north = next(r for r in day["routes"] if r["id"] == "coast_a")
     skip = ("patrol_a", "patrol_b", "coast_a", "coast_b")
+    vehicles = fleet(night["vehicles"])
     op = night["operation"] | {
         "id": "op_strike",
         "name": "해안 거점 무력화(가상)",
-        "purpose": "정찰 드론이 가상 해안 거점을 RF 방출로 먼저 찾고 스캔해서 식별한다. 식별된 거점에만 타격 승인을 연다(2단계)",
-        "assign": {"d1": "site_patrol", "d2": "standby", "d3": "standby", "d4": "standby",
-                   "usv": "standby", "ugv": "standby"},
+        "purpose": "정찰 드론이 가상 해안 거점을 RF 방출로 먼저 찾고 스캔해서 식별한다. 식별된 거점에만 타격 승인을 연다(2단계). 수상정 한 척에서 정찰 드론 3대와 공격 드론 3대가 출발한다",
+        "vehicle_ids": [v["id"] for v in vehicles],
+        "assign": {v["id"]: ("site_patrol" if v["id"] == "r1" else "standby") for v in vehicles},
         "reserve": {}, "switches": [], "rotation": [], "rotation_pools": {}, "rotation_roles": [],
     }  # fmt: skip
     enemies = [
@@ -70,6 +84,7 @@ def build() -> dict:
     out = night | {
         "id": "baengnyeong_strike",
         "operation": op,
+        "vehicles": vehicles,
         "roles": [patrol, roles["standby"], roles["go_home"], roles["watch"], roles["approach"],
                   roles["strike"], site_hold()],
         "events": [],

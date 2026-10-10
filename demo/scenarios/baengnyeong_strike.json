@@ -3,7 +3,7 @@
  "operation": {
   "id": "op_strike",
   "name": "해안 거점 무력화(가상)",
-  "purpose": "정찰 드론이 가상 해안 거점을 RF 방출로 먼저 찾고 스캔해서 식별한다. 식별된 거점에만 타격 승인을 연다(2단계)",
+  "purpose": "정찰 드론이 가상 해안 거점을 RF 방출로 먼저 찾고 스캔해서 식별한다. 식별된 거점에만 타격 승인을 연다(2단계). 수상정 한 척에서 정찰 드론 3대와 공격 드론 3대가 출발한다",
   "area": {
    "points": [
     {
@@ -53,20 +53,24 @@
    ]
   },
   "vehicle_ids": [
-   "d1",
-   "d2",
-   "d3",
-   "d4",
    "usv",
+   "r1",
+   "r2",
+   "r3",
+   "a1",
+   "a2",
+   "a3",
    "ugv"
   ],
   "started_ms": 1791633600000,
   "assign": {
-   "d1": "site_patrol",
-   "d2": "standby",
-   "d3": "standby",
-   "d4": "standby",
    "usv": "standby",
+   "r1": "site_patrol",
+   "r2": "standby",
+   "r3": "standby",
+   "a1": "standby",
+   "a2": "standby",
+   "a3": "standby",
    "ugv": "standby"
   },
   "reserve": {},
@@ -77,72 +81,8 @@
  },
  "vehicles": [
   {
-   "id": "d1",
-   "name": "드론1",
-   "domain": "air",
-   "speed_mps": 15.0,
-   "endurance_min": 100.0,
-   "sensor_range_m": 800.0,
-   "home": {
-    "lat": 37.95,
-    "lon": 124.7,
-    "alt_m": 0.0
-   },
-   "recharge_min": 5.0,
-   "rf_range_m": 2000.0,
-   "kind": "recon_drone"
-  },
-  {
-   "id": "d2",
-   "name": "드론2",
-   "domain": "air",
-   "speed_mps": 15.0,
-   "endurance_min": 100.0,
-   "sensor_range_m": 800.0,
-   "home": {
-    "lat": 37.955,
-    "lon": 124.7,
-    "alt_m": 0.0
-   },
-   "recharge_min": 5.0,
-   "rf_range_m": 2000.0,
-   "kind": "armed_drone"
-  },
-  {
-   "id": "d3",
-   "name": "드론3",
-   "domain": "air",
-   "speed_mps": 15.0,
-   "endurance_min": 100.0,
-   "sensor_range_m": 800.0,
-   "home": {
-    "lat": 37.945,
-    "lon": 124.7,
-    "alt_m": 0.0
-   },
-   "recharge_min": 5.0,
-   "rf_range_m": 2000.0,
-   "kind": "recon_drone"
-  },
-  {
-   "id": "d4",
-   "name": "드론4",
-   "domain": "air",
-   "speed_mps": 15.0,
-   "endurance_min": 100.0,
-   "sensor_range_m": 800.0,
-   "home": {
-    "lat": 37.96,
-    "lon": 124.7,
-    "alt_m": 0.0
-   },
-   "recharge_min": 5.0,
-   "rf_range_m": 2000.0,
-   "kind": "recon_drone"
-  },
-  {
    "id": "usv",
-   "name": "수상정",
+   "name": "수상정(모선)",
    "domain": "sea",
    "speed_mps": 8.0,
    "endurance_min": 720.0,
@@ -154,7 +94,103 @@
    },
    "recharge_min": 0.0,
    "rf_range_m": 0.0,
-   "kind": "armed_usv"
+   "kind": "sea_vehicle"
+  },
+  {
+   "id": "r1",
+   "name": "정찰 드론1",
+   "domain": "air",
+   "speed_mps": 15.0,
+   "endurance_min": 100.0,
+   "sensor_range_m": 800.0,
+   "home": {
+    "lat": 37.981,
+    "lon": 124.691,
+    "alt_m": 0.0
+   },
+   "recharge_min": 5.0,
+   "rf_range_m": 2000.0,
+   "kind": "recon_drone"
+  },
+  {
+   "id": "r2",
+   "name": "정찰 드론2",
+   "domain": "air",
+   "speed_mps": 15.0,
+   "endurance_min": 100.0,
+   "sensor_range_m": 800.0,
+   "home": {
+    "lat": 37.981,
+    "lon": 124.691,
+    "alt_m": 0.0
+   },
+   "recharge_min": 5.0,
+   "rf_range_m": 2000.0,
+   "kind": "recon_drone"
+  },
+  {
+   "id": "r3",
+   "name": "정찰 드론3",
+   "domain": "air",
+   "speed_mps": 15.0,
+   "endurance_min": 100.0,
+   "sensor_range_m": 800.0,
+   "home": {
+    "lat": 37.981,
+    "lon": 124.691,
+    "alt_m": 0.0
+   },
+   "recharge_min": 5.0,
+   "rf_range_m": 2000.0,
+   "kind": "recon_drone"
+  },
+  {
+   "id": "a1",
+   "name": "공격 드론1",
+   "domain": "air",
+   "speed_mps": 15.0,
+   "endurance_min": 100.0,
+   "sensor_range_m": 800.0,
+   "home": {
+    "lat": 37.981,
+    "lon": 124.691,
+    "alt_m": 0.0
+   },
+   "recharge_min": 5.0,
+   "rf_range_m": 2000.0,
+   "kind": "armed_drone"
+  },
+  {
+   "id": "a2",
+   "name": "공격 드론2",
+   "domain": "air",
+   "speed_mps": 15.0,
+   "endurance_min": 100.0,
+   "sensor_range_m": 800.0,
+   "home": {
+    "lat": 37.981,
+    "lon": 124.691,
+    "alt_m": 0.0
+   },
+   "recharge_min": 5.0,
+   "rf_range_m": 2000.0,
+   "kind": "armed_drone"
+  },
+  {
+   "id": "a3",
+   "name": "공격 드론3",
+   "domain": "air",
+   "speed_mps": 15.0,
+   "endurance_min": 100.0,
+   "sensor_range_m": 800.0,
+   "home": {
+    "lat": 37.981,
+    "lon": 124.691,
+    "alt_m": 0.0
+   },
+   "recharge_min": 5.0,
+   "rf_range_m": 2000.0,
+   "kind": "armed_drone"
   },
   {
    "id": "ugv",
