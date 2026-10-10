@@ -2,11 +2,12 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 11:19 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 11:22 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part1-12** 주입 승인 카드 — kth9245, 10/10 11:19부터
 - **Part2-17.1** gateway init_engine · GW-02 (묶음 A, engine_state.py 먼저) — 최동호, 10/10 11:17부터
+- **Part3-9** play `draft_play` — 황승주, 10/10 11:22부터 · PLY-09
 
 ## 막힘
 - (없음)
@@ -21,9 +22,6 @@
 - **Part3-13** 편집기: AI 초안 입력 칸
 - **Part3-14** 작전 설정 패널
 - **Part3-15.1** mavlink compile_mavlink · MAV-01 (리드, 결정 0025, 통합 2 뒤)
-
-### 황승주
-- **Part3-9** play `draft_play` · PLY-09
 
 ### 최동호
 - **Part2-17** gateway `engine.py` 틱 루프 · 하위 4/5 완료
