@@ -33,7 +33,7 @@ def gp(lat: float, lon: float) -> GeoPoint:
 ZONE = Polygon(points=[gp(37.90, 124.56), gp(37.90, 124.84), gp(38.00, 124.84), gp(38.00, 124.56)])
 HOME = gp(37.95, 124.70)
 ROUTE_A = [gp(37.98, 124.66), gp(37.98, 124.74)]
-ROUTE_B = [gp(37.93, 124.60), gp(37.93, 124.80)]
+ROUTE_B = [gp(37.93, 124.64), gp(37.93, 124.76)]
 LANDING = gp(37.975, 124.70)
 BOAT1_SPAWN = gp(37.985, 124.70)
 
