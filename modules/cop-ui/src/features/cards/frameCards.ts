@@ -17,6 +17,7 @@ export interface Card {
   alternative?: GeoPoint | null; // blocks: the point the safety check offers instead, sent by "대안 지점으로"
   done: string | null; // null = still needs the operator (or a block, which is an event)
   threat?: CardThreat; // contact cards whose target sensing has scored
+  target?: string | null; // the report's target: "연결 보기" opens its object graph (decision 0038)
 }
 
 // Shown from Frame.injections / Frame.blocks instead: those carry the ids the approve and alternative buttons need,
@@ -70,7 +71,7 @@ function fromReport(r: Report, frame: Frame): Card {
   const preview = r.kind === "target_neutralized" ? strikeBasis(frame, r) : undefined;
   const threat = r.kind === "target_detected" ? threatOf(frame.targets.find((t) => t.id === r.target_id)) : undefined;
   return { id: r.id, source: "report", kind: r.kind, vehicle: r.vehicle_id ?? null, t_ms: r.t_ms,
-    time: kstTime(r.t_ms), text: r.text, choices, done, preview, ...(threat ? { threat } : {}) };
+    time: kstTime(r.t_ms), text: r.text, choices, done, preview, target: r.target_id ?? null, ...(threat ? { threat } : {}) };
 }
 
 function fromInjection(i: Injection): Card {

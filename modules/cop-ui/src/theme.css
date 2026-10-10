@@ -305,3 +305,21 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .onto-reasons li code { color: var(--text); font-family: var(--font-mono); }
 .onto-reasons li.no, .onto-reasons li.no i { color: var(--hostile); }
 .onto-reserve { color: var(--text2); }
+/* Object graph (decision 0038): node edge color by object type, map affiliation colors for vehicle and target */
+.object-graph { border: 1px solid var(--line2); background: rgba(0, 0, 0, 0.94); }
+.object-graph .og-head { border-bottom: 1px solid var(--line); color: var(--text); }
+.object-graph .og-head button { border: 1px solid var(--line2); border-radius: var(--r); background: transparent; color: var(--text2); }
+.object-graph .og-head button:hover { border-color: var(--text); color: var(--text); }
+.object-graph .og-note { color: var(--muted); }
+.object-graph .react-flow { --xy-background-color: transparent; background: transparent; font-family: var(--font); }
+.react-flow__node.og-node { border: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); color: var(--text); }
+.og-node small { color: var(--muted); font-family: var(--font-mono); letter-spacing: 0.06em; }
+.react-flow__node.og-vehicle { border-color: var(--friend); }
+.react-flow__node.og-target { border-color: var(--hostile); }
+.react-flow__node.og-decision { border-color: var(--text); }
+.react-flow__node.og-command { border-color: var(--live); }
+.react-flow__node.og-block { border-color: var(--warn); }
+.react-flow__node.og-focus { box-shadow: 0 0 0 2px var(--hostile); }
+.og-edge .react-flow__edge-path { stroke: var(--muted); }
+.og-edge .react-flow__edge-text { fill: var(--text2); font-size: 11px; }
+.og-edge .react-flow__edge-textbg { fill: var(--bg); }

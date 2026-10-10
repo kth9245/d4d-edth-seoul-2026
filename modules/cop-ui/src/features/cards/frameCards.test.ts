@@ -11,7 +11,7 @@ describe("frameCards", () => {
   it("makes an open report card with its choices and what each choice switches", () => {
     const [c] = frameCards(s1 as Frame);
     expect(c).toMatchObject({ id: "rep-d1-1791634270000", source: "report", kind: "target_detected",
-      vehicle: "d1", time: "21:11:10", text: "미식별 선박 접근", done: null });
+      vehicle: "d1", time: "21:11:10", text: "미식별 선박 접근", done: null, target: "boat1" });
     expect(c.choices).toEqual([{ id: "approach", label: "근접 확인",
       preview: "d1→watch · usv→approach · ugv→landing" }]); // d2 already patrols (decision 0036)
   });

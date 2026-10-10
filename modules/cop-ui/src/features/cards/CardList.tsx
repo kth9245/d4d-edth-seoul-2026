@@ -31,7 +31,8 @@ type SendState = { state: "sending" } | { state: "sent"; id: string } | { state:
 // Side column: one card per report / injection / block, newest first.
 // Report choices → POST /decisions; a pending injection gets approve / reject → POST /injections/{id}/...;
 // a block with an alternative point resends that vehicle there → POST /direct.
-export function CardList({ frame }: { frame: Frame | null }) {
+// Contact and neutralized cards open their target's object graph ("연결 보기", decision 0038).
+export function CardList({ frame, onGraph }: { frame: Frame | null; onGraph?: (target: string) => void }) {
   const [sent, setSent] = useState<Record<string, SendState>>({});
   const lastT = useRef(0);
   useEffect(() => {
@@ -97,6 +98,9 @@ export function CardList({ frame }: { frame: Frame | null }) {
             )}
             {!c.done && s?.state === "error" && <div className="note error">보내기 실패: {s.error}</div>}
             {c.done && <div className="note">{c.done}</div>}
+            {onGraph && c.target && (c.kind === "target_detected" || c.kind === "target_neutralized") && (
+              <button className="secondary graph-open" onClick={() => onGraph(c.target!)}>연결 보기</button>
+            )}
           </div>
         );
       })}

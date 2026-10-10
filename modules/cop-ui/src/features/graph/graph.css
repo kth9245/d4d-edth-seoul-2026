@@ -1,0 +1,8 @@
+/* "연결 보기" panel over the map column (decision 0038). Layout only; theme.css colors it. */
+.object-graph { position: absolute; inset: 12px; z-index: 20; display: flex; flex-direction: column; }
+.object-graph .og-head { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; }
+.object-graph .og-head button { padding: 4px 12px; cursor: pointer; }
+.object-graph .react-flow { flex: 1; }
+.object-graph .og-note { padding: 16px; font-size: 13px; }
+.og-node { width: 210px; padding: 8px 10px; font-size: 12px; text-align: left; }
+.og-node small { display: block; margin-bottom: 2px; font-size: 10px; }
