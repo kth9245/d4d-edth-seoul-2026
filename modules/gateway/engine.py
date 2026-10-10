@@ -35,8 +35,8 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
     t = es.t_ms + dt
     states, targets = apply_events(sc, es.states, es.targets, t, dt)  # 1
     targets = steer_enemies(
-        sc.enemies, plays, spawn_enemies(sc, targets, t, dt), t, dt
-    )  # 1.5 (0032)
+        sc.enemies, plays, spawn_enemies(sc, targets, t, dt), t, dt, sc.land
+    )  # 1.5 (0032; boats round islands 0034)
     targets = observe(states, specs, targets, t)  # 2
     reports, assigns = list(es.reports), list(es.assignments)  # 3 operator inputs
     for d in inputs.decisions:
@@ -68,7 +68,7 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
     states, passed, blocks, cards = run_checks(  # 7
         cmds, before_direct, states, specs, sc.operation, plays, injections, t
     )
-    states = advance(states, specs, passed, dt, targets)  # 8
+    states = advance(states, specs, passed, dt, targets, sc.land)  # 8 (sea round islands 0034)
     targets, hits = resolve_strikes(states, targets, t)  # 8.5 decision 0033
     new_reports += cards + hits
     reports += new_reports

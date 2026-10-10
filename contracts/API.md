@@ -44,14 +44,14 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | 순서 | 모듈 | 함수 |
 |---|---|---|
 | 1 | sim | `apply_events(scenario, states, targets, t_ms, dt_ms) -> (states, targets)` |
-| 1.5 | sim | 적(결정 0032): `spawn_enemies(scenario, targets, t_ms, dt_ms) -> targets`, `steer_enemies(enemies, plays, targets, t_ms, dt_ms) -> targets` |
+| 1.5 | sim | 적(결정 0032): `spawn_enemies(scenario, targets, t_ms, dt_ms) -> targets`, `steer_enemies(enemies, plays, targets, t_ms, dt_ms, land) -> targets`(배는 섬을 돌아감, 결정 0034) |
 | 2 | sensing | `observe(states, specs, targets, t_ms) -> targets` |
 | 3 | runtime | 입력 적용: `apply_decision(states, plays, decision, reports) -> (states, reports)`, 승인된 것만 `apply_injection(states, plays, injection) -> states`, `apply_direct(states, direct, t_ms) -> (states, Command)` |
 | 4 | runtime | `apply_emergency(states, plays) -> states` |
 | 5 | runtime | 기체마다 `step_vehicle(state, specs[id], plays[state.play_id], targets, t_ms) -> (state, Command \| None, Report \| None)` |
 | 6 | runtime | `apply_reserves(states, op, plays, assignments, t_ms) -> (states, assignments, Report \| None)` |
 | 7 | safety | 명령마다 `check_command(cmd, state, spec, op, plays, injections) -> PassedCommand \| Block` |
-| 8 | sim | `advance(states, specs, passed, dt_ms, targets) -> states` |
+| 8 | sim | `advance(states, specs, passed, dt_ms, targets, land) -> states`(해상 기체는 섬을 돌아감, 결정 0034) |
 | 8.5 | sim | `resolve_strikes(states, targets, t_ms) -> (targets, list[Report])`(결정 0033) |
 | 9 | runtime | `update_metrics(metrics, outcome: TickOutcome) -> Metrics` |
 | 10 | gateway | `build_frame(state, log) -> Frame` |
