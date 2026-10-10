@@ -9,8 +9,11 @@ const MIN = 60_000;
 // NLL s5 20:00 (the battery block at 20:30 was checked at that battery), fast1 appears 23:00.
 // No stop in the strike (s4 switch, s7 approval cards, s8 neutralized): they follow the operator's clicks,
 // and a jump runs with no operator input, so the strike phase is played (Part1-13.1).
+// 17:05 (Part1-27.1, decisions 0036/0040): boat2 starts emitting at 17:00 while both contact cards are still open,
+// so its risk goes 0.27 -> 0.57 and its card moves above boat1's (0.50), with RF on the map.
 export const RUN_STOPS: RunStop[] = [
   { offsetMs: 16 * MIN + 25_000, label: "보고 카드" },
+  { offsetMs: 17 * MIN + 5_000, label: "2번 배 무선 송신" },
   { offsetMs: 19 * MIN + 5_000, label: "드론1 귀환" },
   { offsetMs: 20 * MIN, label: "드론2 직접 조종" },
   { offsetMs: 23 * MIN + 5_000, label: "고속정 등장" },

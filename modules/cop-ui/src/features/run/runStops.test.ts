@@ -20,7 +20,8 @@ describe("nextStop", () => {
   });
   it("stops just after each fixed scene of the strike-phase order, none in the strike itself (Part1-13.1)", () => {
     expect(RUN_STOPS.map((s) => [mmss(s.offsetMs), s.label])).toEqual([
-      ["16:25", "보고 카드"], ["19:05", "드론1 귀환"], ["20:00", "드론2 직접 조종"], ["23:05", "고속정 등장"],
+      ["16:25", "보고 카드"], ["17:05", "2번 배 무선 송신"], ["19:05", "드론1 귀환"], ["20:00", "드론2 직접 조종"],
+      ["23:05", "고속정 등장"],
     ]);
   });
   it("uses the demo stops by default, in time order", () => {
