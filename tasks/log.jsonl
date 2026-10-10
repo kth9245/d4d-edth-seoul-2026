@@ -465,3 +465,4 @@
 {"at": "2026-10-10T21:28:03+09:00", "by": "황승주", "op": "start", "id": "Part2-49", "take": false, "from": null}
 {"at": "2026-10-10T21:35:56+09:00", "by": "황승주", "op": "done", "id": "Part2-49", "take": false}
 {"at": "2026-10-10T21:36:23+09:00", "by": "황승주", "op": "add", "id": "Part2-50", "title": "멸공 적 4/7: runtime 표적 기준 원 경로(route_command anchor)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
+{"at": "2026-10-10T21:36:26+09:00", "by": "황승주", "op": "start", "id": "Part2-50", "take": false, "from": null}
