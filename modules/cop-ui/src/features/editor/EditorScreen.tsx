@@ -18,7 +18,7 @@ import { playUsage } from "./playUsage";
 import { PlayWorkflow } from "./PlayWorkflow";
 import { savePlay } from "./savePlay";
 import { vehicleColumns } from "./vehicleColumns";
-import { backFrom, openView, type ViewHistory } from "./viewHistory";
+import { backFrom, openView, type ViewHistory, viewLabel } from "./viewHistory";
 
 export function EditorScreen() {
   const [data, setData] = useState<EditorData | null>(null);
@@ -54,7 +54,7 @@ export function EditorScreen() {
   if (!data || !view) return <div className="editor">불러오는 중…</div>;
   const playName = (id: string) => view.byId.get(id)?.name ?? null;
   const prev = nav.stack[nav.stack.length - 1] ?? OVERVIEW;
-  const backLabel = prev === OVERVIEW ? "작전 개요" : (playName(prev) ?? prev);
+  const backLabel = viewLabel(prev, { [OVERVIEW]: "작전 개요", [ONTOLOGY]: "온톨로지" }, playName);
   const play = edits[selected] ?? view.byId.get(selected);
   // Results are kept per play id so they survive switching plays. An edit drops the old result (its issues
   // no longer match the cards); a save that passes puts the edited play into the list.

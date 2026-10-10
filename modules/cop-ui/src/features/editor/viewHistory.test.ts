@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { backFrom, openView } from "./viewHistory";
+import { backFrom, openView, viewLabel } from "./viewHistory";
 
 describe("viewHistory", () => {
   it("remembers where you came from when you open another view", () => {
@@ -17,5 +17,12 @@ describe("viewHistory", () => {
   });
   it("goes to the fallback view when there is nothing to go back to", () => {
     expect(backFrom({ current: "patrol_a", stack: [] }, "overview")).toEqual({ current: "overview", stack: [] });
+  });
+  it("names the view to go back to, never an internal id", () => {
+    const fixed = { __overview__: "작전 개요", __ontology__: "온톨로지" };
+    const playName = (id: string) => (id === "patrol_a" ? "해안 순찰 A" : null);
+    expect(viewLabel("__ontology__", fixed, playName)).toBe("온톨로지");
+    expect(viewLabel("__overview__", fixed, playName)).toBe("작전 개요");
+    expect(viewLabel("patrol_a", fixed, playName)).toBe("해안 순찰 A");
   });
 });

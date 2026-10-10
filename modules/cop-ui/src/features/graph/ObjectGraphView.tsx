@@ -3,7 +3,7 @@ import "@xyflow/react/dist/style.css";
 import { useEffect, useState } from "react";
 import type { ObjectGraph } from "../../contracts.gen";
 import "./graph.css";
-import { layoutObjectGraph, REL_KO } from "./objectGraphLayout";
+import { layoutObjectGraph, orientLinks } from "./objectGraphLayout";
 
 const TYPE_KO = { vehicle: "기체", target: "표적", report: "보고 카드", decision: "결정", command: "명령", block: "차단" } as const;
 // Marker color is an SVG attribute and cannot read CSS variables: theme.css --muted.
@@ -28,9 +28,10 @@ export function ObjectGraphView({ focus, onClose }: { focus: string; onClose: ()
     className: `og-node og-${n.type}${n.id === focus ? " og-focus" : ""}`,
     data: { label: <><small>{TYPE_KO[n.type]}</small><div>{n.label}</div></> },
   }));
-  const edges: Edge[] = (graph?.links ?? []).map((l, i) => ({
-    id: `${l.src}-${l.rel}-${l.dst}-${i}`, source: l.src, target: l.dst, label: REL_KO[l.rel] ?? l.rel,
-    className: "og-edge", markerEnd: { type: MarkerType.ArrowClosed, color: EDGE },
+  const arrow = { type: MarkerType.ArrowClosed, color: EDGE };
+  const edges: Edge[] = (graph ? orientLinks(graph) : []).map((l) => ({
+    id: l.id, source: l.source, target: l.target, label: l.label, className: "og-edge",
+    ...(l.reversed ? { markerStart: arrow } : { markerEnd: arrow }),
   }));
   return (
     <div className="object-graph">

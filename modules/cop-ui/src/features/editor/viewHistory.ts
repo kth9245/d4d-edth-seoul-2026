@@ -5,6 +5,11 @@ export function openView(h: ViewHistory, next: string): ViewHistory {
   return next === h.current ? h : { current: next, stack: [...h.stack, h.current] };
 }
 
+// What "← 뒤로" calls a view: the fixed views (overview, ontology) by their name, a play by its name.
+export function viewLabel(id: string, fixed: Record<string, string>, playName: (id: string) => string | null): string {
+  return fixed[id] ?? playName(id) ?? id;
+}
+
 // Back to the view opened before this one; with nothing recorded, to `fallback` (the overview).
 export function backFrom(h: ViewHistory, fallback: string): ViewHistory {
   if (h.stack.length === 0) return { current: fallback, stack: [] };

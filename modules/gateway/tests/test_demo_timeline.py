@@ -121,6 +121,20 @@ def test_strike_ends_in_mission_success(run):
     assert any(r.kind == "target_neutralized" and r.target_id == "fast1" for r in es.reports)
 
 
+def test_fast1_graph_shows_the_decision_behind_the_strikes(run):  # 0038: the last demo beat
+    from modules.gateway.actions.build_object_graph import build_object_graph
+
+    es, _ = run
+    g = build_object_graph(es, "fast1")
+    label = {n.id: n.label for n in g.nodes}
+    strikes = {lk.src for lk in g.links
+               if lk.rel == "aims_at" and lk.dst == "fast1" and label[lk.src].startswith("strike")}  # fmt: skip
+    assert {label[c].split(" · ")[1] for c in strikes} == {"d2", "usv"}
+    decs = {lk.dst for lk in g.links if lk.rel == "from_decision" and lk.src in strikes}
+    assert len(decs) == 1 and label[next(iter(decs))].endswith("'함께 타격'")
+    assert all(label[c].endswith("출처·구역·배터리 통과") for c in strikes)
+
+
 def test_operation_passes_play_checks_including_reserve_return_battery():
     plays, specs = {p.id: p for p in SC.plays}, {v.id: v for v in SC.vehicles}
     assert check_operation(SC.operation, plays, specs).ok
