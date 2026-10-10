@@ -29,7 +29,14 @@ def apply_decision(
             s = switch_play(s, plays[ch.play_by_vehicle[s.id]])
             s = s.model_copy(update={"decision_id": decision.id, "target_id": rep.target_id})
         elif s.id == rep.vehicle_id:
-            s = s.model_copy(update={"pending_report_id": None, **_choice_exit(s, plays, ch.id)})
+            ex = _choice_exit(s, plays, ch.id)  # an exit taken on this decision carries its id
+            s = s.model_copy(
+                update={
+                    "pending_report_id": None,
+                    **ex,
+                    **({"decision_id": decision.id} if ex else {}),
+                }
+            )
         out.append(s)
     return out, reports
 

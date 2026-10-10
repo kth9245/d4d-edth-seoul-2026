@@ -115,3 +115,19 @@ def test_moved_vehicles_open_cards_close():
         ("r-d2", 660_000, "dec1"),
         ("r-usv", 660_000, "dec1"),
     ]
+
+
+def test_operator_choice_exit_records_the_decision_for_a_strike_step():
+    # Decision 0031 path + 0033: "approve, then strike" inside one play carries this decision id,
+    # replacing any older one, so safety sees who approved this strike.
+    go = Exit(cond=Condition(kind="operator_choice", params={"choice": "strike"}), go_step="hit")
+    draft = Play(id="draft", name="d", domains=["air"], entry="ask", steps=[
+        Step(id="ask", name="승인", do=Action(kind="hold"), on=[go]),
+        Step(id="hit", name="타격", do=Action(kind="strike_target", params={"target": "operator"}))])  # fmt: skip
+    card = Report(id="r4", t_ms=0, kind="target_detected", vehicle_id="d2", target_id="fast1",
+                  text="타격 승인 요청", choices=[Choice(id="strike", label="타격")])  # fmt: skip
+    st = vs("d2", "draft", pending_report_id="r4", decision_id="dec-old").model_copy(
+        update={"step_id": "ask"}
+    )
+    out, _ = apply_decision([st], {**PLAYS, "draft": draft}, decide("strike", "r4"), [card])
+    assert (out[0].step_id, out[0].decision_id) == ("hit", "dec1")

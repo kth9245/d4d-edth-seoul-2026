@@ -11,5 +11,5 @@
 | GW-04 | run_checks | cmds, before_direct, states, specs, op, plays, injections, t_ms | (states, passed, blocks, new_reports) | 통과·차단 분리, 차단마다 command_blocked 카드, 막힌 직접 조종 기체 상태 복원. 원본: 스파이크 port | 황승주 | 완료 |
 | GW-05 | track_assignments | assignments, before, states, t_ms, reason | list[Assignment] | 바뀐 기체만 새 배정(플레이·시각·사유). 원본: 스파이크 port | 황승주 | 완료 |
 | GW-06 | build_frame_v2 | EngineState, log | Frame | 예시 frame.json과 같은 모양, 직렬화 테스트. 원본: 스파이크 port | 최동호 | 완료 |
-| GW-07 | tick_log | Scenario, t_ms, dt_ms, TickInputs, blocks | list[str] | 사건·결정·전환·직접 조종·차단 줄 각 1테스트. 원본: 스파이크 port | 황승주 | 완료 |
+| GW-07 | tick_log | Scenario, t_ms, dt_ms, TickInputs, blocks, passed, hits | list[str] | 사건·결정·전환·직접 조종·차단 줄 각 1테스트. 원본: 스파이크 port · 타격 통과·무력화 줄(결정 0033), 적 등장 줄(결정 0032) | 황승주 | 완료 |
 | GW-08 | check_saved_play | Play, Scenario | PlayCheck | 없는 플레이를 가리키는 선택지, 선택지로 받는 기체의 영역 불일치를 잡음, 데모 플레이는 통과, 같은 오류 중복 없음 | kth9245 | 완료 |

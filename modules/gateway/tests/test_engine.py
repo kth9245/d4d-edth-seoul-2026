@@ -64,6 +64,7 @@ def test_strike_next_to_a_target_neutralizes_it_and_logs():
     )
     # model_copy does not validate: give the enum, not the string (step_vehicle reads .value)
     d1 = d1.model_copy(update={"entered_step": True, "status": VehicleStatus.active,
+                               "decision_id": "dec-1",  # approved strike (decision 0033)
                                "active": PassedCommand(command=cmd, checks=[], passed_ms=0)})  # fmt: skip
     es = replace(es, states=[d1, *es.states[1:]], targets=[tg])
     es, fr = tick(es, TickInputs())

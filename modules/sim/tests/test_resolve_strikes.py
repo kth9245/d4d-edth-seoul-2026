@@ -11,10 +11,12 @@ def _at(north_m: float) -> GeoPoint:
     return GeoPoint(lat=lat, lon=lon)
 
 
-def _striker(vid: str, kind: str = "strike", target_id: str = "fast1") -> VehicleState:
+def _striker(vid: str, kind: str = "strike", target_id: str = "fast1",
+             decision_id: str | None = "dec-3") -> VehicleState:  # fmt: skip
     cmd = Command(id=f"c-{vid}", vehicle_id=vid, kind=kind, params={"target_id": target_id})
     return VehicleState(id=vid, t_ms=T, pos=HOME, heading_deg=0, battery_pct=80, status="active",
-                        active=PassedCommand(command=cmd, checks=[], passed_ms=0))  # fmt: skip
+                        active=PassedCommand(command=cmd, checks=[], passed_ms=0),
+                        decision_id=decision_id)  # fmt: skip
 
 
 def _fast1(north_m: float, neutralized_ms: int | None = None) -> Target:
@@ -51,3 +53,9 @@ def test_other_commands_never_strike():
 def test_two_strikers_in_one_tick_give_one_card():
     targets, cards = resolve_strikes([_striker("d2"), _striker("usv")], [_fast1(10)], T)
     assert targets[0].neutralized_ms == T and [c.vehicle_id for c in cards] == ["d2"]
+
+
+def test_vehicle_switched_away_without_a_decision_no_longer_strikes():
+    # switch_play clears decision_id; a still-active strike command must not neutralize anything
+    targets, cards = resolve_strikes([_striker("d2", decision_id=None)], [_fast1(10)], T)
+    assert targets[0].neutralized_ms is None and cards == []
