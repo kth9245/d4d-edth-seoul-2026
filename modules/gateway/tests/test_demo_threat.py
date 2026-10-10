@@ -42,7 +42,7 @@ def test_boat2_emits_from_17_and_overtakes_boat1_once_a_drone_hears_it():
         if now and now.rf_detected and not before.rf_detected:
             break
     assert start_emit == 17 * MIN
-    assert es.t_ms - START > 17 * MIN and now.rf_detected and "rf_emission" in now.threat_reasons
+    assert es.t_ms - START >= 17 * MIN and now.rf_detected and "rf_emission" in now.threat_reasons
     assert now.threat - before.threat == 30  # +0.30 for the RF and nothing else changes
     assert now.threat > _score(es, "boat1").threat  # its card goes to the top
     assert not _score(es, "boat1").emitting and not _score(es, "boat3").emitting

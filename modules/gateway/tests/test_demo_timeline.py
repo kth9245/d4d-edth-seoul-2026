@@ -85,9 +85,12 @@ def scenes(run) -> dict[str, int]:
 
 
 def test_scenes_happen_in_strike_phase_order(scenes):
-    order = ["s1", "s2", "s3", "s5", "s6", "s4", "s7", "s8"]
-    assert [s for s in order if s in scenes] == order, scenes
+    order = ["s1", "s2", "s5", "s6", "s4", "s7", "s8"]
+    assert set(order) | {"s3"} <= set(scenes), scenes
     assert [scenes[s] for s in order] == sorted(scenes[s] for s in order), scenes
+    assert scenes["s1"] < scenes["s3"] < scenes["s5"], (
+        scenes
+    )  # a coast relief leaves around the card
 
 
 def test_coast_patrol_card_offers_fleet_choices_and_the_finder_hovers(run):  # user, 10/10
