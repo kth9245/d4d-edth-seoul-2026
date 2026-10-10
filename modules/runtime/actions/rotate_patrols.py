@@ -34,21 +34,18 @@ def rotate_patrols(
         asg[:] = [a for a in asg if a.vehicle_id != vid]
         asg.append(Assignment(vehicle_id=vid, play_id=play, since_ms=t_ms, reason=reason))
 
-    def home(vid: str) -> None:
-        by[vid] = switch_play(by[vid], plays["go_home"])
-
     pairs = {m[2]: (m[1], int(m[3])) for a in asg if (m := OUT.fullmatch(a.reason))}  # S: (R, m)
     on = [v for v in op.rotation if by[v].status.value == "active"]
     on = [v for v in on if by[v].play_id in op.rotation_plays]
     for v in on:  # floor first: a patrol never trades its return battery for coverage
         if by[v].battery_pct - _back(by[v], specs[v]) <= FLOOR:
-            home(v)
+            by[v] = switch_play(by[v], plays["go_home"])
             note(v, "go_home", f"교대 귀환(하한선): {v}")
     for s, (r, m) in pairs.items():
         if by[s].play_id != by[r].play_id:  # relief or patrol left the play: drop the pair
             asg[:] = [a for a in asg if not (a.vehicle_id == r and OUT.fullmatch(a.reason))]
         elif dist_m(by[s].pos, by[r].pos) <= MEET_M:
-            home(s)
+            by[s] = switch_play(by[s], plays["go_home"])
             note(r, by[r].play_id, f"교대 완료: {r} ← {s}")
             note(s, "go_home", f"교대 귀환: {s}")
         else:  # both hold waypoint m until they meet (the patrol waits there)
@@ -68,11 +65,15 @@ def rotate_patrols(
         if alone and st.battery_pct - 2 * _back(st, spec) <= START and (r := free(v)):
             by[r] = switch_play(by[r], plays[st.play_id])
             note(r, st.play_id, f"교대 출발: {r} → {v} @{max(st.waypoint_idx, 0)}")
-    for p in op.rotation_plays:  # a coast nobody holds (a patrol went home at the floor)
-        held = any(
+
+    def held(p: str) -> bool:
+        return any(
             by[w].play_id == p and by[w].status.value in ("ready", "active") for w in op.rotation
         )
-        if not held and (r := free(None)):
+
+    engaged = any(held(p) for p in op.rotation_plays)  # rotation runs once a patrol is out
+    for p in op.rotation_plays:  # a coast nobody holds (a patrol went home at the floor)
+        if engaged and not held(p) and (r := free(None)):
             by[r] = switch_play(by[r], plays[p])
             note(r, p, f"교대 투입(빈 순찰): {r} → {p}")
     return [by[s.id] for s in states], asg

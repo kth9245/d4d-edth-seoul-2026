@@ -55,3 +55,22 @@ def test_play_without_its_report_point_fails():
 def test_broken_link_fails():
     bad = PLAYS["watch"].model_copy(update={"entry": "nope"})
     assert "missing_step" in [i.code for i in check_play(bad, OP, SPECS).issues]
+
+
+def test_rotation_play_skips_the_full_lap_battery_check():  # decision 0037
+    import json
+
+    from contracts.models import Operation, Play, VehicleSpec
+
+    root = Path(__file__).resolve().parents[3]
+    night = json.loads((root / "demo" / "scenarios" / "baengnyeong_night.json").read_text("utf-8"))
+    coast = Play.model_validate(
+        json.loads((root / "demo" / "plays" / "coast_a.json").read_text("utf-8"))
+    )
+    specs = {v["id"]: VehicleSpec.model_validate(v) for v in night["vehicles"]}
+    op = Operation.model_validate(night["operation"]).model_copy(
+        update={"assign": {"d1": "coast_a"}}
+    )
+    plain = check_play(coast, op.model_copy(update={"rotation_plays": []}), specs)
+    assert "low_return_battery" in {i.code for i in plain.issues}
+    assert check_play(coast, op, specs).ok

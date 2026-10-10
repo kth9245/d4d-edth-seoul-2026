@@ -90,3 +90,25 @@ def test_nothing_at_sea_crosses_the_island():
     assert card is not None
     assert next(v for v in frame.vehicles if v.id == "usv").play_id == "approach"
     assert any(t.id == "fast1" for t in frame.targets)
+
+
+def test_patrol_all_switch_rotates_the_three_drones():  # decision 0037: "전 기체 순찰" button
+    from contracts.models import Injection, TickInputs
+    from modules.gateway.engine import init_engine, tick
+    from modules.play import check_operation
+
+    sc = load_scenario_json(str(SCENARIO))
+    sw = next(s for s in sc.operation.switches if s.id == "patrol_all")
+    assert sw.label == "전 기체 순찰"
+    assert sw.play_by_vehicle == {"d1": "coast_a", "d2": "coast_b", "d3": "go_home"}
+    assert sc.operation.rotation == ["d1", "d2", "d3"]
+    assert sc.operation.rotation_plays == ["coast_a", "coast_b"]
+    specs = {v.id: v for v in sc.vehicles}
+    assert check_operation(sc.operation, {p.id: p for p in sc.plays}, specs).ok
+    es, t = init_engine(sc), sc.operation.started_ms
+    inj = Injection(id="inj-1", t_ms=t + sc.tick_ms, label=sw.label,
+                    play_by_vehicle=sw.play_by_vehicle, switch_id=sw.id)  # fmt: skip
+    es, _ = tick(es, TickInputs(injections=[inj]))
+    es, f = tick(es, TickInputs(injections=[inj.model_copy(update={"status": "approved"})]))
+    plays = {v.id: v.play_id for v in f.vehicles}
+    assert (plays["d1"], plays["d2"], plays["d3"]) == ("coast_a", "coast_b", "go_home")

@@ -151,8 +151,10 @@ def test_scenario_land_is_island_polygons_and_defaults_to_none():
 def test_rotation_fields_default_to_no_rotation():
     from contracts.models import Operation, VehicleSpec
 
-    op = Operation.model_validate_json((EXAMPLES / "operation.json").read_text(encoding="utf-8"))
-    spec = VehicleSpec.model_validate_json(
-        (EXAMPLES / "vehicle_spec.json").read_text(encoding="utf-8")
-    )
-    assert (op.rotation, op.rotation_plays, spec.recharge_min) == ([], [], 0)
+    op = json.loads((EXAMPLES / "operation.json").read_text(encoding="utf-8"))
+    spec = json.loads((EXAMPLES / "vehicle_spec.json").read_text(encoding="utf-8"))
+    for k in ("rotation", "rotation_plays"):
+        op.pop(k, None)
+    spec.pop("recharge_min", None)
+    got = Operation.model_validate(op), VehicleSpec.model_validate(spec)
+    assert (got[0].rotation, got[0].rotation_plays, got[1].recharge_min) == ([], [], 0)

@@ -1,4 +1,5 @@
 """PLY-06 check_play: 플레이 하나 검사 — step 연결·보고 지점·작전 구역 + 그 플레이를 받는 기체의 영역·능력·귀환 배터리
+교대 순찰 플레이(op.rotation_plays)는 한 바퀴 배터리 추정을 하지 않는다(도중 교대, 귀환은 rotate_patrols 하한선, 결정 0037).
 받는 기체 = op.assign·op.switches에서 이 플레이로 가는 기체와 그 예비(op.reserve). 없으면 영역이 맞는 모든 기체로 배터리만 추정.
 SPEC: modules/play/SPEC.md#PLY-06
 """
@@ -33,6 +34,8 @@ def check_play(play: Play, op: Operation, specs: dict[str, VehicleSpec]) -> Play
             for s in play.steps
             if s.do.kind not in sp.capabilities
         ]
+    if play.id in op.rotation_plays:  # relieved mid-route; rotate_patrols keeps the floor (0037)
+        return PlayCheck(ok=not issues, issues=issues)
     low, est = check_return_battery(play, {v: specs[v] for v in recv} if recv else specs)
     issues += low
     return PlayCheck(ok=not issues, issues=issues, est_return_battery=est)

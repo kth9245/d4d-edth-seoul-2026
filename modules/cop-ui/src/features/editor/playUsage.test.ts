@@ -16,7 +16,7 @@ describe("playUsage", () => {
     expect(u["patrol_b"]).toEqual([{ vehicle_id: "d2", how: "해안 순찰 A의 '근접 확인' 뒤" }]);
   });
   it("names the operation switch", () => {
-    expect(u["go_home"]).toHaveLength(5);
+    expect(u["go_home"]).toHaveLength(6); // + d3 by '전 기체 순찰' (decision 0037)
     expect(u["go_home"][0]).toEqual({ vehicle_id: "d1", how: "전체 전환 '전 기체 귀환'" });
   });
   it("has no entry for an unused play", () => {
