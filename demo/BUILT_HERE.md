@@ -80,3 +80,4 @@
 | 10/10 22:34 | role, demo, scripts | Part1-43 AI 초안 캐시 키를 문장·작전 지역·구역으로(결정 0057): 새 작전·24시간 작전에서도 시연 문장이 캐시 초안을 받아 인터넷 호출 없음(QA E2E 발견 1). 캐시 파일 이름 옮김 | kth9245 |
 | 10/10 22:38 | cop-ui | Part1-44 상황판 작전 전환의 새 Role 목록을 고른 기체 영역의 Role만, 적 Role 제외로(QA E2E 발견 2, 편집기 시작 Role과 같은 규칙) | kth9245 |
 | 10/10 22:40 | contracts·sensing·gateway·demo | 공격 작전 2단계 식별·신뢰도(결정 0056 초안): Target에 ident_state·ident_confidence·ident_reasons·ident_observed_ms, sensing identify_target(SNS-04: RF·스캔·두 기체 관측·관측 지속을 합쳐 0.70이면 식별됨), gateway identify_targets(GW-12)·refresh_strike_cards(GW-13: 카드 문구에 식별 줄, 식별된 거점에만 타격 승인 선택지)·decision_applicable(GW-14: 사라진 선택지의 클릭은 건너뛰어 실행이 멈추지 않음), baengnyeong_strike에 strike Role | 최동호 |
+| 10/10 22:43 | cop-ui | Part1-45 상황판 배속 버튼: 멈춘 상태에서는 속도만 기억(흐리게 표시)하고 ▶ 재생이 그 속도로 시작, 재생 중에는 바로 바뀜(QA E2E 발견 3) | kth9245 |
