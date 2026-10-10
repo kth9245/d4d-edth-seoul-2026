@@ -7,11 +7,13 @@ from contracts.models import (
     Exit,
     GeoPoint,
     Play,
+    Polygon,
     Step,
     Target,
 )
 from modules.sim.actions.steer_enemies import steer_enemies
-from shared.geo import offset_latlon
+from shared.geo import dist_m, offset_latlon
+from shared.land import inside
 
 HOME = GeoPoint(lat=37.98, lon=124.70)
 T = 1_000_000
@@ -76,3 +78,21 @@ def test_targets_without_a_play_are_left_alone():
     plain = Target(id="boat9", kind="boat", pos=HOME, vel_east_mps=0, vel_north_mps=-1,
                    first_seen_ms=0, last_seen_ms=0)  # fmt: skip
     assert steer_enemies(ENEMIES, {PLAY.id: PLAY}, [plain], T, 200) == [plain]
+
+
+def test_boats_steer_round_the_island_and_arrive():
+    island = [Polygon(points=[_at(-500, -500), _at(500, -500), _at(500, 500), _at(-500, 500)])]
+    goal = _at(1000, -200)
+    play = Play(id="enemy_run", name="r", domains=["sea"], entry="run", approved=True, steps=[
+        Step(id="run", name="run", do=Action(kind="move_to", params={"target": goal.model_dump()}))])  # fmt: skip
+    enemies = [EnemySpec(id="fast1", kind="fast_boat", speed_mps=10, appear_offset_ms=0,
+                         pos=_at(-1000, -200), play_id="enemy_run")]  # fmt: skip
+    tg, t = _fast1(_at(-1000, -200)).model_copy(update={"play_id": "enemy_run"}), T
+    for _ in range(400):
+        (tg,) = steer_enemies(enemies, {"enemy_run": play}, [tg], t, 1000, island)
+        if tg.waypoint_idx == -1:
+            break
+        lat, lon = offset_latlon(tg.pos.lat, tg.pos.lon, tg.vel_east_mps, tg.vel_north_mps)  # 1 s
+        tg, t = tg.model_copy(update={"pos": GeoPoint(lat=lat, lon=lon)}), t + 1000
+        assert not inside(tg.pos, island)
+    assert tg.waypoint_idx == -1 and dist_m(tg.pos, goal) < 1

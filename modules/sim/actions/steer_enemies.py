@@ -1,13 +1,20 @@
 """SIM-12 steer_enemies: 적(결정 0032)의 지금 step 행동대로 속도만 정하고 arrived·time_elapsed로 step을 넘긴다
 위치는 다음 틱 apply_events가 속도로 옮긴다. 이번 틱 안에 닿으면 위치를 목적지로 맞추고 멈춘다.
 행동은 move_to·patrol_route·hold만. runtime·safety를 거치지 않는다. 무력화된 적은 그대로.
+배(boat·fast_boat)는 land를 받아 섬을 돌아가고 육지 위 목적지는 해안 바다 점으로 본다(결정 0034).
 SPEC: modules/sim/SPEC.md#SIM-12
 """
 
-from contracts.models import ConditionKind, EnemySpec, GeoPoint, Play, Step, Target
+import math
+from collections.abc import Sequence
+
+from contracts.models import ConditionKind, EnemySpec, GeoPoint, Play, Polygon, Step, Target
+from modules.sim.actions.sea_aim import sea_aim
 from shared.geo import dist_m, enu_delta_m
+from shared.land import to_sea
 
 STOP = {"vel_east_mps": 0.0, "vel_north_mps": 0.0}
+BOATS = ("boat", "fast_boat")  # TargetKinds that go round islands (decision 0034)
 
 
 def _dest(step: Step, idx: int) -> GeoPoint | None:
@@ -30,22 +37,27 @@ def _next_step(step: Step, tg: Target, t_ms: int) -> str | None:
     return None
 
 
-def _steer(tg: Target, step: Step, speed: float, dt_ms: int) -> Target:
+def _steer(tg: Target, step: Step, speed: float, dt_ms: int, land: Sequence[Polygon]) -> Target:
     dest = _dest(step, tg.waypoint_idx) if tg.waypoint_idx >= 0 else None
     if dest is None:
         return tg.model_copy(update=STOP)
-    d = dist_m(tg.pos, dest)
-    if d <= speed * dt_ms / 1000:
+    dest = to_sea(dest, land)
+    if dist_m(tg.pos, dest) <= speed * dt_ms / 1000:
         idx = -1 if step.do.kind.value == "move_to" else tg.waypoint_idx + 1
         return tg.model_copy(update={**STOP, "pos": dest, "waypoint_idx": idx})
-    east, north = enu_delta_m(tg.pos.lat, tg.pos.lon, dest.lat, dest.lon)
-    return tg.model_copy(
-        update={"vel_east_mps": speed * east / d, "vel_north_mps": speed * north / d}
-    )
+    aim = sea_aim(tg.pos, dest, land)
+    east, north = enu_delta_m(tg.pos.lat, tg.pos.lon, aim.lat, aim.lon)
+    s = speed / (math.hypot(east, north) or 1.0)
+    return tg.model_copy(update={"vel_east_mps": s * east, "vel_north_mps": s * north})
 
 
 def steer_enemies(
-    enemies: list[EnemySpec], plays: dict[str, Play], targets: list[Target], t_ms: int, dt_ms: int
+    enemies: list[EnemySpec],
+    plays: dict[str, Play],
+    targets: list[Target],
+    t_ms: int,
+    dt_ms: int,
+    land: Sequence[Polygon] = (),
 ) -> list[Target]:
     speed = {e.id: e.speed_mps for e in enemies}
     out = []
@@ -59,5 +71,6 @@ def steer_enemies(
         if nxt:
             tg = tg.model_copy(update={"step_id": nxt, "waypoint_idx": 0, "step_since_ms": t_ms})
             step = next(s for s in play.steps if s.id == nxt)
-        out.append(_steer(tg, step, speed.get(tg.id, 0.0), dt_ms))
+        sea = land if tg.kind in BOATS else ()
+        out.append(_steer(tg, step, speed.get(tg.id, 0.0), dt_ms, sea))
     return out
