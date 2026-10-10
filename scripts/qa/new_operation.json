@@ -16,7 +16,8 @@
  {"nav": "/?qa=newop-reload#editor", "wait": 5000},
  {"label": "N5 after a reload the server still runs the new operation with d1 on 해안 순찰 A", "eval": "({ title: document.querySelector('.op-head h2')?.innerText, d1: document.querySelector(\"select[aria-label='d1 처음 Role']\")?.value })", "expect": {"title": "QA 새 작전", "d1": "patrol_a"}},
  {"click": "▶ 시뮬레이션", "wait": 4000},
- {"click": "×30", "wait": 3000},
+ {"click": "×30", "wait": 200},
+ {"click": "▶ 재생", "wait": 3000},
  {"label": "N6 the new operation runs on the live tab", "eval": "({ status: document.querySelector('.status')?.innerText, moved: document.querySelector('.runbar .clock')?.innerText !== 'T+0:00' })", "expect": {"status": "LIVE", "moved": true}},
  {"shot": "new-operation-live.png"}
 ]

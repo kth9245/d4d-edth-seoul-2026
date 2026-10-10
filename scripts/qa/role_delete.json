@@ -18,7 +18,8 @@
  {"nav": "/?qa=delete-reload#editor", "wait": 5000},
  {"label": "D5 after a reload the server no longer has it", "eval": "[...document.querySelectorAll('.role-sidebar .item')].some(b => b.innerText === '북동 해안 순찰')", "expect": false},
  {"click": "▶ 시뮬레이션", "wait": 4000},
- {"click": "×30", "wait": 2500},
+ {"click": "×30", "wait": 200},
+ {"click": "▶ 재생", "wait": 2500},
  {"label": "D6 the run still goes with the role gone (d2 waits at home)", "eval": "({ status: document.querySelector('.status')?.innerText, moved: document.querySelector('.runbar .clock')?.innerText !== 'T+0:00' })", "expect": {"status": "LIVE", "moved": true}},
  {"shot": "role-delete-live.png"}
 ]

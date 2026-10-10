@@ -6,6 +6,7 @@ import { mmss } from "./mmss";
 import { RESET_WINDOW_MS, resetPress } from "./resetPress";
 import { jumpPaused, postRun, type RunResult } from "./runApi";
 import { nextStop, type RunStop } from "./runStops";
+import { playRequest, speedPress } from "./speedPress";
 import { stopsFor } from "./stopsFor";
 import "./run.css";
 
@@ -18,6 +19,7 @@ export function RunBar({ frame }: { frame: Frame | null }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [armedAt, setArmedAt] = useState<number | null>(null); // "처음으로" pressed once
+  const [remembered, setRemembered] = useState<number | null>(null); // a speed picked while paused (QA finding 3)
   const hasFrame = frame !== null;
   useEffect(() => {
     // offset_ms counts from operation.started_ms. If the gateway was down when the screen opened,
@@ -48,6 +50,10 @@ export function RunBar({ frame }: { frame: Frame | null }) {
 
   const running = frame?.run.status === "running";
   const speed = frame?.run.speed ?? 1; // kept while paused (decision 0026), so ▶ resumes at it
+  const shown = running ? speed : (remembered ?? speed);
+  useEffect(() => {
+    if (running) setRemembered(null); // the picked speed is now the run's own
+  }, [running]);
   const offset = frame && startedMs !== null ? frame.t_ms - startedMs : null;
   const next = offset === null ? null : nextStop(offset, stops ?? []);
   const off = !frame || busy;
@@ -66,13 +72,17 @@ export function RunBar({ frame }: { frame: Frame | null }) {
   return (
     <div className="runbar">
       <span className="clock">T+{offset === null ? "--:--" : mmss(offset)}</span>
-      <button className="run-toggle" disabled={off} onClick={() => act(() => postRun(`/run/live?speed=${running ? 0 : speed}`))}>
+      <button className="run-toggle" disabled={off} onClick={() => act(() => postRun(playRequest(running, speed, remembered)))}>
         {running ? "⏸ 일시정지" : "▶ 재생"}
       </button>
       <span className="speeds">
         {SPEEDS.map((s) => (
-          <button key={s} disabled={off} className={s === speed ? (running ? "on" : "on dim") : ""}
-            onClick={() => act(() => postRun(`/run/live?speed=${s}`))}>
+          <button key={s} disabled={off} className={s === shown ? (running ? "on" : "on dim") : ""}
+            onClick={() => {
+              const press = speedPress(running, s);
+              if ("request" in press) act(() => postRun(press.request));
+              else setRemembered(press.remember);
+            }}>
             ×{s}
           </button>
         ))}
