@@ -25,8 +25,10 @@ class FakeEngine:
 
     def __init__(self):
         self.seen: list[TickInputs] = []
+        self.inits: list[Scenario] = []  # the scenario each reset handed to the engine
 
     def init(self, scenario: Scenario) -> int:
+        self.inits.append(scenario)
         return scenario.operation.started_ms
 
     def tick(self, t_ms: int, inputs: TickInputs) -> tuple[int, Frame]:

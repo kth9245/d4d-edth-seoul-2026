@@ -46,6 +46,20 @@ def test_save_play_replaces_it_in_place_and_resets():
     assert live.frame.run.status == "paused"
 
 
+def test_the_engine_starts_from_the_saved_play():
+    live, eng = make()
+    live.save_play(PATROL_A.model_copy(update={"name": "해안 순찰 A2"}))
+    assert "해안 순찰 A2" in [p.name for p in eng.inits[-1].plays]
+
+
+def test_check_play_looks_at_the_whole_operation():
+    live, _ = make()
+    approach_air = next(p for p in SCENARIO.plays if p.id == "approach").model_copy(
+        update={"domains": ["air"]}
+    )  # usv receives approach through patrol_a's choice
+    assert not live.check_play(approach_air).ok
+
+
 def test_save_play_appends_a_new_id():
     live, _ = make()
     assert live.save_play(PATROL_A.model_copy(update={"id": "patrol_c"})).ok

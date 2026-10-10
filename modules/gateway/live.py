@@ -24,7 +24,7 @@ from contracts.models import (
     SwitchIn,
     TickInputs,
 )
-from modules.play import check_play as _check_play
+from modules.gateway.actions.check_saved_play import check_saved_play
 
 
 class Live:
@@ -87,8 +87,7 @@ class Live:
         return op
 
     def check_play(self, play: Play) -> PlayCheck:
-        specs = {v.id: v for v in self.scenario.vehicles}
-        return _check_play(play, self.scenario.operation, specs)
+        return check_saved_play(play, self.scenario)
 
     def save_play(self, play: Play) -> PlayCheck:
         """Saved (in memory, same id replaced in place) only when the check passes; then reset like

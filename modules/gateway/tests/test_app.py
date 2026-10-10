@@ -73,12 +73,13 @@ def test_plays_check_and_save():
     assert client.post("/plays/check", json=bad).json()["ok"] is False
     assert client.post("/plays", json=bad).json()["ok"] is False
     renamed = PATROL_A.model_copy(update={"name": "해안 순찰 A2"}).model_dump(mode="json")
-    assert client.post("/plays", json=renamed).json() == {
-        "ok": True,
-        "issues": [],
-        "est_return_battery": {"d1": 53.6, "d3": 51.4},
-    }
-    assert "해안 순찰 A2" in [p["name"] for p in client.get("/plays").json()]
+    names = lambda: [p["name"] for p in client.get("/plays").json()]  # noqa: E731
+    assert client.post("/plays/check", json=renamed).json()["ok"] is True
+    assert "해안 순찰 A2" not in names()  # check only, nothing saved
+    body = client.post("/plays", json=renamed).json()
+    assert (body["ok"], body["issues"]) == (True, [])
+    assert set(body["est_return_battery"]) == {"d1", "d3"}  # values belong to the play module
+    assert "해안 순찰 A2" in names()
 
 
 def test_reset_pauses():
