@@ -321,3 +321,4 @@
 {"at": "2026-10-10T15:15:21+09:00", "by": "황승주", "op": "start", "id": "Part1-25", "take": false, "from": null}
 {"at": "2026-10-10T15:16:04+09:00", "by": "황승주", "op": "done", "id": "Part1-25", "take": false}
 {"at": "2026-10-10T15:16:43+09:00", "by": "황승주", "op": "add", "id": "Part2-27", "title": "sim 충전: 기지 정비 중 recharge_min이면 배터리 교체 후 ready (결정 0037)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
+{"at": "2026-10-10T15:16:46+09:00", "by": "황승주", "op": "start", "id": "Part2-27", "take": false, "from": null}
