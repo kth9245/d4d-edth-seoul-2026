@@ -1,99 +1,154 @@
-/* Look of the whole screen (Part1-9.2). Feature CSS files own layout (size, position); this file owns color and type
-   and is loaded last (main.tsx), so it wins at equal specificity. New screens: use these tokens, never raw hex.
-   Colors carry meaning only: symbol and accent colors follow MIL-STD-2525 affiliation fills (friendly crystal blue,
-   unknown yellow, hostile salmon), so the operator's buttons share the friendly color of the vehicles they command. */
+/* Look of the whole screen (Part1-9.3, D4D tone). Feature CSS files own layout (size, position); this file owns color
+   and type and is loaded last (main.tsx), so it wins at equal specificity. New screens: use these tokens, never raw hex.
+   Green is the system's own state (live, selected, done). Map symbols keep MIL-STD-2525 affiliation colors: friendly
+   crystal blue, unknown yellow, hostile red. Fonts ship with the build (offline): Pretendard, Orbitron, JetBrains Mono. */
 :root {
-  --bg: #0c1720; /* night sea */
-  --panel: #122230;
-  --raised: #1a2e3e;
-  --line: #24394a;
-  --text: #d9e4ea;
-  --muted: #8397a7;
+  color-scheme: dark;
+  --bg: #000000;
+  --s1: #0a0a0a; /* side column, bars */
+  --s2: #111111; /* cards */
+  --s3: #1a1a1a; /* hover, disabled */
+  --line: #262628;
+  --line2: #3a3a3f;
+  --grid: rgba(255, 255, 255, 0.035);
+  --text: #ffffff;
+  --text2: #d4d4d8;
+  --muted: #8e8e93;
+  --dim: #5f5f66;
+  --live: #4ade80;
+  --live-soft: rgba(74, 222, 128, 0.1);
   --friend: #80e0ff;
-  --on-friend: #08202b;
-  --unknown: #ffe680;
-  --hostile: #ff7a7a;
-  --warn: #ffb547;
-  --warn-soft: rgba(255, 181, 71, 0.12);
-  --r: 2px;
-  /* Offline: system faces only. Bahnschrift is the DIN face that ships with Windows (signage, instruments). */
-  --font-ui: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", "Noto Sans CJK KR", system-ui, sans-serif;
-  --font-data: Bahnschrift, "DIN Alternate", "Roboto Condensed", "Noto Sans", "Malgun Gothic", system-ui, sans-serif;
+  --unknown: #facc15;
+  --hostile: #ef4444;
+  --hostile-soft: rgba(239, 68, 68, 0.08);
+  --warn: #f59e0b;
+  --warn-soft: rgba(245, 158, 11, 0.08);
+  --font: "Pretendard Variable", Pretendard, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "Pretendard Variable", monospace;
+  --font-display: Orbitron, "Pretendard Variable", sans-serif;
+  --ls: 0.14em;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --r: 0;
 }
-html, body, #root { background: var(--bg); color: var(--text); font-family: var(--font-ui); }
-* { scrollbar-color: var(--line) transparent; }
-button { font-family: inherit; }
-:focus-visible { outline: 2px solid var(--friend); outline-offset: 2px; }
+html, body, #root { background: var(--bg); color: var(--text); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+* { scrollbar-color: var(--line2) transparent; scrollbar-width: thin; }
+button { font-family: inherit; transition: background-color 200ms var(--ease), border-color 200ms var(--ease), color 200ms var(--ease); }
+:focus-visible { outline: 1px solid var(--live); outline-offset: 2px; }
+.grid-bg, aside, .tabs {
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
 
-/* Tabs */
-.tabs { gap: 0; padding: 0 12px; background: var(--bg); border-bottom: 1px solid var(--line); }
-.tabs a { padding: 10px 14px; border-radius: 0; border-bottom: 2px solid transparent; color: var(--muted); font-weight: 600; }
+/* Header: wordmark, sector, tabs */
+.tabs { align-items: stretch; gap: 0; padding: 0 20px; background-color: var(--bg); border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: baseline; gap: 14px; margin-right: 36px; padding: 12px 0; }
+.brand b { font-family: var(--font-display); font-size: 19px; font-weight: 800; letter-spacing: 0.06em; color: var(--text); }
+.brand small { font-family: var(--font-mono); font-size: 10px; letter-spacing: var(--ls); color: var(--muted); }
+.tabs a { display: flex; align-items: center; padding: 0 16px; border-radius: 0; border-bottom: 2px solid transparent;
+  color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
 .tabs a:hover { color: var(--text); }
-.tabs a.on { background: none; border-bottom-color: var(--friend); color: var(--text); }
+.tabs a.on { background: none; border-bottom-color: var(--live); color: var(--text); }
 
-/* Side column, connection status */
-aside { background: var(--panel); border-left: 1px solid var(--line); }
-.status { display: flex; align-items: center; gap: 6px; font-family: var(--font-data); font-size: 13px; }
-.status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-.status.ok { color: var(--friend); }
+/* Side column */
+aside { background-color: var(--s1); border-left: 1px solid var(--line); padding: 16px; }
+.status { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; font-family: var(--font-mono); font-size: 11px;
+  font-weight: 600; letter-spacing: var(--ls); text-transform: uppercase; }
+.status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.status.ok { color: var(--live); }
+.status.ok::before { box-shadow: 0 0 8px var(--live); animation: live-pulse 2.4s var(--ease) infinite; }
 .status.down { color: var(--hostile); }
+@keyframes live-pulse { 50% { opacity: 0.35; } }
+@media (prefers-reduced-motion: reduce) { .status.ok::before { animation: none; } }
+.cards::before, .metrics::before { display: block; margin-bottom: 8px; font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: var(--ls); color: var(--dim); }
+.cards::before { content: "EVENT LOG"; }
+.metrics::before { content: "OPERATOR LOAD"; }
 
-/* Cards: the left rule says what kind of event it is */
-.card { background: var(--raised); border-radius: var(--r); border-left: 3px solid var(--friend); }
+/* Cards: code and left rule say what kind of event it is */
+.card { padding: 12px 14px; border: 1px solid var(--line); border-left: 2px solid var(--live); border-radius: var(--r); background: var(--s2); }
 .card.warn { border-left-color: var(--warn); }
 .card.pending { border-left-color: var(--unknown); }
-.card.block { border-left-color: var(--hostile); }
-.card.done { opacity: 0.55; }
-.card .head span, .card .head time { font-family: var(--font-data); color: var(--muted); }
+.card.block { border-left-color: var(--hostile); background: linear-gradient(90deg, var(--hostile-soft), transparent 60%), var(--s2); }
+.card.done { opacity: 0.5; }
+.card .head { gap: 8px; font-size: 13px; }
+.card .head .code { font-family: var(--font-mono); font-size: 10px; font-style: normal; font-weight: 700; letter-spacing: var(--ls); color: var(--live); }
+.card.warn .head .code { color: var(--warn); }
+.card.pending .head .code { color: var(--unknown); }
+.card.block .head .code { color: var(--hostile); }
+.card .head b { font-weight: 600; color: var(--text); }
+.card .head span, .card .head time { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
 .card .head time { opacity: 1; }
-.card button { border-radius: var(--r); background: var(--friend); color: var(--on-friend); }
-.card button:hover:not(:disabled) { filter: brightness(1.08); }
-.card button:disabled { background: var(--line); color: var(--muted); }
-.card button small { font-family: var(--font-data); opacity: 0.8; }
-.card .note { color: var(--muted); opacity: 1; }
+.card .text { margin: 6px 0 2px; color: var(--text2); font-size: 14px; line-height: 1.5; }
+.card button { margin-top: 10px; padding: 10px 12px; border: 1px solid var(--text); border-radius: var(--r);
+  background: var(--text); color: var(--bg); font-size: 14px; font-weight: 700; }
+.card button:hover:not(:disabled) { background: var(--live); border-color: var(--live); }
+.card button:disabled { border-color: var(--line2); background: var(--s3); color: var(--muted); }
+.card button small { margin-top: 3px; font-family: var(--font-mono); font-size: 11px; font-weight: 500; opacity: 0.7; }
+.card button.secondary { border-color: var(--line2); background: transparent; color: var(--text2); }
+.card button.secondary:hover:not(:disabled) { border-color: var(--hostile); background: transparent; color: var(--hostile); }
+.card .note { margin-top: 8px; color: var(--muted); font-family: var(--font-mono); font-size: 11px; opacity: 1; }
 .card .note.error { color: var(--hostile); }
 
 /* Map symbols: friendly vehicles share one color and show status by fill and ring; targets by affiliation */
 .mk i { border: 2px solid var(--bg); }
-.mk span { left: 17px; padding: 1px 4px; border-radius: var(--r); background: rgba(12, 23, 32, 0.78);
-  color: var(--text); font-family: var(--font-data); font-size: 11px; font-weight: 600; text-shadow: none; }
-.vehicle i, .vehicle.active i { background: var(--friend); border-color: var(--bg); }
-.vehicle.ready i { background: var(--bg); border-color: var(--friend); }
-.vehicle.returning i { background: var(--friend); border-color: var(--warn); }
-.vehicle.maintenance i { background: var(--bg); border-color: var(--muted); }
+.mk span { left: 17px; padding: 2px 6px; border: 1px solid var(--line); border-radius: 0; background: rgba(0, 0, 0, 0.8);
+  color: var(--text); font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-shadow: none; }
+.vehicle i, .vehicle.active i { background: var(--friend); border-color: var(--bg); box-shadow: 0 0 10px rgba(128, 224, 255, 0.55); }
+.vehicle.ready i { background: var(--bg); border-color: var(--friend); box-shadow: none; }
+.vehicle.returning i { background: var(--friend); border-color: var(--warn); box-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
+.vehicle.maintenance i { background: var(--bg); border-color: var(--dim); box-shadow: none; }
 .vehicle.maintenance { opacity: 0.7; }
-.vehicle.lost i { background: transparent; border: 2px dashed var(--warn); }
-.target i, .target.boat i { background: var(--unknown); border-color: var(--bg); }
-.target.fast_boat i { background: var(--hostile); }
+.vehicle.lost i { background: transparent; border: 2px dashed var(--warn); box-shadow: none; }
+.target i, .target.boat i { background: var(--unknown); border-color: var(--bg); box-shadow: 0 0 10px rgba(250, 204, 21, 0.45); }
+.target.fast_boat i { background: var(--hostile); box-shadow: 0 0 12px rgba(239, 68, 68, 0.6); }
 .target.unseen { opacity: 0.5; }
-.target.unseen i { border-style: dashed; border-color: var(--text); }
+.target.unseen i { border-style: dashed; border-color: var(--text); box-shadow: none; }
 
 /* Map source line: small and quiet, but always shown (EOX imagery is CC BY-NC-SA, attribution required) */
-.maplibregl-ctrl.maplibregl-ctrl-attrib { margin: 0; padding: 0 8px 4px; background: none; }
-.maplibregl-ctrl-attrib-inner, .maplibregl-ctrl-attrib a { color: var(--muted); font-size: 10px; opacity: 0.75; }
+.maplibregl-ctrl.maplibregl-ctrl-attrib { margin: 0; padding: 0 10px 6px; background: none; }
+.maplibregl-ctrl-attrib-inner, .maplibregl-ctrl-attrib a { color: var(--dim); font-family: var(--font-mono); font-size: 9px; }
 
-/* Run bar and metrics (Part1-13) */
-.runbar { background: var(--bg); border-top: 1px solid var(--line); }
-.runbar button { border: 1px solid var(--line); border-radius: var(--r); background: var(--raised); color: var(--text); }
-.runbar button:hover:not(:disabled) { border-color: var(--friend); }
-.runbar .clock { font-family: var(--font-data); }
-.runbar .speeds button.on { background: var(--friend); border-color: var(--friend); color: var(--on-friend); }
-.runbar .speeds button.on.dim { background: var(--raised); border-color: var(--friend); color: var(--friend); }
-.runbar .error { color: var(--hostile); }
-.metrics { border: 1px solid var(--line); border-radius: var(--r); background: var(--raised); }
-.metrics .pair b, .metrics dd { font-family: var(--font-data); }
-.metrics .pair .operator b { color: var(--friend); }
+/* Run bar (Part1-13) */
+.runbar { gap: 6px; padding: 10px 16px; background: var(--s1); border-top: 1px solid var(--line); }
+.runbar .clock { min-width: 96px; font-family: var(--font-display); font-size: 17px; font-weight: 700; letter-spacing: 0.04em; color: var(--text); }
+.runbar button { padding: 7px 12px; border: 1px solid var(--line2); border-radius: var(--r); background: transparent;
+  color: var(--text2); font-size: 13px; font-weight: 600; }
+.runbar button:hover:not(:disabled) { border-color: var(--text); color: var(--text); }
+.runbar button.play { min-width: 104px; border-color: var(--text); background: var(--text); color: var(--bg); }
+.runbar button.play:hover:not(:disabled) { border-color: var(--live); background: var(--live); }
+.runbar .speeds { gap: 0; }
+.runbar .speeds button { margin-left: -1px; font-family: var(--font-mono); font-size: 12px; }
+.runbar .speeds button.on { position: relative; border-color: var(--live); background: var(--live); color: var(--bg); }
+.runbar .speeds button.on.dim { border-color: var(--live); background: var(--live-soft); color: var(--live); }
+.runbar .next { color: var(--text); }
+.runbar .reset { color: var(--muted); }
+.runbar .error { color: var(--hostile); font-family: var(--font-mono); font-size: 11px; }
+
+/* Metrics (Part1-13) */
+.metrics { margin-bottom: 18px; padding: 0; border: 0; background: none; }
+.metrics .pair { gap: 0; border: 1px solid var(--line); background: var(--s2); }
+.metrics .pair > div { padding: 14px 8px 12px; }
+.metrics .pair > div + div { border-left: 1px solid var(--line); }
+.metrics .pair b { font-family: var(--font-display); font-size: 34px; font-weight: 700; line-height: 1.1; color: var(--text); }
+.metrics .pair .operator b { color: var(--live); text-shadow: 0 0 18px rgba(74, 222, 128, 0.35); }
+.metrics .pair span { color: var(--muted); font-size: 12px; opacity: 1; }
+.metrics dl { margin-top: 10px; gap: 4px 16px; font-size: 12px; color: var(--muted); }
+.metrics dd { color: var(--text); font-family: var(--font-mono); font-weight: 600; }
+.metrics .note { margin-top: 8px; color: var(--dim); font-size: 11px; opacity: 1; }
 
 /* Play editor (Part3-10) */
 .editor { background: var(--bg); }
-.play-sidebar { background: var(--panel); border-right: 1px solid var(--line); }
-.play-sidebar .group { color: var(--muted); opacity: 1; }
-.play-sidebar .item { border-radius: var(--r); }
-.play-sidebar .item:hover { background: var(--raised); }
-.play-sidebar .item.on { background: var(--raised); box-shadow: inset 2px 0 0 var(--friend); }
-.example-badge { border: 1px solid rgba(255, 181, 71, 0.35); border-radius: var(--r); background: var(--warn-soft); color: var(--warn); }
-.step-card { border-radius: var(--r); border-left: 3px solid var(--friend); background: var(--raised); }
-.step-report { border-radius: var(--r); background: var(--panel); }
-.switch { border-radius: var(--r); background: var(--warn-soft); color: var(--warn); }
-.link { color: var(--friend); }
+.play-sidebar { background-color: var(--s1); border-right: 1px solid var(--line); }
+.play-sidebar .group { margin-top: 18px; color: var(--dim); font-family: var(--font-mono); font-size: 10px; letter-spacing: var(--ls); opacity: 1; }
+.play-sidebar .item { border-radius: var(--r); color: var(--text2); }
+.play-sidebar .item:hover { background: var(--s3); color: var(--text); }
+.play-sidebar .item.on { background: var(--s2); box-shadow: inset 2px 0 0 var(--live); color: var(--text); }
+.example-badge { border: 1px solid rgba(245, 158, 11, 0.4); border-radius: var(--r); background: var(--warn-soft); color: var(--warn);
+  font-family: var(--font-mono); font-size: 11px; }
+.editor-main h1, .editor-main h2 { font-weight: 700; letter-spacing: -0.01em; }
+.step-card { border: 1px solid var(--line); border-left: 2px solid var(--friend); border-radius: var(--r); background: var(--s2); }
+.step-report { border: 1px solid var(--line); border-radius: var(--r); background: var(--s1); }
+.switch { border: 1px solid rgba(245, 158, 11, 0.4); border-radius: var(--r); background: var(--warn-soft); color: var(--warn); }
+.link { color: var(--text); text-decoration-color: var(--line2); text-underline-offset: 3px; }
+.link:hover { color: var(--live); text-decoration-color: var(--live); }
 .missing { color: var(--hostile); }

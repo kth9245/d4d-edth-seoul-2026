@@ -11,6 +11,12 @@ const TITLE: Record<Card["kind"], string> = {
   injection: "전환 승인 대기", outside_zone: "차단 · 구역 밖", battery_insufficient: "차단 · 배터리 부족",
   no_provenance: "차단 · 근거 없음",
 };
+// Short status code in front of the Korean title (D4D tone; theme.css colors it by tone).
+const CODE: Record<Card["kind"], string> = {
+  target_detected: "CONTACT", target_select: "SELECT", vehicle_gap: "GAP", vehicle_lost: "LINK LOST",
+  battery_low: "BATTERY", injection_pending: "PENDING", command_blocked: "BLOCKED", injection: "PENDING",
+  outside_zone: "BLOCKED", battery_insufficient: "BLOCKED", no_provenance: "BLOCKED",
+};
 const TONE: Partial<Record<Card["kind"], string>> = {
   vehicle_gap: "warn", vehicle_lost: "warn", battery_low: "warn", injection: "pending",
   outside_zone: "block", battery_insufficient: "block", no_provenance: "block",
@@ -49,6 +55,7 @@ export function CardList({ frame }: { frame: Frame | null }) {
         return (
           <div key={`${c.source}-${c.id}`} className={`card ${TONE[c.kind] ?? "info"}${c.done ? " done" : ""}`}>
             <div className="head">
+              <i className="code">{CODE[c.kind]}</i>
               <b>{TITLE[c.kind]}</b>
               {c.vehicle && <span>{c.vehicle}</span>}
               <time>{c.time}</time>

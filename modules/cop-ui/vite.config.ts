@@ -1,4 +1,5 @@
 import react from "@vitejs/plugin-react";
+import { realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { defineConfig, searchForWorkspaceRoot } from "vite";
 
@@ -14,7 +15,11 @@ export default defineConfig({
       "^/(operation|plays|run|decisions|direct|injections)(/|\\?|$)": { target: GATEWAY },
     },
     // ?scene=s1..s6 reads contracts/examples and the editor's offline fallback reads demo/scenarios,
-    // both outside this package.
-    fs: { allow: [searchForWorkspaceRoot(process.cwd()), outside("../../contracts/examples"), outside("../../demo/scenarios")] },
+    // both outside this package. In a worktree node_modules links to the main checkout, so the bundled
+    // font files live outside this package too.
+    fs: {
+      allow: [searchForWorkspaceRoot(process.cwd()), outside("../../contracts/examples"), outside("../../demo/scenarios"),
+        realpathSync(outside("./node_modules"))],
+    },
   },
 });
