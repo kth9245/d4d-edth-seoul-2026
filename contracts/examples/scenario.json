@@ -1413,7 +1413,7 @@
       "params": {
        "target": {
         "lat": 37.976,
-        "lon": 124.737,
+        "lon": 124.742,
         "alt_m": 0
        }
       }
@@ -1510,7 +1510,7 @@
    "appear_offset_ms": 660000,
    "pos": {
     "lat": 38.0047,
-    "lon": 124.737,
+    "lon": 124.742,
     "alt_m": 0.0
    },
    "from_enemy": null,
