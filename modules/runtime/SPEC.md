@@ -7,7 +7,7 @@
 | RT-02 | apply_reserves | states, Operation, roles, assignments, t_ms | (states, assignments, Report/None) | 이탈(returning·lost·maintenance) 기체의 op.reserve 첫 ready·active 기체가 그 기체의 Role을 entry step부터 entered_step=False로 시작(결정 0022), Assignment "예비 투입: <id> 대신", vehicle_gap Report(결정 0016) | 황승주 | 완료 |
 | RT-03 | apply_decision | states, roles, Decision, reports | (states, reports) | 선택지 role_by_vehicle대로 기체들을 새 Role entry로(entered_step=False), 보고한 기체 pending_report_id 지움, resolved_ms·decision_id 기록. target_select면 target_id = choice_id. 기체 4대 동시 전환 테스트 · 결정 0033: 옮긴 기체에 decision_id·카드 표적, 그 기체의 열린 카드 닫기 | 황승주 | 완료 |
 | RT-04 | update_metrics | Metrics, TickOutcome(contracts) | Metrics | 09 2.3 정의 5개 각 1테스트(role_gap → vehicle_gap_ms). 공백 끝 규칙은 contracts/API.md 2절 · mission_success = 표적 하나라도 무력화(결정 0033) | 황승주 | 완료 |
-| RT-05 | apply_injection | states, roles, Injection(approved) | states | role_by_vehicle대로 새 Role entry로 전환. 원래 Role은 끝, 자동 복귀 없음(결정 0016) | 황승주 | 완료 |
+| RT-05 | apply_injection | states, roles, Injection(approved) | states | role_by_vehicle대로 새 Role entry로 전환. 원래 Role은 끝, 자동 복귀 없음(결정 0016). target_by_vehicle이 있으면 그 표적을 기체 표적으로(지도 지목, 결정 0048) | 황승주 | 완료 |
 | RT-06 | apply_direct | states, DirectControl, t_ms | (states, Command) | operator_direct 명령 생성, 도착 시 resume 복귀 | 황승주 | 완료 |
 | RT-07 | apply_emergency | states, roles | states | 기체의 현재 Role emergency 규칙(battery_low_pct 등)에 걸리면 그 Role의 지정 step으로 | 황승주 | 완료 |
 | RT-08 | enter_step | VehicleState, VehicleSpec, Role, Step, targets, t_ms | (state, Command/None, Report/None) | nearest·operator·고정 표적 각 1테스트, move_to의 target 좌표는 그대로, 귀환 step이면 returning. 원본: 스파이크 port/modules/runtime/actions/enter_step.py · 결정 0033: 출처 decision_id, strike면 params target(표적 위치), 카드 표적은 정해진 표적 우선 | 황승주 | 완료 |

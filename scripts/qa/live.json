@@ -74,6 +74,7 @@
  {"click": "재생", "wait": 2500},
  {"click": "일시정지", "wait": 800},
  {"label": "L15 one operator action, no approval card for it", "eval": "({ ops: Number(document.querySelector('.loadbar .op b')?.innerText) - window.__ops, card: [...document.querySelectorAll('.card, .qrow')].some(c => c.innerText.includes('d4') && c.innerText.includes('전환 승인')) })", "expect": {"ops": 1, "card": false}},
+ {"label": "L15 d4 works boat2 (the roster row and a line on the map)", "eval": "({ row: [...document.querySelectorAll('.roster .ro')].find(r => r.innerText.startsWith('d4'))?.innerText.replace(/\\n/g, ' '), mission: [...document.querySelectorAll('.roster .ro')].find(r => r.innerText.startsWith('d4'))?.innerText.includes('→ boat2') })", "match": "\"row\":\"d4 표적 감시 .*\"mission\":true"},
  {"click": "처음으로", "wait": 300},
  {"click": "처음으로", "wait": 3000},
  {"label": "L14 reset back to the start", "eval": "({ clock: document.querySelector('.runbar .clock')?.innerText, run: document.querySelector('.runbar .run-toggle')?.innerText })", "expect": {"clock": "T+0:00", "run": "▶ 재생"}}
