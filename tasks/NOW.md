@@ -2,11 +2,12 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 10:18 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 10:19 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part1-9** 지도: 위성 raster + 기체·표적·구역 — kth9245, 10/10 10:18부터
 - **Part2-20** sim `load_scenario_json` — 최동호, 10/10 10:11부터 · SIM-04
+- **Part3-3** play `check_report_points` — 황승주, 10/10 10:19부터 · PLY-03
 
 ## 막힘
 - (없음)
@@ -30,7 +31,6 @@
 - **Part3-15.1** mavlink compile_mavlink · MAV-01 (리드, 결정 0025, 통합 2 뒤)
 
 ### 황승주
-- **Part3-3** play `check_report_points` · PLY-03
 - **Part3-4** play `check_return_battery` · PLY-04
 - **Part3-5** play `check_zone` · PLY-05
 - **Part3-6** play `check_play` · 하위 0/1 완료 · PLY-06
