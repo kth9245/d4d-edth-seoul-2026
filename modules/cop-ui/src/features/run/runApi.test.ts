@@ -1,9 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { jumpPaused, postRun } from "./runApi";
+import { postRun } from "./runApi";
 
-const RUN = { status: "paused", speed: 10 };
-
-describe("postRun / jumpPaused", () => {
+describe("postRun", () => {
   afterEach(() => vi.unstubAllGlobals());
   const stub = (...res: (Partial<Response> | Error)[]) => {
     const f = vi.fn((_url: string, _init?: RequestInit) => {
@@ -35,17 +33,5 @@ describe("postRun / jumpPaused", () => {
   it("says the server is unreachable when fetch fails", async () => {
     stub(new Error("net"));
     expect(await postRun("/run/reset")).toEqual({ ok: false, error: "서버 연결 실패" });
-  });
-
-  it("pauses first, then jumps, so the run loop cannot tick past the stop", async () => {
-    const f = stub(ok(RUN), ok(RUN));
-    expect(await jumpPaused(975_000)).toEqual({ ok: true, run: RUN });
-    expect(f.mock.calls.map((c) => c[0])).toEqual(["/run/live?speed=0", "/run/jump?offset_ms=975000"]);
-  });
-
-  it("does not jump when the pause fails", async () => {
-    const f = stub(new Error("net"));
-    expect(await jumpPaused(975_000)).toEqual({ ok: false, error: "서버 연결 실패" });
-    expect(f).toHaveBeenCalledTimes(1);
   });
 });

@@ -35,7 +35,7 @@ function Idle({ frame, seen, onGraph, ops }: { frame: Frame; seen: Card[]; onGra
       {onGraph && win.target && <button className="graph-open" onClick={() => onGraph(win.target!)}>연결 보기</button>}</div>
   ) : (
     <div className="next-act"><div className="k">할 일 없음</div><div className="t">지금 결정할 것이 없습니다</div>
-      {!ops && <div className="s">▶ 재생하거나 다음 사건으로 넘어가세요.</div>}</div>
+      {!ops && <div className="s">▶ 재생하세요.</div>}</div>
   );
 }
 

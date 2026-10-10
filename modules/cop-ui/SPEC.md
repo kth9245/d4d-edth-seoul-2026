@@ -25,11 +25,11 @@
 | UI-20 | pruneSent | 보낸 기록, 보고 id, 시각 역행 | 보낸 기록 | reset으로 사라진 보고·시각이 뒤로 가면 잊음(같은 id 카드가 잠기지 않게) | 리드 | 완료 |
 | UI-21 | CardList | frame | 카드 열 | 선택지 버튼 → POST /decisions, 보낸 뒤 처리될 때까지 잠금, 실패 문구 | 리드 | 폐기(Part1-32, DecisionQueue·QueueCard UI-95로 대체) |
 | UI-22 | mmss | ms | "m:ss" | 1초 미만 버림, 60분 넘어도 분으로, 음수는 0:00 | 리드 | 완료 |
-| UI-23 | nextStop | 작전 시작 후 ms, RUN_STOPS | RunStop \| null | 현재보다 뒤의 첫 정지 시각(정지 시각 위면 다음 것). 정지 시각은 실제 엔진의 타격 단계 순서 장면 시각(16:25 보고 카드, 19:05 드론1 귀환, 20:00 드론2 직접 조종, 23:05 고속정 등장), 타격 장면은 정지 없이 재생(Part1-13.1) | 리드 | 완료 |
-| UI-24 | postRun·jumpPaused | 경로 / offset_ms | {ok, run} \| {ok: false, error} | POST /run/*, throw 없이 상태·detail 문구. 다음 사건은 speed=0 뒤 jump, 정지 실패면 jump 안 함 | 리드 | 완료 |
+| UI-23 | nextStop | 작전 시작 후 ms, RUN_STOPS | RunStop \| null | 현재보다 뒤의 첫 정지 시각(정지 시각 위면 다음 것). 정지 시각은 실제 엔진의 타격 단계 순서 장면 시각(16:25 보고 카드, 19:05 드론1 귀환, 20:00 드론2 직접 조종, 23:05 고속정 등장), 타격 장면은 정지 없이 재생(Part1-13.1) | 리드 | 폐기(Part1-32.7, 결정 0079 다음 사건 삭제) |
+| UI-24 | postRun | 경로 | {ok, run} \| {ok: false, error} | POST /run/*, throw 없이 상태·detail 문구(다음 사건용 jumpPaused는 결정 0079로 삭제) | 리드 | 완료 |
 | UI-25 | metricView | Metrics | {operator, manual, rows} | 운용자 조작 대 수동 기준, 기체 공백 m:ss, 빠진 칸 0. 임무 판정 행은 없음(타격 결과는 결과 카드, Part1-20) | 리드 | 완료 |
 | UI-26 | fetchOperation | — | Partial<Operation> \| null | GET /operation 본문, 오류·JSON 아님·실패는 null(fetchZone·RunBar가 씀) | 리드 | 완료 |
-| UI-27 | RunBar | frame | 지도 아래 재생 막대 | T+시계, 재생/일시정지(직전 배속으로 재개), ×1·5·10·30, 다음 사건(사건 직후 일시정지), 처음으로(확인창) | 리드 | 완료 |
+| UI-27 | RunBar | frame | 지도 아래 재생 막대 | T+시계, 재생/일시정지(직전 배속으로 재개), ×1·5·10·30, 처음으로(확인창). 다음 사건은 결정 0079로 삭제 | 리드 | 완료 |
 | UI-28 | MetricsPanel | Metrics | 지표 패널 | 운용자 조작 대 기체별 직접 명령 수 나란히, 나머지 지표, 수동 기준 주석 | 리드 | 폐기(Part1-32, 머리의 LoadBar UI-93으로 대체) |
 | UI-29 | saveRole | Role | RoleCheck | POST /roles(검사 통과 시 서버 메모리에 저장·실행을 시작 전으로), 2xx 아니면·연결 실패면 오류 | 리드 | 완료 |
 | UI-30 | issuesByStep·batteryText | RoleCheck, Role | {byStep, general} / string | step id 있는 오류는 그 카드에, 없거나 모르는 step은 Role 머리에, 예상 귀환 배터리 한 줄 (편집기 저장 막대, Part3-11) | 리드 | 완료 |
@@ -53,7 +53,7 @@
 | UI-48 | enemyRows·appearText | EnemySpec[], 작전 시작 시각, Role[] | 적 열 머리 | 편집기 작전 개요 아군 열 아래 '적' 구역(Part1-21, 결정 0032, 읽기 전용): 적마다 종류·등장 시각 KST(+분)·위치 좌표 또는 'boat1 위치에서'·속도, 그 아래 Role 카드(StepCard). Role이 없으면 없는 Role로 표시. 데이터는 GET /enemies | 리드 | 완료 |
 | UI-49 | fetchScenarios | — | ScenarioInfo[] | GET /scenarios(결정 0042), 오류·연결 실패·목록 아님이면 빈 목록 | 리드 | 완료 |
 | UI-50 | activateScenario | 작전 id | RunState | POST /scenarios/{id}/activate(그 작전을 실행 작전으로, 시작 전 멈춤), 2xx 아니면·연결 실패면 오류 | 리드 | 완료 |
-| UI-51 | stopsFor | 실행 작전 id | RunStop[] | 야간 시연(baengnyeong_night)이면 RUN_STOPS, 그 밖은 없음(다음 사건 없음, 결정 0042) | 리드 | 완료 |
+| UI-51 | stopsFor | 실행 작전 id | RunStop[] | 야간 시연(baengnyeong_night)이면 RUN_STOPS, 그 밖은 없음(다음 사건 없음, 결정 0042) | 리드 | 폐기(Part1-32.7, 결정 0079 다음 사건 삭제) |
 | UI-52 | applyRoute·setLoop·routeChoice·ROUTE_KINDS | Role, 카드 id, RouteDef/반복 | 새 Role / 경로 id | 경로 비행(결정 0044·0045): 고른 경로를 카드에 복사(고정=route, 상대=offsets, route_name), 반복=patrol_route·한 번=move_to(점 하나 이동은 반복 시 한 점 route), 행동을 바꾸면 경로 값 지움, 목록에 없는 경로는 "" | 리드 | 완료 |
 | UI-53 | describeAction·describeCondition(경로·T+) | Action/Condition | 카드 문구 | "경로 비행 · 이름|경로 N곳 · 한 번|반복 · 기체 위치 기준", at_time은 T+m:ss | 리드 | 완료 |
 | UI-54 | deleteRole | Role id | 서버에 있었나(bool) | DELETE /roles/{id}(결정 0050, 실행 작전에서 지우고 시작 전으로), 404는 저장 전 새 Role이라 false, 그 밖의 실패는 오류. Role 화면 "삭제"는 두 번 누르기, 지운 뒤 작전 개요 | 리드 | 완료 |

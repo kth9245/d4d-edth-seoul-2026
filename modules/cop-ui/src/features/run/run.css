@@ -8,7 +8,6 @@
 .runbar .speeds { display: inline-flex; gap: 2px; }
 .runbar .speeds button.on { background: #3a6df0; border-color: #3a6df0; color: #fff; }
 .runbar .speeds button.on.dim { background: #1d3157; border-color: #3a6df0; }
-.runbar .next { font-weight: 700; }
 .runbar .error { color: #ff4d4f; font-size: 13px; }
 
 .metrics { margin-bottom: 12px; padding: 10px; border-radius: 8px; background: #14213a; }

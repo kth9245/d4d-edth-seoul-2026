@@ -122,7 +122,6 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .runbar .speeds button { margin-left: -1px; font-family: var(--font-mono); font-size: 12px; }
 .runbar .speeds button.on { position: relative; border-color: var(--live); background: var(--live); color: var(--bg); }
 .runbar .speeds button.on.dim { border-color: var(--live); background: var(--live-soft); color: var(--live); }
-.runbar .next { color: var(--text); }
 .runbar .reset { color: var(--muted); }
 .runbar .error { color: var(--hostile); font-family: var(--font-mono); font-size: 11px; }
 

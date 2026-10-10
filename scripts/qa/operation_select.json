@@ -13,12 +13,12 @@
  {"shot": "ops-ontology-24h.png"},
  {"click": "작전 개요", "wait": 800},
  {"click": "▶ 시뮬레이션", "wait": 5000},
- {"label": "O3 simulate opens the live tab paused at the start (the 24h operation ticks every 200 ms since Part2-36, so the first Frame is T+0:00), no next-event stops", "eval": "({ hash: location.hash, vehicles: document.querySelectorAll('.mk.vehicle').length, run: document.querySelector('.runbar .run-toggle')?.innerText, clock: document.querySelector('.runbar .clock')?.innerText, next: document.querySelector('.runbar .next')?.innerText })", "expect": {"hash": "#live", "vehicles": 6, "run": "▶ 재생", "clock": "T+0:00", "next": "다음 사건 없음"}},
+ {"label": "O3 simulate opens the live tab paused at the start (the 24h operation ticks every 200 ms since Part2-36, so the first Frame is T+0:00)", "eval": "({ hash: location.hash, vehicles: document.querySelectorAll('.mk.vehicle').length, run: document.querySelector('.runbar .run-toggle')?.innerText, clock: document.querySelector('.runbar .clock')?.innerText })", "expect": {"hash": "#live", "vehicles": 6, "run": "▶ 재생", "clock": "T+0:00"}},
  {"shot": "ops-live-24h.png"},
  {"nav": "/?qa=ops#editor", "wait": 4000},
  {"click": "백령도 야간 해안 경계", "wait": 2500},
  {"label": "O4 back to the night operation", "eval": "document.querySelector('.op-head h2')?.innerText", "expect": "백령도 야간 해안 경계"},
  {"click": "▶ 시뮬레이션", "wait": 5000},
- {"label": "O4 night operation on the live tab with its next-event stops", "eval": "({ hash: location.hash, vehicles: document.querySelectorAll('.mk.vehicle').length, run: document.querySelector('.runbar .run-toggle')?.innerText, clock: document.querySelector('.runbar .clock')?.innerText, next: document.querySelector('.runbar .next')?.innerText })", "expect": {"hash": "#live", "vehicles": 6, "run": "▶ 재생", "clock": "T+0:00", "next": "다음 사건 ▸ 17:05 보고 카드"}},
+ {"label": "O4 night operation on the live tab", "eval": "({ hash: location.hash, vehicles: document.querySelectorAll('.mk.vehicle').length, run: document.querySelector('.runbar .run-toggle')?.innerText, clock: document.querySelector('.runbar .clock')?.innerText })", "expect": {"hash": "#live", "vehicles": 6, "run": "▶ 재생", "clock": "T+0:00"}},
  {"shot": "ops-live-night.png"}
 ]
