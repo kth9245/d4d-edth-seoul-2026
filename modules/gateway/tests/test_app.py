@@ -288,3 +288,15 @@ def test_post_scenarios_creates_a_new_operation_to_give_start_roles():  # decisi
         op["assign"] = {"d1": "go_home"}
         assert client.post("/operation", json=op).status_code == 200
         assert client.post("/run/jump?offset_ms=60000").json()["status"] == "paused"
+
+
+def test_post_routes_adds_a_route_the_editor_can_offer():  # decision 0054
+    with TestClient(create_app(SCENARIO, period_s=0.01)) as client:
+        body = {
+            "id": "new_route",
+            "name": "QA 고정",
+            "points": [{"lat": 37.96, "lon": 124.66, "alt_m": 0}],
+        }
+        added = client.post("/routes", json=body)
+        assert added.status_code == 200 and added.json()[-1]["name"] == "QA 고정"
+        assert client.get("/routes").json()[-1]["id"] == "new_route"

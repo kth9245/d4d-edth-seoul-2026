@@ -24,6 +24,7 @@ from contracts.models import (
     NewOperationIn,
     Operation,
     Role,
+    RouteDef,
     SwitchIn,
 )
 from modules import sim
@@ -157,6 +158,11 @@ def create_app(
     @app.get("/routes")
     async def routes():  # decision 0044: routes the editor offers for route-flying cards
         return live.scenario.routes
+
+    @app.post("/routes")
+    async def add_route(route: RouteDef):  # decision 0054: made in the editor, memory only
+        log.info("POST /routes %s %r", route.id, route.name)
+        return live.add_route(route)
 
     @app.get("/ontology")
     async def ontology():  # decision 0038: the same inference the role check uses

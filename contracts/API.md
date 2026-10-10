@@ -99,6 +99,7 @@ Role은 다른 기체를 알지 못하지만, 선택지의 `role_by_vehicle`은 
 | `GET /enemies` | — | `EnemySpec[]`(시나리오의 적, Part1-21) |
 | `GET /watch_points` | — | `WatchPoint[]`(시나리오의 기준점, 상황판이 놓친 표적의 접근·이탈을 가름, 결정 0047) |
 | `GET /routes` | — | `RouteDef[]`(실행 작전의 경로 목록, 결정 0044) |
+| `POST /routes` | `RouteDef`(고정이면 `points`, 상대면 `offsets`) | `RouteDef[]`(실행 작전 경로 목록 끝에 더함, 같은 id는 바꿈. 카드는 고를 때 경로를 복사하므로 실행을 되돌리지 않음. gateway 메모리에만, 결정 0054) |
 | `GET /ontology` | — | `OntologyView`(계층 + 기체마다 행동 10개의 판정과 경로, 결정 0038). 시나리오에 온톨로지가 없으면 404 |
 | `GET /graph?focus=` | — | `ObjectGraph`(그 객체에서 링크를 따라 모은 객체. 기체와 focus가 아닌 표적은 더 펼치지 않음, 결정 0038). 없는 id는 404 |
 | `POST /roles/check` | `Role` | `RoleCheck` |

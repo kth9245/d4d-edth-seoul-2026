@@ -1,4 +1,4 @@
-from contracts.models import Action, Condition, Exit, Role, Step
+from contracts.models import Action, Condition, Exit, GeoPoint, Role, RouteDef, RouteOffset, Step
 from modules.gateway.tests.test_live import SCENARIO, START, make
 
 PATROL_A = next(p for p in SCENARIO.roles if p.id == "patrol_a")
@@ -93,3 +93,16 @@ def test_deleting_a_start_role_leaves_its_vehicles_unassigned():  # decision 005
     live.delete_role(pid)
     assert pid not in live.scenario.operation.assign.values()
     assert "d1" not in live.scenario.operation.assign  # starts with no role, waits at home
+
+
+def test_add_route_appends_it_to_the_editor_list_without_resetting():  # decision 0054
+    live, _ = make()
+    live.set_speed(5)
+    fixed = RouteDef(
+        id="new_route", name="QA 고정", points=[GeoPoint(lat=37.96, lon=124.66, alt_m=0)]
+    )
+    shape = RouteDef(id="new_route-2", name="QA 상대", offsets=[RouteOffset(north_m=200, east_m=0)])
+    assert [r.id for r in live.add_route(fixed)][-1] == "new_route"
+    routes = live.add_route(shape)
+    assert routes[-2:] == [fixed, shape] and live.scenario.routes == routes
+    assert live.run.status == "running"  # a route is only offered to cards; the run goes on

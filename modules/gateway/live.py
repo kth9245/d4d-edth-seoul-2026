@@ -20,6 +20,7 @@ from contracts.models import (
     Operation,
     Role,
     RoleCheck,
+    RouteDef,
     RunState,
     Scenario,
     ScenarioInfo,
@@ -124,6 +125,13 @@ class Live:
         self.scenario = self.scenario.model_copy(update={"roles": roles, "operation": op})
         self.reset()
         return roles
+
+    def add_route(self, route: RouteDef) -> list[RouteDef]:
+        """A route the editor made (decision 0054), last in the running operation's list (same id replaced).
+        Cards copy a route when it is picked, so the run is not reset."""
+        routes = [r for r in self.scenario.routes if r.id != route.id] + [route]
+        self.scenario = self.scenario.model_copy(update={"routes": routes})
+        return routes
 
     def scenario_infos(self) -> list[ScenarioInfo]:
         self.scenarios[self.scenario.id] = self.scenario  # saved roles and operation edits
