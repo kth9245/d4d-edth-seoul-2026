@@ -15,3 +15,9 @@ export function situationCounts(stages: Stage[], queue: Queue): Situation {
     decisions: queue.action.reduce((n, item) => n + item.cards.length, 0),
   };
 }
+
+// Header count of enemies (decision 0080): no counter word, since "척" counts only ships and the enemies can be
+// sites, ground robots or drones.
+export function targetsLabel(n: number): string {
+  return `적 ${n}`;
+}

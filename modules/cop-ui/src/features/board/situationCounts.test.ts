@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { mkCard } from "./boardFixtures";
-import { situationCounts } from "./situationCounts";
+import { situationCounts, targetsLabel } from "./situationCounts";
 import type { Stage } from "./targetStage";
 
 const s = (key: Stage["key"]): Stage => ({ key, label: key, detail: "", away: false });
@@ -19,5 +19,12 @@ describe("situationCounts", () => {
     const q = { action: [{ key: "a", cards: [mkCard({ id: "a" })] }, { key: "p", cards: [mkCard({ id: "p1" }), mkCard({ id: "p2" })] }],
       alerts: [], history: [] };
     expect(situationCounts([], q).decisions).toBe(3);
+  });
+});
+
+describe("targetsLabel", () => {
+  it("counts enemies without the ship counter, since they can be sites, robots or drones (decision 0080)", () => {
+    expect(targetsLabel(3)).toBe("적 3");
+    expect(targetsLabel(0)).toBe("적 0");
   });
 });
