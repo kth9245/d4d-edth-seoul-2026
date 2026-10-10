@@ -1,8 +1,8 @@
 import type { Target } from "../../contracts.gen";
+import { TARGET_KIND_KO } from "./seenTargets";
 import type { Stage } from "./targetStage";
 import type { VehicleRow } from "./vehicleRows";
 
-const KIND_KO: Record<string, string> = { boat: "보트", fast_boat: "고속정", person: "사람", unknown: "미상", drone: "자폭 드론", usv: "적 수상정", ugv: "적 지상로봇" };
 const tone = (r: number) => (r >= 0.7 ? "hi" : r >= 0.4 ? "mid" : "lo");
 const QUIET: Record<string, number> = { gone: 1, never: 2 };
 
@@ -41,7 +41,7 @@ export function RosterPanel({ rows, targets, stages, selected, onVehicle, onTarg
         return (
           <button key={t.id} type="button" className={`ro en ${quiet ? s.key : tone(r)}`} onClick={() => onTarget(t.id)}>
             <span className="l1">
-              <b>{t.id}</b><span className="doing">{KIND_KO[t.kind] ?? t.kind}</span>
+              <b>{t.id}</b><span className="doing">{TARGET_KIND_KO[t.kind] ?? t.kind}</span>
               {t.rf_detected && !quiet && <span className="rf-tag">RF</span>}
               <span className="risk">{quiet ? "—" : r.toFixed(2)}</span>
             </span>

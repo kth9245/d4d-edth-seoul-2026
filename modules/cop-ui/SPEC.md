@@ -87,3 +87,5 @@
 | UI-95 | DecisionQueue·QueueCard | Frame, Queue | 오른쪽 열 | 한 장 펼침(나머지 한 줄), 정해진 선택지 먼저·드론 요청 묶음, 표적 선택 위험도 순 칩, 타격 빨강, 승인·거부, 대안 지점, 보내기 잠금(UI-20), 결정 없으면 할 일 없음·무력화 결과, 알림 2분 | 리드 | 완료 |
 | UI-96 | PointMenu·지목(useDirectControl) | 선택 기체, 표적 | Role 메뉴 | 기체를 고른 동안만 살아 있는 표적이 클릭을 받음(기체 위), 표적 옆 메뉴에 targetRoles 버튼("지금 → 새 · 표적"), 누르면 postPoint(승인된 전환, 조작 1번), 메뉴가 열린 채 지도 클릭은 메뉴만 닫음, Esc 취소, 목록의 적 줄로도 지목, 타격 없음(결정 0048·0049) | 리드 | 완료 |
 | UI-97 | MavlinkLog·MavlinkButton·fetchMavlink | GET /mavlink | 새 창 로그 | 헤더 MAVLink 버튼이 #mavlink를 이름 붙은 새 창 하나로 열고, 그 창은 탭 없이 1초마다 GET /mavlink 줄을 그려 마지막 줄을 보인다, 조회 실패면 직전 줄 유지. 탭 이름 상황판 → 시뮬레이션(결정 0063) | 리드 | 완료 |
+| UI-98 | vehicleMenuRoles | Role[], VehicleSpec, 적 Role id[], 지금 Role id | {plain, target}: {id, name, strike}[] | 기체 메뉴(결정 0058·0059): 그 기체 영역·능력(모든 step 행동, 능력 목록이 비면 건너뜀)의 Role, 적 Role 제외. 첫 step이 표적을 operator로 받는 감시·근접·타격이면 target(strike 표시), 나머지는 plain(지금 Role 제외) | 리드 | 완료 |
+| UI-99 | seenTargets | Target[], Track 묶음, 기체 위치 | {id, kind, threat, distM}[] | 기체 메뉴 표적 Role의 포착 목록: 표적 상태 seen만(놓침·RF만·미탐·무력화 제외), 위험도 높은 순·가까운 순, 종류 한글, 거리 m 정수 | 리드 | 완료 |
