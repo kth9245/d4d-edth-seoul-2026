@@ -16,6 +16,8 @@ async function getJson<T>(f: Fetch, url: string): Promise<T> {
 export async function loadEditorData(f: Fetch = (url) => fetch(url)): Promise<EditorData> {
   try {
     const [operation, plays] = await Promise.all([getJson<Operation>(f, "/operation"), getJson<Play[]>(f, "/plays")]);
+    // A wrong shape would throw later inside groupPlays/vehicleColumns and blank the whole page.
+    if (!Array.isArray(plays) || !Array.isArray(operation?.vehicle_ids)) throw new Error("unexpected /operation or /plays shape");
     return { operation, plays, source: "gateway" };
   } catch (e) {
     console.warn("editor: gateway unavailable, showing example data", e);

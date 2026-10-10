@@ -22,6 +22,11 @@ describe("loadEditorData", () => {
     const d = await loadEditorData(() => json({ detail: "x" }, 500));
     expect(d.source).toBe("example");
   });
+  it("falls back when a 200 JSON reply is not an operation and a play list", async () => {
+    const d = await loadEditorData((url) => json(url === "/operation" ? null : {}));
+    expect(d.source).toBe("example");
+    expect(d.plays).toHaveLength(8);
+  });
   it("falls back when the dev server answers index.html", async () => {
     const d = await loadEditorData(() => Promise.resolve(new Response("<!doctype html>", { status: 200 })));
     expect(d.source).toBe("example");
