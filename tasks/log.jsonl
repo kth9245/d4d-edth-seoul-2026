@@ -602,3 +602,4 @@
 {"at": "2026-10-11T03:00:06+09:00", "by": "황승주", "op": "done", "id": "Part2-69", "take": false}
 {"at": "2026-10-11T03:05:51+09:00", "by": "kth9245", "op": "add", "id": "Part1-42.5", "title": "공격 시연 작전 코드·문서의 옛 결정 번호(0069~0073)를 새 번호(0074~0078)로 고친다", "parent": "Part1-42", "assign": null, "slot": null, "spec": null}
 {"at": "2026-10-11T03:05:53+09:00", "by": "kth9245", "op": "start", "id": "Part1-42.5", "take": false, "from": null}
+{"at": "2026-10-11T03:07:02+09:00", "by": "kth9245", "op": "done", "id": "Part1-42.5", "take": false}
