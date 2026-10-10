@@ -18,7 +18,7 @@
 | RT-13 | route_command | Action, Domain, 기체 위치, params | (CommandKind/None, params) | 상대 경로가 기체 위치 기준 좌표(anchor target이면 표적을 본 지점, 결정 0055), move_to+route는 follow_route loop false, 그 밖은 expand_action 그대로 | kth9245 | 완료 |
 | RT-14 | relief_due | VehicleState, VehicleSpec, 교대 기체 비행 분 | bool | 기준 배터리(귀환량 2배 빼고 35%) 또는 교대 비행 중 순찰기 소모+7% ≥ 하한선 위 여유면 참. 멀리서 오는 교대도 하한선 전에 인계(사용자 10/10) | 황승주 | 완료 |
 | RT-15 | target_domain | Target, land | air/ground/sea | drone이면 공중, 아니면 지금 위치가 섬 안이면 지상·밖이면 해상(결정 0055) | 황승주 | 완료 |
-| RT-16 | raid_choices | others, hover, states, targets, land, specs, rotation | list[Choice] | 적기 번호(본 순서), 적기당 드론 1대 집중 순찰, usv는 해상·ugv는 지상 적기 추적, 대기(결정 0055). raid_spot: 결정 0057 카드도 멸공에선 이 선택지 | 황승주 | 완료 |
+| RT-16 | raid_choices | rep, states, op, roles, targets, land, specs | Report | 멸공 공용 상수(FOCUS·TRACK·NEVER). raid_spot: 결정 0057 카드는 멸공에서 선택지 없는 알림, 질문은 RT-19 단계별 카드(사용자 10/10, 결정 0055) | 황승주 | 완료 |
 | RT-17 | spot_reports | states, targets, roles, op, specs, land, t_ms | list[Report] | 순찰 보고 흐름 밖 기체가 아직 카드 없고 아무도 표적으로 삼지 않은 적을 위협 누적 4.5 넘게 보면 그 기체 이름으로 발견 카드 한 장("새 적 탐지 · 근거"), 그 기체는 하던 일 계속. 선택지: 표적용 전환(첫 단계가 표적 operator인 Role로만 된 전환, 올린 기체를 옮기지 않고 기체마다 그 적의 영역을 맡을 수 있을 때, 표적 지정) → 기지 대기 드론 감시 → 없으면 유지(결정 0057) | kth9245 | 완료 |
 | RT-18 | raid_cards | v, tid, states, specs, targets, op, exclude | list[Choice] / list[VehicleState] | 멸공 단계별 카드: 격추/관찰, 추적(어떤 적도 안 본 기체)·집중 순찰·대체 순찰(특정 임무 없는 기체) 1대씩 + 대기(추적은 전체 대기도), 기지 복귀/현재 위치에서 대기 | 황승주 | 완료 |
 | RT-19 | raid_flow | reports, decisions, states, targets, op, roles, specs, t_ms | Report / None | raid_next: 멸공 적 대응 질문 하나씩: 위협 높은 적부터(같으면 본 순) ① 발견 기체 격추/관찰 → ② 추적 1대씩(고를 때마다 ②' 그 기체 격추/관찰, 전체 대기) → ③ 집중 순찰 → ④ 대체 순찰 → ⑤ 개요. 상태는 raid 카드와 결정으로 매 틱 계산 | 황승주 | 완료 |

@@ -25,6 +25,8 @@ from modules.runtime import (
     apply_injection,
     apply_reserves,
     fleet_choices,
+    raid_idle,
+    raid_next,
     raid_spot,
     relieve_hover,
     rotate_patrols,
@@ -108,10 +110,14 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
     ]  # 5.2
     reports = [
         fleet_choices(r, stepped, sc.operation, roles, *raid)
-        if r.kind == "target_detected" and not r.resolved_ms
+        if r.kind == "target_detected" and not r.resolved_ms and not r.id.startswith("raid-")
         else r
         for r in reports
     ]  # 5.3 open cards follow the fleet (decision 0046)
+    decs = es.decisions + list(inputs.decisions)  # 5.4 24h step-by-step raid cards (RT-19, RT-20)
+    new_reports += raid_idle(reports + new_reports, stepped, targets, specs, sc.land, roles, t)
+    ask = raid_next(reports + new_reports, decs, stepped, targets, sc.operation, roles, specs, t)
+    new_reports += [ask] if ask else []
     states, assigns, gap = apply_reserves(stepped, sc.operation, roles, assigns, t)  # 6
     new_reports += [gap] if gap else []
     states, passed, blocks, cards = run_checks(  # 7

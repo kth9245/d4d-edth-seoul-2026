@@ -67,75 +67,15 @@ def test_without_targets_choices_are_unchanged():
     )  # night: no focus_orbit
 
 
-def test_other_drones_get_relief_and_focus_choices():
+def test_24h_card_is_an_alert_and_the_step_cards_ask():  # RT-19 asks one question at a time
     rep = run(base(), [SEA])
-    labels = [c.label for c in rep.choices]
-    assert "d3 → 이탈 지역 순찰(해안 순찰 A · 북)" in labels
-    assert "d3 → 적기 1 발견 지점 집중 순찰" in labels and labels[-1] == "대기"
-    focus = next(c for c in rep.choices if c.id == "focus_d3_boat1")
-    assert focus.role_by_vehicle == {"d3": "focus_orbit"} and focus.target_by_vehicle == {
-        "d3": "boat1"
-    }
-    assert not any(c.id.startswith(("join_", "keep")) for c in rep.choices)
+    assert rep.choices == [] and rep.resolved_ms == CARD.t_ms
 
 
-def test_a_focused_target_gets_no_more_focus_choices():
-    d2 = vs("d2", "focus_orbit", "s", target="boat1")
-    rep = run([s for s in base() if s.id != "d2"] + [d2], [SEA])
-    assert not any(c.id.startswith("focus_") for c in rep.choices)
-
-
-def test_usv_tracks_sea_and_ugv_tracks_ground_only():
-    d2 = vs("d2", "coast_b", "report", target="e_ugv1")
-    d3 = vs("d3", "coast_a", "report", target="e_drone")
-    states = [s for s in base() if s.id not in ("d2", "d3")] + [d2, d3]
-    targets = [
-        SEA,
-        tg("e_ugv1", "ugv", _at(100, 100), 20, ("d2",)),
-        tg("e_drone", "drone", _at(0, 0), 30, ("d3",)),
-    ]
-    labels = [c.label for c in run(states, targets).choices]
-    assert "usv → 적기 1 추적(해상)" in labels and "ugv → 적기 2 추적(지상)" in labels
-    assert not [x for x in labels if "적기 3 추적" in x]
-    assert not [x for x in labels if x.startswith("usv → 적기 2") or x.startswith("ugv → 적기 1")]
-    track = next(c for c in run(states, targets).choices if c.id == "track_usv_boat1")
-    assert track.role_by_vehicle == {"usv": "track_sea"} and track.target_by_vehicle == {
-        "usv": "boat1"
-    }
-
-
-def test_unseen_and_neutralized_targets_get_no_number():
-    targets = [
-        tg("ghost", "usv", _at(0, -3000), 1, ()),
-        tg("dead", "usv", _at(0, -3000), 2, neutralized_ms=5),
-        SEA,
-    ]
-    labels = [c.label for c in run(base(), targets).choices]
-    assert "usv → 적기 1 추적(해상)" in labels and not [x for x in labels if "적기 2" in x]
-
-
-def test_a_ugv_still_at_sea_gets_no_usv_track():  # just landed from the enemy usv: a ugv never needs chasing at sea
-    d2 = vs("d2", "coast_b", "report", target="e_ugv1")
-    states = [s for s in base() if s.id != "d2"] + [d2]
-    labels = [
-        c.label for c in run(states, [tg("e_ugv1", "ugv", _at(0, -2000), 20, ("d2",))]).choices
-    ]
-    assert not [x for x in labels if x.startswith("usv →")]
-
-
-def test_a_card_from_outside_a_patrol_gets_the_raid_choices():  # decision 0057 card in the 24h raid
-    from contracts.models import Report
+def test_a_card_from_outside_a_patrol_is_an_alert_too():  # decision 0057 card in the 24h raid
     from modules.runtime.actions.raid_choices import raid_spot
 
-    spot = Report(id="rep-d1-9-s", t_ms=9, kind="target_detected", vehicle_id="d1", target_id="e_drone",
-                  text="새 적 탐지", choices=[{"id": "watch_d3", "label": "d3 → e_drone 감시", "role_by_vehicle": {"d3": "watch"}}])  # fmt: skip
-    d1 = vs("d1", "focus_orbit", "s", target="boat1")
-    states = [d1, *(s for s in base() if s.id != "d1")]
-    targets = [SEA, tg("e_drone", "drone", _at(0, 0), 30, ("d1",))]
-    rep = raid_spot(spot, states, OPX, RAID, targets, LAND, SPECS)
-    labels = [c.label for c in rep.choices]
-    assert labels == [
-        "d3 → 적기 2 발견 지점 집중 순찰",
-        "대기",
-    ]  # air enemy: no usv/ugv track; d4 is not full
-    assert raid_spot(spot, states, OPX, ROLES, targets, LAND, SPECS) == spot  # night: untouched
+    spot = CARD.model_copy(update={"vehicle_id": "usv"})
+    rep = raid_spot(spot, base(), OPX, RAID, [SEA], LAND, SPECS)
+    assert rep.choices == [] and rep.resolved_ms == spot.t_ms
+    assert raid_spot(spot, base(), OPX, ROLES, [SEA], LAND, SPECS) == spot  # night: untouched

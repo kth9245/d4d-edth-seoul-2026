@@ -41,5 +41,5 @@ def raid_idle(reports: list[Report], states: list[VehicleState], targets: list[T
             continue
         if why := _why(s, tg, specs[s.id], land):
             out.append(Report(id=f"raid-idle-{s.id}-{t_ms}", t_ms=t_ms, kind="target_detected", vehicle_id=s.id,
-                              target_id=tg.id, text=f"{s.id}: {why}", choices=idle_choices(s.id)))  # fmt: skip
+                              target_id=None, text=f"{s.id}: {why}", choices=idle_choices(s.id)))  # fmt: skip
     return out
