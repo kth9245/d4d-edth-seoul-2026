@@ -589,3 +589,4 @@
 {"at": "2026-10-11T02:32:27+09:00", "by": "황승주", "op": "done", "id": "Part2-67", "take": false}
 {"at": "2026-10-11T02:35:30+09:00", "by": "kth9245", "op": "add", "id": "Part1-32.6", "title": "헤더에서 BAENGNYEONG SECTOR 문구 빼기", "parent": "Part1-32", "assign": null, "slot": null, "spec": null}
 {"at": "2026-10-11T02:35:34+09:00", "by": "kth9245", "op": "start", "id": "Part1-32.6", "take": false, "from": null}
+{"at": "2026-10-11T02:35:59+09:00", "by": "황승주", "op": "add", "id": "Part2-68", "title": "멸공 빈 순찰: 하한선 귀환 빈자리는 충전 기체가 생기면 채움, 적 대응 결정으로 빈 자리는 ④까지 대기", "parent": null, "assign": "황승주", "slot": null, "spec": null}
