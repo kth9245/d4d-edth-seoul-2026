@@ -7,12 +7,15 @@ type Props = {
   playName: (id: string) => string | null;
   onOpen: (playId: string) => void;
   issues?: ValidationIssue[];
+  fresh?: boolean; // just added by "보고 카드 끼워 넣기"
+  onInsertReport?: () => void;
 };
 
-export function StepCard({ step, play, playName, onOpen, issues = [] }: Props) {
+export function StepCard({ step, play, playName, onOpen, issues = [], fresh, onInsertReport }: Props) {
   const stepName = (id: string) => play.steps.find((s) => s.id === id)?.name;
+  const unguarded = issues.some((i) => i.code === "missing_report_point");
   return (
-    <div className={issues.length > 0 ? "step-card has-issues" : "step-card"}>
+    <div className={`step-card${issues.length > 0 ? " has-issues" : ""}${fresh ? " fresh" : ""}`}>
       <div className="step-name">
         {step.id === play.entry ? "▶ " : ""}
         {step.name}
@@ -53,6 +56,9 @@ export function StepCard({ step, play, playName, onOpen, issues = [] }: Props) {
           ⚠ {i.message}
         </div>
       ))}
+      {unguarded && onInsertReport && (
+        <button className="insert-report" onClick={onInsertReport}>보고 카드 끼워 넣기</button>
+      )}
     </div>
   );
 }

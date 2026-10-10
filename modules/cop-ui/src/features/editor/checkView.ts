@@ -18,6 +18,13 @@ export type SaveResult =
   | { state: "done"; check: PlayCheck }
   | { state: "error"; message: string };
 
+// savePlay throws "/plays answered <status>: ..." when the gateway answered with an error, anything else when it
+// did not answer at all; the operator needs to tell those apart (422 = malformed play, 500 = server bug).
+export function saveErrorText(message: string): string {
+  const m = message.match(/\/plays answered (\d{3})/);
+  return m ? `저장 실패: 응답 ${m[1]}` : "저장 실패: 서버 응답 없음";
+}
+
 export function batteryText(est: Record<string, number> | undefined): string {
   return Object.entries(est ?? {})
     .map(([v, b]) => `${v} ${b.toFixed(1)}%`)

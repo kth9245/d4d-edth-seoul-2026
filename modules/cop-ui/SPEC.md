@@ -39,3 +39,5 @@
 | UI-34 | SwitchPanel | frame | 전환 요청 패널 | 작전 전체 전환 버튼 + 일부 전환(기체·플레이) → 승인 대기 생성 | 리드 | 완료 |
 | UI-35 | postDirect | vehicle_id, GeoPoint | {ok, id} \| 오류 | POST /direct {vehicle_id, target} | 리드 | 완료 |
 | UI-36 | useDirectControl | — | 선택·목표·안내 줄 | 기체 클릭 선택, 지도 클릭 → POST /direct 뒤 해제, Esc·같은 기체 다시 누르면 취소, 기체 클릭은 지도 클릭으로 안 샘 | 리드 | 완료 |
+| UI-37 | insertReportStep | Play, 접근 step id | Play | 접근 앞에 hold + 선택지 하나 보고 step, 선택지의 operator_choice 탈출이 접근으로(결정 0031), 접근으로 가던 탈출은 보고로, 원본 안 바꿈 | 리드 | 완료 |
+| UI-38 | saveErrorText | 저장 오류 문구 | 화면 문구 | 게이트웨이 응답 상태 코드 표시, 응답 없으면 서버 응답 없음 | 리드 | 완료 |

@@ -177,6 +177,10 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .step-card { border: 1px solid var(--line); border-left: 2px solid var(--friend); border-radius: var(--r); background: var(--s2); }
 .step-report { border: 1px solid var(--line); border-radius: var(--r); background: var(--s1); }
 .switch { border: 1px solid rgba(245, 158, 11, 0.4); border-radius: var(--r); background: var(--warn-soft); color: var(--warn); }
+.insert-report { border: 1px solid var(--text); border-radius: var(--r); background: var(--text); color: var(--bg); font-weight: 700; }
+.insert-report:hover { border-color: var(--live); background: var(--live); }
+.step-card.fresh { border-left-color: var(--live); background: linear-gradient(90deg, var(--live-soft), transparent 70%), var(--s2); }
+.edited { color: var(--warn); font-family: var(--font-mono); }
 .save { padding: 7px 16px; border: 1px solid var(--text); background: var(--text); color: var(--bg); }
 .save:hover:not(:disabled) { border-color: var(--live); background: var(--live); }
 .save-ok { color: var(--live); font-family: var(--font-mono); font-size: 12px; }
