@@ -8,7 +8,8 @@
 - [출력 양식]의 키 5개("situation", "domain_reasoning", "step_plan", "not_in_text", "play")를 이 순서대로 모두 작성한다. 어떠한 경우에도 하나라도 생략하지 않는다.
 - [운용자 문장]에 있는 행동·조건·보고만 옮긴다. 문장에 없는 행동, 탈출 조건, 보고, 선택지를 지어내지 않는다. 운용자에게 묻거나 승인받는다는 말이 문장에 없으면 report를 만들지 않는다.
 - kind에는 3절의 어휘만 쓴다. 3절에서 "쓰지 않는다"로 표시한 어휘는 쓰지 않는다.
-- 좌표는 [작전 정보]의 안전 구역(zone) 안에만 찍는다.
+- steps는 비우지 않는다. 문장이 시킨 행동이 모두 "쓰지 않는다" 어휘뿐이면, 문장이 말한 위치로 move_to 한 뒤 arrived로 hold에 들어가는 step 두 개로 옮기고, 옮기지 못한 행동을 not_in_text에 적는다.
+- 좌표는 [작전 정보]의 안전 구역(zone) 안에만, 경계선에서 0.005도(약 500 m) 이상 안쪽에 찍는다. "끝", "가장자리" 같은 말도 경계선 위가 아니라 그 안쪽이다.
 - 사람이 읽는 값(name, report 문구, 추론 항목)은 한국어로, id는 영어 소문자와 밑줄(snake_case)로 쓴다.
 
 
@@ -18,6 +19,8 @@
 - step 하나 = 행동(do) 1개 + 탈출 조건 목록(on) + 보고(report, 없으면 null).
 - 기체는 step에 들어가면 do를 실행하고, on을 앞에서부터 보아 처음으로 참이 된 조건의 go_step으로 넘어간다. on이 비어 있으면 그 step에 계속 머문다.
 - report는 step에 들어갈 때 운용자에게 카드 한 장을 띄운다. choices가 있으면 기체는 운용자가 고를 때까지 기다린다. 운용자 선택은 on의 조건이 아니라 report.choices로만 표현하고, 각 선택지의 play_by_vehicle은 빈 객체 {}로 둔다(운용자가 편집기에서 채운다).
+- report 형식은 정확히 {"text": "운용자에게 보일 문구", "choices": [{"id": "approve", "label": "승인", "play_by_vehicle": {}}]} 이다. 선택지가 없으면 "choices": [] 로 쓴다. 키 이름은 text, choices, id, label, play_by_vehicle만 쓴다(message 등 다른 이름 금지). 선택지마다 id(snake_case)와 label(한국어)을 모두 쓴다.
+- 운용자가 승인하거나 거부한 뒤 기체가 할 행동은 이 플레이 안의 step으로 만들지 않는다. 그런 step은 어느 step에서도 넘어올 수 없어 검사에 걸린다. 선택지만 만들고, 넣지 않은 승인 뒤 행동은 not_in_text에 적는다.
 - 좌표 하나 = {"lat": 위도, "lon": 경도, "alt_m": 0}. WGS84 도 단위, 소수점 넷째 자리까지.
 
 ## 영역(domains)
@@ -59,7 +62,7 @@
 3절의 어휘로 표현할 수 있지만 [운용자 문장]에 없어서 넣지 않은 것을 쓴다(예: 운용자 승인 보고, 배터리 귀환 조건). 없으면 빈 배열 [].
 
 5) play
-3) step_plan을 그대로 JSON으로 옮긴다. 키는 id, name, domains, entry, steps만 쓴다. step의 키는 id, name, do, on, report만 쓴다.
+3) step_plan을 그대로 JSON으로 옮긴다. 키는 id, name, domains, entry, steps만 쓴다. step의 키는 id, name, do, on, report만 쓴다. report는 null이거나 3절의 report 형식이다.
 - entry는 첫 step의 id다.
 - 모든 go_step은 steps 안의 id를 가리킨다.
 - 좌표는 zone 안이다.

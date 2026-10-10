@@ -45,6 +45,11 @@ def test_prompt_has_text_vocabulary_operation_and_output_keys():
         assert f'"{key}"' in p
 
 
+def test_prompt_spells_out_the_report_shape():  # eval 10/10: replies used "message", dropped choice ids
+    p = build_draft_prompt(TEXT, OP)
+    assert '{"text": ' in p and '"choices": [{"id": ' in p and '"choices": []' in p
+
+
 def test_run_fields_do_not_change_prompt():  # cache key sha256(prompt) must survive a live run
     other = OP.model_copy(
         update={
