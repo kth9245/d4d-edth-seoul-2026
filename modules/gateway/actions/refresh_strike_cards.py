@@ -1,4 +1,4 @@
-"""GW-13 refresh_strike_cards: 열린 unknown 표적 발견 카드에 식별 줄을 붙이고, 식별됨일 때만 타격 승인 선택지를 연다(2단계, 결정 0056)
+"""GW-13 refresh_strike_cards: 열린 unknown 표적 발견 카드에 식별 줄을 붙이고, 식별됨일 때만 타격 승인 선택지를 연다(2단계, 결정 0063)
 fleet_choices(5.3)가 매 틱 선택지를 덮어쓰므로 틱 끝에서 다시 붙인다. 타격은 여전히 운용자 승인으로만(결정 0033).
 선택지 id: strike_<기체 id>, 둘 이상이면 strike_all. 이미 응답한 카드·무력화된 표적·다른 종류는 그대로.
 SPEC: modules/gateway/SPEC.md#GW-13

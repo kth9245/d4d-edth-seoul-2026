@@ -1,4 +1,4 @@
-"""GW-12 identify_targets: unknown 종류 표적마다 sensing identify_target을 불러 ident_* 필드를 쓴다(2단계, 결정 0056)
+"""GW-12 identify_targets: unknown 종류 표적마다 sensing identify_target을 불러 ident_* 필드를 쓴다(2단계, 결정 0063)
 다른 종류와 무력화된 표적은 그대로 둬서 야간·24시간 작전의 프레임이 바뀌지 않는다.
 마지막으로 본 뒤 시간은 last_seen_ms로 계산하고, 한 번도 스캔된 적 없으면(first_seen_ms == 0) None.
 SPEC: modules/gateway/SPEC.md#GW-12

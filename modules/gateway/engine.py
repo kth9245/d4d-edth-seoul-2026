@@ -59,7 +59,7 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
     targets = score_targets(states, specs, targets, sc.watch_points, dt)  # 2.5 (0039, 0040)
     targets = identify_targets(
         targets, t, dt
-    )  # 2.7 stage 2: identification of unknown-kind sites (0056)
+    )  # 2.7 stage 2: identification of unknown-kind sites (0063)
     reports, assigns = list(es.reports), list(es.assignments)  # 3 operator inputs
     for d in inputs.decisions:
         if not decision_applicable(
@@ -121,7 +121,7 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
     targets, hits = resolve_strikes(states, targets, t)  # 8.5 decision 0033
     new_reports += cards + hits
     reports += new_reports
-    reports = refresh_strike_cards(reports, states, specs, targets, roles)  # 8.6 stage 2 (0056)
+    reports = refresh_strike_cards(reports, states, specs, targets, roles)  # 8.6 stage 2 (0063)
     outcome = TickOutcome(inputs=inputs, commands=cmds, passed=passed, blocks=blocks,
                           new_reports=new_reports, assignments=assigns, states=states,
                           targets=targets, roles=roles, reports=reports)  # fmt: skip
