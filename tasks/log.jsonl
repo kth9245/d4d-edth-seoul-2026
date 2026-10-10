@@ -408,3 +408,4 @@
 {"at": "2026-10-10T19:08:53+09:00", "by": "kth9245", "op": "add", "id": "Part1-37", "title": "작전 새로 만들기(결정 0053): 이름·목적으로 빈 작전, 작전 개요에서 기체마다 시작 Role 고르기, 사이드바 버튼 둘", "parent": null, "assign": null, "slot": null, "spec": null}
 {"at": "2026-10-10T19:08:55+09:00", "by": "kth9245", "op": "start", "id": "Part1-36", "take": false, "from": null}
 {"at": "2026-10-10T19:17:47+09:00", "by": "황승주", "op": "done", "id": "Part2-36", "take": false}
+{"at": "2026-10-10T19:24:34+09:00", "by": "황승주", "op": "add", "id": "Part2-37", "title": "멸공 드론 4대 기지를 50 m 정사각형으로, 지도 드론 오른쪽에 배터리 표시(두 작전)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
