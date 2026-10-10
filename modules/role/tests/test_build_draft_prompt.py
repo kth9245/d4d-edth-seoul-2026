@@ -38,8 +38,7 @@ def test_same_input_gives_same_prompt():
 def test_prompt_has_text_vocabulary_operation_and_output_keys():
     p = build_draft_prompt(TEXT, OP)
     assert TEXT in p and OP.name in p and OP.purpose in p
-    # at_time (decision 0045) is set by the operator in the editor; teaching it would change the prompt
-    # and so every cached draft (sha256 of the prompt), so the vocabulary leaves it out.
+    # at_time (decision 0045) is set by the operator in the editor, so the AI draft vocabulary leaves it out.
     for kind in [*ActionKind, *(k for k in ConditionKind if k != ConditionKind.at_time), *Domain]:
         assert kind.value in p
     assert ConditionKind.at_time.value not in p
@@ -53,7 +52,7 @@ def test_prompt_spells_out_the_report_shape():  # eval 10/10: replies used "mess
     assert '{"text": ' in p and '"choices": [{"id": ' in p and '"choices": []' in p
 
 
-def test_run_fields_do_not_change_prompt():  # cache key sha256(prompt) must survive a live run
+def test_run_fields_do_not_change_prompt():  # the same request reads the same prompt during a live run
     other = OP.model_copy(
         update={
             "id": "op2",

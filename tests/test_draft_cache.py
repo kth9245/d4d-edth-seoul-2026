@@ -1,6 +1,7 @@
 """AI draft cache (Part1-5, decision 0028): one cached Role per demo sentence, named
 draft_cache_key(text, op) = sha256 of the sentence and the operation's area and zone (decision 0057).
-Fails after an edit to a demo sentence or the demo operation's area/zone:
+Fails after an edit to a demo sentence or the demo operation's area/zone. An edit to modules/role/draft_prompt.md
+no longer fails here: rerun the script by hand when the prompt changes. To rebuild:
 rerun `uv run python scripts/make_draft_cache.py` (GROK_KEY in .env, internet).
 """
 
