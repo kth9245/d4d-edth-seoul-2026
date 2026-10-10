@@ -616,3 +616,4 @@
 {"at": "2026-10-11T03:22:29+09:00", "by": "황승주", "op": "start", "id": "Part2-71", "take": false, "from": null}
 {"at": "2026-10-11T03:36:56+09:00", "by": "황승주", "op": "done", "id": "Part2-71", "take": false}
 {"at": "2026-10-11T03:40:45+09:00", "by": "kth9245", "op": "add", "id": "Part1-15.3", "title": "공격 작전 이름에서 (가상) 빼기", "parent": "Part1-15", "assign": null, "slot": "뒤", "spec": null}
+{"at": "2026-10-11T03:40:53+09:00", "by": "kth9245", "op": "start", "id": "Part1-15.3", "take": false, "from": null}
