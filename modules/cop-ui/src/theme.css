@@ -334,3 +334,143 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .mk.vehicle.batt-low span { color: #ff5a5a; }
 /* the battery label is half the default label size so four drones fit at the start zoom (user, 10/10) */
 .mk.vehicle span { font-size: 7px; line-height: 1; padding: 1px 3px; left: 16px; letter-spacing: 0; }
+/* Live board (Part1-32): white = your turn, yellow/amber/red = risk only, cyan = ours, green = system. Type floor 11px. */
+.header-slot .situation .lbl { color: var(--text2); font-size: 13px; font-weight: 600; }
+.header-slot .situation .c { color: var(--text2); font-size: 13px; }
+.header-slot .situation .c b { font-family: var(--font-mono); font-size: 15px; }
+.header-slot .situation .c.ask, .header-slot .situation .c.strike { color: var(--hostile); }
+.header-slot .situation .c.track { color: var(--friend); }
+.header-slot .situation .c.found { color: var(--warn); }
+.header-slot .situation .c.rf { color: var(--hostile); }
+.header-slot .situation .c.lost { color: var(--text2); }
+.header-slot .situation .c.never, .header-slot .situation .c.gone { color: var(--muted); }
+.header-slot .situation .sep { background: var(--line2); }
+.header-slot .situation .c.dec { border: 1px solid var(--text); background: var(--text); color: var(--bg); }
+.header-slot .situation .c.dec.none { border-color: var(--line2); background: none; color: var(--muted); }
+.header-slot .loadbar b { font-family: var(--font-mono); font-size: 22px; color: var(--text); }
+.header-slot .loadbar .op b { color: var(--live); }
+.header-slot .loadbar small { color: var(--muted); font-size: 11px; line-height: 1.25; }
+.header-slot .loadbar .vs { color: var(--dim); font-family: var(--font-mono); font-size: 11px; }
+.board aside { background-image: none; }
+.board .roster { background-color: var(--s1); border-right: 1px solid var(--line); }
+.board .roster h3 { color: var(--muted); font-size: 12px; font-weight: 600; }
+.board .roster h3 b { color: var(--text); font-size: 14px; }
+.board .roster h3 small { font-size: 12px; }
+.board .ro { border: 0; border-bottom: 1px solid var(--line); border-left: 3px solid var(--friend); background: transparent; color: var(--text); font-family: var(--font); }
+.board .ro:hover, .board .ro.sel { background: var(--s2); }
+.board .ro.sel { border-left-color: var(--live); }
+.board .ro.st-returning { border-left-color: var(--warn); }
+.board .ro.st-ready, .board .ro.st-maintenance { border-left-color: var(--line2); }
+.board .ro .l1 b { font-family: var(--font-mono); font-size: 14px; }
+.board .ro .doing { color: var(--text2); font-size: 13px; }
+.board .ro.st-ready .doing, .board .ro.st-maintenance .doing { color: var(--muted); }
+.board .ro .l2 { color: var(--muted); font-size: 12px; }
+.board .ro .tgt { color: var(--friend); font-family: var(--font-mono); }
+.board .ro .tgt.strike { color: var(--hostile); }
+.board .ro .chip { border: 1px solid var(--text); color: var(--text); font-size: 11px; }
+.board .ro .bat { background: var(--s3); }
+.board .ro .bat i { background: var(--friend); }
+.board .ro .bat.low i { background: var(--warn); }
+.board .ro em { font-family: var(--font-mono); font-size: 11px; }
+.board .ro em.low { color: var(--warn); }
+.board .ro.en { border-left-color: var(--unknown); }
+.board .ro.en.mid { border-left-color: var(--warn); }
+.board .ro.en.hi { border-left-color: var(--hostile); }
+.board .ro.en.gone, .board .ro.en.never { border-left: 3px dotted var(--line2); opacity: 0.6; }
+.board .ro .risk { font-family: var(--font-mono); font-size: 14px; font-weight: 700; }
+.board .ro.en.lo .risk { color: var(--unknown); }
+.board .ro.en.mid .risk { color: var(--warn); }
+.board .ro.en.hi .risk { color: var(--hostile); }
+.board .ro .rf { background: var(--hostile); color: var(--bg); font-family: var(--font-mono); font-size: 10px; font-weight: 700; }
+.board .ro .stg { border: 1px solid var(--line2); color: var(--text2); font-size: 11px; }
+.board .ro .stg.ask, .board .ro .stg.strike, .board .ro .stg.rf, .board .ro .stg.lost.away { border-color: var(--hostile); color: var(--hostile); }
+.board .ro .stg.track { border-color: var(--friend); color: var(--friend); }
+.board .ro .stg.found { border-color: var(--warn); color: var(--warn); }
+.board .ro .stg.lost { border-style: dashed; }
+.board .ro .stg.never { border-style: dotted; color: var(--muted); }
+.board .ro .rbar { background: var(--s3); }
+.board .ro .rbar::after { background: var(--muted); }
+.board .ro.en.lo .rbar i { background: var(--unknown); }
+.board .ro.en.mid .rbar i { background: var(--warn); }
+.board .ro.en.hi .rbar i { background: var(--hostile); }
+.board .ops { background-color: var(--s1); border-left: 1px solid var(--line); }
+.board .sec { color: var(--text2); font-size: 13px; font-weight: 600; }
+.board .sec b { background: var(--text); color: var(--bg); font-size: 12px; }
+.board .sec .ord { color: var(--muted); font-size: 12px; font-weight: 400; }
+.board .card { border: 1px solid var(--line); border-left: 3px solid var(--text); background: var(--s2); }
+.board .card.first::after { background: var(--text); color: var(--bg); font-size: 11px; font-weight: 700; }
+.board .card.t-danger, .board .card.t-block { border-left-color: var(--hostile); }
+.board .card.t-danger.first::after, .board .card.t-block.first::after { background: var(--hostile); }
+.board .card.t-block { background: linear-gradient(90deg, var(--hostile-soft), transparent 60%), var(--s2); }
+.board .card .head b { color: var(--text); font-size: 15px; font-weight: 700; }
+.board .card .head .tid { font-family: var(--font-mono); font-size: 15px; font-weight: 700; }
+.board .card .head time { color: var(--muted); font-family: var(--font-mono); font-size: 11px; }
+.board .card .text { color: var(--muted); font-size: 13px; line-height: 1.45; }
+.board .card .hint { border-left: 2px solid var(--line2); color: var(--text2); font-size: 13px; line-height: 1.45; }
+.board .card .threat { font-family: var(--font-mono); font-size: 12px; }
+.board .card .threat .sc { font-size: 14px; font-weight: 700; }
+.board .card .threat .sc.lo { color: var(--unknown); }
+.board .card .threat .sc.mid { color: var(--warn); }
+.board .card .threat .sc.hi { color: var(--hostile); }
+.board .card .threat .why { color: var(--muted); }
+.board .card .q { color: var(--text); font-size: 14px; font-weight: 700; }
+.board .card .note { color: var(--muted); font-family: var(--font-mono); font-size: 11px; }
+.board .card .note.error { color: var(--hostile); }
+.board .wide { border: 1px solid var(--line2); background: transparent; color: var(--text2); font-family: var(--font); font-size: 14px; font-weight: 600; }
+.board .wide small { margin: 0; color: var(--muted); font-family: var(--font-mono); font-size: 11px; font-weight: 500; opacity: 1; }
+.board .wide.pri, .board .wide.go { border-color: var(--text); background: var(--text); color: var(--bg); font-weight: 700; }
+.board .wide.pri small, .board .wide.go small { color: var(--s3); }
+.board .wide.strike { border-color: var(--hostile); background: var(--hostile); color: var(--bg); font-weight: 700; }
+.board .wide.strike small { color: var(--s1); }
+.board .wide.strike2 { border-color: var(--hostile); color: var(--hostile); }
+.board .wide:hover:not(:disabled) { border-color: var(--live); }
+.board .wide:disabled, .board .vbtn:disabled, .board .tchip:disabled { opacity: 0.45; cursor: default; }
+.board .reqs { color: var(--muted); font-size: 12px; font-weight: 600; }
+.board .grp { border-top: 1px solid var(--line); }
+.board .grp .gl { color: var(--text2); font-size: 13px; }
+.board .vbtn { margin: 0; border: 1px solid var(--text); background: var(--text); color: var(--bg); font-family: var(--font-mono); font-size: 13px; font-weight: 700; }
+.board .vbtn small { margin: 0; font-size: 11px; font-weight: 500; opacity: 0.7; }
+.board .vbtn.low { border-color: var(--warn); background: transparent; color: var(--warn); }
+.board .vbtn:hover:not(:disabled), .board .tchip:hover:not(:disabled) { border-color: var(--live); background: var(--live); color: var(--bg); }
+.board .selrow { border-top: 1px solid var(--line); }
+.board .selrow .who { font-family: var(--font-mono); font-size: 13px; font-weight: 700; }
+.board .selrow .who small { color: var(--muted); font-size: 11px; font-weight: 500; }
+.board .tchip { margin: 0; border: 1px solid var(--line2); background: transparent; color: var(--text); font-family: var(--font-mono); font-size: 12px; font-weight: 700; }
+.board .tchip.lo em { color: var(--unknown); }
+.board .tchip.mid em { color: var(--warn); }
+.board .tchip.hi em { color: var(--hostile); }
+.board .tchip.top { border-color: var(--hostile); background: var(--hostile-soft); }
+.board .tchip.top::after { background: var(--hostile); color: var(--bg); font-family: var(--font); font-size: 10px; }
+.board .qrow { margin: 0; border: 0; border-bottom: 1px solid var(--line); border-left: 3px solid var(--text); background: transparent; color: var(--text2); font-family: var(--font); font-size: 13px; }
+.board .qrow.t-danger { border-left-color: var(--hostile); }
+.board .qrow:hover { background: var(--s2); }
+.board .qrow b { color: var(--text); font-family: var(--font-mono); font-size: 14px; }
+.board .qrow .sc { font-family: var(--font-mono); font-size: 13px; font-weight: 700; }
+.board .qrow .sc.lo { color: var(--unknown); }
+.board .qrow .sc.mid { color: var(--warn); }
+.board .qrow .sc.hi { color: var(--hostile); }
+.board .qrow time { color: var(--muted); font-family: var(--font-mono); font-size: 11px; }
+.board .qrow .go { color: var(--muted); }
+.board .next-act { border: 1px solid var(--line2); background: var(--s2); }
+.board .next-act .k { color: var(--muted); font-size: 12px; font-weight: 600; }
+.board .next-act .t { margin-top: 4px; color: var(--text); font-size: 16px; font-weight: 700; }
+.board .next-act .s { margin-top: 3px; color: var(--text2); font-size: 13px; }
+.board .next-act.done { border-color: var(--live); background: linear-gradient(90deg, var(--live-soft), transparent 70%), var(--s2); }
+.board .next-act.done .k { color: var(--live); }
+.board .alert { border: 1px solid var(--line); background: var(--s2); color: var(--text2); font-size: 13px; }
+.board .alert time { color: var(--muted); font-family: var(--font-mono); font-size: 11px; }
+.board .alert .why { color: var(--muted); font-family: var(--font-mono); font-size: 12px; }
+.board .alert.win { border-color: var(--live); background: linear-gradient(90deg, var(--live-soft), transparent 70%), var(--s2); }
+.board .alert.win b { color: var(--text); font-size: 14px; }
+.board .alert.blk b { color: var(--hostile); }
+.board .graph-open { border: 1px solid var(--line2); background: transparent; color: var(--text2); font-size: 12px; }
+.board .folds { border-top: 1px solid var(--line); }
+.board .fold { border-bottom: 1px solid var(--line); }
+.board .fold summary { color: var(--text2); font-size: 14px; font-weight: 600; }
+.board .fold summary::before { content: "▸"; color: var(--muted); }
+.board .fold[open] summary::before { content: "▾"; }
+.board .fold summary small { color: var(--muted); font-size: 12px; font-weight: 500; }
+.board .fold summary b { color: var(--muted); font-family: var(--font-mono); font-size: 12px; }
+.board .fold .switchpanel::before { content: none; }
+.board .hist-row { color: var(--muted); font-size: 12px; }
+.board .hist-row time { font-family: var(--font-mono); }

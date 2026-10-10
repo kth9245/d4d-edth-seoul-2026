@@ -1,0 +1,67 @@
+/* Live board layout (Part1-32). Colors and type live in theme.css ("Live board" section). */
+.header-slot { display: flex; flex: 1; align-items: center; gap: 16px; min-width: 0; padding-left: 24px; }
+.header-slot .situation { display: flex; align-items: center; gap: 12px; margin: 0 auto; white-space: nowrap; }
+.header-slot .situation .c { display: flex; align-items: baseline; gap: 5px; }
+.header-slot .situation .sep { width: 1px; height: 18px; }
+.header-slot .situation .c.dec { padding: 3px 10px; }
+.header-slot .loadbar { display: flex; align-items: center; gap: 8px; }
+.header-slot .loadbar span { display: flex; align-items: center; gap: 6px; }
+.header-slot .status { margin: 0; }
+.layout.board { grid-template-columns: 236px 1fr 384px; }
+.board .roster { display: flex; flex-direction: column; overflow: hidden; padding: 12px 10px 12px 12px; border-left: 0; }
+.board .roster h3 { display: flex; align-items: baseline; gap: 8px; margin: 0 0 6px; }
+.board .roster h3 small { margin-left: auto; }
+.board .roster h3.en { margin-top: 16px; }
+.board .ro { display: block; width: 100%; padding: 7px 4px 7px 10px; text-align: left; cursor: pointer; }
+.board .ro .l1, .board .ro .l2 { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.board .ro .l2 { margin-top: 3px; white-space: nowrap; }
+.board .ro .doing, .board .ro .kind, .board .ro .det { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.board .ro .chip, .board .ro .stg, .board .ro .tgt { flex: none; padding: 0 5px; }
+.board .ro .tgt { padding: 0; }
+.board .ro .bat { position: relative; flex: none; width: 32px; height: 5px; margin-left: auto; }
+.board .ro .bat i, .board .ro .rbar i { position: absolute; inset: 0 auto 0 0; }
+.board .ro em { flex: none; width: 34px; font-style: normal; text-align: right; }
+.board .ro .risk { margin-left: auto; }
+.board .ro .rf { padding: 0 4px; }
+.board .ro .rbar { position: relative; display: block; height: 3px; margin-top: 5px; }
+.board .ro .rbar::after { content: ""; position: absolute; left: 40%; top: -2px; bottom: -2px; width: 1px; }
+.board .ops { display: flex; flex-direction: column; min-height: 0; padding: 0; overflow: hidden; }
+.board .ops-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 12px 14px 8px; }
+.board .sec { display: flex; align-items: baseline; gap: 8px; margin: 2px 0 8px; }
+.board .sec b { padding: 0 6px; }
+.board .sec .ord { margin-left: auto; }
+.board .card { position: relative; margin-bottom: 10px; padding: 12px 13px 13px; }
+.board .card.first::after { content: "지금"; position: absolute; right: -1px; top: -1px; padding: 1px 7px; }
+.board .card .head { display: flex; align-items: baseline; gap: 7px; }
+.board .card .head time { margin-left: auto; }
+.board .card .text { margin-top: 4px; }
+.board .card .hint { margin-top: 7px; padding-left: 8px; }
+.board .card .threat { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-top: 7px; }
+.board .card .threat span { white-space: nowrap; }
+.board .card .q { margin: 10px 0 4px; }
+.board .wide { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; width: 100%; margin-top: 6px; padding: 8px 11px; text-align: left; cursor: pointer; }
+.board .settle { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.board .reqs { margin: 12px 0 2px; }
+.board .grp { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px; padding: 6px 0; }
+.board .grp .vs { display: flex; gap: 4px; }
+.board .vbtn { display: flex; flex-direction: column; align-items: center; min-width: 52px; padding: 4px 6px; cursor: pointer; }
+.board .selrow { display: grid; grid-template-columns: 50px 1fr; align-items: center; gap: 6px; padding: 6px 0; }
+.board .selrow .who small { display: block; }
+.board .selrow .note { grid-column: 1 / -1; }
+.board .tchips { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.board .tchip { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; padding: 5px 6px; text-align: left; cursor: pointer; }
+.board .tchip em { font-style: normal; }
+.board .tchip.top::after { content: "최고"; position: absolute; right: 3px; top: -8px; padding: 0 4px; }
+.board .qrow { display: flex; align-items: baseline; gap: 8px; width: 100%; padding: 10px 8px 10px 10px; text-align: left; cursor: pointer; }
+.board .qrow .who { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.board .next-act { margin-bottom: 14px; padding: 11px 13px; }
+.board .alert { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; margin-bottom: 6px; padding: 8px 10px; }
+.board .alert .why { grid-column: 1 / -1; }
+.board .graph-open { margin-top: 8px; padding: 6px 10px; cursor: pointer; }
+.board .folds { flex: none; }
+.board .fold summary { display: flex; align-items: center; gap: 8px; padding: 10px 14px; list-style: none; cursor: pointer; }
+.board .fold summary small { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.board .fold summary b { margin-left: auto; }
+.board .fold > :not(summary) { margin: 0 14px 12px; }
+.board .fold.hist { max-height: 220px; overflow-y: auto; }
+.board .hist-row { display: flex; gap: 8px; padding: 3px 14px; }

@@ -3,14 +3,14 @@ import { realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { defineConfig, searchForWorkspaceRoot } from "vite";
 
-const GATEWAY = "http://localhost:8000";
+const GATEWAY = process.env.KDTH_GATEWAY ?? "http://localhost:8000"; // a worktree can test against its own gateway
 const outside = (rel: string) => fileURLToPath(new URL(rel, import.meta.url));
 
 export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/ws": { target: "ws://localhost:8000", ws: true },
+      "/ws": { target: GATEWAY.replace(/^http/, "ws"), ws: true },
       // contracts/API.md section 5 REST endpoints
       "^/(operation|plays|vehicles|enemies|ontology|graph|run|decisions|direct|injections|scenarios|routes|watch_points)(/|\\?|$)": { target: GATEWAY },
     },

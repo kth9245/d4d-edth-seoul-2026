@@ -1,37 +1,67 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import type { Frame, Polygon } from "./contracts.gen";
-import { CardList } from "./features/cards/CardList";
+import { boardView } from "./features/board/boardView";
+import { DecisionQueue } from "./features/board/DecisionQueue";
+import { LoadBar } from "./features/board/LoadBar";
+import { RosterPanel } from "./features/board/RosterPanel";
+import { SituationBar } from "./features/board/SituationBar";
+import { useBoardData } from "./features/board/useBoardData";
+import "./features/board/board.css";
+import "./features/cards/cards.css";
 import { SwitchPanel } from "./features/cards/SwitchPanel";
 import { ObjectGraphView } from "./features/graph/ObjectGraphView";
 import { tilesExist } from "./features/map/basemap";
 import { MapView } from "./features/map/MapView";
 import { useDirectControl } from "./features/map/useDirectControl";
-import { MetricsPanel } from "./features/run/MetricsPanel";
 import { RunBar } from "./features/run/RunBar";
 
-// Map with the run bar under it on the left; status, metrics, switch requests and cards in the side column.
-// A card's "연결 보기" opens its target's object graph over the map column (decision 0038).
+// Live board (Part1-32): header line (stage counts, operator load, link status) in the app header, our vehicles
+// and the targets on the left, the map with the run bar in the middle, the decision queue on the right with the
+// switch panel and the history folded under it. A card's "연결 보기" opens its target's graph over the map.
 export function Screen({ frame, zone, status, ok }:
   { frame: Frame | null; zone: Polygon | null; status: string; ok: boolean }) {
   const [tiles, setTiles] = useState<boolean | null>(null);
   const [graph, setGraph] = useState<string | null>(null);
+  const [slot, setSlot] = useState<HTMLElement | null>(null);
+  const data = useBoardData(frame !== null);
   const direct = useDirectControl(frame?.t_ms ?? 0);
+  const board = useMemo(() => (frame ? boardView(frame, data) : null), [frame, data]);
   useEffect(() => {
     tilesExist().then(setTiles);
+    setSlot(document.getElementById("header-slot"));
   }, []);
   return (
-    <div className="layout">
+    <div className="layout board">
+      {slot && createPortal(
+        <>
+          {board && <SituationBar situation={board.situation} />}
+          <LoadBar metrics={frame?.metrics ?? null} />
+          <div className={ok ? "status ok" : "status down"}>{status}</div>
+        </>, slot)}
+      {frame && board ? (
+        <RosterPanel rows={board.rows} targets={frame.targets} stages={board.stages} selected={direct.selected}
+          onVehicle={direct.onVehicleClick} onTarget={() => {}} />
+      ) : <aside className="roster" />}
       <div className="map-col">
         {tiles === null ? <div className="map" /> : <MapView frame={frame} zone={zone} tilesAvailable={tiles} direct={direct} />}
         {direct.hint && <div className={direct.selected ? "direct-hint on" : "direct-hint"}>{direct.hint}</div>}
         <RunBar frame={frame} />
         {graph && <ObjectGraphView focus={graph} onClose={() => setGraph(null)} />}
       </div>
-      <aside>
-        <div className={ok ? "status ok" : "status down"}>{status}</div>
-        <MetricsPanel metrics={frame?.metrics ?? null} />
-        <SwitchPanel frame={frame} />
-        <CardList frame={frame} onGraph={setGraph} />
+      <aside className="ops">
+        <div className="ops-scroll">
+          {frame && board ? <DecisionQueue frame={frame} queue={board.queue} onGraph={setGraph} />
+            : <div className="next-act"><div className="t">게이트웨이 연결 대기</div></div>}
+        </div>
+        <div className="folds">
+          <details className="fold sw"><summary>작전 전환 <small>전 기체 · 기체 하나만</small></summary><SwitchPanel frame={frame} /></details>
+          <details className="fold hist"><summary>지난 기록 <b>{board?.queue.history.length ?? 0}</b></summary>
+            {board?.queue.history.map((c) => (
+              <div key={`${c.source}-${c.id}`} className="hist-row"><time>{c.time}</time><span>{c.text}{c.done ? ` · ${c.done}` : ""}</span></div>
+            ))}
+          </details>
+        </div>
       </aside>
     </div>
   );

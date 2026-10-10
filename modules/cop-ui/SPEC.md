@@ -23,14 +23,14 @@
 | UI-18 | postDecision | report_id, choice_id | {ok, id} \| {ok: false, error} | POST /decisions, 실패해도 throw 없이 상태·detail 문구 | 리드 | 완료 |
 | UI-19 | frameCards | Frame | Card[] | 보고(injection_pending·command_blocked 제외)+injections+blocks, 최신이 위, 처리된 것 done, 선택지마다 기체별 전환 줄, 무력화 카드에 근거 줄(운용자 결정 id·선택지 이름 → 타격 기체 · 통과한 검사, Part1-20) | 리드 | 완료 |
 | UI-20 | pruneSent | 보낸 기록, 보고 id, 시각 역행 | 보낸 기록 | reset으로 사라진 보고·시각이 뒤로 가면 잊음(같은 id 카드가 잠기지 않게) | 리드 | 완료 |
-| UI-21 | CardList | frame | 카드 열 | 선택지 버튼 → POST /decisions, 보낸 뒤 처리될 때까지 잠금, 실패 문구 | 리드 | 완료 |
+| UI-21 | CardList | frame | 카드 열 | 선택지 버튼 → POST /decisions, 보낸 뒤 처리될 때까지 잠금, 실패 문구 | 리드 | 폐기(Part1-32, DecisionQueue·QueueCard UI-95로 대체) |
 | UI-22 | mmss | ms | "m:ss" | 1초 미만 버림, 60분 넘어도 분으로, 음수는 0:00 | 리드 | 완료 |
 | UI-23 | nextStop | 작전 시작 후 ms, RUN_STOPS | RunStop \| null | 현재보다 뒤의 첫 정지 시각(정지 시각 위면 다음 것). 정지 시각은 실제 엔진의 타격 단계 순서 장면 시각(16:25 보고 카드, 19:05 드론1 귀환, 20:00 드론2 직접 조종, 23:05 고속정 등장), 타격 장면은 정지 없이 재생(Part1-13.1) | 리드 | 완료 |
 | UI-24 | postRun·jumpPaused | 경로 / offset_ms | {ok, run} \| {ok: false, error} | POST /run/*, throw 없이 상태·detail 문구. 다음 사건은 speed=0 뒤 jump, 정지 실패면 jump 안 함 | 리드 | 완료 |
 | UI-25 | metricView | Metrics | {operator, manual, rows} | 운용자 조작 대 수동 기준, 기체 공백 m:ss, 빠진 칸 0. 임무 판정 행은 없음(타격 결과는 결과 카드, Part1-20) | 리드 | 완료 |
 | UI-26 | fetchOperation | — | Partial<Operation> \| null | GET /operation 본문, 오류·JSON 아님·실패는 null(fetchZone·RunBar가 씀) | 리드 | 완료 |
 | UI-27 | RunBar | frame | 지도 아래 재생 막대 | T+시계, 재생/일시정지(직전 배속으로 재개), ×1·5·10·30, 다음 사건(사건 직후 일시정지), 처음으로(확인창) | 리드 | 완료 |
-| UI-28 | MetricsPanel | Metrics | 지표 패널 | 운용자 조작 대 기체별 직접 명령 수 나란히, 나머지 지표, 수동 기준 주석 | 리드 | 완료 |
+| UI-28 | MetricsPanel | Metrics | 지표 패널 | 운용자 조작 대 기체별 직접 명령 수 나란히, 나머지 지표, 수동 기준 주석 | 리드 | 폐기(Part1-32, 머리의 LoadBar UI-93으로 대체) |
 | UI-29 | savePlay | Play | PlayCheck | POST /plays(검사 통과 시 서버 메모리에 저장·실행을 시작 전으로), 2xx 아니면·연결 실패면 오류 | 리드 | 완료 |
 | UI-30 | issuesByStep·batteryText | PlayCheck, Play | {byStep, general} / string | step id 있는 오류는 그 카드에, 없거나 모르는 step은 플레이 머리에, 예상 귀환 배터리 한 줄 (편집기 저장 막대, Part3-11) | 리드 | 완료 |
 | UI-31 | postJson | url, body? | {ok, id} \| {ok: false, error} | POST 공통: 실패해도 throw 없이 상태·detail, postDecision이 씀 | 리드 | 완료 |
@@ -70,3 +70,7 @@
 | UI-89 | fetchBoardData | — | {plays, vehicles, watch} | GET /plays·/vehicles·/watch_points, 실패·목록 아님·연결 실패는 빈 목록 | 리드 | 완료 |
 | UI-91 | linkLines | Frame, Track 묶음, Queue | FeatureCollection | 임무 중 기체→표적(감시·타격, 무력화 표적엔 타격만), 놓친 표적 추정선, 차단 기체→대안 지점 | 리드 | 완료 |
 | UI-92 | watchCircles | WatchPoint[] | FeatureCollection | 기준점 반경 고리(64칸, 닫힘) | 리드 | 완료 |
+| UI-90 | boardView | Frame, BoardData | {tracks, stages, queue, situation, rows} | 데이터가 오기 전(빈 목록)에도 그려짐, 기체별 현재 명령 시각을 대기열에 넘겨 대안 보낸 차단이 빠짐(Part1-32) | 리드 | 완료 |
+| UI-93 | SituationBar·LoadBar | Situation / Metrics | 머리 한 줄 | 앱 머리 자리(#header-slot)에 단계별 개수·결정 대기(흰색)·운용자 조작 대 수동 기준(나머지는 툴팁)·LIVE | 리드 | 완료 |
+| UI-94 | RosterPanel | VehicleRow[], Target[], Stage | 왼쪽 열 | 아군 줄(하는 일·표적·배터리·결정 대기), 적 줄 위험도 순(무력화·미탐 아래), 단계 표시, 줄 누르면 기체 선택 | 리드 | 완료 |
+| UI-95 | DecisionQueue·QueueCard | Frame, Queue | 오른쪽 열 | 한 장 펼침(나머지 한 줄), 정해진 선택지 먼저·드론 요청 묶음, 표적 선택 위험도 순 칩, 타격 빨강, 승인·거부, 대안 지점, 보내기 잠금(UI-20), 결정 없으면 할 일 없음·무력화 결과, 알림 2분 | 리드 | 완료 |
