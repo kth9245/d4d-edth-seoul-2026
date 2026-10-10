@@ -557,3 +557,4 @@
 {"at": "2026-10-11T00:23:49+09:00", "by": "황승주", "op": "done", "id": "Part2-63", "take": false}
 {"at": "2026-10-11T00:26:26+09:00", "by": "황승주", "op": "add", "id": "Part2-64", "title": "멸공 단계별 카드: 최종 리뷰 수정(카드 닫힘·대기 카드 게이트·추적 영역·후보 갱신)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-11T00:26:30+09:00", "by": "황승주", "op": "start", "id": "Part2-64", "take": false, "from": null}
+{"at": "2026-10-11T00:27:46+09:00", "by": "kth9245", "op": "add", "id": "Part1-32.3", "title": "지도에 드론 RF 수신 반경 고리: 살아 있는 기체 중 rf_range_m이 있는 것(드론 2000m)마다 점선 고리, 엔진 RF 판정(score_targets)과 같게", "parent": "Part1-32", "assign": null, "slot": null, "spec": null}
