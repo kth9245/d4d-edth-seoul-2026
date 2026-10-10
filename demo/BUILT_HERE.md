@@ -9,3 +9,4 @@
 | 시각 | 모듈 | 내용 | 담당 |
 |---|---|---|---|
 | 10/10 10:40 | cop-ui | Part1-9 지도: 백령도 EOX 위성 raster, 작전 구역(GET /operation), 기체·표적 HTML 마커(상태·종류 색), 개발용 `?scene=s1`~`s6`, MapLibre worker 경로 수정 | kth9245 |
+| 10/10 10:45 | gateway | REST(플레이·작전·실행·결정·직접 조종·전환 요청/승인) + WS Frame 송출, 배속·일시정지·다음 사건 점프, engine.py 전 스텁 (Part1-7) | kth9245 |

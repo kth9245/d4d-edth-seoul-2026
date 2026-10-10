@@ -1,31 +1,135 @@
-"""FastAPI app: WebSocket frame stream + static UI for the demo."""
+"""FastAPI app: REST inputs, WS Frame stream and the static UI (contracts/API.md §5).
+
+Run: uvicorn modules.gateway.app:create_app --factory (env KDTH_SCENARIO, KDTH_UI_DIST).
+One operation lives in process memory (`Live`); a background task calls `Live.period()`
+every `period_s`. Handlers are async so all state changes happen on the event loop thread.
+"""
 
 import asyncio
 import contextlib
 import os
+from contextlib import asynccontextmanager
 from pathlib import Path
+from types import SimpleNamespace
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 
-from modules.gateway.pipeline import Engine
-from modules.sim import load_scenario
+from contracts.models import DecisionIn, DirectIn, Operation, SwitchIn
+from modules import sim
+from modules.gateway import stub_engine
+from modules.gateway.live import Live
 from shared.log import get_logger, setup_logging
 
 log = get_logger("gateway")
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_SCENARIO = str(ROOT / "demo/scenarios/seoul_mixed.yaml")
+DEFAULT_SCENARIO = str(ROOT / "demo/scenarios/baengnyeong_night.json")
 
 
-def create_app(scenario_path: str, realtime: bool = True, ui_dist: str | None = None) -> FastAPI:
+def default_engine():
+    """engine.py (Part2-17) when it exists, else the example-frame stub (remove by 통합 2)."""
+    try:
+        from modules.gateway.engine import init_engine, tick
+    except ModuleNotFoundError as e:
+        if e.name != "modules.gateway.engine":
+            raise  # engine.py exists but is broken: fail loudly, never fall back to the stub
+        log.warning("modules/gateway/engine.py 없음: 예시 Frame 스텁으로 돈다")
+        return stub_engine
+    load = getattr(sim, "load_scenario_json", stub_engine.load_scenario_json)
+    return SimpleNamespace(load_scenario_json=load, init_engine=init_engine, tick=tick)
+
+
+def create_app(
+    scenario_path: str | None = None,
+    ui_dist: str | None = None,
+    engine=None,
+    period_s: float = 0.2,
+) -> FastAPI:
     setup_logging("gateway")  # decision 0010: always log (stderr + logs/gateway.log)
-    scenario = load_scenario(scenario_path)
-    log.info("scenario %s loaded", scenario_path)
-    app = FastAPI(title="kdth gateway")
+    eng = engine or default_engine()
+    path = scenario_path or os.environ.get("KDTH_SCENARIO", DEFAULT_SCENARIO)
+    live = Live(eng.load_scenario_json(path), eng.init_engine, eng.tick)
+    log.info("scenario %s loaded", path)
+
+    async def run_loop() -> None:
+        while True:
+            try:
+                live.period()
+            except Exception:
+                log.exception("tick failed at t=%d; run paused", live.frame.t_ms)
+                live.set_speed(0)
+            await asyncio.sleep(period_s)
+
+    @asynccontextmanager
+    async def lifespan(_: FastAPI):
+        task = asyncio.create_task(run_loop())
+        yield
+        task.cancel()
+
+    app = FastAPI(title="kdth gateway", lifespan=lifespan)
+
+    @app.middleware("http")
+    async def log_errors(request: Request, call_next):
+        try:
+            return await call_next(request)
+        except Exception:
+            log.exception("%s %s failed", request.method, request.url.path)
+            raise
 
     @app.get("/health")
-    def health() -> dict:
+    async def health() -> dict:
         return {"ok": True}
+
+    @app.get("/plays")
+    async def plays():
+        return live.scenario.plays
+
+    @app.get("/operation")
+    async def get_operation():
+        return live.scenario.operation
+
+    @app.post("/operation")
+    async def post_operation(op: Operation):
+        log.info("POST /operation %s", op.id)
+        return live.set_operation(op)
+
+    @app.post("/run/live")
+    async def run_live(speed: float):
+        log.info("POST /run/live speed=%s", speed)
+        return live.set_speed(speed)
+
+    @app.post("/run/reset")
+    async def run_reset():
+        log.info("POST /run/reset")
+        return live.reset()
+
+    @app.post("/run/jump")
+    async def run_jump(offset_ms: int):
+        log.info("POST /run/jump offset_ms=%d", offset_ms)
+        return live.jump(offset_ms)
+
+    @app.post("/decisions")
+    async def decisions(body: DecisionIn):
+        acc = live.decide(body)
+        log.info("POST /decisions %s/%s -> %s", body.report_id, body.choice_id, acc.id)
+        return acc
+
+    @app.post("/direct")
+    async def direct(body: DirectIn):
+        acc = live.direct(body)
+        log.info("POST /direct %s -> %s %s", body.vehicle_id, body.target, acc.id)
+        return acc
+
+    @app.post("/injections")
+    async def injections(body: SwitchIn):
+        inj = live.request_switch(body)
+        log.info("POST /injections %s -> %s %s", body.model_dump(), inj.id, inj.label)
+        return inj
+
+    @app.post("/injections/{inj_id}/{verdict}")
+    async def settle(inj_id: str, verdict: str):
+        log.info("POST /injections/%s/%s", inj_id, verdict)
+        return live.settle_injection(inj_id, approve=verdict == "approve")
 
     @app.websocket("/ws")
     async def ws(websocket: WebSocket) -> None:
@@ -40,31 +144,15 @@ def create_app(scenario_path: str, realtime: bool = True, ui_dist: str | None = 
                 closed.set()
 
         watcher = asyncio.create_task(watch())
-        engine = Engine(scenario)
         try:
             while not closed.is_set():
-                if engine.done:
-                    engine = Engine(scenario)
-                try:
-                    payload = engine.step().model_dump_json()
-                except Exception:
-                    log.exception("pipeline error in engine.step(); closing /ws")
-                    with contextlib.suppress(RuntimeError):
-                        await websocket.close(code=1011, reason="pipeline error: see server log")
-                    return
-                try:
-                    await websocket.send_text(payload)
-                except (WebSocketDisconnect, RuntimeError):
-                    break  # client went away
-                await asyncio.sleep(scenario.step_ms / 1000 if realtime else 0)
+                with contextlib.suppress(WebSocketDisconnect, RuntimeError):
+                    await websocket.send_text(live.frame.model_dump_json())
+                await asyncio.sleep(period_s)
         finally:
             watcher.cancel()
 
-    if ui_dist and Path(ui_dist, "index.html").exists():
-        app.mount("/", StaticFiles(directory=ui_dist, html=True), name="ui")
+    if ui_dist := ui_dist or os.environ.get("KDTH_UI_DIST"):
+        if Path(ui_dist, "index.html").exists():
+            app.mount("/", StaticFiles(directory=ui_dist, html=True), name="ui")
     return app
-
-
-app = create_app(
-    os.environ.get("KDTH_SCENARIO", DEFAULT_SCENARIO), ui_dist=os.environ.get("KDTH_UI_DIST")
-)

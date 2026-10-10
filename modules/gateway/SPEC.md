@@ -1,7 +1,7 @@
 <!-- prefix: GW -->
 # gateway SPEC
 
-통합 1 구간(결정 0009): 틱 루프 `engine.py`(`tick`, 호출 순서만)·`engine_state.py`(`EngineState`)와 GW-02~07 액션은 최동호(09 6절 Part2-17·2-18). 원본은 `knowledge/spikes/rolecall_engine_proto/port/modules/gateway/`를 그대로 복사. GW-01 `build_frame`은 레거시 smoke가 쓰므로 통합 1까지 그대로 두고 새 Frame은 GW-06 `build_frame_v2`. REST·WS(`app.py`, Part1-7)는 리드. `engine.py`·`engine_state.py`는 액션 파일이 아니라 이 표에 행이 없다.
+통합 1 구간(결정 0009): 틱 루프 `engine.py`(`tick`, 호출 순서만)·`engine_state.py`(`EngineState`)와 GW-02~07 액션은 최동호(09 6절 Part2-17·2-18). 원본은 `knowledge/spikes/rolecall_engine_proto/port/modules/gateway/`를 그대로 복사. GW-01 `build_frame`은 레거시 smoke가 쓰므로 통합 1까지 그대로 두고 새 Frame은 GW-06 `build_frame_v2`. REST·WS(`app.py`, Part1-7)는 리드. `engine.py`·`engine_state.py`와 Part1-7의 `live.py`(실행 상태·입력 대기열)·`stub_engine.py`(engine.py 전 임시, 통합 2 전 삭제)는 액션 파일이 아니라 이 표에 행이 없다.
 
 | id | 액션 | 입력 | 출력 | 완료 기준 | 담당 | 상태 |
 |---|---|---|---|---|---|---|

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Demo run: build UI, serve UI + /ws from one process on :8000.
+# Demo run: build UI, serve UI + REST + /ws from one process on :8000.
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 if ! (cd modules/cop-ui && npm run build --silent); then
@@ -16,7 +16,7 @@ if [ ! -s modules/cop-ui/public/tiles/seoul.pmtiles ]; then
   echo "#   scripts/fetch_tiles.sh   (또는 git pull 로 저장소의 파일 받기)"
   echo "################################################################"
 fi
-export KDTH_SCENARIO="${1:-demo/scenarios/seoul_mixed.yaml}"
+export KDTH_SCENARIO="${1:-demo/scenarios/baengnyeong_night.json}"
 export KDTH_UI_DIST="$PWD/modules/cop-ui/dist"
 echo "http://localhost:8000"
-exec .venv/bin/uvicorn modules.gateway.app:app --port 8000
+exec .venv/bin/uvicorn modules.gateway.app:create_app --factory --port 8000
