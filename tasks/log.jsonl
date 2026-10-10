@@ -528,3 +528,4 @@
 {"at": "2026-10-10T23:35:18+09:00", "by": "kth9245", "op": "done", "id": "Part1-47.1", "take": false}
 {"at": "2026-10-10T23:51:35+09:00", "by": "황승주", "op": "add", "id": "Part2-58", "title": "멸공 적 대응 단계별 카드 흐름 설계 문서", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T23:51:39+09:00", "by": "황승주", "op": "start", "id": "Part2-58", "take": false, "from": null}
+{"at": "2026-10-10T23:54:32+09:00", "by": "황승주", "op": "done", "id": "Part2-58", "take": false}
