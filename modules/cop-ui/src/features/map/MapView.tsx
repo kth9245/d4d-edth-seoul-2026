@@ -149,6 +149,11 @@ export function MapView({ frame, zone, tilesAvailable, direct = NO_DIRECT, board
     (map.current?.getSource("zone") as GeoJSONSource | undefined)?.setData(zoneGeoJSON(zone));
   }, [zone]);
 
-  // While a vehicle is selected the map is picking: targets take clicks (theme.css) for pointing.
-  return <div ref={el} className={direct.selected ? "map picking" : "map"} />;
+  useEffect(() => {
+    // While a vehicle is selected the map is picking: targets take clicks (board.css) for pointing. Toggled on the
+    // element, not through className, so React never rewrites the class MapLibre added (review of Task 8).
+    el.current?.classList.toggle("picking", direct.selected !== null);
+  }, [direct.selected]);
+
+  return <div ref={el} className="map" />;
 }

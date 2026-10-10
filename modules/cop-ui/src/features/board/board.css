@@ -69,7 +69,9 @@
 
 /* Pointing (Part1-32, decisions 0048, 0049): while a vehicle is selected, live targets take clicks above the
    vehicles; the role menu sits beside the pointed target inside the map column. */
-.map.picking .maplibregl-marker:has(> .mk.target:not(.neutralized)) { z-index: 4; pointer-events: auto; cursor: crosshair; }
+.map.picking .maplibregl-marker:has(> .mk.target:not(.neutralized):not(.never)) { z-index: 4; pointer-events: auto; cursor: crosshair; }
+/* the selected vehicle stays above the targets so a second click on it still deselects (review of Task 8) */
+.map.picking .maplibregl-marker:has(> .mk.vehicle.selected) { z-index: 5; }
 .board .pickpop { position: absolute; z-index: 5; width: 240px; padding: 10px; }
 .board .pickpop button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; margin-top: 6px;
   padding: 7px 10px; text-align: left; cursor: pointer; }
