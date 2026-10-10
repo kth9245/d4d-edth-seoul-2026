@@ -5,6 +5,7 @@ import { boardView } from "./features/board/boardView";
 import { DecisionQueue } from "./features/board/DecisionQueue";
 import { LoadBar } from "./features/board/LoadBar";
 import { PointMenu } from "./features/board/PointMenu";
+import { pointRoles } from "./features/board/pointRoles";
 import { RosterPanel } from "./features/board/RosterPanel";
 import { seenTargets } from "./features/board/seenTargets";
 import { SituationBar } from "./features/board/SituationBar";
@@ -71,7 +72,8 @@ export function Screen({ frame, zone, status, ok }:
         {frame && direct.selected && direct.pick && (
           // Pointing (decisions 0048, 0049, 0058): the selected vehicle's target roles beside the pointed target.
           <PointMenu vehicle={direct.selected} target={direct.pick.target} x={direct.pick.x} y={direct.pick.y}
-            roles={menuRoles.target} current={current} onPick={direct.onPoint} onCancel={direct.cancelPick} />
+            roles={pointRoles(menuRoles.target, board?.tracks[direct.pick.target])} current={current}
+            onPick={direct.onPoint} onCancel={direct.cancelPick} />
         )}
         <RunBar frame={frame} />
         {graph && <ObjectGraphView focus={graph} onClose={() => setGraph(null)} />}

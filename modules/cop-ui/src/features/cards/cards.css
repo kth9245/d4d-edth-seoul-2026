@@ -1,4 +1,4 @@
-/* Switch panel, direct-control hint and aim cross (Part1-11, Part1-12). The old card list rules left with CardList (Part1-32). */
+/* Direct-control hint and aim cross (Part1-11). The old card list rules left with CardList (Part1-32). */
 
 /* Direct control (Part1-11): hint line over the top-left of the map, selection ring, aim cross. Colors in theme.css. */
 .map-col { position: relative; }

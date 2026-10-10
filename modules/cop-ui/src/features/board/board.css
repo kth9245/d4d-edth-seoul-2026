@@ -77,8 +77,8 @@
   padding: 7px 10px; text-align: left; cursor: pointer; }
 .board .pickpop .pn { margin-top: 8px; }
 /* Vehicle menu under the picked roster row (Part1-32.1) and the operation's buttons in the roster head (decision 0060). */
-.board .roster h3 .sw-btn { flex: none; padding: 3px 8px; font-size: 11px; cursor: pointer; }
-.board .roster .sw-note { margin: -2px 0 6px; font-size: 11px; }
+.board .roster h3 .sw-btn { flex: none; padding: 3px 8px; cursor: pointer; }
+.board .roster .sw-note { margin: -2px 0 6px; }
 .board .vmenu { display: flex; flex: none; flex-direction: column; gap: 4px; padding: 6px 4px 10px 10px; }
 .board .vmenu .vm-h { margin-top: 6px; }
 .board .vmenu .vm-plain, .board .vmenu .vm-t { display: flex; flex-direction: column; gap: 4px; }
