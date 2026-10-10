@@ -83,6 +83,20 @@ def fleet(night_vehicles: list[dict]) -> list[dict]:
     return [usv, *recon, *armed, copy.deepcopy(by_id["ugv"])]
 
 
+def after_strike(drone: str) -> dict:
+    """The scout waits here for the operator: scout more (continue its stretch) or go back to the USV."""
+    more = {"id": "more", "label": "더 정찰", "role_by_vehicle": {}, "target_by_vehicle": {}}
+    home = {"id": "home", "label": "수상정으로 복귀", "role_by_vehicle": {drone: "go_home"},
+            "target_by_vehicle": {}}  # fmt: skip
+    return {
+        "id": "after_strike", "name": "무력화 뒤", "do": {"kind": "hold", "params": {}},
+        "on": [{"cond": {"kind": "operator_choice", "params": {"choice": "more"}}, "go_step": "patrol"}],
+        "report": {"text": "거점 무력화됨. 이어서 어떻게 할까요?", "choices": [more, home],
+                   "auto_choices": False},
+        "ui": {},
+    }  # fmt: skip
+
+
 def coast_patrols(day: dict) -> tuple[list[dict], list[dict]]:
     """One search Role and one editor route per coast stretch, cut from the 24h operation's coast routes."""
     base_role = next(r for r in day["roles"] if r["id"] == "coast_a")
@@ -113,8 +127,11 @@ def coast_patrols(day: dict) -> tuple[list[dict], list[dict]]:
             {
                 "cond": {"kind": "operator_choice", "params": {"choice": "resume"}},
                 "go_step": "patrol",
-            }
-        ]  # decision 0031: the reporter not named in role_by_vehicle takes this exit
+            },
+            # decision 0058: once the site is struck the scout asks what next instead of hovering forever
+            {"cond": {"kind": "target_neutralized", "params": {}}, "go_step": "after_strike"},
+        ]  # decision 0031: the reporter not named in role_by_vehicle takes the operator_choice exit
+        role["steps"].append(after_strike(drone))
         roles.append(role)
         routes.append(route)
     return roles, routes

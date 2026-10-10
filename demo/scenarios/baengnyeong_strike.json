@@ -329,6 +329,13 @@
         }
        },
        "go_step": "patrol"
+      },
+      {
+       "cond": {
+        "kind": "target_neutralized",
+        "params": {}
+       },
+       "go_step": "after_strike"
       }
      ],
      "report": {
@@ -358,6 +365,46 @@
        }
       ],
       "auto_choices": true
+     },
+     "ui": {}
+    },
+    {
+     "id": "after_strike",
+     "name": "무력화 뒤",
+     "do": {
+      "kind": "hold",
+      "params": {}
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "operator_choice",
+        "params": {
+         "choice": "more"
+        }
+       },
+       "go_step": "patrol"
+      }
+     ],
+     "report": {
+      "text": "거점 무력화됨. 이어서 어떻게 할까요?",
+      "choices": [
+       {
+        "id": "more",
+        "label": "더 정찰",
+        "role_by_vehicle": {},
+        "target_by_vehicle": {}
+       },
+       {
+        "id": "home",
+        "label": "수상정으로 복귀",
+        "role_by_vehicle": {
+         "r1": "go_home"
+        },
+        "target_by_vehicle": {}
+       }
+      ],
+      "auto_choices": false
      },
      "ui": {}
     }
@@ -496,6 +543,13 @@
         }
        },
        "go_step": "patrol"
+      },
+      {
+       "cond": {
+        "kind": "target_neutralized",
+        "params": {}
+       },
+       "go_step": "after_strike"
       }
      ],
      "report": {
@@ -525,6 +579,46 @@
        }
       ],
       "auto_choices": true
+     },
+     "ui": {}
+    },
+    {
+     "id": "after_strike",
+     "name": "무력화 뒤",
+     "do": {
+      "kind": "hold",
+      "params": {}
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "operator_choice",
+        "params": {
+         "choice": "more"
+        }
+       },
+       "go_step": "patrol"
+      }
+     ],
+     "report": {
+      "text": "거점 무력화됨. 이어서 어떻게 할까요?",
+      "choices": [
+       {
+        "id": "more",
+        "label": "더 정찰",
+        "role_by_vehicle": {},
+        "target_by_vehicle": {}
+       },
+       {
+        "id": "home",
+        "label": "수상정으로 복귀",
+        "role_by_vehicle": {
+         "r2": "go_home"
+        },
+        "target_by_vehicle": {}
+       }
+      ],
+      "auto_choices": false
      },
      "ui": {}
     }
@@ -658,6 +752,13 @@
         }
        },
        "go_step": "patrol"
+      },
+      {
+       "cond": {
+        "kind": "target_neutralized",
+        "params": {}
+       },
+       "go_step": "after_strike"
       }
      ],
      "report": {
@@ -687,6 +788,46 @@
        }
       ],
       "auto_choices": true
+     },
+     "ui": {}
+    },
+    {
+     "id": "after_strike",
+     "name": "무력화 뒤",
+     "do": {
+      "kind": "hold",
+      "params": {}
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "operator_choice",
+        "params": {
+         "choice": "more"
+        }
+       },
+       "go_step": "patrol"
+      }
+     ],
+     "report": {
+      "text": "거점 무력화됨. 이어서 어떻게 할까요?",
+      "choices": [
+       {
+        "id": "more",
+        "label": "더 정찰",
+        "role_by_vehicle": {},
+        "target_by_vehicle": {}
+       },
+       {
+        "id": "home",
+        "label": "수상정으로 복귀",
+        "role_by_vehicle": {
+         "r3": "go_home"
+        },
+        "target_by_vehicle": {}
+       }
+      ],
+      "auto_choices": false
      },
      "ui": {}
     }

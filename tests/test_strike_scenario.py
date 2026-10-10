@@ -280,3 +280,84 @@ def test_leaving_a_site_frees_the_drone_and_its_card_does_not_come_back(sc, choi
     cards = [r for r in es.reports if r.kind == "target_detected" and r.target_id == "site_c"]
     assert len(cards) == 1 and cards[0].resolved_ms  # answered, and not raised again
     assert dist_m(r2.pos, _site(es, "site_c").pos) > 800  # out of its sensor range: it really left
+
+
+def test_every_patrol_asks_what_next_once_its_site_is_neutralized(sc):  # decision 0058
+    roles = {r.id: r for r in sc.roles}
+    for drone, role_id in PATROL_OF.items():
+        steps = {s.id: s for s in roles[role_id].steps}
+        assert any(
+            e.cond.kind.value == "target_neutralized" and e.go_step == "after_strike"
+            for e in steps["report"].on
+        ), drone
+        after = steps["after_strike"]
+        choices = {c.id: c for c in after.report.choices}
+        assert list(choices) == ["more", "home"], drone
+        assert choices["more"].role_by_vehicle == {}, drone
+        assert choices["home"].role_by_vehicle == {drone: "go_home"}, drone
+        assert any(
+            e.cond.kind.value == "operator_choice"
+            and e.cond.params == {"choice": "more"}
+            and e.go_step == "patrol"
+            for e in after.on
+        ), drone
+
+
+def _struck_state(sc):
+    """site_a approved for a1 and neutralized; returns the state when r1 asks what next."""
+    es = _identified_card_state(sc)
+    dec = Decision(
+        id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=_card(es).id, choice_id="strike_a1"
+    )
+    es, _ = tick(es, TickInputs(decisions=[dec]))
+    es = _run_until(es, lambda e: _site(e).neutralized_ms is not None, limit=9000)
+    return _run_until(es, lambda e: _after_strike_card(e) is not None, limit=200)
+
+
+def _after_strike_card(es):
+    return next(
+        (
+            r
+            for r in es.reports
+            if r.vehicle_id == "r1" and not r.resolved_ms and r.text.startswith("거점 무력화됨")
+        ),
+        None,
+    )
+
+
+def _r1(es):
+    return next(s for s in es.states if s.id == "r1")
+
+
+def test_after_the_strike_the_scout_asks_whether_to_scout_more_or_go_home(sc):
+    es = _struck_state(sc)
+    assert [c.id for c in _after_strike_card(es).choices] == ["more", "home"]
+    assert _r1(es).step_id == "after_strike" and _r1(es).pending_report_id
+
+
+def test_scouting_more_continues_the_stretch_from_where_it_was_left(sc):
+    es = _struck_state(sc)
+    left = _r1(es).patrol_idx
+    assert _r1(es).patrol_step_id == "patrol" and left > 0  # remembered when it found site_a
+    dec = Decision(id="dec-2", t_ms=es.t_ms + sc.tick_ms,
+                   report_id=_after_strike_card(es).id, choice_id="more")  # fmt: skip
+    es, _ = tick(es, TickInputs(decisions=[dec]))
+    es, _ = tick(es, TickInputs())
+    assert (_r1(es).role_id, _r1(es).step_id) == ("site_patrol_ne", "patrol")
+    assert _r1(es).waypoint_idx >= left  # not back at the first waypoint
+    for _ in range(60 * 1000 // sc.tick_ms):
+        es, _ = tick(es, TickInputs())
+    assert _r1(es).pos.lon > 124.69  # still on the east half: a restart would fly back west first
+
+
+def test_going_home_sends_the_scout_back_to_the_usv_spot(sc):
+    es = _struck_state(sc)
+    spot = next(v for v in sc.vehicles if v.id == "usv").home
+    far = dist_m(_r1(es).pos, spot)
+    dec = Decision(id="dec-2", t_ms=es.t_ms + sc.tick_ms,
+                   report_id=_after_strike_card(es).id, choice_id="home")  # fmt: skip
+    es, _ = tick(es, TickInputs(decisions=[dec]))
+    for _ in range(300 * 1000 // sc.tick_ms):  # five minutes
+        es, _ = tick(es, TickInputs())
+    assert _r1(es).role_id == "go_home"
+    assert dist_m(_r1(es).pos, spot) < far - 3000  # it is flying back
