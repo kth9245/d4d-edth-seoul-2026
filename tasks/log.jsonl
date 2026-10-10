@@ -380,3 +380,4 @@
 {"at": "2026-10-10T17:10:12+09:00", "by": "황승주", "op": "add", "id": "Part2-34", "title": "drones: endurance 100 min, battery swap 5 min (user)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T17:10:28+09:00", "by": "황승주", "op": "start", "id": "Part2-34", "take": false, "from": null}
 {"at": "2026-10-10T17:18:08+09:00", "by": "kth9245", "op": "start", "id": "Part1-31", "take": false, "from": null}
+{"at": "2026-10-10T17:18:56+09:00", "by": "kth9245", "op": "decide", "id": "Part1-30", "text": "'다음 사건' 정지 시각과 상황판 점검(live.json, ontology.json 상황판 단계)을 해안 순찰 시작 흐름(Part2-33, 첫 카드 17:00)에 맞춰 지금 다시 짠다. 리드 답 '지금 흐름으로 바로 (추천)'"}
