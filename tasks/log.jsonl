@@ -587,3 +587,4 @@
 {"at": "2026-10-11T02:27:43+09:00", "by": "황승주", "op": "add", "id": "Part2-67", "title": "화면: 질문·알림 카드의 '연결 보기' 버튼 제거(사용자 10/11)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-11T02:27:46+09:00", "by": "황승주", "op": "start", "id": "Part2-67", "take": false, "from": null}
 {"at": "2026-10-11T02:32:27+09:00", "by": "황승주", "op": "done", "id": "Part2-67", "take": false}
+{"at": "2026-10-11T02:35:30+09:00", "by": "kth9245", "op": "add", "id": "Part1-32.6", "title": "헤더에서 BAENGNYEONG SECTOR 문구 빼기", "parent": "Part1-32", "assign": null, "slot": null, "spec": null}
