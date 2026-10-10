@@ -15,3 +15,4 @@
 | RT-10 | rotate_patrols | states, specs, Operation, plays, assignments, t_ms | (states, assignments) | 출발·만남·인계·대기 없음·하한선·기록 없는 쌍 테스트 | 황승주 | 완료 |
 | RT-11 | fleet_choices |  |  |  | 황승주 | 완료 |
 | RT-12 | relieve_hover |  |  |  | 황승주 | 완료 |
+| RT-13 | route_command | Action, Domain, 기체 위치, params | (CommandKind/None, params) | 상대 경로가 기체 위치 기준 좌표, move_to+route는 follow_route loop false, 그 밖은 expand_action 그대로 | kth9245 | 진행중 |

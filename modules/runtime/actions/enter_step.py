@@ -17,7 +17,7 @@ from contracts.models import (
     VehicleState,
     VehicleStatus,
 )
-from modules.play import expand_action
+from modules.runtime.actions.route_command import route_command
 from shared.geo import dist_m
 
 TARGET_ACTIONS = ("watch_target", "approach_target", "strike_target")
@@ -61,7 +61,7 @@ def enter_step(
         if step.do.kind.value == "strike_target":  # decision 0033: safety rules 2·3 see where
             tg = next((t for t in targets if t.id == tid), None)
             params |= {"target": tg.pos.model_dump()} if tg else {}
-    kind = expand_action(step.do, spec.domain)
+    kind, params = route_command(step.do, spec.domain, st.pos, params)
     prov = Provenance(source="play_step", play_id=play.id, step_id=step.id, issued_ms=t_ms,
                       decision_id=st.decision_id)  # fmt: skip
     cmd = None if kind is None else Command(id=f"cmd-{st.id}-{t_ms}", vehicle_id=st.id,

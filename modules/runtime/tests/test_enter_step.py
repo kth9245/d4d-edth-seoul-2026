@@ -126,3 +126,13 @@ def test_card_basis_says_tracking_when_the_vehicle_has_not_seen_the_target():
     _, _, rep = run(Action(kind="watch_target", params={"target": "operator", "distance_m": 300}),
                     [boat("fast1", 1000)], report=ask, target_id="fast1")  # fmt: skip
     assert rep.text == "타격 승인 요청 · d1 추적 중 · fast1(보트) · 1000 m"
+
+
+def test_a_relative_route_card_flies_its_shape_from_where_the_vehicle_is():  # decision 0044
+    step = Step(id="s1", name="수색", do=Action(kind="patrol_route", params={
+        "offsets": [{"north_m": 300, "east_m": 0}], "route_name": "sq"}))  # fmt: skip
+    play = Play(id="p", name="p", domains=["air"], entry="s1", approved=True, steps=[step])
+    here = GeoPoint(lat=37.5, lon=126.5)
+    _, cmd, _ = enter_step(vs().model_copy(update={"pos": here}), spec(), play, step, [], 0)
+    assert cmd.kind == "follow_route"
+    assert abs(cmd.params["route"][0]["lat"] - (here.lat + 300 / 111_195)) < 1e-4
