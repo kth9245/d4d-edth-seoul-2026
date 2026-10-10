@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from contracts.models import Decision, GeoPoint, TickInputs
+from contracts.models import Decision, DirectControl, GeoPoint, TickInputs
 from modules.gateway.engine import init_engine, tick
 from modules.role import check_operation
 from modules.safety import point_in_polygon
@@ -221,13 +221,14 @@ def test_site_a_is_identified_then_approved_then_neutralized(sc):
     assert not es.blocks  # no safety rule stopped it
 
 
-def test_a_silent_site_seen_by_one_drone_never_reaches_identified(sc):
+def test_a_silent_site_without_a_clue_never_reaches_identified_with_one_scout(sc):
+    # decision 0069: site_b gives off heat, so one scout's infrared identifies it; site_c is heard only by the
+    # ground robot, which nobody sent, so the scout alone stays below the threshold
     es = init_engine(sc)
     for _ in range(7500):  # 25 simulated minutes: r2 meets site_c, r3 meets site_b
         es, _ = tick(es, TickInputs())
-    states = [_site(es, i).ident_state for i in ("site_b", "site_c")]
-    assert all(s in ("identifying", "rf_only", "undetected") for s in states), states
-    assert "identifying" in states  # but they were seen
+    assert _site(es, "site_c").ident_state in ("identifying", "rf_only")
+    assert _site(es, "site_b").ident_state == "identified"
 
 
 def _identified_card_state(sc):
@@ -469,7 +470,9 @@ def test_two_scouts_on_a_silent_site_identify_it_and_open_the_strike_choices(sc)
     es, _ = tick(es, TickInputs())  # the cards are refreshed at the end of the tick
     site_b = _site(es, "site_b")
     assert set(site_b.seen_by) >= {"r1", "r3"} and site_b.ident_confidence >= 70
-    assert "multi_observer" in site_b.ident_reasons  # without RF, two observers are what it took
+    # decision 0069: r1's infrared had already identified site_b long before r3 arrived; the second observer
+    # still counts (+15) once both see it, so the reasons carry both
+    assert {"ir_signature", "multi_observer"} <= set(site_b.ident_reasons)
     ids = {c.id for c in _open_card(es, "r3", "site_b").choices}
     assert {"strike_a1", "strike_a2", "strike_a3", "strike_all"} <= ids
 
@@ -486,3 +489,81 @@ def test_the_second_scout_can_keep_watching_or_go_back_to_its_patrol(sc):
     back, _ = tick(back, TickInputs())
     r3 = next(s for s in back.states if s.id == "r3")
     assert (r3.step_id, r3.waypoint_idx) == ("patrol", left)  # continues, not from the start
+
+
+# --- decision 0069: virtual infrared on the scouts, hearing on the ground robot -----------------------------
+SITE_C = (37.97272, 124.64615)
+
+
+def test_the_sensor_ranges_and_signatures_are_on_the_strike_operation(sc):
+    by = {v.id: v for v in sc.vehicles}
+    for d in ("r1", "r2", "r3"):
+        assert (by[d].ir_range_m, by[d].acoustic_range_m) == (800.0, 0.0), d
+    assert (by["ugv"].ir_range_m, by["ugv"].acoustic_range_m) == (0.0, 500.0)
+    for d in ("usv", "a1", "a2", "a3"):
+        assert (by[d].ir_range_m, by[d].acoustic_range_m) == (0.0, 0.0), d
+    sig = {e.id: (e.heat, e.noise) for e in sc.enemies}
+    assert sig == {"site_a": (False, False), "site_b": (True, False), "site_c": (False, True)}
+
+
+def test_the_ground_robot_waits_on_land_outside_the_ears_of_site_c(sc):
+    ugv = next(v for v in sc.vehicles if v.id == "ugv").home
+    c = GeoPoint(lat=SITE_C[0], lon=SITE_C[1])
+    assert inside(ugv, sc.land)
+    assert 500 < dist_m(ugv, c) < 2000  # silent at the start, a few minutes away
+    assert all(dist_m(ugv, e.pos) > 500 for e in sc.enemies)  # it hears nothing before it is sent
+    assert dist_m(ugv, c) > 300  # and cannot see the site either (its sensor is 300 m)
+
+
+def test_site_b_is_identified_by_one_scout_with_infrared(sc):  # change ledger: 0.60 limit -> 0.70
+    es = init_engine(sc)
+    es = _run_until(es, lambda e: _open_card(e, "r3", "site_b") is not None, limit=9000)
+    es = _run_until(es, lambda e: _site(e, "site_b").ident_state == "identified", limit=400)
+    es, _ = tick(es, TickInputs())
+    b = _site(es, "site_b")
+    assert b.ir_detected and "ir_signature" in b.threat_reasons and b.threat == 55
+    assert b.ident_reasons == ["ir_signature", "scan", "sustained"] and b.ident_confidence == 70
+    ids = {c.id for c in _open_card(es, "r3", "site_b").choices}
+    assert {"strike_a1", "strike_a2", "strike_a3", "strike_all"} <= ids
+
+
+def test_site_c_needs_the_ground_robot_to_hear_it(
+    sc,
+):  # change ledger: the scout alone stays at 0.60
+    es = init_engine(sc)
+    es = _run_until(es, lambda e: _open_card(e, "r2", "site_c") is not None)
+    for _ in range(60 * 1000 // sc.tick_ms):  # a minute of the scout alone
+        es, _ = tick(es, TickInputs())
+    c = _site(es, "site_c")
+    assert (c.ident_state, c.ident_confidence, c.sound_detected) == ("identifying", 60, False)
+    assert not any(x.id.startswith("strike_") for x in _open_card(es, "r2", "site_c").choices)
+    goal = GeoPoint(
+        lat=SITE_C[0] - 0.0036, lon=SITE_C[1]
+    )  # 400 m south of the site, inside its 500 m ears
+    dec = DirectControl(id="dir-1", vehicle_id="ugv", target=goal, t_ms=es.t_ms + sc.tick_ms)
+    es, _ = tick(es, TickInputs(direct=[dec]))
+    es = _run_until(
+        es, lambda e: _site(e, "site_c").sound_detected, limit=1500
+    )  # about 3.5 minutes
+    es = _run_until(es, lambda e: _site(e, "site_c").ident_state == "identified", limit=50)
+    es, _ = tick(es, TickInputs())
+    c = _site(es, "site_c")
+    assert (
+        c.sound_detected
+        and "sound" in c.ident_reasons
+        and c.ident_confidence == 70
+        and c.threat == 55
+    )
+    ids = {x.id for x in _open_card(es, "r2", "site_c").choices}
+    assert {"strike_a1", "strike_a2", "strike_a3", "strike_all"} <= ids
+
+
+def test_site_a_is_exactly_as_before(sc):
+    es = init_engine(sc)
+    es = _run_until(es, lambda e: _open_card(e, "r1", "site_a") is not None, limit=9000)
+    a = _site(es, "site_a")
+    assert (a.threat, a.threat_reasons) == (
+        75,
+        ["kind_unknown", "near_watch_radius", "rf_emission"],
+    )
+    assert (a.ir_detected, a.sound_detected) == (False, False)

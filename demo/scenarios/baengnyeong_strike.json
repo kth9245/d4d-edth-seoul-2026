@@ -110,7 +110,8 @@
    },
    "recharge_min": 5.0,
    "rf_range_m": 2000.0,
-   "kind": "recon_drone"
+   "kind": "recon_drone",
+   "ir_range_m": 800.0
   },
   {
    "id": "r2",
@@ -126,7 +127,8 @@
    },
    "recharge_min": 5.0,
    "rf_range_m": 2000.0,
-   "kind": "recon_drone"
+   "kind": "recon_drone",
+   "ir_range_m": 800.0
   },
   {
    "id": "r3",
@@ -142,7 +144,8 @@
    },
    "recharge_min": 5.0,
    "rf_range_m": 2000.0,
-   "kind": "recon_drone"
+   "kind": "recon_drone",
+   "ir_range_m": 800.0
   },
   {
    "id": "a1",
@@ -200,13 +203,14 @@
    "endurance_min": 480.0,
    "sensor_range_m": 300.0,
    "home": {
-    "lat": 37.955,
-    "lon": 124.72,
+    "lat": 37.95923,
+    "lon": 124.64615,
     "alt_m": 0.0
    },
    "recharge_min": 0.0,
    "rf_range_m": 0.0,
-   "kind": "ground_robot"
+   "kind": "ground_robot",
+   "acoustic_range_m": 500.0
   }
  ],
  "roles": [
@@ -1903,7 +1907,8 @@
    },
    "from_enemy": null,
    "role_id": "site_hold",
-   "emit_start_offset_ms": null
+   "emit_start_offset_ms": null,
+   "heat": true
   },
   {
    "id": "site_c",
@@ -1917,7 +1922,8 @@
    },
    "from_enemy": null,
    "role_id": "site_hold",
-   "emit_start_offset_ms": null
+   "emit_start_offset_ms": null,
+   "noise": true
   }
  ],
  "watch_points": [

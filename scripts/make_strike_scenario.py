@@ -27,6 +27,11 @@ SITES = [
 ]
 # spawn_enemies needs t - dt < start + offset <= t: an offset of 0 would never spawn the enemy
 APPEAR_MS = 1000
+# decision 0069: virtual infrared on the scouts, virtual hearing on the ground robot, a heat and a noise site
+IR_RANGE_M, ACOUSTIC_RANGE_M = 800.0, 500.0
+# the ground robot waits on land 1500 m south of site_c, outside its 500 m ears: the operator sends it there
+UGV_START = {"lat": 37.95923, "lon": 124.64615, "alt_m": 0.0}
+SIGNATURES = {"site_b": {"heat": True}, "site_c": {"noise": True}}
 # the carrier USV waits in the sea west of the island (outside the land, inside the zone)
 USV_SPOT = {"lat": 37.955, "lon": 124.585, "alt_m": 0.0}
 # The three coast stretches, one recon drone each. Points are indices into the 24h operation's coast routes,
@@ -76,9 +81,13 @@ def fleet(night_vehicles: list[dict]) -> list[dict]:
     def drone(src: str, vid: str, name: str) -> dict:
         return copy.deepcopy(by_id[src]) | {"id": vid, "name": name, "home": dict(usv["home"])}
 
-    recon = [drone("d1", f"r{i}", f"정찰 드론{i}") for i in (1, 2, 3)]
+    recon = [drone("d1", f"r{i}", f"정찰 드론{i}") | {"ir_range_m": IR_RANGE_M} for i in (1, 2, 3)]
     armed = [drone("d2", f"a{i}", f"공격 드론{i}") for i in (1, 2, 3)]
-    return [usv, *recon, *armed, copy.deepcopy(by_id["ugv"])]
+    ugv = copy.deepcopy(by_id["ugv"]) | {
+        "acoustic_range_m": ACOUSTIC_RANGE_M,
+        "home": dict(UGV_START),
+    }
+    return [usv, *recon, *armed, ugv]
 
 
 def after_strike(drone: str) -> dict:
@@ -185,7 +194,7 @@ def build() -> dict:
     enemies = [
         {"id": i, "kind": "unknown", "speed_mps": 0.0, "appear_offset_ms": APPEAR_MS,
          "pos": {"lat": lat, "lon": lon, "alt_m": 0.0}, "from_enemy": None, "role_id": "site_hold",
-         "emit_start_offset_ms": emit}
+         "emit_start_offset_ms": emit} | SIGNATURES.get(i, {})
         for i, lat, lon, emit in SITES
     ]  # fmt: skip
     out = night | {
