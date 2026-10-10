@@ -4,6 +4,7 @@ import type { SaveResult } from "./checkView";
 import { forSave } from "./draftRequests";
 import { groupPlays } from "./groupPlays";
 import { zoneCentre } from "./editStep";
+import { enemyRows } from "./enemyRows";
 import { insertReportStep } from "./insertReportStep";
 import { type EditorData, loadEditorData } from "./loadEditorData";
 import { NewPlayMenu } from "./NewPlayMenu";
@@ -33,9 +34,10 @@ export function EditorScreen() {
   const view = useMemo(
     () =>
       data && {
-        groups: groupPlays(data.plays),
-        usage: playUsage(data.operation, data.plays),
+        groups: groupPlays(data.plays, data.enemies.map((e) => e.play_id)),
+        usage: playUsage(data.operation, data.plays, data.enemies),
         columns: vehicleColumns(data.operation, data.plays),
+        enemies: enemyRows(data.enemies, data.operation.started_ms, data.plays),
         byId: new Map(data.plays.map((p) => [p.id, p])),
       },
     [data],
@@ -111,7 +113,7 @@ export function EditorScreen() {
             plays={data.plays.map((p) => ({ id: p.id, name: p.name }))}
           />
         ) : (
-          <OperationOverview op={data.operation} vehicles={data.vehicles} columns={view.columns} playName={playName} onOpen={open} />
+          <OperationOverview op={data.operation} vehicles={data.vehicles} columns={view.columns} enemies={view.enemies} playName={playName} onOpen={open} />
         )}
       </main>
     </div>

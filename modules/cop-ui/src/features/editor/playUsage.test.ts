@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import scenario from "../../../../../demo/scenarios/baengnyeong_night.json";
-import type { Operation, Play } from "../../contracts.gen";
+import type { EnemySpec, Operation, Play } from "../../contracts.gen";
 import { playUsage } from "./playUsage";
 
 const op = scenario.operation as unknown as Operation;
@@ -21,5 +21,10 @@ describe("playUsage", () => {
   });
   it("has no entry for an unused play", () => {
     expect(u["enemy_boat1"]).toBeUndefined(); // enemy plays run on enemies, not on vehicles (decision 0032)
+  });
+  it("names the enemy that follows an enemy play and when it appears (Part1-21)", () => {
+    const e = playUsage(op, plays, scenario.enemies as unknown as EnemySpec[]);
+    expect(e["enemy_boat1"]).toEqual([{ vehicle_id: "boat1", how: "적 · 21:11 KST 등장 (+11분)" }]);
+    expect(e["enemy_fast1"]).toEqual([{ vehicle_id: "fast1", how: "적 · 21:23 KST 등장 (+23분)" }]);
   });
 });

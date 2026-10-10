@@ -273,3 +273,10 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .op-vehicles td small, .op-vehicles .muted { color: var(--muted); }
 .op-move { color: var(--text2); font-family: var(--font-mono); }
 .mini-map-wrap figcaption { color: var(--dim); font-family: var(--font-mono); }
+/* Overview sections: friendly, then enemy in hostile red (Part1-21) */
+.ov-section { color: var(--dim); font-family: var(--font-mono); letter-spacing: var(--ls); }
+.ov-section.enemy { color: var(--hostile); }
+.ov-section small { color: var(--muted); font-family: var(--font); letter-spacing: normal; }
+.enemy-column .column-head { color: var(--hostile); }
+.enemy-meta { color: var(--text2); font-family: var(--font-mono); }
+.enemy-column .step-card { border-left-color: var(--hostile); }

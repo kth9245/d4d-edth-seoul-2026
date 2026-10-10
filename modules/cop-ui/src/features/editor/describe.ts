@@ -1,4 +1,4 @@
-import type { Action, ActionKind, Condition, ConditionKind, Domain } from "../../contracts.gen";
+import type { Action, ActionKind, Condition, ConditionKind, Domain, TargetKind } from "../../contracts.gen";
 
 export const ACTION_LABEL: Record<ActionKind, string> = {
   move_to: "이동",
@@ -23,6 +23,8 @@ export const CONDITION_LABEL: Record<ConditionKind, string> = {
 };
 
 export const DOMAIN_LABEL: Record<Domain, string> = { air: "드론", sea: "수상정", ground: "지상" };
+
+export const TARGET_KIND_LABEL: Record<TargetKind, string> = { boat: "보트", fast_boat: "고속 보트", person: "사람", unknown: "미상" };
 
 function targetText(t: unknown): string {
   if (t === "nearest") return "가장 가까운 표적";
