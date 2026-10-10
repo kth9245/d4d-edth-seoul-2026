@@ -80,3 +80,14 @@ def test_the_24h_usv_and_ugv_stand_by_at_their_night_spots():  # user, 10/10
     by = {v.id: v for v in day.vehicles}
     assert all(by[i].home == night[i].home and by[i].kind == night[i].kind for i in ("usv", "ugv"))
     assert day.operation.assign["usv"] == day.operation.assign["ugv"] == "standby"
+
+
+def test_the_24h_coast_cards_call_the_usv_and_ugv_with_the_night_roles():  # user, 10/10
+    night = {r.id: r for r in load_scenario_json(DEMO).roles}
+    day = load_scenario_json(ROOT / "demo" / "scenarios" / "baengnyeong_24h.json")
+    roles = {r.id: r for r in day.roles}
+    assert all(roles[i] == night[i] for i in ("approach", "landing", "track_fast_sea", "strike"))
+    for coast in ("coast_a", "coast_b"):
+        card = roles[coast].steps[1].report
+        assert [c.label for c in card.choices] == ["근접 확인", "수상정 인계"] and card.auto_choices
+    assert day.operation.switches[0].role_by_vehicle == {"usv": "track_fast_sea"}

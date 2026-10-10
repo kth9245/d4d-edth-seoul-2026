@@ -69,6 +69,24 @@ def coast_routes(land, home: GeoPoint) -> tuple[list[dict], list[dict]]:
 COAST_NAMES = {"coast_a": "해안 A(북)", "coast_b": "해안 B(남)"}  # route names (decision 0044)
 
 
+# the night cards' usv/ugv choices (patrol_a 근접 확인, patrol_b 수상정 인계), on both coasts (user, 10/10);
+# the spotting drone keeps watching (근접 확인) or goes back to its patrol (수상정 인계)
+USV_UGV_CHOICES = [
+    {
+        "id": "approach",
+        "label": "근접 확인",
+        "role_by_vehicle": {"usv": "approach", "ugv": "landing"},
+    },
+    {"id": "handoff", "label": "수상정 인계", "role_by_vehicle": {"usv": "approach"}},
+]
+USV_UGV_ROLES = (
+    "approach",
+    "landing",
+    "track_fast_sea",
+    "strike",
+)  # copied from the night operation as they are
+
+
 def patrol(pid: str, name: str, route: list[dict]) -> dict:
     params = {"route": route, "route_name": COAST_NAMES[pid]}
     step = {"id": "patrol", "name": "해안 순찰", "do": {"kind": "patrol_route", "params": params},
@@ -76,7 +94,8 @@ def patrol(pid: str, name: str, route: list[dict]) -> dict:
             "report": None, "ui": {}}  # fmt: skip
     found = {"id": "report", "name": "발견·감시·보고",
              "do": {"kind": "watch_target", "params": {"target": "nearest", "distance_m": 150}},
-             "on": [], "report": {"text": "미식별 선박 접근", "choices": [], "auto_choices": True},
+             "on": [{"cond": {"kind": "operator_choice", "params": {"choice": "handoff"}}, "go_step": "patrol"}],
+             "report": {"text": "미식별 선박 접근", "choices": USV_UGV_CHOICES, "auto_choices": True},
              "ui": {}}  # fmt: skip
     return {"id": pid, "name": name, "domains": ["air"], "steps": [step, found], "entry": "patrol",
             "origin": "human", "approved": True, "template": False}  # fmt: skip
@@ -121,7 +140,13 @@ def build() -> dict:
             "ugv": "standby",
         },
         "reserve": {},
-        "switches": [],
+        "switches": [
+            {
+                "id": "track_fast",
+                "label": "고속 보트 추적",
+                "role_by_vehicle": {"usv": "track_fast_sea"},
+            }
+        ],  # usv only: d2 stays on its coast
         "rotation": ["d1", "d2", "d3", "d4"],
         "rotation_pools": {"coast_a": ["d1", "d3"], "coast_b": ["d2", "d4"]},
         "rotation_roles": ["coast_a", "coast_b"],
@@ -136,6 +161,7 @@ def build() -> dict:
             roles["standby"],
             roles["go_home"],
             roles["watch"],
+            *(roles[r] for r in USV_UGV_ROLES),
         ],  # fmt: skip
         "events": [],
         "enemies": [],

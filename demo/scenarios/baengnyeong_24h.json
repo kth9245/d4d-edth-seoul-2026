@@ -70,7 +70,15 @@
    "ugv": "standby"
   },
   "reserve": {},
-  "switches": [],
+  "switches": [
+   {
+    "id": "track_fast",
+    "label": "고속 보트 추적",
+    "role_by_vehicle": {
+     "usv": "track_fast_sea"
+    }
+   }
+  ],
   "rotation": [
    "d1",
    "d2",
@@ -371,10 +379,36 @@
        "distance_m": 150
       }
      },
-     "on": [],
+     "on": [
+      {
+       "cond": {
+        "kind": "operator_choice",
+        "params": {
+         "choice": "handoff"
+        }
+       },
+       "go_step": "patrol"
+      }
+     ],
      "report": {
       "text": "미식별 선박 접근",
-      "choices": [],
+      "choices": [
+       {
+        "id": "approach",
+        "label": "근접 확인",
+        "role_by_vehicle": {
+         "usv": "approach",
+         "ugv": "landing"
+        }
+       },
+       {
+        "id": "handoff",
+        "label": "수상정 인계",
+        "role_by_vehicle": {
+         "usv": "approach"
+        }
+       }
+      ],
       "auto_choices": true
      },
      "ui": {}
@@ -565,10 +599,36 @@
        "distance_m": 150
       }
      },
-     "on": [],
+     "on": [
+      {
+       "cond": {
+        "kind": "operator_choice",
+        "params": {
+         "choice": "handoff"
+        }
+       },
+       "go_step": "patrol"
+      }
+     ],
      "report": {
       "text": "미식별 선박 접근",
-      "choices": [],
+      "choices": [
+       {
+        "id": "approach",
+        "label": "근접 확인",
+        "role_by_vehicle": {
+         "usv": "approach",
+         "ugv": "landing"
+        }
+       },
+       {
+        "id": "handoff",
+        "label": "수상정 인계",
+        "role_by_vehicle": {
+         "usv": "approach"
+        }
+       }
+      ],
       "auto_choices": true
      },
      "ui": {}
@@ -687,6 +747,183 @@
     }
    ],
    "entry": "watch",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "approach",
+   "name": "근접 확인",
+   "domains": [
+    "sea"
+   ],
+   "steps": [
+    {
+     "id": "approach",
+     "name": "접근",
+     "do": {
+      "kind": "approach_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 200
+      }
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "approach",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "landing",
+   "name": "상륙 지점 감시",
+   "domains": [
+    "ground"
+   ],
+   "steps": [
+    {
+     "id": "move",
+     "name": "상륙 예상 지점",
+     "do": {
+      "kind": "move_to",
+      "params": {
+       "target": {
+        "lat": 37.982,
+        "lon": 124.7,
+        "alt_m": 0
+       }
+      }
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "move",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": false
+  },
+  {
+   "id": "track_fast_sea",
+   "name": "고속 보트 추적(해상)",
+   "domains": [
+    "sea"
+   ],
+   "steps": [
+    {
+     "id": "track",
+     "name": "추적",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 300
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "target_found",
+        "params": {}
+       },
+       "go_step": "ask"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "ask",
+     "name": "타격 승인 요청",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 300
+      }
+     },
+     "on": [],
+     "report": {
+      "text": "타격 승인 요청",
+      "choices": [
+       {
+        "id": "strike_usv",
+        "label": "이 기체로 타격",
+        "role_by_vehicle": {
+         "usv": "strike"
+        }
+       },
+       {
+        "id": "strike_both",
+        "label": "함께 타격",
+        "role_by_vehicle": {
+         "d2": "strike",
+         "usv": "strike"
+        }
+       }
+      ]
+     },
+     "ui": {}
+    }
+   ],
+   "entry": "track",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "strike",
+   "name": "표적 타격",
+   "domains": [
+    "air",
+    "sea"
+   ],
+   "steps": [
+    {
+     "id": "strike",
+     "name": "타격",
+     "do": {
+      "kind": "strike_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 0
+      }
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "strike",
    "emergency": {
     "battery_low_pct": 30.0,
     "link_lost_step": null,
