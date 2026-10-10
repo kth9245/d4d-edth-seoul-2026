@@ -66,8 +66,14 @@ def sc():
 def test_fleet_is_six_vehicles_air_sea_ground(sc):
     assert [v.id for v in sc.vehicles] == ["usv", "r1", "r2", "a1", "a2", "ugv"]
     kinds = {v.id: v.kind for v in sc.vehicles}
-    assert kinds == {"usv": "armed_usv", "r1": "recon_drone", "r2": "recon_drone",
-                     "a1": "armed_drone", "a2": "armed_drone", "ugv": "ground_robot"}
+    assert kinds == {
+        "usv": "armed_usv",
+        "r1": "recon_drone",
+        "r2": "recon_drone",
+        "a1": "armed_drone",
+        "a2": "armed_drone",
+        "ugv": "ground_robot",
+    }
     assert sc.operation.vehicle_ids == [v.id for v in sc.vehicles]
 
 
@@ -100,23 +106,40 @@ def test_site_rf_is_inland_off_the_recon_route_but_in_rf_range(sc):
     assert point_in_polygon(site, sc.operation.zone)
     route = next(r for r in sc.roles if r.id == "site_recon").steps[0].do.params["route"]
     from shared.geo import dist_m
+
     nearest = min(dist_m(GeoPoint(**p), site) for p in route)
     assert 800 < nearest <= 2000  # outside the 800 m camera, inside the 2000 m RF receive
 
 
 def test_assign_and_roles_and_operation_checks(sc):
     assert sc.id == "baengnyeong_assault" and sc.operation.id == "op_assault"
-    assert sc.operation.assign == {"usv": "sea_patrol", "r1": "site_recon", "r2": "site_recon",
-                                   "a1": "standby", "a2": "standby", "ugv": "watch_landing"}
+    assert sc.operation.assign == {
+        "usv": "sea_patrol",
+        "r1": "site_recon",
+        "r2": "site_recon",
+        "a1": "standby",
+        "a2": "standby",
+        "ugv": "watch_landing",
+    }
     ids = {r.id for r in sc.roles}
-    assert {"site_recon", "sea_patrol", "watch_landing", "strike", "standby", "go_home",
-            "site_hold", "enemy_usv_run", "enemy_hold"} <= ids
+    assert {
+        "site_recon",
+        "sea_patrol",
+        "watch_landing",
+        "strike",
+        "standby",
+        "go_home",
+        "site_hold",
+        "enemy_usv_run",
+        "enemy_hold",
+    } <= ids
     roles, specs = {r.id: r for r in sc.roles}, {v.id: v for v in sc.vehicles}
     assert check_operation(sc.operation, roles, specs).ok
 
 
 def test_the_json_is_what_the_script_builds():
     from scripts.make_assault_scenario import build
+
     on_disk = json.loads(PATH.read_text(encoding="utf-8"))
     assert build() == on_disk
 ```
@@ -178,61 +201,146 @@ E_UGV_APPEAR = 360_000  # T+6:00, when e_usv reaches the landing point (tuned)
 
 
 def _role(rid, name, domains, steps, entry, **extra):
-    base = {"id": rid, "name": name, "domains": domains, "steps": steps, "entry": entry,
-            "origin": "human", "approved": True, "template": False}
+    base = {
+        "id": rid,
+        "name": name,
+        "domains": domains,
+        "steps": steps,
+        "entry": entry,
+        "origin": "human",
+        "approved": True,
+        "template": False,
+    }
     return base | extra
 
 
 def _step(sid, name, kind, params, on, report=None):
-    return {"id": sid, "name": name, "do": {"kind": kind, "params": params},
-            "on": on, "report": report, "ui": {}}
+    return {
+        "id": sid,
+        "name": name,
+        "do": {"kind": kind, "params": params},
+        "on": on,
+        "report": report,
+        "ui": {},
+    }
 
 
-EMERGENCY = {"battery_low_pct": 30.0, "link_lost_step": None,
-             "battery_low_step": None, "operator_call_step": None}
+EMERGENCY = {
+    "battery_low_pct": 30.0,
+    "link_lost_step": None,
+    "battery_low_step": None,
+    "operator_call_step": None,
+}
 
 
 def site_recon():
     """1막 정찰 Role (r1·r2). 긴 흐름: 순찰 → 근접 확인 → 발견·보고(식별 줄·타격 카드는 GW-13) → 무력화 뒤."""
-    patrol = _step("patrol", "해안 순찰", "patrol_route",
-                   {"route": RECON_ROUTE, "route_name": "서·북 해안"},
-                   [{"cond": {"kind": "target_found", "params": {}}, "go_step": "approach"}])
-    approach = _step("approach", "근접 확인", "approach_target", {"target": "nearest", "distance_m": 120},
-                     [{"cond": {"kind": "time_elapsed", "params": {"sec": 4}}, "go_step": "report"}])
-    report = _step("report", "발견·감시·보고", "watch_target", {"target": "nearest", "distance_m": 150},
-                   [{"cond": {"kind": "target_neutralized", "params": {}}, "go_step": "after_strike"}],
-                   report={"text": "미식별 거점 감지", "choices": [], "auto_choices": True})
-    after = _step("after_strike", "무력화 뒤", "hold", {},
-                  [{"cond": {"kind": "operator_choice", "params": {"choice": "more"}}, "go_step": "patrol"}],
-                  report={"text": "거점 무력화됨. 이어서 어떻게 할까요?",
-                          "choices": [
-                              {"id": "more", "label": "더 정찰", "role_by_vehicle": {}, "target_by_vehicle": {}},
-                              {"id": "home", "label": "수상정으로 복귀", "role_by_vehicle": {"r1": "go_home", "r2": "go_home"},
-                               "target_by_vehicle": {}}],
-                          "auto_choices": False})
-    return _role("site_recon", "거점 탐색 순찰", ["air"], [patrol, approach, report, after],
-                 "patrol", emergency=EMERGENCY)
+    patrol = _step(
+        "patrol",
+        "해안 순찰",
+        "patrol_route",
+        {"route": RECON_ROUTE, "route_name": "서·북 해안"},
+        [{"cond": {"kind": "target_found", "params": {}}, "go_step": "approach"}],
+    )
+    approach = _step(
+        "approach",
+        "근접 확인",
+        "approach_target",
+        {"target": "nearest", "distance_m": 120},
+        [{"cond": {"kind": "time_elapsed", "params": {"sec": 4}}, "go_step": "report"}],
+    )
+    report = _step(
+        "report",
+        "발견·감시·보고",
+        "watch_target",
+        {"target": "nearest", "distance_m": 150},
+        [{"cond": {"kind": "target_neutralized", "params": {}}, "go_step": "after_strike"}],
+        report={"text": "미식별 거점 감지", "choices": [], "auto_choices": True},
+    )
+    after = _step(
+        "after_strike",
+        "무력화 뒤",
+        "hold",
+        {},
+        [{"cond": {"kind": "operator_choice", "params": {"choice": "more"}}, "go_step": "patrol"}],
+        report={
+            "text": "거점 무력화됨. 이어서 어떻게 할까요?",
+            "choices": [
+                {"id": "more", "label": "더 정찰", "role_by_vehicle": {}, "target_by_vehicle": {}},
+                {
+                    "id": "home",
+                    "label": "수상정으로 복귀",
+                    "role_by_vehicle": {"r1": "go_home", "r2": "go_home"},
+                    "target_by_vehicle": {},
+                },
+            ],
+            "auto_choices": False,
+        },
+    )
+    return _role(
+        "site_recon",
+        "거점 탐색 순찰",
+        ["air"],
+        [patrol, approach, report, after],
+        "patrol",
+        emergency=EMERGENCY,
+    )
 
 
 def sea_patrol():
     """2막 해상 순찰 Role (usv). 발견 카드의 '함께 타격'이 공중·해상·지상을 한 번에 옮긴다(결정 0075)."""
-    together = {"id": "strike_all_domains", "label": "함께 타격(공격 드론·수상정) · 지상 로봇 상륙 지점 관측",
-                "role_by_vehicle": {"a1": "strike", "a2": "strike", "usv": "strike", "ugv": "watch_landing"},
-                "target_by_vehicle": {"a1": "e_usv", "a2": "e_usv", "usv": "e_usv"}}
-    watch_only = {"id": "watch_usv", "label": "수상정만 계속 감시",
-                  "role_by_vehicle": {}, "target_by_vehicle": {}}
-    patrol = _step("patrol", "서쪽 항로 순찰", "patrol_route", {"route": SEA_ROUTE, "route_name": "서쪽 항로"},
-                   [{"cond": {"kind": "target_found", "params": {}}, "go_step": "report"}])
-    report = _step("report", "발견·보고", "watch_target", {"target": "nearest", "distance_m": 200},
-                   [{"cond": {"kind": "operator_choice", "params": {"choice": "watch_usv"}}, "go_step": "patrol"}],
-                   report={"text": "미식별 수상정 접근", "choices": [together, watch_only], "auto_choices": False})
-    return _role("sea_patrol", "해상 순찰", ["sea"], [patrol, report], "patrol", emergency=EMERGENCY)
+    together = {
+        "id": "strike_all_domains",
+        "label": "함께 타격(공격 드론·수상정) · 지상 로봇 상륙 지점 관측",
+        "role_by_vehicle": {
+            "a1": "strike",
+            "a2": "strike",
+            "usv": "strike",
+            "ugv": "watch_landing",
+        },
+        "target_by_vehicle": {"a1": "e_usv", "a2": "e_usv", "usv": "e_usv"},
+    }
+    watch_only = {
+        "id": "watch_usv",
+        "label": "수상정만 계속 감시",
+        "role_by_vehicle": {},
+        "target_by_vehicle": {},
+    }
+    patrol = _step(
+        "patrol",
+        "서쪽 항로 순찰",
+        "patrol_route",
+        {"route": SEA_ROUTE, "route_name": "서쪽 항로"},
+        [{"cond": {"kind": "target_found", "params": {}}, "go_step": "report"}],
+    )
+    report = _step(
+        "report",
+        "발견·보고",
+        "watch_target",
+        {"target": "nearest", "distance_m": 200},
+        [
+            {
+                "cond": {"kind": "operator_choice", "params": {"choice": "watch_usv"}},
+                "go_step": "patrol",
+            }
+        ],
+        report={
+            "text": "미식별 수상정 접근",
+            "choices": [together, watch_only],
+            "auto_choices": False,
+        },
+    )
+    return _role(
+        "sea_patrol", "해상 순찰", ["sea"], [patrol, report], "patrol", emergency=EMERGENCY
+    )
 
 
 def watch_landing():
     """ugv가 상륙 지점을 지킨다(지점 감시만, 타격 능력 없음 = 온톨로지 장면)."""
     step = _step("watch", "상륙 지점 관측", "watch_point", {"point": E_LANDING}, [])
-    return _role("watch_landing", "상륙 지점 관측", ["ground"], [step], "watch", emergency=EMERGENCY)
+    return _role(
+        "watch_landing", "상륙 지점 관측", ["ground"], [step], "watch", emergency=EMERGENCY
+    )
 
 
 def site_hold():
@@ -242,8 +350,13 @@ def site_hold():
 
 def enemy_usv_run():
     """적 수상정: 기지에서 상륙 지점으로 간 뒤 멈춘다(결정 0032, sim이 검사 없이 움직임)."""
-    go = _step("go", "상륙 지점으로", "move_to", {"target": E_LANDING},
-               [{"cond": {"kind": "arrived", "params": {}}, "go_step": "land"}])
+    go = _step(
+        "go",
+        "상륙 지점으로",
+        "move_to",
+        {"target": E_LANDING},
+        [{"cond": {"kind": "arrived", "params": {}}, "go_step": "land"}],
+    )
     land = _step("land", "하선 대기", "hold", {}, [])
     return _role("enemy_usv_run", "적: 상륙 침투", ["sea"], [go, land], "go", emergency=EMERGENCY)
 
@@ -256,10 +369,16 @@ def enemy_hold():
 def fleet(night_vehicles):
     by_id = {v["id"]: v for v in night_vehicles}
     usv = copy.deepcopy(by_id["usv"]) | {"id": "usv", "name": "무장 수상정", "home": dict(USV_SPOT)}
-    recon = [copy.deepcopy(by_id["d1"]) | {"id": f"r{i}", "name": f"정찰 드론{i}", "home": dict(USV_SPOT)}
-             for i in (1, 2)]
-    armed = [copy.deepcopy(by_id["d2"]) | {"id": f"a{i}", "name": f"공격 드론{i}", "home": dict(USV_SPOT)}
-             for i in (1, 2)]
+    recon = [
+        copy.deepcopy(by_id["d1"])
+        | {"id": f"r{i}", "name": f"정찰 드론{i}", "home": dict(USV_SPOT)}
+        for i in (1, 2)
+    ]
+    armed = [
+        copy.deepcopy(by_id["d2"])
+        | {"id": f"a{i}", "name": f"공격 드론{i}", "home": dict(USV_SPOT)}
+        for i in (1, 2)
+    ]
     ugv = copy.deepcopy(by_id["ugv"]) | {"home": dict(UGV_SPOT)}
     return [usv, *recon, *armed, ugv]
 
@@ -269,31 +388,89 @@ def build():
     nr = {r["id"]: r for r in night["roles"]}
     vehicles = fleet(night["vehicles"])
     op = night["operation"] | {
-        "id": "op_assault", "name": "해안 거점·무인장비 무력화(가상)",
+        "id": "op_assault",
+        "name": "해안 거점·무인장비 무력화(가상)",
         "purpose": "정찰 드론이 RF 거점을 직접 조종으로 보고 식별·타격하고, 적 무인 수상정이 지상 로봇을 내리면 결정 한 번에 공격 드론·수상정이 타격하고 지상 로봇이 상륙 지점을 관측한다(가상 상황).",
         "vehicle_ids": [v["id"] for v in vehicles],
-        "assign": {"usv": "sea_patrol", "r1": "site_recon", "r2": "site_recon",
-                   "a1": "standby", "a2": "standby", "ugv": "watch_landing"},
-        "reserve": {}, "switches": [], "rotation": [], "rotation_pools": {}, "rotation_roles": [],
+        "assign": {
+            "usv": "sea_patrol",
+            "r1": "site_recon",
+            "r2": "site_recon",
+            "a1": "standby",
+            "a2": "standby",
+            "ugv": "watch_landing",
+        },
+        "reserve": {},
+        "switches": [],
+        "rotation": [],
+        "rotation_pools": {},
+        "rotation_roles": [],
     }
     enemies = [
-        {"id": "site_rf", "kind": "unknown", "speed_mps": 0.0, "appear_offset_ms": APPEAR_MS,
-         "pos": dict(SITE_RF), "from_enemy": None, "role_id": "site_hold", "emit_start_offset_ms": 0},
-        {"id": "e_usv", "kind": "usv", "speed_mps": 6.0, "appear_offset_ms": E_USV_APPEAR,
-         "pos": dict(E_USV_BASE), "from_enemy": None, "role_id": "enemy_usv_run", "emit_start_offset_ms": None},
-        {"id": "e_ugv1", "kind": "ugv", "speed_mps": 0.0, "appear_offset_ms": E_UGV_APPEAR,
-         "pos": None, "from_enemy": "e_usv", "role_id": "enemy_hold", "emit_start_offset_ms": None},
-        {"id": "e_ugv2", "kind": "ugv", "speed_mps": 0.0, "appear_offset_ms": E_UGV_APPEAR + APPEAR_MS,
-         "pos": None, "from_enemy": "e_usv", "role_id": "enemy_hold", "emit_start_offset_ms": None},
+        {
+            "id": "site_rf",
+            "kind": "unknown",
+            "speed_mps": 0.0,
+            "appear_offset_ms": APPEAR_MS,
+            "pos": dict(SITE_RF),
+            "from_enemy": None,
+            "role_id": "site_hold",
+            "emit_start_offset_ms": 0,
+        },
+        {
+            "id": "e_usv",
+            "kind": "usv",
+            "speed_mps": 6.0,
+            "appear_offset_ms": E_USV_APPEAR,
+            "pos": dict(E_USV_BASE),
+            "from_enemy": None,
+            "role_id": "enemy_usv_run",
+            "emit_start_offset_ms": None,
+        },
+        {
+            "id": "e_ugv1",
+            "kind": "ugv",
+            "speed_mps": 0.0,
+            "appear_offset_ms": E_UGV_APPEAR,
+            "pos": None,
+            "from_enemy": "e_usv",
+            "role_id": "enemy_hold",
+            "emit_start_offset_ms": None,
+        },
+        {
+            "id": "e_ugv2",
+            "kind": "ugv",
+            "speed_mps": 0.0,
+            "appear_offset_ms": E_UGV_APPEAR + APPEAR_MS,
+            "pos": None,
+            "from_enemy": "e_usv",
+            "role_id": "enemy_hold",
+            "emit_start_offset_ms": None,
+        },
     ]
     out = night | {
-        "id": "baengnyeong_assault", "operation": op, "vehicles": vehicles,
-        "roles": [site_recon(), sea_patrol(), watch_landing(), nr["standby"], nr["go_home"],
-                  nr["watch"], nr["approach"], nr["strike"], site_hold(), enemy_usv_run(), enemy_hold()],
+        "id": "baengnyeong_assault",
+        "operation": op,
+        "vehicles": vehicles,
+        "roles": [
+            site_recon(),
+            sea_patrol(),
+            watch_landing(),
+            nr["standby"],
+            nr["go_home"],
+            nr["watch"],
+            nr["approach"],
+            nr["strike"],
+            site_hold(),
+            enemy_usv_run(),
+            enemy_hold(),
+        ],
         "events": [],  # Task 6 adds ScenarioEvent stops if needed; '다음 사건' stops live in cop-ui
         "enemies": enemies,
         "routes": [r for r in night["routes"] if r["id"] not in ("coast_a", "coast_b")],
-        "watch_points": [{**night["watch_points"][0], "id": "target_area", "name": "목표 지역 중심"}],
+        "watch_points": [
+            {**night["watch_points"][0], "id": "target_area", "name": "목표 지역 중심"}
+        ],
     }
     Scenario.model_validate(out)
     return out
@@ -302,8 +479,10 @@ def build():
 def main():
     out = build()
     OUT.write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    print(f"{OUT.name}: {len(out['vehicles'])} vehicles, {len(out['enemies'])} enemies, "
-          f"{len(out['roles'])} roles")
+    print(
+        f"{OUT.name}: {len(out['vehicles'])} vehicles, {len(out['enemies'])} enemies, "
+        f"{len(out['roles'])} roles"
+    )
 
 
 if __name__ == "__main__":
@@ -365,7 +544,9 @@ def _site(es):
 
 
 def _site_card(es):
-    return next((r for r in es.reports if r.kind == "target_detected" and r.target_id == "site_rf"), None)
+    return next(
+        (r for r in es.reports if r.kind == "target_detected" and r.target_id == "site_rf"), None
+    )
 
 
 def test_rf_clue_comes_before_the_drone_sees_the_site(sc):
@@ -379,8 +560,12 @@ def test_operator_direct_sends_a_recon_drone_to_the_off_route_site(sc):
     es = init_engine(sc)
     es = _run_until(es, lambda e: _site(e).ident_state == "rf_only")
     site = _site(es).pos
-    dc = DirectControl(id="dir-1", vehicle_id="r1", t_ms=es.t_ms + sc.tick_ms,
-                       target=GeoPoint(lat=site.lat, lon=site.lon, alt_m=0.0))
+    dc = DirectControl(
+        id="dir-1",
+        vehicle_id="r1",
+        t_ms=es.t_ms + sc.tick_ms,
+        target=GeoPoint(lat=site.lat, lon=site.lon, alt_m=0.0),
+    )
     es, _ = tick(es, TickInputs(direct=[dc]))
     assert not es.blocks  # the direct order is inside the zone and battery-feasible
     es = _run_until(es, lambda e: "r1" in _site(e).seen_by)  # r1 reaches camera range
@@ -390,8 +575,12 @@ def test_site_is_identified_then_approved_then_neutralized(sc):
     es = init_engine(sc)
     es = _run_until(es, lambda e: _site(e).ident_state == "rf_only")
     site = _site(es).pos
-    dc = DirectControl(id="dir-1", vehicle_id="r1", t_ms=es.t_ms + sc.tick_ms,
-                       target=GeoPoint(lat=site.lat, lon=site.lon, alt_m=0.0))
+    dc = DirectControl(
+        id="dir-1",
+        vehicle_id="r1",
+        t_ms=es.t_ms + sc.tick_ms,
+        target=GeoPoint(lat=site.lat, lon=site.lon, alt_m=0.0),
+    )
     es, _ = tick(es, TickInputs(direct=[dc]))
     es = _run_until(es, lambda e: _site(e).ident_state == "identified")
     card = _site_card(es)
@@ -448,8 +637,14 @@ def _e_usv(es):
 
 
 def _sea_card(es):
-    return next((r for r in es.reports if r.kind == "target_detected" and r.target_id == "e_usv"
-                 and not r.resolved_ms), None)
+    return next(
+        (
+            r
+            for r in es.reports
+            if r.kind == "target_detected" and r.target_id == "e_usv" and not r.resolved_ms
+        ),
+        None,
+    )
 
 
 def test_enemy_usv_spawns_and_drops_two_ground_robots(sc):
@@ -466,8 +661,9 @@ def test_one_decision_moves_air_sea_and_ground_and_neutralizes_the_enemy_usv(sc)
     es = _run_until(es, lambda e: _sea_card(e) is not None, limit=25000)
     card = _sea_card(es)
     assert any(c.id == "strike_all_domains" for c in card.choices)
-    dec = Decision(id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=card.id,
-                   choice_id="strike_all_domains")
+    dec = Decision(
+        id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=card.id, choice_id="strike_all_domains"
+    )
     es, _ = tick(es, TickInputs(decisions=[dec]))
     moved = {s.id: s.role_id for s in es.states}
     assert moved["a1"] == "strike" and moved["a2"] == "strike" and moved["usv"] == "strike"
@@ -489,8 +685,9 @@ def test_mission_success_when_the_enemy_usv_is_down(sc):
     es = init_engine(sc)
     es = _run_until(es, lambda e: _sea_card(e) is not None, limit=25000)
     card = _sea_card(es)
-    dec = Decision(id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=card.id,
-                   choice_id="strike_all_domains")
+    dec = Decision(
+        id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=card.id, choice_id="strike_all_domains"
+    )
     es, _ = tick(es, TickInputs(decisions=[dec]))
     es = _run_until(es, e_usv_down, limit=25000)
     assert es.metrics.mission_success  # a target was neutralized

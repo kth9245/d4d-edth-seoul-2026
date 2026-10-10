@@ -99,7 +99,10 @@ def test_the_sensor_fields_stay_off_and_no_vehicle_has_a_sensor_range(path):
     _, on = run(path, 600)
     assert on == []
     sc = load_scenario_json(path)
-    assert all(getattr(v, "ir_range_m", 0) == 0 and getattr(v, "acoustic_range_m", 0) == 0 for v in sc.vehicles)
+    assert all(
+        getattr(v, "ir_range_m", 0) == 0 and getattr(v, "acoustic_range_m", 0) == 0
+        for v in sc.vehicles
+    )
 ```
 
 - [ ] **Step 2: 지금(변경 전) 코드에서 해시를 기록한다**
@@ -218,7 +221,9 @@ git commit -m "Part2-sensors: heat, noise, ir_detected, sound_detected on Target
 
 ```python
 def test_a_spawned_enemy_carries_its_heat_and_noise():  # decision NNNN
-    sc = scenario_with(enemies=[enemy("site_b", heat=True), enemy("site_c", noise=True), enemy("site_a")])
+    sc = scenario_with(
+        enemies=[enemy("site_b", heat=True), enemy("site_c", noise=True), enemy("site_a")]
+    )
     out = spawn_enemies(sc, [], appear_tick_ms(sc), sc.tick_ms)
     flags = {t.id: (t.heat, t.noise) for t in out}
     assert flags == {"site_b": (True, False), "site_c": (False, True), "site_a": (False, False)}
@@ -271,7 +276,9 @@ def score_target(kind, pos, speed_mps, observed, emitting, receivers, watch_poin
 
 ```python
 def sig(**kw):  # a silent unknown site with the new signals; no RF
-    base = dict(kind="unknown", pos=INSIDE, speed=0.0, observed=True, emitting=False, rx=(), accum=0)
+    base = dict(
+        kind="unknown", pos=INSIDE, speed=0.0, observed=True, emitting=False, rx=(), accum=0
+    )
     return score_target(base["kind"], base["pos"], base["speed"], base["observed"], base["emitting"],
                         [], WATCH, base["accum"], 200, **kw)  # fmt: skip
 
@@ -284,12 +291,21 @@ def test_heat_in_infrared_range_adds_ten_with_its_reason_in_order():  # decision
 
 
 def test_noise_in_acoustic_range_adds_ten_and_comes_after_infrared_before_speed():
-    r = sig(heat=True, noise=True, ir_receivers=[(INSIDE, 800.0)], sound_receivers=[(INSIDE, 500.0)])
-    assert r.reasons[-2:] == ["ir_signature", "sound"] and (r.ir_detected, r.sound_detected) == (True, True)
+    r = sig(
+        heat=True, noise=True, ir_receivers=[(INSIDE, 800.0)], sound_receivers=[(INSIDE, 500.0)]
+    )
+    assert r.reasons[-2:] == ["ir_signature", "sound"] and (r.ir_detected, r.sound_detected) == (
+        True,
+        True,
+    )
     moving = score_target("unknown", INSIDE, 1.0, True, True, [(INSIDE, 2000.0)], WATCH, 0, 200,
                           heat=True, noise=True, ir_receivers=[(INSIDE, 800.0)], sound_receivers=[(INSIDE, 500.0)])  # fmt: skip
-    assert moving.reasons.index("rf_emission") < moving.reasons.index("ir_signature") < moving.reasons.index(
-        "sound") < moving.reasons.index("speed")
+    assert (
+        moving.reasons.index("rf_emission")
+        < moving.reasons.index("ir_signature")
+        < moving.reasons.index("sound")
+        < moving.reasons.index("speed")
+    )
 
 
 def test_the_range_edge_counts_and_one_metre_more_does_not():
@@ -373,27 +389,44 @@ git commit -m "Part2-sensors: score_target adds ir_signature and sound (+0.10 ea
 
 ```python
 def test_a_heat_clue_with_a_fresh_scan_reaches_the_threshold_alone():  # decision NNNN
-    r = identify_target(False, 1, 0, 19800, TICK, ir_detected=True)  # scan 40 + heat 10 + sustained 20
-    assert (r.state, r.confidence, r.reasons) == ("identified", 70, ["ir_signature", "scan", "sustained"])
+    r = identify_target(
+        False, 1, 0, 19800, TICK, ir_detected=True
+    )  # scan 40 + heat 10 + sustained 20
+    assert (r.state, r.confidence, r.reasons) == (
+        "identified",
+        70,
+        ["ir_signature", "scan", "sustained"],
+    )
 
 
 def test_a_sound_clue_does_the_same_and_both_clues_stack():
     r = identify_target(False, 1, 0, 19800, TICK, sound_detected=True)
     assert (r.state, r.confidence, r.reasons[0]) == ("identified", 70, "sound")
-    both = identify_target(False, 1, 0, 0, TICK, ir_detected=True, sound_detected=True)  # scan 40 + 10 + 10
+    both = identify_target(
+        False, 1, 0, 0, TICK, ir_detected=True, sound_detected=True
+    )  # scan 40 + 10 + 10
     assert both.confidence == 60 and both.reasons == ["ir_signature", "sound", "scan"]
 
 
 def test_clues_alone_never_identify_and_the_state_is_rf_only():
-    r = identify_target(True, 0, None, 0, TICK, ir_detected=True, sound_detected=True)  # 25 + 10 + 10, no scan
+    r = identify_target(
+        True, 0, None, 0, TICK, ir_detected=True, sound_detected=True
+    )  # 25 + 10 + 10, no scan
     assert (r.state, r.confidence) == ("rf_only", 45)
     only_sound = identify_target(False, 0, None, 0, TICK, sound_detected=True)
-    assert (only_sound.state, only_sound.confidence, only_sound.reasons) == ("rf_only", 10, ["sound"])
+    assert (only_sound.state, only_sound.confidence, only_sound.reasons) == (
+        "rf_only",
+        10,
+        ["sound"],
+    )
 
 
 def test_the_old_calls_are_unchanged_and_the_total_is_capped():
     assert identify_target(True, 2, 0, 19800, TICK).confidence == 100  # 25 + 40 + 15 + 20
-    assert identify_target(True, 2, 0, 19800, TICK, ir_detected=True, sound_detected=True).confidence == 100
+    assert (
+        identify_target(True, 2, 0, 19800, TICK, ir_detected=True, sound_detected=True).confidence
+        == 100
+    )
 ```
 
 - [ ] **Step 2: 실패를 확인한다**
@@ -453,7 +486,10 @@ def test_infrared_and_sound_are_heard_only_by_live_vehicles_in_range():  # decis
     assert "ir_signature" in out.threat_reasons and "sound" in out.threat_reasons
     gone = [STATES[0].model_copy(update={"status": "returning"})]
     out2 = score_targets(gone, specs, [t], WATCH, 200)[0]
-    assert (out2.ir_detected, out2.sound_detected) == (False, False)  # a returning vehicle is not a receiver
+    assert (out2.ir_detected, out2.sound_detected) == (
+        False,
+        False,
+    )  # a returning vehicle is not a receiver
     none = score_targets(STATES, SPECS, [t], WATCH, 200)[0]  # ranges 0 in SPECS
     assert (none.ir_detected, none.sound_detected) == (False, False)
 
@@ -470,7 +506,9 @@ def test_the_detected_clues_reach_the_identification():  # decision NNNN
     t = site(seen_by=["d1"], first_seen_ms=9_000, last_seen_ms=10_000, rf_detected=False,
              ir_detected=True, sound_detected=True)  # fmt: skip
     r = identify_targets([t], 10_000, 200)[0]
-    assert r.ident_reasons[:2] == ["ir_signature", "sound"] and r.ident_confidence == 60  # scan 40 + 10 + 10
+    assert (
+        r.ident_reasons[:2] == ["ir_signature", "sound"] and r.ident_confidence == 60
+    )  # scan 40 + 10 + 10
 ```
 
 - [ ] **Step 2: 실패를 확인한다**
@@ -591,7 +629,9 @@ def test_the_ground_robot_waits_on_land_outside_the_ears_of_site_c(sc):
     c = GeoPoint(lat=SITE_C[0], lon=SITE_C[1])
     assert inside(ugv, sc.land)
     assert 500 < dist_m(ugv, c) < 2000  # silent at the start, a few minutes away
-    assert all(dist_m(ugv, e.pos) > 500 for e in sc.enemies)  # hears nothing before the operator sends it
+    assert all(
+        dist_m(ugv, e.pos) > 500 for e in sc.enemies
+    )  # hears nothing before the operator sends it
     assert dist_m(ugv, c) > 300  # and cannot see it either (its sensor is 300 m)
 ```
 그리고 변경 대장의 실행 검사 (파일에 이미 있는 `_run_until`, `_card`, `_site`, `_answer`, `_open_card`, `Decision`, `TickInputs`, `init_engine`, `tick`을 쓴다. `DirectControl`은 `from contracts.models import DirectControl`을 import에 더한다):
@@ -605,7 +645,9 @@ def test_site_b_is_identified_by_one_scout_with_infrared(sc):  # change ledger: 
     b = _site(es, "site_b")
     assert b.ir_detected and "ir_signature" in b.threat_reasons and b.threat == 55
     assert b.ident_reasons == ["ir_signature", "scan", "sustained"] and b.ident_confidence == 70
-    assert {"strike_a1", "strike_a2", "strike_a3", "strike_all"} <= {c.id for c in _open_card(es, "r3", "site_b").choices}
+    assert {"strike_a1", "strike_a2", "strike_a3", "strike_all"} <= {
+        c.id for c in _open_card(es, "r3", "site_b").choices
+    }
 
 
 def test_site_c_needs_the_ground_robot_to_hear_it(sc):  # change ledger: drone alone stays at 0.60
@@ -616,22 +658,36 @@ def test_site_c_needs_the_ground_robot_to_hear_it(sc):  # change ledger: drone a
     c = _site(es, "site_c")
     assert (c.ident_state, c.ident_confidence, c.sound_detected) == ("identifying", 60, False)
     assert not any(x.id.startswith("strike_") for x in _open_card(es, "r2", "site_c").choices)
-    goal = GeoPoint(lat=SITE_C[0] - 0.0036, lon=SITE_C[1])  # 400 m south of the site, inside its 500 m ears
+    goal = GeoPoint(
+        lat=SITE_C[0] - 0.0036, lon=SITE_C[1]
+    )  # 400 m south of the site, inside its 500 m ears
     dec = DirectControl(id="dir-1", vehicle_id="ugv", target=goal, t_ms=es.t_ms + sc.tick_ms)
     es, _ = tick(es, TickInputs(direct=[dec]))
-    es = _run_until(es, lambda e: _site(e, "site_c").sound_detected, limit=1500)  # about 3.5 minutes
+    es = _run_until(
+        es, lambda e: _site(e, "site_c").sound_detected, limit=1500
+    )  # about 3.5 minutes
     es = _run_until(es, lambda e: _site(e, "site_c").ident_state == "identified", limit=50)
     es, _ = tick(es, TickInputs())
     c = _site(es, "site_c")
-    assert c.sound_detected and "sound" in c.ident_reasons and c.ident_confidence == 70 and c.threat == 55
-    assert {"strike_a1", "strike_a2", "strike_a3", "strike_all"} <= {x.id for x in _open_card(es, "r2", "site_c").choices}
+    assert (
+        c.sound_detected
+        and "sound" in c.ident_reasons
+        and c.ident_confidence == 70
+        and c.threat == 55
+    )
+    assert {"strike_a1", "strike_a2", "strike_a3", "strike_all"} <= {
+        x.id for x in _open_card(es, "r2", "site_c").choices
+    }
 
 
 def test_site_a_is_exactly_as_before(sc):
     es = init_engine(sc)
     es = _run_until(es, lambda e: _open_card(e, "r1", "site_a") is not None, limit=9000)
     a = _site(es, "site_a")
-    assert (a.threat, a.threat_reasons) == (75, ["kind_unknown", "near_watch_radius", "rf_emission"])
+    assert (a.threat, a.threat_reasons) == (
+        75,
+        ["kind_unknown", "near_watch_radius", "rf_emission"],
+    )
     assert (a.ir_detected, a.sound_detected) == (False, False)
 ```
 

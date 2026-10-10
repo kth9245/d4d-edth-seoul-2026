@@ -15,7 +15,6 @@ import { vehicleMenuRoles } from "./features/board/vehicleMenuRoles";
 import "./features/board/board.css";
 import "./features/cards/cards.css";
 import { postSwitch } from "./features/cards/injectionRequests";
-import { ObjectGraphView } from "./features/graph/ObjectGraphView";
 import { tilesExist } from "./features/map/basemap";
 import { MapView } from "./features/map/MapView";
 import { MavlinkButton, MavlinkPanel } from "./features/mavlink/MavlinkLog";
@@ -25,12 +24,11 @@ import { RunBar } from "./features/run/RunBar";
 // Live board (Part1-32): header line (stage counts, operator load, link status) in the app header, our vehicles
 // (a picked one opens its menu under its row, Part1-32.1) and the targets on the left with the operation's switch
 // buttons in its head, the map with the run bar in the middle, the decision queue on the right with the history
-// folded under it. A card's "연결 보기" opens its target's graph over the map.
+// folded under it. No "연결 보기" on the cards (user 10/11).
 // On 실작전 (ops, decision 0067) the same screen has no run bar.
 export function Screen({ frame, zone, status, ok, ops = false }:
   { frame: Frame | null; zone: Polygon | null; status: string; ok: boolean; ops?: boolean }) {
   const [tiles, setTiles] = useState<boolean | null>(null);
-  const [graph, setGraph] = useState<string | null>(null);
   const [slot, setSlot] = useState<HTMLElement | null>(null);
   const [mavlink, setMavlink] = useState(false); // decision 0065: the MAVLink log panel
   const data = useBoardData(frame !== null);
@@ -77,20 +75,17 @@ export function Screen({ frame, zone, status, ok, ops = false }:
             onPick={direct.onPoint} onCancel={direct.cancelPick} />
         )}
         {!ops && <RunBar frame={frame} />}
-        {graph && <ObjectGraphView focus={graph} onClose={() => setGraph(null)} />}
         {mavlink && <MavlinkPanel onClose={() => setMavlink(false)} />}
       </div>
       <aside className="ops">
         <div className="ops-scroll">
-          {frame && board ? <DecisionQueue frame={frame} queue={board.queue} onGraph={setGraph} ops={ops} />
+          {frame && board ? <DecisionQueue frame={frame} queue={board.queue} ops={ops} />
             : <div className="next-act"><div className="t">게이트웨이 연결 대기</div></div>}
         </div>
         <div className="folds">
           <details className="fold hist"><summary>지난 기록 <b>{board?.queue.history.length ?? 0}</b></summary>
             {board?.queue.history.map((c) => (
-              <div key={`${c.source}-${c.id}`} className="hist-row"><time>{c.time}</time><span>{c.text}{c.done ? ` · ${c.done}` : ""}</span>
-                {c.target && (c.kind === "target_detected" || c.kind === "target_neutralized") &&
-                  <button className="graph-open" onClick={() => setGraph(c.target!)}>연결 보기</button>}</div>
+              <div key={`${c.source}-${c.id}`} className="hist-row"><time>{c.time}</time><span>{c.text}{c.done ? ` · ${c.done}` : ""}</span></div>
             ))}
           </details>
         </div>
