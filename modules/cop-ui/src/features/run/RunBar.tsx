@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Frame } from "../../contracts.gen";
 import { fetchOperation } from "../live/fetchOperation";
 import { mmss } from "./mmss";
+import { RESET_WINDOW_MS, resetPress } from "./resetPress";
 import { jumpPaused, postRun, type RunResult } from "./runApi";
 import { nextStop } from "./runStops";
 import "./run.css";
@@ -14,6 +15,7 @@ export function RunBar({ frame }: { frame: Frame | null }) {
   const [startedMs, setStartedMs] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [armedAt, setArmedAt] = useState<number | null>(null); // "처음으로" pressed once
   const hasFrame = frame !== null;
   useEffect(() => {
     // offset_ms counts from operation.started_ms. If the gateway was down when the screen opened,
@@ -38,8 +40,16 @@ export function RunBar({ frame }: { frame: Frame | null }) {
   const offset = frame && startedMs !== null ? frame.t_ms - startedMs : null;
   const next = offset === null ? null : nextStop(offset);
   const off = !frame || busy;
+  useEffect(() => {
+    if (armedAt === null) return;
+    const t = setTimeout(() => setArmedAt(null), RESET_WINDOW_MS);
+    return () => clearTimeout(t);
+  }, [armedAt]);
   const reset = () => {
-    if (confirm("작전을 처음부터 다시 시작할까요?")) act(() => postRun("/run/reset"));
+    const now = Date.now();
+    if (resetPress(armedAt, now) === "arm") return setArmedAt(now);
+    setArmedAt(null);
+    act(() => postRun("/run/reset"));
   };
 
   return (
@@ -59,7 +69,9 @@ export function RunBar({ frame }: { frame: Frame | null }) {
       <button className="next" disabled={off || !next} onClick={() => next && act(() => jumpPaused(next.offsetMs))}>
         {next ? `다음 사건 ▸ ${mmss(next.offsetMs)} ${next.label}` : "다음 사건 없음"}
       </button>
-      <button className="reset" disabled={off} title="처음으로" onClick={reset}>↺ 처음으로</button>
+      <button className={armedAt === null ? "reset" : "reset armed"} disabled={off} title="처음으로" onClick={reset}>
+        {armedAt === null ? "↺ 처음으로" : "↺ 한 번 더 누르면 처음으로"}
+      </button>
       {error && <span className="error">요청 실패: {error}</span>}
     </div>
   );

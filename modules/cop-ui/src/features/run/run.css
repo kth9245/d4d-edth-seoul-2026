@@ -20,3 +20,4 @@
 .metrics dl div { display: flex; justify-content: space-between; }
 .metrics dd { margin: 0; font-weight: 700; }
 .metrics .note { margin: 6px 0 0; font-size: 11px; opacity: 0.6; }
+.runbar .reset.armed { border-color: #e0a030; color: #e0a030; }

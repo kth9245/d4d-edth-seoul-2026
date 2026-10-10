@@ -23,5 +23,6 @@
  {"click": "일시정지", "wait": 800},
  {"label": "I7 the server runs d1 on the saved draft play", "eval": "new Promise((r) => { const w = new WebSocket('ws://' + location.host + '/ws'); w.onmessage = (e) => { const f = JSON.parse(e.data); w.close(); r(f.vehicles.find((v) => v.id === 'd1').play_id === window.__draftId); }; })", "expect": true},
  {"shot": "draft-on-live.png"},
+ {"click": "처음으로", "wait": 300},
  {"click": "처음으로", "wait": 2000}
 ]

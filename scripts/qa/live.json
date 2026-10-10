@@ -56,6 +56,7 @@
  {"shot": "live-end-1280.png"},
  {"viewport": [1920, 1080], "wait": 800},
  {"layout": "L13 layout live 1920x1080"},
+ {"click": "처음으로", "wait": 300},
  {"click": "처음으로", "wait": 3000},
  {"label": "L14 reset back to the start", "eval": "({ clock: document.querySelector('.runbar .clock')?.innerText, play: document.querySelector('.runbar .play')?.innerText })", "expect": {"clock": "T+0:00", "play": "▶ 재생"}}
 ]
