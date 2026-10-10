@@ -23,6 +23,7 @@
 
 ### 황승주
 - **Part2-21** 타격 runtime: enter_step·apply_decision·switch_play (결정 id·승인 표적·카드 닫기)
+- **Part2-22** 타격 safety: 규칙 1에 타격 = 결정 id 필요
 
 ### 최동호
 - **Part2-19** 시나리오 튜닝
