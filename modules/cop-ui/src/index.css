@@ -145,3 +145,17 @@ aside { overflow-y: auto; padding: 12px; border-left: 1px solid #22304a; }
 .op-vehicles td small { margin-left: 4px; font-size: 11px; }
 .op-switches { display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
 .op-switch { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+/* Editor ontology view (decision 0038): hierarchy beside the action groups, then one vehicle's verdicts. */
+.onto h2 { margin: 0 0 12px; }
+.onto h3 { margin: 16px 0 6px; font-size: 12px; }
+.onto-top { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.onto-tree { list-style: none; margin: 0; padding: 0; }
+.onto-tree li { padding: 3px 0; }
+.onto-groups { border-collapse: collapse; }
+.onto-groups th { padding: 3px 12px 3px 0; text-align: left; font-weight: 600; white-space: nowrap; }
+.onto-groups td { padding: 3px 0; font-size: 12px; }
+.onto-pick { display: flex; gap: 6px; }
+.onto-pick button { padding: 4px 12px; cursor: pointer; }
+.onto-reasons { list-style: none; margin: 10px 0; padding: 0; }
+.onto-reasons li { padding: 3px 0; font-size: 13px; }
+.onto-reserve { margin-top: 10px; font-size: 13px; }

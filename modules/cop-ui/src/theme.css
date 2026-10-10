@@ -289,3 +289,19 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .enemy-column .column-head { color: var(--hostile); }
 .enemy-meta { color: var(--text2); font-family: var(--font-mono); }
 .enemy-column .step-card { border-left-color: var(--hostile); }
+/* Ontology view (decision 0038): what a kind adds is system state (green), a denied action hostile red */
+.onto.load-error { color: var(--hostile); font-size: 13px; }
+.onto h3 { color: var(--dim); font-family: var(--font-mono); font-weight: 600; letter-spacing: var(--ls); }
+.onto-tree b { color: var(--text); font-weight: 600; }
+.onto-tree .adds { color: var(--live); font-family: var(--font-mono); font-size: 12px; }
+.onto-tree .who { color: var(--friend); font-family: var(--font-mono); font-size: 12px; }
+.onto-groups th { color: var(--text2); }
+.onto-groups td { color: var(--muted); font-family: var(--font-mono); }
+.onto-pick button { border: 1px solid var(--line2); border-radius: var(--r); background: transparent; color: var(--text2); font-family: var(--font-mono); }
+.onto-pick button:hover { border-color: var(--text); color: var(--text); }
+.onto-pick button.on { border-color: var(--live); color: var(--live); }
+.onto-reasons li { color: var(--text2); }
+.onto-reasons li i { font-style: normal; color: var(--live); }
+.onto-reasons li code { color: var(--text); font-family: var(--font-mono); }
+.onto-reasons li.no, .onto-reasons li.no i { color: var(--hostile); }
+.onto-reserve { color: var(--text2); }

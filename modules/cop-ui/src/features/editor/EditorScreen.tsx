@@ -8,8 +8,9 @@ import { enemyRows } from "./enemyRows";
 import { insertReportStep } from "./insertReportStep";
 import { type EditorData, loadEditorData } from "./loadEditorData";
 import { NewPlayMenu } from "./NewPlayMenu";
+import { OntologyPanel } from "./OntologyPanel";
 import { OperationOverview } from "./OperationOverview";
-import { OVERVIEW, PlaySidebar } from "./PlaySidebar";
+import { ONTOLOGY, OVERVIEW, PlaySidebar } from "./PlaySidebar";
 import { playUsage } from "./playUsage";
 import { PlayWorkflow } from "./PlayWorkflow";
 import { savePlay } from "./savePlay";
@@ -90,7 +91,7 @@ export function EditorScreen() {
   };
   return (
     <div className="editor">
-      <PlaySidebar groups={view.groups} selected={play ? play.id : OVERVIEW} showOverview onSelect={open}
+      <PlaySidebar groups={view.groups} selected={play ? play.id : selected === ONTOLOGY ? ONTOLOGY : OVERVIEW} showOverview onSelect={open}
         top={<NewPlayMenu existingIds={data.plays.map((p) => p.id)} onCreated={created} />} />
       <main className="editor-main">
         {play ? (
@@ -112,6 +113,8 @@ export function EditorScreen() {
             fallbackPoint={zoneCentre(data.operation.zone)}
             plays={data.plays.map((p) => ({ id: p.id, name: p.name }))}
           />
+        ) : selected === ONTOLOGY ? (
+          <OntologyPanel op={data.operation} plays={data.plays} vehicles={data.vehicles} />
         ) : (
           <OperationOverview op={data.operation} vehicles={data.vehicles} columns={view.columns} enemies={view.enemies} playName={playName} onOpen={open} />
         )}
