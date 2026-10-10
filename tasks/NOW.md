@@ -7,7 +7,6 @@
 ## 진행중
 - **Part1-12** 주입 승인 카드 — kth9245, 10/10 11:19부터
 - **Part2-17.1** gateway init_engine · GW-02 (묶음 A, engine_state.py 먼저) — 최동호, 10/10 11:17부터
-- **Part3-9** play `draft_play` — 황승주, 10/10 11:22부터 · PLY-09
 
 ## 막힘
 - (없음)
@@ -44,6 +43,7 @@
 - 10/10 10:25 kth9245 · Part1-7 · 다음 사건으로(/run/jump)는 계약 그대로 offset_ms 필수, 멈출 시각은 화면(Part1-13)이 적는다. 리드 답 '계약 그대로'. 구현은 직접, ship 전 subagent 리뷰
 
 ## 완료
+- **Part3-9** play `draft_play` — 황승주, 10/10 11:22 · PLY-09
 - **Part1-9.3** 디자인 v2: D4D 톤, Pretendard·Orbitron·JetBrains Mono 번들 — kth9245, 10/10 11:19
 - **Part2-6** sensing `observe_targets`(공개 API 이름 `observe`) — 최동호, 10/10 11:16 · SNS-02
 - **Part1-5** AI 초안 프롬프트·캐시 2개 — kth9245, 10/10 11:15 · 하위 1/1 완료
