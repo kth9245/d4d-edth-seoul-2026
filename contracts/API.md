@@ -25,7 +25,7 @@ Role은 다른 기체를 알지 못하지만, 선택지의 `role_by_vehicle`은 
 
 정해진 표적은 `VehicleState.target_id`에 둔다. 명령으로 나갈 때는 `params.target_id`가 된다.
 
-**타격(결정 0033).** 선택지가 기체를 다른 Role로 옮기면 그 기체에 `decision_id`(결정 id)와 `target_id`(카드의 표적)를 적는다. 전환 버튼·예비 이어받기로 옮긴 기체는 `decision_id`가 없다. `strike_target` step의 명령(`strike`)은 출처 `decision_id`와 params `target`(표적의 현재 위치)을 싣고, safety 규칙 1은 `decision_id` 없는 `strike`를 `no_provenance`로 막는다(규칙 2·3은 `target`으로 그대로). 타격 중 기체가 표적 100 m 안이면 sim이 표적을 무력화(`neutralized_ms`, 속도 0)하고 `target_neutralized` 카드(알림만)를 낸다. 결정으로 옮긴 기체가 기다리던 다른 카드는 같이 닫힌다.
+**타격(결정 0033).** 선택지가 기체를 다른 Role로 옮기면 그 기체에 `decision_id`(결정 id)와 `target_id`(카드의 표적)를 적는다. 표적을 지목한 전환(`target_by_vehicle`이 있는 Injection)은 그 기체에 `decision_id` = 그 Injection id(`inj-n`)를 적는다. 운용자가 기체·표적·Role을 골라 누른 것이 그 표적에 대한 결정이다(결정 0058). 전환 버튼·표적 없는 전환·예비 이어받기로 옮긴 기체는 `decision_id`가 없다. `strike_target` step의 명령(`strike`)은 출처 `decision_id`와 params `target`(표적의 현재 위치)을 싣고, safety 규칙 1은 `decision_id` 없는 `strike`를 `no_provenance`로 막는다(규칙 2·3은 `target`으로 그대로). 타격 중 기체가 표적 100 m 안이면 sim이 표적을 무력화(`neutralized_ms`, 속도 0)하고 `target_neutralized` 카드(알림만)를 낸다. 결정으로 옮긴 기체가 기다리던 다른 카드는 같이 닫힌다.
 
 **발견한 기체가 붙는다(결정 0036).** `target_found` 조건은 지금 step의 행동이 표적 행동(`watch_target`·`approach_target`·`strike_target`, 추적)이면 그 기체의 `target_id` 표적이 센서에 보일 때 참이고, 아니면(순찰·이동·대기) 센서에 보이는 표적 가운데 아직 카드가 올라가지 않은 것(`Target.reported_by`가 없음)이 있을 때만 참이다. 그래서 감시를 넘기고 순찰로 돌아온 기체는 예전 표적을 다시 보고하지 않고 새 배를 찾는다. `target_detected` 카드가 생긴 틱에 gateway `engine.py`가 그 카드의 표적에 `reported_by`(카드를 올린 기체 id)를 적는다. 그래서 같은 구역에 여러 척이 오면 두 번째 기체는 이미 카드가 올라간 배가 아니라 새 배에 붙어 카드를 올린다. 예비 이어받기(`apply_reserves`)는 빠진 기체의 `target_id`를 예비 기체에 넘긴다.
 
@@ -85,7 +85,8 @@ Role은 다른 기체를 알지 못하지만, 선택지의 `role_by_vehicle`은 
 | 보고 카드 선택지 | `POST /decisions` | 바로 적용한다. 누른 것이 운용자 결정이다(사건 2: 한 번에 기체 4대) |
 | 전체 전환 버튼 | `POST /injections {switch_id}` | `Injection(pending)`과 `injection_pending` 카드를 만들고, 승인 뒤 `apply_injection`으로 적용 |
 | 일부 전환 | `POST /injections {role_by_vehicle}` | 위와 같다(사건 4: 드론 2를 고속 보트 추적으로) |
-| 표적 지목 | `POST /injections {role_by_vehicle, target_by_vehicle, approve: true}` | 상황판에서 기체 → 표적 → Role을 누른 것. 메뉴가 미리 보기이고 누른 것이 승인이라 `Injection(approved)`로 기록하고 대기 카드 없이 다음 틱에 `apply_injection`이 Role과 `target_id`를 바꾼다. 운용자 조작 1(결정 0048·0049) |
+| 기체 메뉴 Role 전환 | `POST /injections {role_by_vehicle, approve: true}` | 상황판에서 기체를 누르고 표적 없는 Role을 누른 것. 버튼의 "지금 Role → 새 Role"이 미리 보기이고 누른 것이 승인이라 `Injection(approved)`로 기록하고 대기 카드 없이 다음 틱에 적용한다. 운용자 조작 1(결정 0059) |
+| 표적 지목 | `POST /injections {role_by_vehicle, target_by_vehicle, approve: true}` | 상황판에서 기체 → 표적 Role → 포착된 적(또는 기체 → 지도 표적 → Role)을 누른 것. 메뉴가 미리 보기이고 누른 것이 승인이라 `Injection(approved)`로 기록하고 다음 틱에 `apply_injection`이 Role·`target_id`·`decision_id`(= Injection id)를 바꾼다. 그래서 무장 기체의 타격 Role('표적 타격')도 출처 검사를 통과한다. 운용자 조작 1(결정 0048·0049·0058) |
 
 어느 경로든 원래 Role은 끝나고 자동 복귀는 없다. `resume_role_id`·`resume_step_id`는 직접 조종(`/direct`) 뒤 복귀에만 쓴다. 이어받기는 기체가 returning·lost·maintenance가 되면 `op.reserve[id]`의 첫 가용 기체가 그 기체의 Role을 **첫 step(entry)부터** `entered_step=False`로 시작하는 것이다(결정 0022: 빠진 기체는 이미 귀환 step에 있으므로 현재 step을 이어받으면 예비도 귀환한다). 이때 배정 사유는 "예비 투입: <id> 대신"이고 `vehicle_gap` 카드가 생긴다.
 

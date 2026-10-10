@@ -30,3 +30,23 @@ def test_pointing_switch_records_the_target():
                     role_by_vehicle={"d2": "watch"}, target_by_vehicle={"d2": "boat1"})  # fmt: skip
     (d2,) = apply_injection([vs("d2")], {"watch": WATCH}, inj)
     assert (d2.role_id, d2.step_id, d2.target_id) == ("watch", "w1", "boat1")
+
+
+def test_pointing_makes_the_press_the_vehicles_decision():
+    # decision 0058: the operator picked d2, a target role and boat1; that press is the decision on boat1,
+    # so a strike step of that role carries inj2 as its source and passes safety rule 1
+    inj = Injection(id="inj2", t_ms=0, label="표적 감시: d2 → boat1", status="approved",
+                    role_by_vehicle={"d2": "watch"}, target_by_vehicle={"d2": "boat1"})  # fmt: skip
+    (d2,) = apply_injection([vs("d2")], {"watch": WATCH}, inj)
+    assert d2.decision_id == "inj2"
+
+
+def test_a_switch_without_a_target_leaves_no_decision():
+    # whole-operation buttons and target-less menu switches never make a strike source (decision 0033)
+    inj = Injection(
+        id="inj1", t_ms=0, label="전체 귀환", status="approved", role_by_vehicle={"d1": "go_home"}
+    )
+    (d1,) = apply_injection(
+        [vs("d1").model_copy(update={"decision_id": "dec-1"})], {"go_home": HOME}, inj
+    )
+    assert d1.decision_id is None
