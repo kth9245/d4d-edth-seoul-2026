@@ -2,7 +2,7 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 10:57 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 10:59 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part1-13** 지표 패널 + 배속 + 다음 사건 — kth9245, 10/10 10:55부터
@@ -16,7 +16,7 @@
 ## 예정
 
 ### kth9245
-- **Part1-5** AI 초안 프롬프트·캐시 2개
+- **Part1-5** AI 초안 프롬프트·캐시 2개 · 하위 0/1 완료
 - **Part1-11** 직접 조종 + 차단 카드 대안 버튼
 - **Part1-12** 주입 승인 카드
 - **Part1-14** smoke 전환 + 통합 주관
@@ -41,6 +41,7 @@
 - **Part2-19** 시나리오 튜닝
 
 ### 누구나
+- **Part1-5.1** 프롬프트 틀 build_draft_prompt(PLY-12)·시연 문장 2개
 - **Part3-15** play `compile_mavlink` (결정 0011) · 하위 0/1 완료 · PLY-10
 
 ## 최근 결정
