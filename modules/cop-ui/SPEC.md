@@ -78,7 +78,7 @@
 | UI-86 | targetRoles | Role[], 도메인 | Role[] | 첫 step이 watch_target·approach_target이고 그 도메인을 쓰는 Role, strike_target 없음(결정 0048) | 리드 | 완료 |
 | UI-88 | postPoint | 기체, Role, 표적 | Sent | POST /injections {role_by_vehicle, target_by_vehicle, approve: true}(결정 0049), throw 없음 | 리드 | 완료 |
 | UI-87 | cameraPoints | Frame, Track 묶음, Queue | GeoPoint[] | 표적 표시 위치·추정 위치(2분 넘은 무력화 제외), 임무 중 표적 맡은 기체, 열린 카드가 부르는 기체(보고·선택지 미리 보기), 차단 대안 지점, 없으면 빈 목록(Part1-32) | 리드 | 완료 |
-| UI-89 | fetchBoardData | — | {roles, vehicles, watch} | GET /roles·/vehicles·/watch_points, 실패·목록 아님·연결 실패는 빈 목록 | 리드 | 완료 |
+| UI-89 | fetchBoardData | — | {roles, vehicles, watch, enemyRoles, switches} | GET /roles·/vehicles·/watch_points·/enemies(적 Role id)·/operation(전환 버튼), 실패·목록 아님·연결 실패는 빈 목록 | 리드 | 완료 |
 | UI-91 | linkLines | Frame, Track 묶음, Queue | FeatureCollection | 임무 중 기체→표적(감시·타격, 무력화 표적엔 타격만), 놓친 표적 추정선, 차단 기체→대안 지점 | 리드 | 완료 |
 | UI-92 | watchCircles | WatchPoint[] | FeatureCollection | 기준점 반경 고리(64칸, 닫힘) | 리드 | 완료 |
 | UI-90 | boardView | Frame, BoardData | {tracks, stages, queue, situation, rows} | 데이터가 오기 전(빈 목록)에도 그려짐, 기체별 현재 명령 시각을 대기열에 넘겨 대안 보낸 차단이 빠짐(Part1-32) | 리드 | 완료 |
@@ -89,3 +89,4 @@
 | UI-97 | MavlinkLog·MavlinkButton·fetchMavlink | GET /mavlink | 새 창 로그 | 헤더 MAVLink 버튼이 #mavlink를 이름 붙은 새 창 하나로 열고, 그 창은 탭 없이 1초마다 GET /mavlink 줄을 그려 마지막 줄을 보인다, 조회 실패면 직전 줄 유지. 탭 이름 상황판 → 시뮬레이션(결정 0064) | 리드 | 완료 |
 | UI-98 | vehicleMenuRoles | Role[], VehicleSpec, 적 Role id[], 지금 Role id | {plain, target}: {id, name, strike}[] | 기체 메뉴(결정 0058·0059): 그 기체 영역·능력(모든 step 행동, 능력 목록이 비면 건너뜀)의 Role, 적 Role 제외. 첫 step이 표적을 operator로 받는 감시·근접·타격이거나 표적 본 지점 기준 순찰(anchor target, 24시간 집중 순찰)이면 target(strike 표시), 나머지는 plain(지금 Role 제외) | 리드 | 완료 |
 | UI-99 | seenTargets | Target[], Track 묶음, 기체 위치 | {id, kind, threat, distM}[] | 기체 메뉴 표적 Role의 포착 목록: 표적 상태 seen만(놓침·RF만·미탐·무력화 제외), 위험도 높은 순·가까운 순, 종류 한글, 거리 m 정수 | 리드 | 완료 |
+| UI-100 | postRole | 기체, Role | Sent | POST /injections {role_by_vehicle, approve: true}(기체 메뉴 표적 없는 Role, 결정 0059), throw 없음 | 리드 | 완료 |
