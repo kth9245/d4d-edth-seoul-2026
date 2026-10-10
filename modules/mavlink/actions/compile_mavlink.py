@@ -63,6 +63,8 @@ def compile_mavlink(
         spec = specs[vid]
         steps = {
             s.id: {"items": _items(s, spec), "wait": bool(s.report and s.report.choices),
+                   "moves": {c.id: c.play_by_vehicle[vid] for c in (s.report.choices if s.report else [])
+                             if vid in c.play_by_vehicle},
                    "exits": [[e.cond.kind.value, e.cond.params, e.go_step] for e in s.on]}
             for s in play.steps
         }  # fmt: skip

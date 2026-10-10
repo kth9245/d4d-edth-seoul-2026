@@ -1,4 +1,6 @@
 import py_compile
+import sys
+import types
 from pathlib import Path
 
 import pytest
@@ -78,3 +80,97 @@ def test_every_demo_play_compiles_to_a_valid_python_script(tmp_path, play_id):
     py_compile.compile(str(path), doraise=True)
     assert "from pymavlink import mavutil" in script
     assert all(repr(s.id) in script for s in play.steps) and f"ENTRY = {play.entry!r}" in script
+
+
+class _Done(Exception):
+    pass
+
+
+class _Msg:
+    def __init__(self, kind, **fields):
+        self.kind = kind
+        self.__dict__.update(fields)
+
+    def get_type(self):
+        return self.kind
+
+
+class _FakeLink:
+    """Stands in for pymavlink's connection: answers each mission upload, then hands out the scripted ground
+    signals (STATUSTEXT) one per read and raises _Done when they run out."""
+
+    def __init__(self, signals):
+        self.target_system = self.target_component = 1
+        self.events = [_Msg("STATUSTEXT", text=t) for t in signals]
+        self.upload = []
+        self.mav = types.SimpleNamespace(
+            mission_count_send=self._count,
+            mission_item_int_send=lambda *a: None,
+            mission_set_current_send=lambda *a: None,
+        )
+
+    def _count(self, _system, _component, n):
+        self.upload = [_Msg("MISSION_REQUEST_INT", seq=i) for i in range(n)] + [_Msg("MISSION_ACK")]
+
+    def wait_heartbeat(self):
+        pass
+
+    def set_mode_auto(self):
+        pass
+
+    def recv_match(self, type, blocking=True, timeout=None):
+        wanted = [type] if isinstance(type, str) else type
+        if self.upload and self.upload[0].get_type() in wanted:
+            return self.upload.pop(0)
+        if not self.events:
+            raise _Done
+        return self.events.pop(0)
+
+
+def _load_script(play_id, vid, signals, monkeypatch):
+    _, script = run(play_id, {vid: play_id})[vid]
+    link = _FakeLink(signals)
+    fake = types.ModuleType("pymavlink")
+    fake.mavutil = types.SimpleNamespace(
+        mavlink_connection=lambda _address: link,
+        mavlink=types.SimpleNamespace(MAV_FRAME_GLOBAL_RELATIVE_ALT_INT=6),
+    )
+    monkeypatch.setitem(sys.modules, "pymavlink", fake)
+    monkeypatch.setattr(sys, "argv", [f"{vid}_{play_id}.py"])
+    ns = {"__name__": f"{vid}_{play_id}"}
+    exec(compile(script, f"{vid}_{play_id}.py", "exec"), ns)
+    return ns
+
+
+def _run_script(play_id, vid, signals, monkeypatch, capsys):
+    """Runs the generated program until it ends or the signals run out; returns the steps it entered."""
+    ns = _load_script(play_id, vid, signals, monkeypatch)
+    try:
+        ns["main"]()
+    except _Done:
+        pass
+    out = capsys.readouterr().out
+    return [line.split(" step ")[1] for line in out.splitlines() if " step " in line], out
+
+
+def test_choice_that_leaves_the_reporter_in_its_play_takes_that_choice_exit(monkeypatch, capsys):
+    # decision 0031: '수상정 인계' sends only usv away, so d2 takes report's operator_choice exit to patrol2
+    signals = ["target_found", "choice:handoff", "target_found", "choice:keep"]
+    steps, out = _run_script("patrol_b", "d2", signals, monkeypatch, capsys)
+    assert steps == ["patrol", "report", "patrol2", "report2", "keep"]
+    assert "last step" in out
+
+
+def test_choice_that_moves_the_vehicle_names_the_play_it_moves_to(monkeypatch, capsys):
+    steps, out = _run_script(
+        "patrol_a", "d1", ["target_found", "choice:approach"], monkeypatch, capsys
+    )
+    assert steps == ["patrol", "report"]
+    assert "starts play watch" in out  # '근접 확인' sends d1 to watch
+
+
+def test_operator_choice_exit_is_true_only_for_its_own_choice(monkeypatch):
+    exit_true = _load_script("patrol_b", "d2", [], monkeypatch)["exit_true"]
+    assert exit_true("operator_choice", {"choice": "keep"}, {"choice": "keep"}, 0, 0)
+    assert not exit_true("operator_choice", {"choice": "keep"}, {"choice": "handoff"}, 0, 0)
+    assert not exit_true("operator_choice", {"choice": "keep"}, {}, 0, 0)

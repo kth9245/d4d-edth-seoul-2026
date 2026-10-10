@@ -2,6 +2,9 @@
 
 Uploads each step's mission, watches telemetry and ground signals, and moves to the next step with the
 same rule as runtime step_vehicle (first true exit wins; a report with choices waits for the operator).
+A choice that sends this vehicle to another play ends this program (the ground station starts that play);
+any other choice keeps it in this play and takes the step's operator_choice exit for that choice
+(runtime apply_decision, decision 0031).
 Telemetry: MISSION_ITEM_REACHED = arrived, SYS_STATUS.battery_remaining = battery_below.
 Ground signals come as STATUSTEXT: "target_found", "signal", "choice:<id>".
 Run: python <this file> [connection]   (default udp:127.0.0.1:14550, e.g. ArduPilot SITL)
@@ -14,7 +17,8 @@ from pymavlink import mavutil
 
 VEHICLE = {VEHICLE}
 ENTRY = {ENTRY}
-# step id -> {"items": [[MAV_CMD, p1..p7], ...], "wait": bool, "exits": [[condition, params, go_step], ...]}
+# step id -> {"items": [[MAV_CMD, p1..p7], ...], "wait": bool, "moves": {choice id: play id this vehicle goes to},
+#             "exits": [[condition, params, go_step], ...]}
 STEPS = {STEPS}
 
 
@@ -48,7 +52,7 @@ def exit_true(cond, params, seen, entered, n_items):
     if cond == "signal_received":
         return seen.get("signal") == "signal"
     if cond == "operator_choice":
-        return "choice" in seen
+        return "choice" in seen and seen["choice"] == params.get("choice")
     return False
 
 
@@ -63,7 +67,7 @@ def main():
         if not s["exits"] and not s["wait"]:
             print(VEHICLE, "last step, mission keeps running")
             return
-        seen, entered, nxt = {}, time.monotonic(), None
+        seen, entered, nxt, waiting = {}, time.monotonic(), None, s["wait"]
         while nxt is None:
             msg = m.recv_match(type=["MISSION_ITEM_REACHED", "SYS_STATUS", "STATUSTEXT"], blocking=True, timeout=1)
             if msg is not None and msg.get_type() == "MISSION_ITEM_REACHED":
@@ -74,11 +78,14 @@ def main():
                 seen["choice"] = msg.text[len("choice:"):]
             elif msg is not None:
                 seen["signal"] = msg.text
-            if s["wait"]:
-                if "choice" in seen:
-                    print(VEHICLE, "operator chose", seen["choice"], "- the ground station starts that play")
+            if waiting:
+                if "choice" not in seen:
+                    continue
+                if seen["choice"] in s["moves"]:
+                    print(VEHICLE, "operator chose", seen["choice"], "- the ground station starts play",
+                          s["moves"][seen["choice"]])
                     return
-                continue
+                waiting = False  # stays in this play: the choice's exit below
             nxt = next((go for c, p, go in s["exits"] if exit_true(c, p, seen, entered, len(s["items"]))), None)
         step = nxt
 
