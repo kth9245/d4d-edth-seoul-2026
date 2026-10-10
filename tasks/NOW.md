@@ -26,6 +26,7 @@
 ### 최동호
 - **Part2-19** 시나리오 튜닝
 - **Part2-24** 타격 engine.py: resolve_strikes 호출 + 타격 통과 기록 줄
+- **Part2-25** sim 적 진행(SIM-11, 결정 0032) + engine.py 호출
 
 ### 누구나
 - **Part1-18** 타격: 계약 추가 5개 + play 대응표 행 + TS·예시 (한 커밋)
