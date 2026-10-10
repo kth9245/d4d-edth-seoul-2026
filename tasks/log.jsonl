@@ -255,3 +255,4 @@
 {"at": "2026-10-10T12:42:31+09:00", "by": "kth9245", "op": "add", "id": "Part1-14.3", "title": "QA 수정: 직접 조종 십자를 서버 상태로(차단이면 없음, 대안이면 이동), 표적 이름표 위로", "parent": "Part1-14", "assign": null, "slot": "1·2", "spec": null}
 {"at": "2026-10-10T12:42:34+09:00", "by": "kth9245", "op": "start", "id": "Part1-14.3", "take": false, "from": null}
 {"at": "2026-10-10T12:43:07+09:00", "by": "kth9245", "op": "done", "id": "Part1-14.3", "take": false}
+{"at": "2026-10-10T12:46:20+09:00", "by": "kth9245", "op": "add", "id": "Part1-14.4", "title": "통합 2 전 스텁 제거: gateway stub_engine 대체 경로, 편집기 예시 데이터", "parent": "Part1-14", "assign": null, "slot": "1·2", "spec": null}
