@@ -39,7 +39,7 @@ def advance_vehicles(
         if kind == K.hold and dist_m(st.pos, spec.home) < 1:  # on the ground at base
             out.append(st)
             continue
-        if kind in (K.orbit, K.keep_distance):
+        if kind in (K.orbit, K.keep_distance, K.strike):  # strike: fly onto the target (0033)
             st = orbit_or_keep(st, spec, pc, targets, dt_ms)
         elif kind == K.follow_route:
             st = follow_route(st, spec, pc, dt_ms)

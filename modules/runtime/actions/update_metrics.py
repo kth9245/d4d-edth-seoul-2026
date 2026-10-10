@@ -36,4 +36,6 @@ def update_metrics(metrics: Metrics, outcome: TickOutcome) -> Metrics:
     for a in outcome.assignments:
         if a.reason.startswith("예비 투입") and not _reached(a.vehicle_id, outcome):
             m.vehicle_gap_ms = max(m.vehicle_gap_ms, now - a.since_ms)
+    if any(t.neutralized_ms is not None for t in outcome.targets):  # decision 0033
+        m.mission_success = True
     return m

@@ -9,6 +9,7 @@ from contracts.models import (
     CommandKind,
     GeoPoint,
     PassedCommand,
+    Target,
     VehicleSpec,
     VehicleState,
     VehicleStatus,
@@ -75,3 +76,11 @@ def test_lost_vehicle_does_not_move():
     start = _at(east_m=300)
     [st] = advance_vehicles([_state(start, VehicleStatus.lost, MOVE)], SPECS, [], 1000, [])
     assert st.pos == start and st.battery_pct == 100
+
+
+def test_strike_flies_onto_the_target():
+    tg = Target(id="fast1", kind="fast_boat", pos=_at(north_m=100), vel_east_mps=0,
+                vel_north_mps=0, first_seen_ms=0, last_seen_ms=0)  # fmt: skip
+    pc = _passed(CommandKind.strike, target_id="fast1", distance_m=0)
+    (st,) = advance_vehicles([_state(status=VehicleStatus.active)], SPECS, [pc], 1000, [tg])
+    assert dist_m(st.pos, tg.pos) == pytest.approx(90, abs=0.5)

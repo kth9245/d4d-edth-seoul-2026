@@ -85,3 +85,11 @@ def test_vehicle_gap_runs_from_reserve_start_until_the_reserve_sees_the_target()
     assert m.vehicle_gap_ms == 4000
     later = TickOutcome(**{**base, "states": [vs("d3", 9000)]}, targets=[boat(["d3"])])
     assert update_metrics(m, later).vehicle_gap_ms == 4000
+
+
+def test_mission_succeeds_once_a_target_is_neutralized():
+    struck = Target(id="fast1", kind="fast_boat", pos=G, vel_east_mps=0, vel_north_mps=0,
+                    first_seen_ms=0, last_seen_ms=0, neutralized_ms=5000)  # fmt: skip
+    m = update_metrics(Metrics(), TickOutcome(states=[vs("d2")], targets=[struck]))
+    assert m.mission_success is True
+    assert update_metrics(Metrics(), TickOutcome(states=[vs("d2")])).mission_success is None
