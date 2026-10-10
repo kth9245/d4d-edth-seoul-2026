@@ -2,10 +2,11 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 11:11 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 11:12 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part1-5** AI 초안 프롬프트·캐시 2개 — kth9245, 10/10 11:11부터 · 하위 1/1 완료
+- **Part2-6** sensing `observe_targets`(공개 API 이름 `observe`) — 최동호, 10/10 11:12부터 · SNS-02
 
 ## 막힘
 - (없음)
@@ -26,7 +27,6 @@
 - **Part3-9** play `draft_play` · PLY-09
 
 ### 최동호
-- **Part2-6** sensing `observe_targets`(공개 API 이름 `observe`) · SNS-02
 - **Part2-17** gateway `engine.py` 틱 루프 · 하위 4/5 완료
 - **Part2-17.1** gateway init_engine · GW-02 (묶음 A, engine_state.py 먼저)
 - **Part2-18** gateway `build_frame` 재작성
