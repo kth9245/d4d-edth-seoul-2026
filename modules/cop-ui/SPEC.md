@@ -66,3 +66,7 @@
 | UI-85 | vehicleRows | Frame, 플레이 이름, VehicleSpec[] | VehicleRow[] | 하는 일(귀환 중·기지 정비·플레이 이름·대기), 종류 한글, 표적·타격은 임무 중일 때만, 배터리(35% 미만 low), 결정 대기(Part1-32) | 리드 | 완료 |
 | UI-86 | targetPlays | Play[], 도메인 | Play[] | 첫 step이 watch_target·approach_target이고 그 도메인을 쓰는 플레이, strike_target 없음(결정 0048) | 리드 | 완료 |
 | UI-88 | postPoint | 기체, 플레이, 표적 | Sent | POST /injections {play_by_vehicle, target_by_vehicle, approve: true}(결정 0049), throw 없음 | 리드 | 완료 |
+| UI-87 | cameraPoints | Frame, Track 묶음, Queue | GeoPoint[] | 표적 표시 위치·추정 위치(2분 넘은 무력화 제외), 임무 중 표적 맡은 기체, 열린 카드가 부르는 기체(보고·선택지 미리 보기), 차단 대안 지점, 없으면 빈 목록(Part1-32) | 리드 | 완료 |
+| UI-89 | fetchBoardData | — | {plays, vehicles, watch} | GET /plays·/vehicles·/watch_points, 실패·목록 아님·연결 실패는 빈 목록 | 리드 | 완료 |
+| UI-91 | linkLines | Frame, Track 묶음, Queue | FeatureCollection | 임무 중 기체→표적(감시·타격, 무력화 표적엔 타격만), 놓친 표적 추정선, 차단 기체→대안 지점 | 리드 | 완료 |
+| UI-92 | watchCircles | WatchPoint[] | FeatureCollection | 기준점 반경 고리(64칸, 닫힘) | 리드 | 완료 |
