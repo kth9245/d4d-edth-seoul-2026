@@ -8,7 +8,7 @@ from contracts.models import GeoPoint
 from shared.geo import dist_m
 
 BASE = {"fast_boat": 40, "boat": 20, "person": 30, "unknown": 30}
-INSIDE, RF, SPEED_CAP, SPEED_PER_MPS, CAP, THRESHOLD = 30, 30, 30, 5, 100, 40
+INSIDE, NEAR, RF, SPEED_CAP, SPEED_PER_MPS, CAP, THRESHOLD = 30, 15, 30, 30, 5, 100, 40
 
 
 class ThreatScore(NamedTuple):
@@ -31,8 +31,11 @@ def score_target(
 ) -> ThreatScore:
     score, reasons = BASE[kind], [f"kind_{kind}"]
     rf = emitting and any(r > 0 and dist_m(p, pos) <= r for p, r in receivers)
-    if any(dist_m(c, pos) <= radius for c, radius in watch_points):
+    gaps = [dist_m(c, pos) / radius for c, radius in watch_points]
+    if any(g <= 1 for g in gaps):
         score, reasons = score + INSIDE, reasons + ["inside_watch_radius"]
+    elif any(g <= 2 for g in gaps):  # decision 0041: approaching boats are not left out
+        score, reasons = score + NEAR, reasons + ["near_watch_radius"]
     if rf:
         score, reasons = score + RF, reasons + ["rf_emission"]
     speed = min(SPEED_CAP, int(speed_mps * SPEED_PER_MPS)) if observed else 0

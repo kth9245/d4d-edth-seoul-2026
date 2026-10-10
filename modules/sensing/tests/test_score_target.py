@@ -41,3 +41,24 @@ def test_accum_grows_by_score_times_tick_from_threshold():
 def test_accum_resets_below_threshold_or_when_unobserved():
     assert score("boat", pos=FAR, accum=5000).accum == 0  # 20
     assert score(observed=False, accum=5000).accum == 0
+
+
+NEAR_3KM = GeoPoint(
+    lat=38.005, lon=124.70
+)  # ~3 km north: outside 2 km, inside 4 km (decision 0041)
+FAR_5KM = GeoPoint(lat=38.023, lon=124.70)  # ~5 km north
+
+
+def test_boat_within_twice_the_radius_gets_the_near_step_of_15():
+    r = score(pos=NEAR_3KM)
+    assert r.score == 35 and r.reasons == ["kind_boat", "near_watch_radius"]
+
+
+def test_boat_beyond_twice_the_radius_gets_no_watch_point_score():
+    r = score(pos=FAR_5KM)
+    assert r.score == 20 and r.reasons == ["kind_boat"]
+
+
+def test_approaching_boat_outside_the_radius_still_reaches_the_threshold():
+    r = score(pos=NEAR_3KM, speed=1.5)  # 20 + 15 + 7 = 42 >= 40
+    assert r.score == 42 and r.accum == 42 * 200
