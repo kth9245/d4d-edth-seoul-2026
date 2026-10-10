@@ -12,7 +12,7 @@ describe("vehicleColumns", () => {
   it("lists each vehicle's start play then the plays its report choices lead to", () => {
     expect(summary(op, plays)).toEqual([
       ["d1", [], [["patrol_a", null], ["watch", "근접 확인"]]],
-      ["d2", [], [["standby", null], ["patrol_b", "근접 확인"]]],
+      ["d2", [], [["patrol_b", null]]], // decision 0036: d2 patrols from the start
       ["d3", ["d1"], [["standby", null]]],
       ["usv", [], [["standby", null], ["approach", "근접 확인"]]],
       ["ugv", [], [["standby", null], ["landing", "근접 확인"]]],

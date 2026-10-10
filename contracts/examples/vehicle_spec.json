@@ -3,7 +3,7 @@
  "name": "드론1",
  "domain": "air",
  "speed_mps": 15.0,
- "endurance_min": 40.0,
+ "endurance_min": 50.0,
  "sensor_range_m": 800.0,
  "capabilities": [
   "move_to",

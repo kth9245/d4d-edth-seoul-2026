@@ -187,8 +187,7 @@
      "play_by_vehicle": {
       "d1": "watch",
       "usv": "approach",
-      "ugv": "landing",
-      "d2": "patrol_b"
+      "ugv": "landing"
      }
     }
    ],

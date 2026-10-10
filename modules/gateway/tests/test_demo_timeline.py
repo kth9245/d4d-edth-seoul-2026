@@ -62,7 +62,7 @@ def run():
     for _ in range(35 * MIN // SC.tick_ms):
         es, fr = tick(es, _inputs(es, es.t_ms + SC.tick_ms, n))
         mark("s1", any(r.kind == "target_detected" and r.vehicle_id == "d1" for r in es.reports))
-        mark("s2", sum(a.reason == "결정 dec-1" for a in es.assignments) == 4)
+        mark("s2", sum(a.reason == "결정 dec-1" for a in es.assignments) == 3)  # d1·usv·ugv (0036)
         mark("s3", any(r.kind == "vehicle_gap" for r in es.reports))
         mark("s5", any(b.vehicle_id == "d2" and b.reason == "outside_zone" for b in es.blocks))
         mark(
@@ -84,6 +84,18 @@ def test_scenes_happen_in_strike_phase_order(scenes):
     order = ["s1", "s2", "s3", "s5", "s6", "s4", "s7", "s8"]
     assert [s for s in order if s in scenes] == order, scenes
     assert [scenes[s] for s in order] == sorted(scenes[s] for s in order), scenes
+
+
+def test_three_boats_each_get_one_card_from_the_drone_that_found_it(run):  # decision 0036
+    es, _ = run
+    found = [r for r in es.reports if r.kind == "target_detected" and r.text.startswith("미식별")]
+    assert [(r.vehicle_id, r.target_id) for r in found] == [
+        ("d1", "boat1"), ("d2", "boat2"), ("d2", "boat3"),
+    ]  # fmt: skip
+    assert found[1].t_ms < found[0].resolved_ms  # two cards open at once
+    assert all(r.resolved_ms - START < 20 * MIN for r in found)  # before d2 is sent past the NLL
+    d2_choices = [c.id for r in found[1:] for c in r.choices]
+    assert d2_choices == ["handoff", "keep"]  # usv takes boat2 over, d2 keeps boat3
 
 
 def test_alternative_after_zone_block_is_not_blocked(scenes):
@@ -113,7 +125,9 @@ def test_operation_passes_play_checks_including_reserve_return_battery():
 
 
 def test_boat1_and_fast1_are_enemies_not_script_events():
-    assert {e.id: e.from_enemy for e in SC.enemies} == {"boat1": None, "fast1": "boat1"}
+    assert {e.id: e.from_enemy for e in SC.enemies} == {
+        "boat1": None, "fast1": "boat1", "boat2": None, "boat3": None,  # decision 0036
+    }  # fmt: skip
     assert not [e for e in SC.events if e.kind in ("spawn_target", "split_target")]
 
 

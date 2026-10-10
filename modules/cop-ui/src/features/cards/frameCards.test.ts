@@ -13,7 +13,7 @@ describe("frameCards", () => {
     expect(c).toMatchObject({ id: "rep-d1-1791634270000", source: "report", kind: "target_detected",
       vehicle: "d1", time: "21:11:10", text: "미식별 선박 접근", done: null });
     expect(c.choices).toEqual([{ id: "approach", label: "근접 확인",
-      preview: "d1→watch · usv→approach · ugv→landing · d2→patrol_b" }]);
+      preview: "d1→watch · usv→approach · ugv→landing" }]); // d2 already patrols (decision 0036)
   });
 
   it("shows a pending injection from Frame.injections instead of its injection_pending report", () => {

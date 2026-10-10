@@ -11,7 +11,7 @@
    "do": {
     "kind": "approach_target",
     "params": {
-     "target": "nearest",
+     "target": "operator",
      "distance_m": 200
     }
    },

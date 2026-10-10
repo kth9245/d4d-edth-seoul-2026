@@ -1,28 +1,150 @@
 {
  "id": "patrol_b",
- "name": "해안 순찰 B",
+ "name": "북동 해안 순찰",
  "domains": [
   "air"
  ],
  "steps": [
   {
    "id": "patrol",
-   "name": "경로 B 순찰",
+   "name": "북동 순찰",
    "do": {
     "kind": "patrol_route",
     "params": {
      "route": [
       {
-       "lat": 37.93,
-       "lon": 124.64,
+       "lat": 37.993,
+       "lon": 124.725,
        "alt_m": 0
       },
       {
-       "lat": 37.93,
-       "lon": 124.76,
+       "lat": 37.993,
+       "lon": 124.785,
        "alt_m": 0
       }
      ]
+    }
+   },
+   "on": [
+    {
+     "cond": {
+      "kind": "target_found",
+      "params": {}
+     },
+     "go_step": "report"
+    }
+   ],
+   "report": null,
+   "ui": {}
+  },
+  {
+   "id": "report",
+   "name": "발견·감시·보고",
+   "do": {
+    "kind": "watch_target",
+    "params": {
+     "target": "nearest",
+     "distance_m": 150
+    }
+   },
+   "on": [
+    {
+     "cond": {
+      "kind": "operator_choice",
+      "params": {
+       "choice": "handoff"
+      }
+     },
+     "go_step": "patrol2"
+    }
+   ],
+   "report": {
+    "text": "미식별 선박 접근",
+    "choices": [
+     {
+      "id": "handoff",
+      "label": "수상정 인계",
+      "play_by_vehicle": {
+       "usv": "approach"
+      }
+     }
+    ]
+   },
+   "ui": {}
+  },
+  {
+   "id": "patrol2",
+   "name": "인계 뒤 순찰 복귀",
+   "do": {
+    "kind": "patrol_route",
+    "params": {
+     "route": [
+      {
+       "lat": 37.993,
+       "lon": 124.725,
+       "alt_m": 0
+      },
+      {
+       "lat": 37.993,
+       "lon": 124.785,
+       "alt_m": 0
+      }
+     ]
+    }
+   },
+   "on": [
+    {
+     "cond": {
+      "kind": "target_found",
+      "params": {}
+     },
+     "go_step": "report2"
+    }
+   ],
+   "report": null,
+   "ui": {}
+  },
+  {
+   "id": "report2",
+   "name": "두 번째 발견·감시·보고",
+   "do": {
+    "kind": "watch_target",
+    "params": {
+     "target": "nearest",
+     "distance_m": 150
+    }
+   },
+   "on": [
+    {
+     "cond": {
+      "kind": "operator_choice",
+      "params": {
+       "choice": "keep"
+      }
+     },
+     "go_step": "keep"
+    }
+   ],
+   "report": {
+    "text": "미식별 선박 접근",
+    "choices": [
+     {
+      "id": "keep",
+      "label": "감시 유지",
+      "play_by_vehicle": {}
+     }
+    ]
+   },
+   "ui": {}
+  },
+  {
+   "id": "keep",
+   "name": "감시 유지",
+   "do": {
+    "kind": "watch_target",
+    "params": {
+     "target": "operator",
+     "distance_m": 150
     }
    },
    "on": [],

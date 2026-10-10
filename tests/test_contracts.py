@@ -121,7 +121,7 @@ def test_strike_and_enemy_fields_default_to_empty():
         None, None, None, 0, None,
     )  # fmt: skip
     sc = Scenario.model_validate(_load(EXAMPLES / "scenario.json"))  # the demo world (0035)
-    assert {e.id for e in sc.enemies} == {"boat1", "fast1"}
+    assert {e.id for e in sc.enemies} == {"boat1", "boat2", "boat3", "fast1"}  # 0036
 
 
 def test_target_reported_by_names_the_vehicle_that_raised_its_card():  # decision 0036

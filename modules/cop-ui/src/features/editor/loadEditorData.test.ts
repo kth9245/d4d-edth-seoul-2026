@@ -13,7 +13,7 @@ describe("loadEditorData", () => {
     expect(d.operation.id).toBe("op-gw");
     expect(d.plays).toHaveLength(1);
     expect(d.vehicles.map((v) => v.id)).toEqual(scenario.operation.vehicle_ids);
-    expect(d.enemies.map((e) => e.id)).toEqual(["boat1", "fast1"]);
+    expect(d.enemies.map((e) => e.id)).toEqual(["boat1", "fast1", "boat2", "boat3"]); // decision 0036
   });
   // No example-data fallback any more (09 §4.5): without the gateway the editor says so instead of
   // showing the scenario file, where saving would fail.

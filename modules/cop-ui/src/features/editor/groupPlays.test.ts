@@ -11,19 +11,19 @@ describe("groupPlays", () => {
     const groups = groupPlays(plays);
     expect(groups.map((g) => [g.label, ids(g)])).toEqual([
       ["드론", ["patrol_a", "watch", "patrol_b", "track_fast", "coast_a", "coast_b"]],
-      ["수상정", ["approach", "track_fast_sea", "enemy_boat1", "enemy_fast1"]],
+      ["수상정", ["approach", "track_fast_sea", "enemy_boat1", "enemy_fast1", "enemy_boat2", "enemy_boat3"]],
       ["지상", ["landing"]],
       ["공통", ["standby", "go_home", "strike"]],
     ]);
   });
   it("moves the plays enemies follow into a last group of their own (Part1-21)", () => {
-    const groups = groupPlays(plays, ["enemy_boat1", "enemy_fast1"]);
+    const groups = groupPlays(plays, ["enemy_boat1", "enemy_fast1", "enemy_boat2", "enemy_boat3"]);
     expect(groups.map((g) => [g.label, ids(g)])).toEqual([
       ["드론", ["patrol_a", "watch", "patrol_b", "track_fast", "coast_a", "coast_b"]],
       ["수상정", ["approach", "track_fast_sea"]],
       ["지상", ["landing"]],
       ["공통", ["standby", "go_home", "strike"]],
-      ["적", ["enemy_boat1", "enemy_fast1"]],
+      ["적", ["enemy_boat1", "enemy_fast1", "enemy_boat2", "enemy_boat3"]], // decision 0036
     ]);
   });
   it("puts a play without domains into common and drops empty groups", () => {

@@ -40,7 +40,7 @@ def test_enemies_come_from_the_scenario():
     # Part1-21: the editor's enemy section shows each enemy and the play it follows.
     client, _ = fake_app()
     enemies = client.get("/enemies").json()
-    assert [e["id"] for e in enemies] == ["boat1", "fast1"]
+    assert [e["id"] for e in enemies] == ["boat1", "fast1", "boat2", "boat3"]  # decision 0036
     plays = {p["id"] for p in client.get("/plays").json()}
     assert all(e["play_id"] in plays for e in enemies)
 

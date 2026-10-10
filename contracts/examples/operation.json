@@ -60,7 +60,7 @@
  "started_ms": 1791633600000,
  "assign": {
   "d1": "patrol_a",
-  "d2": "standby",
+  "d2": "patrol_b",
   "d3": "standby",
   "usv": "standby",
   "ugv": "standby"

@@ -76,13 +76,13 @@
      "params": {
       "route": [
        {
-        "lat": 37.93,
-        "lon": 124.64,
+        "lat": 37.993,
+        "lon": 124.725,
         "alt_m": 0
        },
        {
-        "lat": 37.93,
-        "lon": 124.76,
+        "lat": 37.993,
+        "lon": 124.785,
         "alt_m": 0
        }
       ]
@@ -278,8 +278,7 @@
      "play_by_vehicle": {
       "d1": "watch",
       "usv": "approach",
-      "ugv": "landing",
-      "d2": "patrol_b"
+      "ugv": "landing"
      }
     }
    ],

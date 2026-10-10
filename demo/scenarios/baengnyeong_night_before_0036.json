@@ -1,0 +1,1362 @@
+{
+ "id": "baengnyeong_night",
+ "operation": {
+  "id": "op1",
+  "name": "백령도 야간 해안 경계",
+  "purpose": "서해 접경 섬 야간 해안 경계(가상)",
+  "area": {
+   "points": [
+    {
+     "lat": 37.9,
+     "lon": 124.56,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9,
+     "lon": 124.84,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 38.0,
+     "lon": 124.84,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 38.0,
+     "lon": 124.56,
+     "alt_m": 0.0
+    }
+   ]
+  },
+  "zone": {
+   "points": [
+    {
+     "lat": 37.9,
+     "lon": 124.56,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9,
+     "lon": 124.84,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 38.0,
+     "lon": 124.84,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 38.0,
+     "lon": 124.56,
+     "alt_m": 0.0
+    }
+   ]
+  },
+  "vehicle_ids": [
+   "d1",
+   "d2",
+   "d3",
+   "usv",
+   "ugv"
+  ],
+  "started_ms": 1791633600000,
+  "assign": {
+   "d1": "patrol_a",
+   "d2": "standby",
+   "d3": "standby",
+   "usv": "standby",
+   "ugv": "standby"
+  },
+  "reserve": {
+   "d1": [
+    "d3"
+   ]
+  },
+  "switches": [
+   {
+    "id": "all_home",
+    "label": "전 기체 귀환",
+    "play_by_vehicle": {
+     "d1": "go_home",
+     "d2": "go_home",
+     "d3": "go_home",
+     "usv": "go_home",
+     "ugv": "go_home"
+    }
+   },
+   {
+    "id": "track_fast",
+    "label": "고속 보트 추적",
+    "play_by_vehicle": {
+     "d2": "track_fast",
+     "usv": "track_fast_sea"
+    }
+   }
+  ]
+ },
+ "vehicles": [
+  {
+   "id": "d1",
+   "name": "드론1",
+   "domain": "air",
+   "speed_mps": 15.0,
+   "endurance_min": 40.0,
+   "sensor_range_m": 800.0,
+   "capabilities": [
+    "move_to",
+    "patrol_route",
+    "search_area",
+    "return_home",
+    "watch_target",
+    "watch_point",
+    "approach_target",
+    "relay_comms",
+    "hold",
+    "strike_target"
+   ],
+   "home": {
+    "lat": 37.95,
+    "lon": 124.7,
+    "alt_m": 0.0
+   }
+  },
+  {
+   "id": "d2",
+   "name": "드론2",
+   "domain": "air",
+   "speed_mps": 15.0,
+   "endurance_min": 40.0,
+   "sensor_range_m": 800.0,
+   "capabilities": [
+    "move_to",
+    "patrol_route",
+    "search_area",
+    "return_home",
+    "watch_target",
+    "watch_point",
+    "approach_target",
+    "relay_comms",
+    "hold",
+    "strike_target"
+   ],
+   "home": {
+    "lat": 37.955,
+    "lon": 124.7,
+    "alt_m": 0.0
+   }
+  },
+  {
+   "id": "d3",
+   "name": "드론3",
+   "domain": "air",
+   "speed_mps": 15.0,
+   "endurance_min": 40.0,
+   "sensor_range_m": 800.0,
+   "capabilities": [
+    "move_to",
+    "patrol_route",
+    "search_area",
+    "return_home",
+    "watch_target",
+    "watch_point",
+    "approach_target",
+    "relay_comms",
+    "hold",
+    "strike_target"
+   ],
+   "home": {
+    "lat": 37.945,
+    "lon": 124.7,
+    "alt_m": 0.0
+   }
+  },
+  {
+   "id": "usv",
+   "name": "수상정",
+   "domain": "sea",
+   "speed_mps": 8.0,
+   "endurance_min": 720.0,
+   "sensor_range_m": 500.0,
+   "capabilities": [
+    "move_to",
+    "patrol_route",
+    "search_area",
+    "return_home",
+    "watch_target",
+    "watch_point",
+    "approach_target",
+    "relay_comms",
+    "hold",
+    "strike_target"
+   ],
+   "home": {
+    "lat": 37.981,
+    "lon": 124.691,
+    "alt_m": 0.0
+   }
+  },
+  {
+   "id": "ugv",
+   "name": "지상로봇",
+   "domain": "ground",
+   "speed_mps": 5.0,
+   "endurance_min": 480.0,
+   "sensor_range_m": 300.0,
+   "capabilities": [
+    "move_to",
+    "patrol_route",
+    "search_area",
+    "return_home",
+    "watch_target",
+    "watch_point",
+    "approach_target",
+    "relay_comms",
+    "hold",
+    "strike_target"
+   ],
+   "home": {
+    "lat": 37.955,
+    "lon": 124.72,
+    "alt_m": 0.0
+   }
+  }
+ ],
+ "plays": [
+  {
+   "id": "standby",
+   "name": "대기",
+   "domains": [
+    "air",
+    "sea",
+    "ground"
+   ],
+   "steps": [
+    {
+     "id": "wait",
+     "name": "대기",
+     "do": {
+      "kind": "hold",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "wait",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "patrol_a",
+   "name": "해안 순찰 A",
+   "domains": [
+    "air"
+   ],
+   "steps": [
+    {
+     "id": "patrol",
+     "name": "경로 A 순찰",
+     "do": {
+      "kind": "patrol_route",
+      "params": {
+       "route": [
+        {
+         "lat": 37.98,
+         "lon": 124.66,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.98,
+         "lon": 124.74,
+         "alt_m": 0
+        }
+       ]
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "target_found",
+        "params": {}
+       },
+       "go_step": "report"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "report",
+     "name": "보고",
+     "do": {
+      "kind": "hold",
+      "params": {}
+     },
+     "on": [],
+     "report": {
+      "text": "미식별 선박 접근",
+      "choices": [
+       {
+        "id": "approach",
+        "label": "근접 확인",
+        "play_by_vehicle": {
+         "d1": "watch",
+         "usv": "approach",
+         "ugv": "landing",
+         "d2": "patrol_b"
+        }
+       }
+      ]
+     },
+     "ui": {}
+    }
+   ],
+   "entry": "patrol",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": false
+  },
+  {
+   "id": "watch",
+   "name": "표적 감시",
+   "domains": [
+    "air"
+   ],
+   "steps": [
+    {
+     "id": "watch",
+     "name": "선회 감시",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "nearest",
+       "distance_m": 150
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "battery_below",
+        "params": {
+         "pct": 30.0
+        }
+       },
+       "go_step": "return"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "return",
+     "name": "귀환",
+     "do": {
+      "kind": "return_home",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "watch",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "approach",
+   "name": "근접 확인",
+   "domains": [
+    "sea"
+   ],
+   "steps": [
+    {
+     "id": "approach",
+     "name": "접근",
+     "do": {
+      "kind": "approach_target",
+      "params": {
+       "target": "nearest",
+       "distance_m": 200
+      }
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "approach",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "landing",
+   "name": "상륙 지점 감시",
+   "domains": [
+    "ground"
+   ],
+   "steps": [
+    {
+     "id": "move",
+     "name": "상륙 예상 지점",
+     "do": {
+      "kind": "move_to",
+      "params": {
+       "target": {
+        "lat": 37.982,
+        "lon": 124.7,
+        "alt_m": 0
+       }
+      }
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "move",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": false
+  },
+  {
+   "id": "patrol_b",
+   "name": "해안 순찰 B",
+   "domains": [
+    "air"
+   ],
+   "steps": [
+    {
+     "id": "patrol",
+     "name": "경로 B 순찰",
+     "do": {
+      "kind": "patrol_route",
+      "params": {
+       "route": [
+        {
+         "lat": 37.93,
+         "lon": 124.64,
+         "alt_m": 0
+        },
+        {
+         "lat": 37.93,
+         "lon": 124.76,
+         "alt_m": 0
+        }
+       ]
+      }
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "patrol",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": false
+  },
+  {
+   "id": "track_fast",
+   "name": "고속 보트 추적",
+   "domains": [
+    "air"
+   ],
+   "steps": [
+    {
+     "id": "track",
+     "name": "추적",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 300
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "target_found",
+        "params": {}
+       },
+       "go_step": "ask"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "ask",
+     "name": "타격 승인 요청",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 300
+      }
+     },
+     "on": [],
+     "report": {
+      "text": "타격 승인 요청",
+      "choices": [
+       {
+        "id": "strike_d2",
+        "label": "이 기체로 타격",
+        "play_by_vehicle": {
+         "d2": "strike"
+        }
+       },
+       {
+        "id": "strike_both",
+        "label": "함께 타격",
+        "play_by_vehicle": {
+         "d2": "strike",
+         "usv": "strike"
+        }
+       }
+      ]
+     },
+     "ui": {}
+    }
+   ],
+   "entry": "track",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "go_home",
+   "name": "귀환",
+   "domains": [
+    "air",
+    "sea",
+    "ground"
+   ],
+   "steps": [
+    {
+     "id": "return",
+     "name": "귀환",
+     "do": {
+      "kind": "return_home",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "return",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "track_fast_sea",
+   "name": "고속 보트 추적(해상)",
+   "domains": [
+    "sea"
+   ],
+   "steps": [
+    {
+     "id": "track",
+     "name": "추적",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 300
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "target_found",
+        "params": {}
+       },
+       "go_step": "ask"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "ask",
+     "name": "타격 승인 요청",
+     "do": {
+      "kind": "watch_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 300
+      }
+     },
+     "on": [],
+     "report": {
+      "text": "타격 승인 요청",
+      "choices": [
+       {
+        "id": "strike_usv",
+        "label": "이 기체로 타격",
+        "play_by_vehicle": {
+         "usv": "strike"
+        }
+       },
+       {
+        "id": "strike_both",
+        "label": "함께 타격",
+        "play_by_vehicle": {
+         "d2": "strike",
+         "usv": "strike"
+        }
+       }
+      ]
+     },
+     "ui": {}
+    }
+   ],
+   "entry": "track",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "strike",
+   "name": "표적 타격",
+   "domains": [
+    "air",
+    "sea"
+   ],
+   "steps": [
+    {
+     "id": "strike",
+     "name": "타격",
+     "do": {
+      "kind": "strike_target",
+      "params": {
+       "target": "operator",
+       "distance_m": 0
+      }
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "strike",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": true
+  },
+  {
+   "id": "enemy_boat1",
+   "name": "적: 상륙 접근",
+   "domains": [
+    "sea"
+   ],
+   "steps": [
+    {
+     "id": "approach",
+     "name": "상륙 접근 지점으로",
+     "do": {
+      "kind": "move_to",
+      "params": {
+       "target": {
+        "lat": 37.982,
+        "lon": 124.7,
+        "alt_m": 0
+       }
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "arrived",
+        "params": {}
+       },
+       "go_step": "wait"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "wait",
+     "name": "대기",
+     "do": {
+      "kind": "hold",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "approach",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": false
+  },
+  {
+   "id": "enemy_fast1",
+   "name": "적: 동쪽 우회 상륙",
+   "domains": [
+    "sea"
+   ],
+   "steps": [
+    {
+     "id": "east",
+     "name": "해안 따라 동쪽으로",
+     "do": {
+      "kind": "move_to",
+      "params": {
+       "target": {
+        "lat": 37.988,
+        "lon": 124.75,
+        "alt_m": 0
+       }
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "arrived",
+        "params": {}
+       },
+       "go_step": "land"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "land",
+     "name": "동쪽 상륙 지점으로",
+     "do": {
+      "kind": "move_to",
+      "params": {
+       "target": {
+        "lat": 37.9645,
+        "lon": 124.737,
+        "alt_m": 0
+       }
+      }
+     },
+     "on": [
+      {
+       "cond": {
+        "kind": "arrived",
+        "params": {}
+       },
+       "go_step": "wait"
+      }
+     ],
+     "report": null,
+     "ui": {}
+    },
+    {
+     "id": "wait",
+     "name": "대기",
+     "do": {
+      "kind": "hold",
+      "params": {}
+     },
+     "on": [],
+     "report": null,
+     "ui": {}
+    }
+   ],
+   "entry": "east",
+   "emergency": {
+    "battery_low_pct": 30.0,
+    "link_lost_step": null,
+    "battery_low_step": null,
+    "operator_call_step": null
+   },
+   "origin": "human",
+   "approved": true,
+   "template": false
+  }
+ ],
+ "events": [
+  {
+   "offset_ms": 1140000,
+   "kind": "vehicle_battery_set",
+   "params": {
+    "id": "d1",
+    "pct": 21
+   }
+  }
+ ],
+ "enemies": [
+  {
+   "id": "boat1",
+   "kind": "boat",
+   "speed_mps": 1.0,
+   "appear_offset_ms": 660000,
+   "pos": {
+    "lat": 37.985,
+    "lon": 124.7,
+    "alt_m": 0.0
+   },
+   "from_enemy": null,
+   "play_id": "enemy_boat1"
+  },
+  {
+   "id": "fast1",
+   "kind": "fast_boat",
+   "speed_mps": 6.3,
+   "appear_offset_ms": 1380000,
+   "pos": null,
+   "from_enemy": "boat1",
+   "play_id": "enemy_fast1"
+  }
+ ],
+ "land": [
+  {
+   "points": [
+    {
+     "lat": 37.98507,
+     "lon": 124.68487,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98507,
+     "lon": 124.68676,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98223,
+     "lon": 124.68658,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98033,
+     "lon": 124.69105,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98047,
+     "lon": 124.69397,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9829,
+     "lon": 124.69431,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98426,
+     "lon": 124.69706,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98399,
+     "lon": 124.70169,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98493,
+     "lon": 124.70461,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98317,
+     "lon": 124.71027,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98358,
+     "lon": 124.71611,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98263,
+     "lon": 124.72298,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98033,
+     "lon": 124.72504,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97885,
+     "lon": 124.7307,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97654,
+     "lon": 124.73173,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97627,
+     "lon": 124.7331,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97289,
+     "lon": 124.73173,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96694,
+     "lon": 124.73413,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96409,
+     "lon": 124.74255,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96423,
+     "lon": 124.74392,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96572,
+     "lon": 124.74478,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96558,
+     "lon": 124.74684,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96355,
+     "lon": 124.74701,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96328,
+     "lon": 124.74495,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96125,
+     "lon": 124.74701,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95773,
+     "lon": 124.74667,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95611,
+     "lon": 124.74083,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.958,
+     "lon": 124.73671,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95367,
+     "lon": 124.73774,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95327,
+     "lon": 124.73602,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95137,
+     "lon": 124.73534,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95056,
+     "lon": 124.72984,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95205,
+     "lon": 124.72933,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95232,
+     "lon": 124.72675,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95097,
+     "lon": 124.72229,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.94474,
+     "lon": 124.71628,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.94163,
+     "lon": 124.71096,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.93079,
+     "lon": 124.70478,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92714,
+     "lon": 124.70032,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92484,
+     "lon": 124.69929,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91928,
+     "lon": 124.70049,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91617,
+     "lon": 124.69637,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91644,
+     "lon": 124.69208,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91319,
+     "lon": 124.69053,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91319,
+     "lon": 124.68899,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91495,
+     "lon": 124.68761,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91752,
+     "lon": 124.68727,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91779,
+     "lon": 124.68384,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92023,
+     "lon": 124.68332,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92199,
+     "lon": 124.67989,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92226,
+     "lon": 124.67543,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91996,
+     "lon": 124.67371,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.91956,
+     "lon": 124.67045,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9224,
+     "lon": 124.66564,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92037,
+     "lon": 124.65551,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92362,
+     "lon": 124.65517,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9224,
+     "lon": 124.6483,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92308,
+     "lon": 124.63663,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92849,
+     "lon": 124.63423,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.92958,
+     "lon": 124.63251,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.93932,
+     "lon": 124.62891,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.94027,
+     "lon": 124.62719,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95381,
+     "lon": 124.62496,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95828,
+     "lon": 124.61895,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.95949,
+     "lon": 124.6126,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96112,
+     "lon": 124.61088,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97018,
+     "lon": 124.60968,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97424,
+     "lon": 124.61397,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97912,
+     "lon": 124.61603,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97844,
+     "lon": 124.61895,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97546,
+     "lon": 124.61878,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97627,
+     "lon": 124.62032,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97817,
+     "lon": 124.62015,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97817,
+     "lon": 124.6229,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9756,
+     "lon": 124.62547,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97479,
+     "lon": 124.63028,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97249,
+     "lon": 124.632,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.96937,
+     "lon": 124.64109,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97086,
+     "lon": 124.64556,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9733,
+     "lon": 124.64573,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9737,
+     "lon": 124.65002,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97546,
+     "lon": 124.65071,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97546,
+     "lon": 124.6526,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97397,
+     "lon": 124.65448,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97411,
+     "lon": 124.65689,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97506,
+     "lon": 124.65912,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97736,
+     "lon": 124.65946,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.9783,
+     "lon": 124.66822,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98006,
+     "lon": 124.6701,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98196,
+     "lon": 124.6701,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98223,
+     "lon": 124.6756,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.97993,
+     "lon": 124.67714,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98047,
+     "lon": 124.68092,
+     "alt_m": 0.0
+    },
+    {
+     "lat": 37.98453,
+     "lon": 124.68281,
+     "alt_m": 0.0
+    }
+   ]
+  }
+ ],
+ "seed": 7,
+ "tick_ms": 200,
+ "speed": 1.0
+}
