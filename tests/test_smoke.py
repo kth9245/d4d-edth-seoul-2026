@@ -16,7 +16,7 @@ def run(*args: str) -> subprocess.CompletedProcess:
 
 def test_smoke_runs_the_integration_1_slice_on_the_demo_scenario():
     # docs/research/09 section 4: target appears -> report card -> one decision switches the choice's
-    # vehicles to their new plays, every resulting command passes safety, operator_actions = 1.
+    # vehicles to their new roles, every resulting command passes safety, operator_actions = 1.
     r = run()
     assert r.returncode == 0, r.stderr
     assert "smoke OK" in r.stdout

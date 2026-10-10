@@ -11,7 +11,7 @@ import pytest
 
 from contracts.models import Decision, DirectControl, GeoPoint, Injection, TickInputs
 from modules.gateway.engine import init_engine, tick
-from modules.play import check_operation, load_play
+from modules.role import check_operation, load_role
 from modules.sim import load_scenario_json
 from shared.geo import dist_m
 from shared.land import inside, to_sea
@@ -37,7 +37,7 @@ def _inputs(es, t: int, n: dict) -> TickInputs:
     if t - START == 23 * MIN + 20_000:
         sw = next(s for s in SC.operation.switches if s.id == "track_fast")
         inj.append(Injection(id="inj-1", t_ms=t, label=sw.label, switch_id=sw.id,
-                             play_by_vehicle=sw.play_by_vehicle))  # fmt: skip
+                             role_by_vehicle=sw.role_by_vehicle))  # fmt: skip
     if t - START == 24 * MIN:
         inj += [
             i.model_copy(update={"status": "approved"}) for i in es.injections if i.id == "inj-1"
@@ -118,9 +118,9 @@ def test_strike_ends_in_mission_success(run):
     assert any(r.kind == "target_neutralized" and r.target_id == "fast1" for r in es.reports)
 
 
-def test_operation_passes_play_checks_including_reserve_return_battery():
-    plays, specs = {p.id: p for p in SC.plays}, {v.id: v for v in SC.vehicles}
-    assert check_operation(SC.operation, plays, specs).ok
+def test_operation_passes_role_checks_including_reserve_return_battery():
+    roles, specs = {p.id: p for p in SC.roles}, {v.id: v for v in SC.vehicles}
+    assert check_operation(SC.operation, roles, specs).ok
 
 
 # Part1-19 (spec section 5 and 10.1): the structure; the numbers are tuned in Part2-19.
@@ -142,37 +142,37 @@ def test_fast1_appears_from_boat1_and_moves():
             boat = next(t for t in es.targets if t.id == "boat1")
             at = fast.pos
             assert (fast.pos.lat, fast.pos.lon) == pytest.approx((boat.pos.lat, boat.pos.lon))
-    assert fast.play_id == "enemy_fast1"
+    assert fast.role_id == "enemy_fast1"
     assert dist_m(at, fast.pos) > 1000
 
 
 def test_track_fast_switch_sends_d2_and_usv():
     sw = next(s for s in SC.operation.switches if s.id == "track_fast")
-    assert (sw.label, sw.play_by_vehicle) == (
+    assert (sw.label, sw.role_by_vehicle) == (
         "고속 보트 추적",
         {"d2": "track_fast", "usv": "track_fast_sea"},
     )
 
 
-def test_track_plays_ask_strike_approval_with_three_choices():
-    plays = {p.id: p for p in SC.plays}
+def test_track_roles_ask_strike_approval_with_three_choices():
+    roles = {p.id: p for p in SC.roles}
     for pid, mine in (("track_fast", "strike_d2"), ("track_fast_sea", "strike_usv")):
-        ask = next(s for s in plays[pid].steps if s.id == "ask")
+        ask = next(s for s in roles[pid].steps if s.id == "ask")
         assert ask.report.text == "타격 승인 요청"
         assert [c.id for c in ask.report.choices] == [mine, "strike_both"]
-    assert plays["strike"].steps[0].do.kind == "strike_target"
+    assert roles["strike"].steps[0].do.kind == "strike_target"
 
 
-def test_demo_play_files_match_scenario_plays():
-    for p in SC.plays:
-        assert load_play(f"demo/plays/{p.id}.json") == p, p.id
+def test_demo_role_files_match_scenario_roles():
+    for p in SC.roles:
+        assert load_role(f"demo/roles/{p.id}.json") == p, p.id
 
 
 def test_ugv_waits_near_the_shore_where_boat1_stops():
-    plays = {p.id: p for p in SC.plays}
-    ugv_at = GeoPoint(**plays["landing"].steps[0].do.params["target"])
+    roles = {p.id: p for p in SC.roles}
+    ugv_at = GeoPoint(**roles["landing"].steps[0].do.params["target"])
     # boat1's target may be on land; sim stops it at the sea point off that coast (decision 0034)
-    boat_at = to_sea(GeoPoint(**plays["enemy_boat1"].steps[0].do.params["target"]), SC.land)
+    boat_at = to_sea(GeoPoint(**roles["enemy_boat1"].steps[0].do.params["target"]), SC.land)
     assert inside(ugv_at, SC.land) and dist_m(ugv_at, boat_at) < 500
 
 

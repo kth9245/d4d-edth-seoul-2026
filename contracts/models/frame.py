@@ -8,7 +8,7 @@ from .command import Block, Command, PassedCommand
 from .enums import RunStatus
 from .events import Assignment, Decision, DirectControl, Injection, Report, Target
 from .ontology import Ontology
-from .play import Play
+from .role import Role
 from .world import EnemySpec, Operation, Polygon, RouteDef, VehicleSpec, VehicleState, WatchPoint
 
 
@@ -53,7 +53,7 @@ class Scenario(BaseModel):
     id: str
     operation: Operation
     vehicles: list[VehicleSpec]
-    plays: list[Play]
+    roles: list[Role]
     events: list[ScenarioEvent] = []
     enemies: list[EnemySpec] = []  # decision 0032
     watch_points: list[WatchPoint] = []  # decision 0039: places to guard
@@ -81,4 +81,4 @@ class TickOutcome(BaseModel):  # what one tick produced; input of runtime.update
     assignments: list[Assignment] = []
     states: list[VehicleState] = []
     targets: list[Target] = []
-    plays: dict[str, Play] = {}
+    roles: dict[str, Role] = {}

@@ -1,7 +1,7 @@
 {
  "id": "all_home",
  "label": "전 기체 귀환",
- "play_by_vehicle": {
+ "role_by_vehicle": {
   "d1": "go_home",
   "d2": "go_home",
   "d3": "go_home",

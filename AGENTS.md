@@ -4,7 +4,7 @@ KDTH 2026 해커톤 팀 저장소. 24시간 안에 **로컬에서 작동하는 �
 
 ## 먼저 읽을 것
 1. `decisions/INDEX.md` — 사람이 확정한 결정. 반드시 따른다. 다르게 해야 한다고 판단되면 멈추고 사람에게 묻는다.
-2. `contracts/API.md` — 개념(플레이 = 기체 하나, 오퍼레이션 = 기체들의 플레이 묶음), 함수 서명, 틱 순서, REST·WS. 데이터 형식은 `contracts/models/`. 09 문서와 다르면 이쪽이 맞다.
+2. `contracts/API.md` — 개념(Role = 기체 하나, 오퍼레이션 = 기체들의 Role 묶음), 함수 서명, 틱 순서, REST·WS. 데이터 형식은 `contracts/models/`. 09 문서와 다르면 이쪽이 맞다.
 3. `docs/research/09-rolecall-implementation-foundation.md` — 4절 통합 기준과 **6절 사람별 할 일**. 6절 머리의 "통합 1 배정" 표와 "병렬 묶음" 표에서 자기 줄을 찾는다(같은 묶음은 동시에 해도 됨).
 4. 작업할 모듈의 `modules/<m>/AGENTS.md`와 `SPEC.md`. `knowledge/INDEX.md`는 조사가 필요할 때만.
 
@@ -26,7 +26,7 @@ KDTH 2026 해커톤 팀 저장소. 24시간 안에 **로컬에서 작동하는 �
 |---|---|
 | contracts, gateway REST/WS, cop-ui 전부, demo, mavlink(결정 0025), infra(scripts·tools·shared·docs) | 리드 kth9245 |
 | sim, sensing, gateway `engine.py` 틱 루프 | 최동호 (파트 2A) |
-| safety, runtime, play | 황승주 (파트 2B) |
+| safety, runtime, role | 황승주 (파트 2B) |
 | tracking, assess, respond | 휴면. 손대지 않음 |
 
 남의 영역을 고치면 담당자에게 알린다.

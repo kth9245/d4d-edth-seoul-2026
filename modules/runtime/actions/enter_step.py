@@ -8,9 +8,9 @@ SPEC: modules/runtime/SPEC.md#RT-08
 from contracts.models import (
     Choice,
     Command,
-    Play,
     Provenance,
     Report,
+    Role,
     Step,
     Target,
     VehicleSpec,
@@ -45,7 +45,7 @@ def _basis(st: VehicleState, targets: list[Target], tid: str | None) -> str:
 
 
 def enter_step(
-    st: VehicleState, spec: VehicleSpec, play: Play, step: Step, targets: list[Target], t_ms: int
+    st: VehicleState, spec: VehicleSpec, role: Role, step: Step, targets: list[Target], t_ms: int
 ) -> tuple[VehicleState, Command | None, Report | None]:
     upd: dict = {"entered_step": True, "waypoint_idx": 0}
     params, rid = dict(step.do.params), f"rep-{st.id}-{t_ms}"
@@ -62,7 +62,7 @@ def enter_step(
             tg = next((t for t in targets if t.id == tid), None)
             params |= {"target": tg.pos.model_dump()} if tg else {}
     kind, params = route_command(step.do, spec.domain, st.pos, params)
-    prov = Provenance(source="play_step", play_id=play.id, step_id=step.id, issued_ms=t_ms,
+    prov = Provenance(source="role_step", role_id=role.id, step_id=step.id, issued_ms=t_ms,
                       decision_id=st.decision_id)  # fmt: skip
     cmd = None if kind is None else Command(id=f"cmd-{st.id}-{t_ms}", vehicle_id=st.id,
                                             kind=kind, params=params, provenance=prov)  # fmt: skip

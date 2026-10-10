@@ -70,12 +70,12 @@
           "title": "Label",
           "type": "string"
         },
-        "play_by_vehicle": {
+        "role_by_vehicle": {
           "additionalProperties": {
             "type": "string"
           },
           "default": {},
-          "title": "Play By Vehicle",
+          "title": "Role By Vehicle",
           "type": "object"
         },
         "target_by_vehicle": {
@@ -230,8 +230,8 @@
           "default": null,
           "title": "From Enemy"
         },
-        "play_id": {
-          "title": "Play Id",
+        "role_id": {
+          "title": "Role Id",
           "type": "string"
         },
         "emit_start_offset_ms": {
@@ -252,7 +252,7 @@
         "kind",
         "speed_mps",
         "appear_offset_ms",
-        "play_id"
+        "role_id"
       ],
       "title": "EnemySpec",
       "type": "object"
@@ -396,12 +396,12 @@
           "title": "Rotation",
           "type": "array"
         },
-        "rotation_plays": {
+        "rotation_roles": {
           "default": [],
           "items": {
             "type": "string"
           },
-          "title": "Rotation Plays",
+          "title": "Rotation Roles",
           "type": "array"
         },
         "rotation_pools": {
@@ -426,7 +426,50 @@
       "title": "Operation",
       "type": "object"
     },
-    "Play": {
+    "Polygon": {
+      "properties": {
+        "points": {
+          "items": {
+            "$ref": "#/$defs/GeoPoint"
+          },
+          "minItems": 3,
+          "title": "Points",
+          "type": "array"
+        }
+      },
+      "required": [
+        "points"
+      ],
+      "title": "Polygon",
+      "type": "object"
+    },
+    "ReportSpec": {
+      "properties": {
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "choices": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Choice"
+          },
+          "title": "Choices",
+          "type": "array"
+        },
+        "auto_choices": {
+          "default": false,
+          "title": "Auto Choices",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "title": "ReportSpec",
+      "type": "object"
+    },
+    "Role": {
       "properties": {
         "id": {
           "title": "Id",
@@ -490,50 +533,7 @@
         "steps",
         "entry"
       ],
-      "title": "Play",
-      "type": "object"
-    },
-    "Polygon": {
-      "properties": {
-        "points": {
-          "items": {
-            "$ref": "#/$defs/GeoPoint"
-          },
-          "minItems": 3,
-          "title": "Points",
-          "type": "array"
-        }
-      },
-      "required": [
-        "points"
-      ],
-      "title": "Polygon",
-      "type": "object"
-    },
-    "ReportSpec": {
-      "properties": {
-        "text": {
-          "title": "Text",
-          "type": "string"
-        },
-        "choices": {
-          "default": [],
-          "items": {
-            "$ref": "#/$defs/Choice"
-          },
-          "title": "Choices",
-          "type": "array"
-        },
-        "auto_choices": {
-          "default": false,
-          "title": "Auto Choices",
-          "type": "boolean"
-        }
-      },
-      "required": [
-        "text"
-      ],
-      "title": "ReportSpec",
+      "title": "Role",
       "type": "object"
     },
     "RouteDef": {
@@ -676,18 +676,18 @@
           "title": "Label",
           "type": "string"
         },
-        "play_by_vehicle": {
+        "role_by_vehicle": {
           "additionalProperties": {
             "type": "string"
           },
-          "title": "Play By Vehicle",
+          "title": "Role By Vehicle",
           "type": "object"
         }
       },
       "required": [
         "id",
         "label",
-        "play_by_vehicle"
+        "role_by_vehicle"
       ],
       "title": "Switch",
       "type": "object"
@@ -862,11 +862,11 @@
       "title": "Vehicles",
       "type": "array"
     },
-    "plays": {
+    "roles": {
       "items": {
-        "$ref": "#/$defs/Play"
+        "$ref": "#/$defs/Role"
       },
-      "title": "Plays",
+      "title": "Roles",
       "type": "array"
     },
     "events": {
@@ -940,7 +940,7 @@
     "id",
     "operation",
     "vehicles",
-    "plays"
+    "roles"
   ],
   "title": "Scenario",
   "type": "object"

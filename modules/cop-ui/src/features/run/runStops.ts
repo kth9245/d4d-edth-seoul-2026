@@ -8,7 +8,7 @@ const MIN = 60_000;
 // coast patrol (Part2-33, Part1-30): d1's coast card with the fleet choices s1 17:00, d1 goes home 19:00, d2 sent
 // past the NLL s5 20:00 (the battery block at 20:30 was checked at that battery), fast1 appears 23:00 and d3's card
 // on it comes at 23:04. No stop in the strike (s4 switch, s7 approval cards, s8 neutralized): they follow the
-// operator's clicks, and a jump runs with no operator input, so the strike phase is played (Part1-13.1).
+// operator's clicks, and a jump runs with no operator input, so the strike phase runs (Part1-13.1).
 export const RUN_STOPS: RunStop[] = [
   { offsetMs: 17 * MIN + 5_000, label: "보고 카드" },
   { offsetMs: 19 * MIN + 5_000, label: "드론1 귀환" },

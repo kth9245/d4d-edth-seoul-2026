@@ -1,7 +1,7 @@
 """Part1-5: AI draft cache for the demo sentences (decision 0028). Needs GROK_KEY in .env and internet.
 
 For each sentence in demo/draft_sentences.json: build_draft_prompt with the demo operation, one Grok call,
-the reply's "play" saved as demo/plays/cache/<sha256(prompt)>.json (origin=ai_draft, approved=False).
+the reply's "role" saved as demo/roles/cache/<sha256(prompt)>.json (origin=ai_draft, approved=False).
 The demo only reads these files (policy 1); this script is not on the demo path.
 tests/test_draft_cache.py checks the files and each sentence's expected check result.
 
@@ -19,13 +19,13 @@ import httpx
 ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT)]
 
-from contracts.models import Play, Scenario  # noqa: E402
-from modules.play.actions.build_draft_prompt import build_draft_prompt  # noqa: E402
+from contracts.models import Role, Scenario  # noqa: E402
+from modules.role.actions.build_draft_prompt import build_draft_prompt  # noqa: E402
 from shared.log import get_logger, setup_logging  # noqa: E402
 
 URL = "https://api.x.ai/v1/chat/completions"
 MODEL = "grok-4.7"  # reasoning model: 40-280 s per call on 10/10
-CACHE = ROOT / "demo" / "plays" / "cache"
+CACHE = ROOT / "demo" / "roles" / "cache"
 SCENARIO = ROOT / "demo" / "scenarios" / "baengnyeong_night.json"
 SENTENCES = ROOT / "demo" / "draft_sentences.json"
 
@@ -67,9 +67,9 @@ def main(ids: list[str]) -> None:
         t0 = time.monotonic()
         reply = _ask(prompt, key)
         fixed = {"origin": "ai_draft", "approved": False, "template": False}
-        play = Play.model_validate({**reply["play"], **fixed})
+        role = Role.model_validate({**reply["role"], **fixed})
         path = CACHE / f"{hashlib.sha256(prompt.encode('utf-8')).hexdigest()}.json"
-        body = json.dumps(play.model_dump(mode="json"), ensure_ascii=False, indent=1)
+        body = json.dumps(role.model_dump(mode="json"), ensure_ascii=False, indent=1)
         path.write_text(body + "\n", encoding="utf-8")
         secs = time.monotonic() - t0
         log.info(

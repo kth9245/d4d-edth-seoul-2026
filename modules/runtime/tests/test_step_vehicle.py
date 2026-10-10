@@ -3,7 +3,7 @@ from contracts.models import (
     Condition,
     Exit,
     GeoPoint,
-    Play,
+    Role,
     Step,
     Target,
     VehicleSpec,
@@ -20,7 +20,7 @@ def ex(kind: str, go: str, **params) -> Exit:
     return Exit(cond=Condition(kind=kind, params=params), go_step=go)
 
 
-PLAY = Play(id="p", name="p", domains=["air"], entry="patrol", approved=True, steps=[
+ROLE = Role(id="p", name="p", domains=["air"], entry="patrol", approved=True, steps=[
     Step(id="patrol", name="순찰", do=Action(kind="hold"),
          on=[ex("battery_below", "home", pct=30), ex("target_found", "watch"),
              ex("arrived", "home")]),
@@ -31,7 +31,7 @@ PLAY = Play(id="p", name="p", domains=["air"], entry="patrol", approved=True, st
 
 def vs(step: str | None = "patrol", entered: bool = True, **kw) -> VehicleState:
     base = dict(id="d1", t_ms=0, pos=HOME, heading_deg=0, battery_pct=90, status="active",
-                play_id="p", step_id=step, entered_step=entered)  # fmt: skip
+                role_id="p", step_id=step, entered_step=entered)  # fmt: skip
     return VehicleState(**{**base, **kw})
 
 
@@ -41,7 +41,7 @@ def boat(seen_by: list[str], accum: int = 450_000) -> Target:
 
 
 def step(st: VehicleState, targets: list[Target] = ()) -> tuple:
-    return step_vehicle(st, SPEC, PLAY, list(targets), 3000)
+    return step_vehicle(st, SPEC, ROLE, list(targets), 3000)
 
 
 def test_new_step_is_entered_once_with_its_command():
@@ -75,7 +75,7 @@ def test_target_found_while_patrolling_wants_a_boat_nobody_reported():  # decisi
         assert step(st, [reported, other])[0].step_id == "watch"
 
 
-TRACK = Play(id="t", name="t", domains=["air"], entry="track", approved=True, steps=[
+TRACK = Role(id="t", name="t", domains=["air"], entry="track", approved=True, steps=[
     Step(id="track", name="추적", do=Action(kind="watch_target", params={"target": "operator"}),
          on=[ex("target_found", "ask")]),
     Step(id="ask", name="승인", do=Action(kind="hold")),
@@ -85,7 +85,7 @@ TRACK = Play(id="t", name="t", domains=["air"], entry="track", approved=True, st
 def test_target_found_while_tracking_waits_for_the_vehicle_s_own_target():  # tracking (0033)
     reported = boat(["d1"]).model_copy(update={"reported_by": "d2"})
     other = boat(["d1"]).model_copy(update={"id": "boat2"})
-    st = vs(step="track", play_id="t", target_id="boat1")
+    st = vs(step="track", role_id="t", target_id="boat1")
     assert step_vehicle(st, SPEC, TRACK, [reported], 3000)[0].step_id == "ask"
     assert step_vehicle(st, SPEC, TRACK, [other], 3000)[0].step_id == "track"
 
@@ -99,8 +99,8 @@ def test_waits_while_a_decision_is_pending_or_not_ready_or_active():
 
 
 def test_direct_control_arrival_resumes_the_saved_step():
-    st, cmd, rep = step(vs(step=None, waypoint_idx=-1, resume_play_id="p", resume_step_id="patrol"))
-    assert (st.step_id, st.entered_step, st.resume_step_id, st.resume_play_id) == (
+    st, cmd, rep = step(vs(step=None, waypoint_idx=-1, resume_role_id="p", resume_step_id="patrol"))
+    assert (st.step_id, st.entered_step, st.resume_step_id, st.resume_role_id) == (
         "patrol", False, None, None)  # fmt: skip
     assert cmd is rep is None
 
@@ -110,7 +110,7 @@ def test_no_exit_true_keeps_the_step():
     assert step(st) == (st, None, None)
 
 
-TIMED = Play(id="p", name="p", domains=["air"], entry="patrol", approved=True, steps=[
+TIMED = Role(id="p", name="p", domains=["air"], entry="patrol", approved=True, steps=[
     Step(id="patrol", name="순찰", do=Action(kind="hold"), on=[ex("at_time", "home", offset_ms=60_000)]),
     Step(id="home", name="귀환", do=Action(kind="return_home")),
 ])  # fmt: skip

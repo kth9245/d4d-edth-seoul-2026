@@ -6,8 +6,8 @@ from contracts.models import (
     EnemySpec,
     Exit,
     GeoPoint,
-    Play,
     Polygon,
+    Role,
     Step,
     Target,
 )
@@ -25,24 +25,24 @@ def _at(east_m: float = 0, north_m: float = 0) -> GeoPoint:
 
 
 DEST = _at(east_m=1000)
-PLAY = Play(id="enemy_fast1", name="f", domains=["sea"], entry="run", approved=True, steps=[
+ROLE = Role(id="enemy_fast1", name="f", domains=["sea"], entry="run", approved=True, steps=[
     Step(id="run", name="run", do=Action(kind="move_to", params={"target": DEST.model_dump()}),
          on=[Exit(cond=Condition(kind="arrived"), go_step="wait")]),
     Step(id="wait", name="wait", do=Action(kind="hold"),
          on=[Exit(cond=Condition(kind="time_elapsed", params={"sec": 60}), go_step="run")]),
 ])  # fmt: skip
 ENEMIES = [EnemySpec(id="fast1", kind="fast_boat", speed_mps=5, appear_offset_ms=0,
-                     pos=HOME, play_id="enemy_fast1")]  # fmt: skip
+                     pos=HOME, role_id="enemy_fast1")]  # fmt: skip
 
 
 def _fast1(pos: GeoPoint = HOME, step: str = "run", **kw) -> Target:
     return Target(id="fast1", kind="fast_boat", pos=pos, vel_east_mps=0, vel_north_mps=0,
-                  first_seen_ms=0, last_seen_ms=0, play_id="enemy_fast1", step_id=step,
+                  first_seen_ms=0, last_seen_ms=0, role_id="enemy_fast1", step_id=step,
                   step_since_ms=T - 200, **kw)  # fmt: skip
 
 
 def steer(tg: Target, t_ms: int = T) -> Target:
-    (out,) = steer_enemies(ENEMIES, {PLAY.id: PLAY}, [tg], t_ms, 200)
+    (out,) = steer_enemies(ENEMIES, {ROLE.id: ROLE}, [tg], t_ms, 200)
     return out
 
 
@@ -74,22 +74,22 @@ def test_neutralized_enemy_stays_still():
     assert steer(struck) == struck
 
 
-def test_targets_without_a_play_are_left_alone():
+def test_targets_without_a_role_are_left_alone():
     plain = Target(id="boat9", kind="boat", pos=HOME, vel_east_mps=0, vel_north_mps=-1,
                    first_seen_ms=0, last_seen_ms=0)  # fmt: skip
-    assert steer_enemies(ENEMIES, {PLAY.id: PLAY}, [plain], T, 200) == [plain]
+    assert steer_enemies(ENEMIES, {ROLE.id: ROLE}, [plain], T, 200) == [plain]
 
 
 def test_boats_steer_round_the_island_and_arrive():
     island = [Polygon(points=[_at(-500, -500), _at(500, -500), _at(500, 500), _at(-500, 500)])]
     goal = _at(1000, -200)
-    play = Play(id="enemy_run", name="r", domains=["sea"], entry="run", approved=True, steps=[
+    role = Role(id="enemy_run", name="r", domains=["sea"], entry="run", approved=True, steps=[
         Step(id="run", name="run", do=Action(kind="move_to", params={"target": goal.model_dump()}))])  # fmt: skip
     enemies = [EnemySpec(id="fast1", kind="fast_boat", speed_mps=10, appear_offset_ms=0,
-                         pos=_at(-1000, -200), play_id="enemy_run")]  # fmt: skip
-    tg, t = _fast1(_at(-1000, -200)).model_copy(update={"play_id": "enemy_run"}), T
+                         pos=_at(-1000, -200), role_id="enemy_run")]  # fmt: skip
+    tg, t = _fast1(_at(-1000, -200)).model_copy(update={"role_id": "enemy_run"}), T
     for _ in range(400):
-        (tg,) = steer_enemies(enemies, {"enemy_run": play}, [tg], t, 1000, island)
+        (tg,) = steer_enemies(enemies, {"enemy_run": role}, [tg], t, 1000, island)
         if tg.waypoint_idx == -1:
             break
         lat, lon = offset_latlon(tg.pos.lat, tg.pos.lon, tg.vel_east_mps, tg.vel_north_mps)  # 1 s

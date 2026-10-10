@@ -1,10 +1,10 @@
-"""Space, vehicles and the operation (the layer that groups the vehicles' plays)."""
+"""Space, vehicles and the operation (the layer that groups the vehicles' roles)."""
 
 from pydantic import BaseModel, Field
 
 from .command import PassedCommand
 from .enums import ActionKind, Domain, EmergencyKind, TargetKind, VehicleStatus
-from .play import Switch
+from .role import Switch
 
 
 class GeoPoint(BaseModel):
@@ -32,14 +32,14 @@ class VehicleSpec(BaseModel):
     rf_range_m: float = 0  # RF receive range (decision 0039); 0 = cannot receive
 
 
-class EnemySpec(BaseModel):  # decision 0032: an enemy follows its own play, no safety checks
+class EnemySpec(BaseModel):  # decision 0032: an enemy follows its own role, no safety checks
     id: str
     kind: TargetKind
     speed_mps: float
     appear_offset_ms: int  # ms after operation.started_ms
     pos: GeoPoint | None = None  # where it appears, or
     from_enemy: str | None = None  # at that enemy's current position
-    play_id: str
+    role_id: str
     emit_start_offset_ms: int | None = (
         None  # emits from this long after it appears; None = silent (0039)
     )
@@ -71,16 +71,16 @@ class VehicleState(BaseModel):
     heading_deg: float
     battery_pct: float
     status: VehicleStatus
-    play_id: str | None = None
+    role_id: str | None = None
     step_id: str | None = None
     entered_step: bool = False  # False: emit this step's command/card once on the next tick
     waypoint_idx: int = 0  # -1 = arrived at the current command's destination
     active: PassedCommand | None = None  # sim keeps executing this between commands
     pending_report_id: str | None = None  # waiting for a Decision; no transitions meanwhile
     target_id: str | None = None  # target resolved for this step (nearest / operator / fixed)
-    decision_id: str | None = None  # operator decision that moved it into this play (decision 0033)
+    decision_id: str | None = None  # operator decision that moved it into this role (decision 0033)
     emergency: EmergencyKind | None = None
-    resume_play_id: str | None = None  # where to return after direct control
+    resume_role_id: str | None = None  # where to return after direct control
     resume_step_id: str | None = None
 
 
@@ -92,11 +92,11 @@ class Operation(BaseModel):
     zone: Polygon  # safety rule 2; not editable from the live board
     vehicle_ids: list[str]
     started_ms: int | None = None  # epoch ms; required when a scenario is loaded (decision 0018)
-    assign: dict[str, str] = {}  # vehicle id -> play id at start
+    assign: dict[str, str] = {}  # vehicle id -> role id at start
     reserve: dict[str, list[str]] = {}  # vehicle id -> reserves in order (decision 0016)
     switches: list[Switch] = []
     rotation: list[str] = []  # vehicles that relieve each other on patrol (decision 0037)
-    rotation_plays: list[str] = []  # patrol plays the rotation keeps covered
+    rotation_roles: list[str] = []  # patrol roles the rotation keeps covered
     rotation_pools: dict[
         str, list[str]
-    ] = {}  # patrol play -> the drones that relieve each other on it
+    ] = {}  # patrol role -> the drones that relieve each other on it

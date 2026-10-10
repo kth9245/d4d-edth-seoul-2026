@@ -97,11 +97,11 @@
           "title": "Label",
           "type": "string"
         },
-        "play_by_vehicle": {
+        "role_by_vehicle": {
           "additionalProperties": {
             "type": "string"
           },
-          "title": "Play By Vehicle",
+          "title": "Role By Vehicle",
           "type": "object"
         },
         "switch_id": {
@@ -139,7 +139,7 @@
         "id",
         "t_ms",
         "label",
-        "play_by_vehicle"
+        "role_by_vehicle"
       ],
       "title": "Injection",
       "type": "object"

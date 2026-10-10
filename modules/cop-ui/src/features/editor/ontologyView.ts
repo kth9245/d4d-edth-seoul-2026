@@ -1,4 +1,4 @@
-import type { CapabilityReason, Ontology, OntologyView, Operation, Play, VehicleSpec } from "../../contracts.gen";
+import type { CapabilityReason, Ontology, OntologyView, Operation, Role, VehicleSpec } from "../../contracts.gen";
 
 export interface KindRow { id: string; label: string; depth: number; adds: string; vehicles: string[] }
 
@@ -26,30 +26,30 @@ export function reasonLine(r: CapabilityReason, onto: Ontology): string {
   return `${path} (${group ? `${group.label} 묶음` : r.via})`;
 }
 
-// Actions of the plays a vehicle may be given: its start play, switch buttons and report choices naming it.
-function actionsFor(vid: string, op: Operation, plays: Play[]): string[] {
+// Actions of the roles a vehicle may be given: its start role, switch buttons and report choices naming it.
+function actionsFor(vid: string, op: Operation, roles: Role[]): string[] {
   const ids = new Set<string>();
   if (op.assign?.[vid]) ids.add(op.assign[vid]);
-  for (const sw of op.switches ?? []) if (sw.play_by_vehicle[vid]) ids.add(sw.play_by_vehicle[vid]);
-  for (const p of plays) for (const s of p.steps) for (const c of s.report?.choices ?? []) {
-    if (c.play_by_vehicle?.[vid]) ids.add(c.play_by_vehicle[vid]);
+  for (const sw of op.switches ?? []) if (sw.role_by_vehicle[vid]) ids.add(sw.role_by_vehicle[vid]);
+  for (const p of roles) for (const s of p.steps) for (const c of s.report?.choices ?? []) {
+    if (c.role_by_vehicle?.[vid]) ids.add(c.role_by_vehicle[vid]);
   }
-  return [...new Set(plays.filter((p) => ids.has(p.id)).flatMap((p) => p.steps.map((s) => s.do.kind as string)))];
+  return [...new Set(roles.filter((p) => ids.has(p.id)).flatMap((p) => p.steps.map((s) => s.do.kind as string)))];
 }
 
 // One line per reserve; shown only, the engine's reserve choice is unchanged (decision 0038).
-export function reserveLines(op: Operation, plays: Play[], view: OntologyView, vehicles: VehicleSpec[]): string[] {
+export function reserveLines(op: Operation, roles: Role[], view: OntologyView, vehicles: VehicleSpec[]): string[] {
   const kindOf = new Map(vehicles.map((v) => [v.id, v.kind ?? null]));
   const kindLabel = new Map(view.ontology.kinds.map((k) => [k.id, k.label]));
   const can = new Map(view.vehicles.map((v) => [v.vehicle_id, new Set<string>(v.reasons.filter((r) => r.allowed).map((r) => r.action))]));
   return Object.entries(op.reserve ?? {}).flatMap(([vid, reserves]) => {
-    const need = actionsFor(vid, op, plays);
+    const need = actionsFor(vid, op, roles);
     return reserves.map((r) => {
       const missing = need.filter((a) => !can.get(r)?.has(a));
-      if (missing.length) return `${r}는 ${vid}의 예비. ${vid}의 플레이가 쓰는 행동 중 ${missing.join("·")}를 ${r}가 못 함`;
+      if (missing.length) return `${r}는 ${vid}의 예비. ${vid}의 Role이 쓰는 행동 중 ${missing.join("·")}를 ${r}가 못 함`;
       const kr = kindOf.get(r);
       const kind = kr && kr === kindOf.get(vid) ? `같은 ${kindLabel.get(kr)}` : `${r}: ${kindLabel.get(kr ?? "") ?? "종류 없음"}`;
-      return `${r}는 ${vid}의 예비. ${vid}의 플레이가 쓰는 행동 ${need.length}개를 ${r}가 모두 할 수 있음(${kind})`;
+      return `${r}는 ${vid}의 예비. ${vid}의 Role이 쓰는 행동 ${need.length}개를 ${r}가 모두 할 수 있음(${kind})`;
     });
   });
 }

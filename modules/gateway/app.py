@@ -17,12 +17,12 @@ from types import SimpleNamespace
 from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 
-from contracts.models import DecisionIn, DirectIn, DraftIn, Operation, Play, SwitchIn
+from contracts.models import DecisionIn, DirectIn, DraftIn, Operation, Role, SwitchIn
 from modules import sim
 from modules.gateway.actions.build_object_graph import build_object_graph
 from modules.gateway.live import Live
 from modules.ontology import ontology_view
-from modules.play import draft_play
+from modules.role import draft_role
 from shared.log import get_logger, setup_logging
 
 log = get_logger("gateway")
@@ -93,41 +93,41 @@ def create_app(
     async def health() -> dict:
         return {"ok": True}
 
-    @app.get("/plays")
-    async def plays():
-        return live.scenario.plays
+    @app.get("/roles")
+    async def roles():
+        return live.scenario.roles
 
-    @app.post("/plays")
-    async def save_play(play: Play):
-        chk = live.save_play(play)  # saved and reset only when the check passes
-        log.info("POST /plays %s ok=%s issues=%d", play.id, chk.ok, len(chk.issues))
+    @app.post("/roles")
+    async def save_role(role: Role):
+        chk = live.save_role(role)  # saved and reset only when the check passes
+        log.info("POST /roles %s ok=%s issues=%d", role.id, chk.ok, len(chk.issues))
         return chk
 
-    @app.delete("/plays/{play_id}")
-    async def delete_play(play_id: str):  # decision 0050: from the running operation, reset
-        if all(p.id != play_id for p in live.scenario.plays):
-            raise HTTPException(404, f"no play {play_id}")
-        log.info("DELETE /plays/%s", play_id)
-        return live.delete_play(play_id)
+    @app.delete("/roles/{role_id}")
+    async def delete_role(role_id: str):  # decision 0050: from the running operation, reset
+        if all(p.id != role_id for p in live.scenario.roles):
+            raise HTTPException(404, f"no role {role_id}")
+        log.info("DELETE /roles/%s", role_id)
+        return live.delete_role(role_id)
 
-    @app.post("/plays/draft")
+    @app.post("/roles/draft")
     async def draft(body: DraftIn):
         # Cache first; a miss may call the LLM for minutes, so run it off the loop that streams /ws.
         t0 = time.monotonic()
-        play = await asyncio.to_thread(draft_play, body.text, live.scenario.operation)
+        role = await asyncio.to_thread(draft_role, body.text, live.scenario.operation)
         log.info(
-            "POST /plays/draft %r -> %s origin=%s %.1fs",
+            "POST /roles/draft %r -> %s origin=%s %.1fs",
             body.text[:40],
-            play.id,
-            play.origin,
+            role.id,
+            role.origin,
             time.monotonic() - t0,
         )
-        return play
+        return role
 
-    @app.post("/plays/check")
-    async def check_play(play: Play):
-        chk = live.check_play(play)
-        log.info("POST /plays/check %s ok=%s issues=%d", play.id, chk.ok, len(chk.issues))
+    @app.post("/roles/check")
+    async def check_role(role: Role):
+        chk = live.check_role(role)
+        log.info("POST /roles/check %s ok=%s issues=%d", role.id, chk.ok, len(chk.issues))
         return chk
 
     @app.get("/operation")
@@ -151,7 +151,7 @@ def create_app(
         return live.scenario.routes
 
     @app.get("/ontology")
-    async def ontology():  # decision 0038: the same inference the play check uses
+    async def ontology():  # decision 0038: the same inference the role check uses
         if live.scenario.ontology is None:
             raise HTTPException(404, "이 시나리오에는 온톨로지가 없습니다")
         return ontology_view(live.scenario)

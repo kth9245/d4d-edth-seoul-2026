@@ -1,0 +1,323 @@
+{
+  "$defs": {
+    "Action": {
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/ActionKind"
+        },
+        "params": {
+          "additionalProperties": true,
+          "default": {},
+          "title": "Params",
+          "type": "object"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Action",
+      "type": "object"
+    },
+    "ActionKind": {
+      "enum": [
+        "move_to",
+        "patrol_route",
+        "search_area",
+        "return_home",
+        "watch_target",
+        "watch_point",
+        "approach_target",
+        "relay_comms",
+        "hold",
+        "strike_target"
+      ],
+      "title": "ActionKind",
+      "type": "string"
+    },
+    "Choice": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "role_by_vehicle": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "title": "Role By Vehicle",
+          "type": "object"
+        },
+        "target_by_vehicle": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "title": "Target By Vehicle",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "title": "Choice",
+      "type": "object"
+    },
+    "Condition": {
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/ConditionKind"
+        },
+        "params": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "default": {},
+          "title": "Params",
+          "type": "object"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Condition",
+      "type": "object"
+    },
+    "ConditionKind": {
+      "enum": [
+        "target_found",
+        "arrived",
+        "time_elapsed",
+        "battery_below",
+        "operator_choice",
+        "signal_received",
+        "at_time"
+      ],
+      "title": "ConditionKind",
+      "type": "string"
+    },
+    "Domain": {
+      "enum": [
+        "air",
+        "sea",
+        "ground"
+      ],
+      "title": "Domain",
+      "type": "string"
+    },
+    "EmergencyRules": {
+      "properties": {
+        "battery_low_pct": {
+          "default": 30,
+          "title": "Battery Low Pct",
+          "type": "number"
+        },
+        "link_lost_step": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Link Lost Step"
+        },
+        "battery_low_step": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Battery Low Step"
+        },
+        "operator_call_step": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operator Call Step"
+        }
+      },
+      "title": "EmergencyRules",
+      "type": "object"
+    },
+    "Exit": {
+      "properties": {
+        "cond": {
+          "$ref": "#/$defs/Condition"
+        },
+        "go_step": {
+          "title": "Go Step",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cond",
+        "go_step"
+      ],
+      "title": "Exit",
+      "type": "object"
+    },
+    "ReportSpec": {
+      "properties": {
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "choices": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Choice"
+          },
+          "title": "Choices",
+          "type": "array"
+        },
+        "auto_choices": {
+          "default": false,
+          "title": "Auto Choices",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "title": "ReportSpec",
+      "type": "object"
+    },
+    "Step": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "do": {
+          "$ref": "#/$defs/Action"
+        },
+        "on": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Exit"
+          },
+          "title": "On",
+          "type": "array"
+        },
+        "report": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ReportSpec"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ui": {
+          "additionalProperties": true,
+          "default": {},
+          "title": "Ui",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "do"
+      ],
+      "title": "Step",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "domains": {
+      "items": {
+        "$ref": "#/$defs/Domain"
+      },
+      "title": "Domains",
+      "type": "array"
+    },
+    "steps": {
+      "items": {
+        "$ref": "#/$defs/Step"
+      },
+      "title": "Steps",
+      "type": "array"
+    },
+    "entry": {
+      "title": "Entry",
+      "type": "string"
+    },
+    "emergency": {
+      "$ref": "#/$defs/EmergencyRules",
+      "default": {
+        "battery_low_pct": 30.0,
+        "link_lost_step": null,
+        "battery_low_step": null,
+        "operator_call_step": null
+      }
+    },
+    "origin": {
+      "default": "human",
+      "enum": [
+        "human",
+        "ai_draft"
+      ],
+      "title": "Origin",
+      "type": "string"
+    },
+    "approved": {
+      "default": false,
+      "title": "Approved",
+      "type": "boolean"
+    },
+    "template": {
+      "default": false,
+      "title": "Template",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "domains",
+    "steps",
+    "entry"
+  ],
+  "title": "Role",
+  "type": "object"
+}

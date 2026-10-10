@@ -12,12 +12,12 @@
       "default": null,
       "title": "Switch Id"
     },
-    "play_by_vehicle": {
+    "role_by_vehicle": {
       "additionalProperties": {
         "type": "string"
       },
       "default": {},
-      "title": "Play By Vehicle",
+      "title": "Role By Vehicle",
       "type": "object"
     },
     "target_by_vehicle": {

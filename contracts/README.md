@@ -9,7 +9,7 @@
 |---|---|
 | `enums.py` | Domain, VehicleStatus, ActionKind, ConditionKind, CommandKind, CommandSource, BlockReason, ReportKind, TargetKind, EmergencyKind, RunStatus |
 | `world.py` | GeoPoint, Polygon, VehicleSpec, VehicleState, Operation, RouteOffset, RouteDef |
-| `play.py` | Condition, Action, Exit, Choice, Switch, ReportSpec, Step, EmergencyRules, Play, ValidationIssue, PlayCheck |
+| `role.py` | Condition, Action, Exit, Choice, Switch, ReportSpec, Step, EmergencyRules, Role, ValidationIssue, RoleCheck |
 | `command.py` | Provenance, Command, PassedCommand, Block |
 | `events.py` | Target, Report, Decision, Assignment, Injection, DirectControl |
 | `frame.py` | Metrics, RunState, Frame, ScenarioEvent, Scenario, TickInputs, TickOutcome |

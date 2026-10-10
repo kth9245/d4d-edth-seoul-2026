@@ -1,24 +1,24 @@
-import type { Play, Step, ValidationIssue } from "../../contracts.gen";
+import type { Role, Step, ValidationIssue } from "../../contracts.gen";
 import { describeAction } from "./describe";
-import { exitText } from "./playGraph";
+import { exitText } from "./roleGraph";
 
 type Props = {
   step: Step;
-  play: Play;
-  playName: (id: string) => string | null;
-  onOpen: (playId: string) => void;
+  role: Role;
+  roleName: (id: string) => string | null;
+  onOpen: (roleId: string) => void;
   issues?: ValidationIssue[];
   fresh?: boolean; // just added by "보고 카드 끼워 넣기"
   onInsertReport?: () => void;
 };
 
-export function StepCard({ step, play, playName, onOpen, issues = [], fresh, onInsertReport }: Props) {
-  const stepName = (id: string) => play.steps.find((s) => s.id === id)?.name;
+export function StepCard({ step, role, roleName, onOpen, issues = [], fresh, onInsertReport }: Props) {
+  const stepName = (id: string) => role.steps.find((s) => s.id === id)?.name;
   const unguarded = issues.some((i) => i.code === "missing_report_point");
   return (
     <div className={`step-card${issues.length > 0 ? " has-issues" : ""}${fresh ? " fresh" : ""}`}>
       <div className="step-name">
-        {step.id === play.entry ? "▶ " : ""}
+        {step.id === role.entry ? "▶ " : ""}
         {step.name}
       </div>
       <div className="step-do">{describeAction(step.do)}</div>
@@ -33,8 +33,8 @@ export function StepCard({ step, play, playName, onOpen, issues = [], fresh, onI
           {(step.report.choices ?? []).map((c) => (
             <div key={c.id} className="choice">
               <b>[{c.label}]</b>
-              {Object.entries(c.play_by_vehicle ?? {}).map(([v, pid]) => {
-                const name = playName(pid);
+              {Object.entries(c.role_by_vehicle ?? {}).map(([v, pid]) => {
+                const name = roleName(pid);
                 return (
                   <div key={v} className="choice-target">
                     {v} →{" "}

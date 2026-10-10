@@ -1,14 +1,14 @@
-"""RT-03 apply_decision: 운용자 결정 적용 — 선택지 play_by_vehicle대로 기체들을 새 플레이로(사건 2),
+"""RT-03 apply_decision: 운용자 결정 적용 — 선택지 role_by_vehicle대로 기체들을 새 Role로(사건 2),
 target_select 카드면 그 기체의 표적을 정한다. 카드에 resolved_ms·decision_id 기록.
 SPEC: modules/runtime/SPEC.md#RT-03
 """
 
-from contracts.models import Decision, Play, Report, VehicleState
-from modules.runtime.actions.switch_play import switch_play
+from contracts.models import Decision, Report, Role, VehicleState
+from modules.runtime.actions.switch_role import switch_role
 
 
 def apply_decision(
-    states: list[VehicleState], plays: dict[str, Play], decision: Decision, reports: list[Report]
+    states: list[VehicleState], roles: dict[str, Role], decision: Decision, reports: list[Report]
 ) -> tuple[list[VehicleState], list[Report]]:
     rep = next(r for r in reports if r.id == decision.report_id)
     ch = next(c for c in rep.choices if c.id == decision.choice_id)
@@ -20,8 +20,8 @@ def apply_decision(
             s = s.model_copy(
                 update={"target_id": ch.id, "pending_report_id": None, "entered_step": False}
             )
-        elif s.id in ch.play_by_vehicle:
-            s = switch_play(s, plays[ch.play_by_vehicle[s.id]])
+        elif s.id in ch.role_by_vehicle:
+            s = switch_role(s, roles[ch.role_by_vehicle[s.id]])
         elif s.id == rep.vehicle_id:
             s = s.model_copy(update={"pending_report_id": None})
         out.append(s)

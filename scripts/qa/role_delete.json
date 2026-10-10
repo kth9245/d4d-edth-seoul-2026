@@ -1,0 +1,23 @@
+[
+ {"viewport": [1366, 768]},
+ {"nav": "/?qa=delete#editor", "wait": 6000},
+ {"click": "새로 만들기", "wait": 300},
+ {"click": "직접 생성", "wait": 300},
+ {"type": ["input[aria-label='Role 이름']", "QA 삭제 새 Role"]},
+ {"click": "만들기", "wait": 1500},
+ {"label": "D1 the new role is in the list and has a 삭제 button", "eval": "({ listed: [...document.querySelectorAll('.role-sidebar .item')].some(b => b.innerText === 'QA 삭제 새 Role'), button: document.querySelector('.save-bar .delete')?.innerText })", "expect": {"listed": true, "button": "삭제"}},
+ {"clickSel": ".save-bar .delete", "wait": 300},
+ {"label": "D2 the first press only arms it", "eval": "({ button: document.querySelector('.save-bar .delete')?.innerText, still: !!document.querySelector('.workflow') })", "expect": {"button": "한 번 더 누르면 삭제", "still": true}},
+ {"clickSel": ".save-bar .delete", "wait": 1200},
+ {"label": "D3 the second press drops the unsaved role and goes home (decision 0050)", "eval": "({ home: !!document.querySelector('.columns') && !document.querySelector('.workflow'), listed: [...document.querySelectorAll('.role-sidebar .item')].some(b => b.innerText === 'QA 삭제 새 Role') })", "expect": {"home": true, "listed": false}},
+ {"click": "북동 해안 순찰", "wait": 1500},
+ {"clickSel": ".save-bar .delete", "wait": 300},
+ {"clickSel": ".save-bar .delete", "wait": 1500},
+ {"label": "D4 a saved role d2 starts on is gone and d2 has no first role", "eval": "({ home: !!document.querySelector('.columns'), listed: [...document.querySelectorAll('.role-sidebar .item')].some(b => b.innerText === '북동 해안 순찰'), d2: [...document.querySelectorAll('.op-vehicles tbody tr')].map(r => [...r.cells].map(c => c.innerText)).find(c => c[0].startsWith('d2'))?.[2] })", "expect": {"home": true, "listed": false, "d2": "없음"}},
+ {"nav": "/?qa=delete-reload#editor", "wait": 5000},
+ {"label": "D5 after a reload the server no longer has it", "eval": "[...document.querySelectorAll('.role-sidebar .item')].some(b => b.innerText === '북동 해안 순찰')", "expect": false},
+ {"click": "▶ 시뮬레이션", "wait": 4000},
+ {"click": "×30", "wait": 2500},
+ {"label": "D6 the run still goes with the role gone (d2 waits at home)", "eval": "({ status: document.querySelector('.status')?.innerText, moved: document.querySelector('.runbar .clock')?.innerText !== 'T+0:00' })", "expect": {"status": "LIVE", "moved": true}},
+ {"shot": "role-delete-live.png"}
+]

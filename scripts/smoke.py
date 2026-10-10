@@ -1,7 +1,7 @@
 """Headless integration-1 slice on the demo scenario (docs/research/09 section 4), run by ship.sh.
 
 Ticks the real engine until a target_detected report with choices appears, sends one decision (its first
-choice), runs a little longer and checks: every vehicle the choice names switched to its play, at least one of
+choice), runs a little longer and checks: every vehicle the choice names switched to its role, at least one of
 them moved, no command was blocked after the decision, the card was resolved, metrics.operator_actions == 1.
 Every frame must survive the WS JSON round trip. Prints one line; exits 1 with a short reason on failure.
 """
@@ -71,11 +71,11 @@ def run(path: str, max_minutes: float, after_s: float) -> str:
         ticks += 1
     now = {v.id: v for v in frame.vehicles}
     wrong = {
-        v: (now[v].play_id, p) for v, p in choice.play_by_vehicle.items() if now[v].play_id != p
+        v: (now[v].role_id, p) for v, p in choice.role_by_vehicle.items() if now[v].role_id != p
     }
     if wrong:
-        raise AssertionError(f"decision did not switch plays (vehicle: got, want): {wrong}")
-    moved = [v for v in choice.play_by_vehicle if _moved_m(now[v].pos, before[v]) > 1]
+        raise AssertionError(f"decision did not switch roles (vehicle: got, want): {wrong}")
+    moved = [v for v in choice.role_by_vehicle if _moved_m(now[v].pos, before[v]) > 1]
     if not moved:
         raise AssertionError(f"no vehicle of the choice moved in {after_s:g} s after the decision")
     if len(frame.blocks) != blocks:
@@ -88,7 +88,7 @@ def run(path: str, max_minutes: float, after_s: float) -> str:
         raise AssertionError(f"operator_actions={frame.metrics.operator_actions}, want 1")
     return (
         f"{ticks} ticks, card {card.id} at T+{at // 60}:{at % 60:02d}, '{choice.label}' switched "
-        f"{len(choice.play_by_vehicle)} vehicles, moved {','.join(moved)}, operator_actions=1"
+        f"{len(choice.role_by_vehicle)} vehicles, moved {','.join(moved)}, operator_actions=1"
     )
 
 

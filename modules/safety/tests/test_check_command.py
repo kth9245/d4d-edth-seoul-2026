@@ -9,9 +9,9 @@ from contracts.models import (
     Injection,
     Operation,
     PassedCommand,
-    Play,
     Polygon,
     Provenance,
+    Role,
     Step,
     VehicleSpec,
     VehicleState,
@@ -32,9 +32,9 @@ CENTER = P(37.05, 126.05)
 SPEC = VehicleSpec(id="d1", name="d1", domain="air", speed_mps=15, endurance_min=40,
                    sensor_range_m=800, capabilities=[], home=CENTER)  # fmt: skip
 STEP = Step(id="s1", name="s1", do=Action(kind="move_to"))
-PLAYS = {
-    "ok": Play(id="ok", name="ok", domains=["air"], steps=[STEP], entry="s1", approved=True),
-    "draft": Play(id="draft", name="d", domains=["air"], steps=[STEP], entry="s1"),
+ROLES = {
+    "ok": Role(id="ok", name="ok", domains=["air"], steps=[STEP], entry="s1", approved=True),
+    "draft": Role(id="draft", name="d", domains=["air"], steps=[STEP], entry="s1"),
 }
 
 
@@ -49,18 +49,18 @@ def cmd(target: GeoPoint | None = None, prov: Provenance | None = None, **params
     return Command(id="c1", vehicle_id="d1", kind="move", params=params, provenance=prov)
 
 
-def by_play(play_id: str = "ok") -> Provenance:
-    return Provenance(source="play_step", play_id=play_id, step_id="s1", issued_ms=0)
+def by_role(role_id: str = "ok") -> Provenance:
+    return Provenance(source="role_step", role_id=role_id, step_id="s1", issued_ms=0)
 
 
 def check(
     c: Command, battery: float = 100, injections: list[Injection] = ()
 ) -> PassedCommand | Block:
-    return check_command(c, state(battery), SPEC, OP, PLAYS, list(injections))
+    return check_command(c, state(battery), SPEC, OP, ROLES, list(injections))
 
 
 def test_passes_all_three_rules_in_order():
-    out = check(cmd(P(37.06, 126.05), by_play()))
+    out = check(cmd(P(37.06, 126.05), by_role()))
     assert isinstance(out, PassedCommand)
     assert out.checks == RULES == ["no_provenance", "outside_zone", "battery_insufficient"]
     assert out.passed_ms == 5000 and out.command.id == "c1"
@@ -71,13 +71,13 @@ def test_rule1_no_provenance_blocks_without_alternative():
     assert isinstance(out, Block) and out.reason == "no_provenance" and out.alternative is None
 
 
-def test_rule1_unapproved_play_is_no_provenance():
-    assert check(cmd(P(37.06, 126.05), by_play("draft"))).reason == "no_provenance"
+def test_rule1_unapproved_role_is_no_provenance():
+    assert check(cmd(P(37.06, 126.05), by_role("draft"))).reason == "no_provenance"
 
 
 def test_rule1_injected_plan_needs_an_approved_injection():
     prov = Provenance(source="injected_plan", injection_id="inj1", issued_ms=0)
-    inj = Injection(id="inj1", t_ms=0, label="x", play_by_vehicle={"d1": "ok"})
+    inj = Injection(id="inj1", t_ms=0, label="x", role_by_vehicle={"d1": "ok"})
     assert check(cmd(P(37.06, 126.05), prov), injections=[inj]).reason == "no_provenance"
     approved = inj.model_copy(update={"status": "approved"})
     assert isinstance(check(cmd(P(37.06, 126.05), prov), injections=[approved]), PassedCommand)
@@ -93,7 +93,7 @@ def test_rule1_is_checked_before_rule2():
 
 
 def test_rule2_outside_zone_blocks_with_alternative_inside():
-    out = check(cmd(P(37.2, 126.05), by_play()))
+    out = check(cmd(P(37.2, 126.05), by_role()))
     assert isinstance(out, Block) and out.reason == "outside_zone"
     alt = out.alternative
     assert alt is not None and alt.id == "c1-alt" and alt.kind == "move"
@@ -105,19 +105,19 @@ def test_rule2_outside_zone_blocks_with_alternative_inside():
 
 def test_rule2_checks_every_route_point():
     route = [P(37.06, 126.05).model_dump(), P(37.05, 126.2).model_dump()]
-    out = check(cmd(prov=by_play(), route=route))
+    out = check(cmd(prov=by_role(), route=route))
     assert isinstance(out, Block) and out.reason == "outside_zone"
 
 
 def test_rule3_battery_insufficient_offers_a_closer_point():
-    out = check(cmd(P(37.068, 126.05), by_play()), battery=1)
+    out = check(cmd(P(37.068, 126.05), by_role()), battery=1)
     assert isinstance(out, Block) and out.reason == "battery_insufficient"
     pt = GeoPoint(**out.alternative.params["target"])
     assert CENTER.lat < pt.lat < 37.068
 
 
 def test_command_without_destination_skips_rules_2_and_3():
-    out = check(Command(id="c1", vehicle_id="d1", kind="hold", provenance=by_play()), battery=1)
+    out = check(Command(id="c1", vehicle_id="d1", kind="hold", provenance=by_role()), battery=1)
     assert isinstance(out, PassedCommand)
 
 
@@ -132,7 +132,7 @@ def test_only_check_command_creates_passed_command():
 
 
 def strike(target: GeoPoint, decision_id: str | None) -> Command:
-    prov = Provenance(source="play_step", play_id="ok", step_id="s1", issued_ms=0,
+    prov = Provenance(source="role_step", role_id="ok", step_id="s1", issued_ms=0,
                       decision_id=decision_id)  # fmt: skip
     return Command(id="c1", vehicle_id="d1", kind="strike", provenance=prov,
                    params={"target_id": "fast1", "distance_m": 0, "target": target.model_dump()})  # fmt: skip

@@ -1,17 +1,17 @@
-import type { ActionKind, Choice, ConditionKind, Exit, GeoPoint, Play, RouteDef, Step } from "../../contracts.gen";
+import type { ActionKind, Choice, ConditionKind, Exit, GeoPoint, Role, RouteDef, Step } from "../../contracts.gen";
 import { ACTION_LABEL, CONDITION_LABEL, describeAction } from "./describe";
 import { addChoice, applyRoute, cardOptions, defaultCondition, EDIT_ACTIONS, removeChoice, ROUTE_KINDS, routeChoice, setActionKind, setLoop,
   updateStep } from "./editStep";
 
 type Props = {
-  play: Play;
+  role: Role;
   step: Step;
   vehicleIds: string[];
-  plays: { id: string; name: string }[];
-  fallbackPoint?: GeoPoint | null; // where a new move or route starts when the play has no point (zone centre)
+  roles: { id: string; name: string }[];
+  fallbackPoint?: GeoPoint | null; // where a new move or route starts when the role has no point (zone centre)
   routes?: RouteDef[]; // decision 0044: what the route select offers
-  enemy?: boolean; // an enemy play keeps its script: no route select, no T+ (decision 0045)
-  onChange: (next: Play) => void;
+  enemy?: boolean; // an enemy role keeps its script: no route select, no T+ (decision 0045)
+  onChange: (next: Role) => void;
   onAddAfter: () => void;
   onRemove: () => void;
   onClose: () => void;
@@ -22,15 +22,15 @@ const num = (v: string) => (v.trim() === "" || Number.isNaN(Number(v)) ? null : 
 // A kind the editor does not offer (does nothing in this simulator) stays selectable on the card that has it.
 const withCurrent = <T extends string>(list: T[], cur: T) => (list.includes(cur) ? list : [...list, cur]);
 
-// Side panel for the card picked on the graph (Part3-12.1). Every change goes up as a new play; saving and the
+// Side panel for the card picked on the graph (Part3-12.1). Every change goes up as a new role; saving and the
 // server check stay as they are.
-export function StepEditor({ play, step, vehicleIds, plays, fallbackPoint = null, routes = [], enemy = false, onChange, onAddAfter, onRemove, onClose }: Props) {
-  const set = (change: (s: Step) => Step) => onChange(updateStep(play, step.id, change));
+export function StepEditor({ role, step, vehicleIds, roles, fallbackPoint = null, routes = [], enemy = false, onChange, onAddAfter, onRemove, onClose }: Props) {
+  const set = (change: (s: Step) => Step) => onChange(updateStep(role, step.id, change));
   const params = step.do.params ?? {};
   const setParam = (k: string, v: unknown) => set((s) => ({ ...s, do: { ...s.do, params: { ...(s.do.params ?? {}), [k]: v } } }));
   const exits = step.on ?? [];
   const setExits = (on: Exit[]) => set((s) => ({ ...s, on }));
-  const others = play.steps.filter((s) => s.id !== step.id);
+  const others = role.steps.filter((s) => s.id !== step.id);
   const choices = step.report?.choices ?? [];
   const setChoice = (id: string, change: (c: Choice) => Choice) =>
     set((s) => ({ ...s, report: s.report && { ...s.report, choices: (s.report.choices ?? []).map((c) => (c.id === id ? change(c) : c)) } }));
@@ -56,7 +56,7 @@ export function StepEditor({ play, step, vehicleIds, plays, fallbackPoint = null
       <div className="se-sec">
         <div className="se-title">행동</div>
         <select aria-label="행동" value={isRoute ? "route" : step.do.kind}
-          onChange={(e) => onChange(setActionKind(play, step.id, (e.target.value === "route" ? "patrol_route" : e.target.value) as ActionKind, fallbackPoint))}>
+          onChange={(e) => onChange(setActionKind(role, step.id, (e.target.value === "route" ? "patrol_route" : e.target.value) as ActionKind, fallbackPoint))}>
           <option value="route">경로 비행</option>
           {(isRoute ? nonRoute : withCurrent(nonRoute, step.do.kind)).map((k) => <option key={k} value={k}>{ACTION_LABEL[k] ?? k}</option>)}
         </select>
@@ -77,10 +77,10 @@ export function StepEditor({ play, step, vehicleIds, plays, fallbackPoint = null
           <div className="se-route">
             <label className="se-check">
               <input type="checkbox" aria-label="반복" checked={step.do.kind === "patrol_route"}
-                onChange={(e) => onChange(setLoop(play, step.id, e.target.checked))} /> 반복
+                onChange={(e) => onChange(setLoop(role, step.id, e.target.checked))} /> 반복
             </label>
             <select aria-label="경로" value={current}
-              onChange={(e) => { const r = routes.find((x) => x.id === e.target.value); if (r) onChange(applyRoute(play, step.id, r)); }}>
+              onChange={(e) => { const r = routes.find((x) => x.id === e.target.value); if (r) onChange(applyRoute(role, step.id, r)); }}>
               {current === "" && <option value="">지금 값 유지: {describeAction(step.do)}</option>}
               <optgroup label="고정 경로">
                 {routes.filter((r) => !r.offsets?.length).map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
@@ -156,37 +156,37 @@ export function StepEditor({ play, step, vehicleIds, plays, fallbackPoint = null
               <div key={c.id} className="se-choice">
                 <div className="se-row">
                   <input aria-label={`선택지 ${ci + 1} 이름`} value={c.label} onChange={(e) => setChoice(c.id, (x) => ({ ...x, label: e.target.value }))} />
-                  <button className="se-x" aria-label={`선택지 ${ci + 1} 지우기`} onClick={() => onChange(removeChoice(play, step.id, c.id))}>✕</button>
+                  <button className="se-x" aria-label={`선택지 ${ci + 1} 지우기`} onClick={() => onChange(removeChoice(role, step.id, c.id))}>✕</button>
                 </div>
-                {Object.entries(c.play_by_vehicle ?? {}).map(([v, pid]) => {
-                  const pbv = (next: Record<string, string>) => setChoice(c.id, (x) => ({ ...x, play_by_vehicle: next }));
-                  const rest = Object.fromEntries(Object.entries(c.play_by_vehicle ?? {}).filter(([k]) => k !== v));
+                {Object.entries(c.role_by_vehicle ?? {}).map(([v, pid]) => {
+                  const pbv = (next: Record<string, string>) => setChoice(c.id, (x) => ({ ...x, role_by_vehicle: next }));
+                  const rest = Object.fromEntries(Object.entries(c.role_by_vehicle ?? {}).filter(([k]) => k !== v));
                   return (
                     <div key={v} className="se-row se-pbv">
                       <select aria-label={`선택지 ${ci + 1} 기체 ${v}`} value={v} onChange={(e) => pbv({ ...rest, [e.target.value]: pid })}>
-                        {vehicleIds.filter((id) => id === v || !(id in (c.play_by_vehicle ?? {}))).map((id) => <option key={id} value={id}>{id}</option>)}
+                        {vehicleIds.filter((id) => id === v || !(id in (c.role_by_vehicle ?? {}))).map((id) => <option key={id} value={id}>{id}</option>)}
                       </select>
                       <span className="se-arrow">→</span>
-                      <select aria-label={`선택지 ${ci + 1} ${v} 플레이`} value={pid} onChange={(e) => pbv({ ...rest, [v]: e.target.value })}>
-                        {!plays.some((p) => p.id === pid) && <option value={pid}>{pid} (없음)</option>}
-                        {plays.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+                      <select aria-label={`선택지 ${ci + 1} ${v} Role`} value={pid} onChange={(e) => pbv({ ...rest, [v]: e.target.value })}>
+                        {!roles.some((p) => p.id === pid) && <option value={pid}>{pid} (없음)</option>}
+                        {roles.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
                       </select>
                       <button className="se-x" aria-label={`선택지 ${ci + 1} ${v} 지우기`} onClick={() => pbv(rest)}>✕</button>
                     </div>
                   );
                 })}
-                {vehicleIds.some((id) => !(id in (c.play_by_vehicle ?? {}))) && plays.length > 0 && (
+                {vehicleIds.some((id) => !(id in (c.role_by_vehicle ?? {}))) && roles.length > 0 && (
                   <button className="se-add" onClick={() => {
-                    const v = vehicleIds.find((id) => !(id in (c.play_by_vehicle ?? {})))!;
-                    setChoice(c.id, (x) => ({ ...x, play_by_vehicle: { ...(x.play_by_vehicle ?? {}), [v]: plays[0].id } }));
-                  }}>+ 기체를 다른 플레이로</button>
+                    const v = vehicleIds.find((id) => !(id in (c.role_by_vehicle ?? {})))!;
+                    setChoice(c.id, (x) => ({ ...x, role_by_vehicle: { ...(x.role_by_vehicle ?? {}), [v]: roles[0].id } }));
+                  }}>+ 기체를 다른 Role로</button>
                 )}
               </div>
             ))}
             <div className="se-row">
-              <button className="se-add" onClick={() => onChange(addChoice(play, step.id))}>+ 선택지 추가</button>
+              <button className="se-add" onClick={() => onChange(addChoice(role, step.id))}>+ 선택지 추가</button>
               <button className="se-add" onClick={() => {
-                const cleared = choices.reduce((p, c) => removeChoice(p, step.id, c.id), play);
+                const cleared = choices.reduce((p, c) => removeChoice(p, step.id, c.id), role);
                 onChange(updateStep(cleared, step.id, (s) => ({ ...s, report: null })));
               }}>보고 없애기</button>
             </div>
@@ -196,8 +196,8 @@ export function StepEditor({ play, step, vehicleIds, plays, fallbackPoint = null
 
       <div className="se-sec se-cards">
         <button className="se-add" onClick={onAddAfter}>+ 뒤에 카드 추가</button>
-        <button className="se-remove" onClick={onRemove} disabled={step.id === play.entry}
-          title={step.id === play.entry ? "시작 카드는 지울 수 없습니다" : undefined}>카드 삭제</button>
+        <button className="se-remove" onClick={onRemove} disabled={step.id === role.entry}
+          title={step.id === role.entry ? "시작 카드는 지울 수 없습니다" : undefined}>카드 삭제</button>
       </div>
     </aside>
   );

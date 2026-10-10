@@ -19,7 +19,7 @@ from modules.gateway.actions.tick_log import tick_log
 START = 1_791_633_600_000  # 2026-10-10 21:00:00 KST
 G = GeoPoint(lat=37, lon=126)
 ZONE = Polygon(points=[G, GeoPoint(lat=37, lon=126.1), GeoPoint(lat=37.1, lon=126.1)])
-SC = Scenario(id="s", vehicles=[], plays=[],
+SC = Scenario(id="s", vehicles=[], roles=[],
               operation=Operation(id="op1", name="op", area=ZONE, zone=ZONE, vehicle_ids=[],
                                   started_ms=START),
               events=[ScenarioEvent(offset_ms=660_000, kind="spawn_target", params={"id": "boat1"})])  # fmt: skip
@@ -37,7 +37,7 @@ def test_decision_line():
 
 
 def test_injection_line():
-    inj = Injection(id="inj-1", t_ms=T, label="x", play_by_vehicle={}, status="approved")
+    inj = Injection(id="inj-1", t_ms=T, label="x", role_by_vehicle={}, status="approved")
     assert "[계산] 21:11:00 전환 inj-1 approved" in tick_log(
         SC, T, 200, TickInputs(injections=[inj]), []
     )
@@ -54,7 +54,7 @@ def test_block_line():
 
 
 def test_strike_pass_and_neutralized_lines():
-    prov = Provenance(source="play_step", issued_ms=T, decision_id="dec-3")
+    prov = Provenance(source="role_step", issued_ms=T, decision_id="dec-3")
     cmd = Command(id="c1", vehicle_id="d2", kind="strike", params={"target_id": "fast1"},
                   provenance=prov)  # fmt: skip
     hit = Report(id="r", t_ms=T, kind="target_neutralized", vehicle_id="d2", target_id="fast1",
@@ -72,5 +72,5 @@ def test_enemy_appearance_is_a_script_line():
 
     sc = SC.model_copy(update={"events": [], "enemies": [
         EnemySpec(id="boat1", kind="boat", speed_mps=1, appear_offset_ms=660_000, pos=G,
-                  play_id="p")]})  # fmt: skip
+                  role_id="p")]})  # fmt: skip
     assert tick_log(sc, T, 200, TickInputs(), []) == ["[대본] 21:11:00 적 등장 boat1"]

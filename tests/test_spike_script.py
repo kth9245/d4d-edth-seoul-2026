@@ -48,16 +48,16 @@ def test_report_card_comes_from_sensing_after_the_boat_appears(result):
 def test_one_decision_switches_four_vehicles(result):
     rep = next(r for r in result["frames"][-1].reports if r.kind == "target_detected")
     after = _at(result, rep.resolved_ms - result["start_ms"] + 5000)
-    plays = {v.id: v.play_id for v in after.vehicles}
+    roles = {v.id: v.role_id for v in after.vehicles}
     want = {"d1": "watch", "usv": "approach", "ugv": "landing", "d2": "patrol_b"}
-    assert {k: plays[k] for k in want} == want
+    assert {k: roles[k] for k in want} == want
 
 
 def test_reserve_takes_over_the_watch_step(result):
     f = _at(result, 20 * MIN)
     d1, d3 = (next(v for v in f.vehicles if v.id == i) for i in ("d1", "d3"))
     assert d1.status in ("returning", "maintenance")
-    assert (d3.play_id, d3.step_id) == ("watch", "watch")
+    assert (d3.role_id, d3.step_id) == ("watch", "watch")
     assert any(a.reason == "예비 투입: d1 대신" for a in f.assignments)
     assert result["frames"][-1].metrics.vehicle_gap_ms > 0
 
@@ -65,7 +65,7 @@ def test_reserve_takes_over_the_watch_step(result):
 def test_switch_then_operator_picks_the_fast_boat(result):
     f = _at(result, 25 * MIN)
     d2 = next(v for v in f.vehicles if v.id == "d2")
-    assert (d2.play_id, d2.target_id) == ("track_fast", "fast1")
+    assert (d2.role_id, d2.target_id) == ("track_fast", "fast1")
     assert any(r.kind == "target_select" and r.resolved_ms for r in f.reports)
 
 

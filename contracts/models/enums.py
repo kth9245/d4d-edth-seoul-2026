@@ -53,7 +53,7 @@ class CommandKind(str, Enum):  # what goes out to a vehicle
 
 
 class CommandSource(str, Enum):
-    play_step = "play_step"
+    role_step = "role_step"
     operator_decision = "operator_decision"
     operator_direct = "operator_direct"
     injected_plan = "injected_plan"

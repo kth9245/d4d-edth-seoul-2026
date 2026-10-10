@@ -5,7 +5,7 @@ from typing import Literal
 from pydantic import BaseModel
 
 from .enums import ReportKind, TargetKind
-from .play import Choice
+from .role import Choice
 from .world import GeoPoint
 
 
@@ -20,7 +20,7 @@ class Target(BaseModel):
     seen_by: list[str] = []
     neutralized_ms: int | None = None  # struck (decision 0033); it stops moving
     reported_by: str | None = None  # vehicle that raised its target_detected card (decision 0036)
-    play_id: str | None = None  # enemy progress (decision 0032)
+    role_id: str | None = None  # enemy progress (decision 0032)
     step_id: str | None = None
     waypoint_idx: int = 0  # -1 = arrived at the move_to destination
     step_since_ms: int | None = None  # when this step began (time_elapsed)
@@ -54,9 +54,9 @@ class Decision(BaseModel):
     operator_id: str = "op1"
 
 
-class Assignment(BaseModel):  # which vehicle runs which play, since when and why
+class Assignment(BaseModel):  # which vehicle runs which role, since when and why
     vehicle_id: str
-    play_id: str
+    role_id: str
     since_ms: int
     reason: str  # "작전 배정" | "예비 투입: d1 대신" | "결정 dec-1" | "전환 inj-1"
 
@@ -65,7 +65,7 @@ class Injection(BaseModel):  # a switch request: previewed, then approved or rej
     id: str
     t_ms: int
     label: str
-    play_by_vehicle: dict[str, str]
+    role_by_vehicle: dict[str, str]
     switch_id: str | None = None  # set when it comes from an Operation switch button
     target_by_vehicle: dict[str, str] = {}  # pointed target per vehicle (decision 0048)
     status: Literal["pending", "approved", "rejected"] = "pending"

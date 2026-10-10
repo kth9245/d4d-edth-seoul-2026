@@ -4,8 +4,8 @@
       "title": "Vehicle Id",
       "type": "string"
     },
-    "play_id": {
-      "title": "Play Id",
+    "role_id": {
+      "title": "Role Id",
       "type": "string"
     },
     "since_ms": {
@@ -19,7 +19,7 @@
   },
   "required": [
     "vehicle_id",
-    "play_id",
+    "role_id",
     "since_ms",
     "reason"
   ],

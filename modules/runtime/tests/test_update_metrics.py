@@ -9,9 +9,9 @@ from contracts.models import (
     GeoPoint,
     Injection,
     Metrics,
-    Play,
     Provenance,
     Report,
+    Role,
     Step,
     Target,
     TickInputs,
@@ -21,13 +21,13 @@ from contracts.models import (
 from modules.runtime.actions.update_metrics import update_metrics
 
 G = GeoPoint(lat=37, lon=126)
-WATCH = Play(id="watch", name="w", domains=["air"], entry="s1",
+WATCH = Role(id="watch", name="w", domains=["air"], entry="s1",
              steps=[Step(id="s1", name="s1", do=Action(kind="watch_target"))])  # fmt: skip
 
 
 def vs(vid: str, t_ms: int = 5000) -> VehicleState:
     return VehicleState(id=vid, t_ms=t_ms, pos=G, heading_deg=0, battery_pct=90,
-                        status="active", play_id="watch", step_id="s1")  # fmt: skip
+                        status="active", role_id="watch", step_id="s1")  # fmt: skip
 
 
 def cmd(source: str) -> Command:
@@ -51,7 +51,7 @@ def test_operator_actions_count_decisions_direct_and_injections():
     inp = TickInputs(
         decisions=[Decision(id="dec1", t_ms=0, report_id="r1", choice_id="a")],
         direct=[DirectControl(id="dc1", vehicle_id="d1", target=G, t_ms=0)],
-        injections=[Injection(id="inj1", t_ms=0, label="x", play_by_vehicle={})],
+        injections=[Injection(id="inj1", t_ms=0, label="x", role_by_vehicle={})],
     )
     m = update_metrics(Metrics(operator_actions=2), TickOutcome(inputs=inp))
     assert (m.operator_actions, m.decisions) == (5, 1)
@@ -59,7 +59,7 @@ def test_operator_actions_count_decisions_direct_and_injections():
 
 def test_manual_baseline_counts_plan_commands_and_new_reports():
     out = TickOutcome(
-        commands=[cmd("play_step"), cmd("emergency"), cmd("operator_direct")],
+        commands=[cmd("role_step"), cmd("emergency"), cmd("operator_direct")],
         new_reports=[report("r1")],
     )
     assert update_metrics(Metrics(), out).manual_baseline_actions == 3
@@ -79,8 +79,8 @@ def test_blocked_and_sent_commands():
 
 
 def test_vehicle_gap_runs_from_reserve_start_until_the_reserve_sees_the_target():
-    gap = Assignment(vehicle_id="d3", play_id="watch", since_ms=1000, reason="예비 투입: d1 대신")
-    base = dict(assignments=[gap], states=[vs("d3")], plays={"watch": WATCH})
+    gap = Assignment(vehicle_id="d3", role_id="watch", since_ms=1000, reason="예비 투입: d1 대신")
+    base = dict(assignments=[gap], states=[vs("d3")], roles={"watch": WATCH})
     m = update_metrics(Metrics(), TickOutcome(**base, targets=[boat([])]))
     assert m.vehicle_gap_ms == 4000
     later = TickOutcome(**{**base, "states": [vs("d3", 9000)]}, targets=[boat(["d3"])])

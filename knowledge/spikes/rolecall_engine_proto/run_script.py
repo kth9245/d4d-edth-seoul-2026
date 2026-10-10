@@ -12,9 +12,8 @@ import sys
 import time
 from pathlib import Path
 
-from modules.gateway.engine import init_engine, tick
-
 from contracts.models import Decision, DirectControl, GeoPoint, Injection, TickInputs
+from modules.gateway.engine import init_engine, tick
 from modules.sim import load_scenario_json
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -47,7 +46,7 @@ class Operator:
         off, inj, direct = t - self.start, [], []
         if off == 23 * MIN + 20_000:
             inj.append(Injection(id="inj-1", t_ms=t, label="고속 보트 추적: d2",
-                                 play_by_vehicle={"d2": "track_fast"}))  # fmt: skip
+                                 role_by_vehicle={"d2": "track_fast"}))  # fmt: skip
         if off == 24 * MIN:
             inj.append(
                 next(i for i in es.injections if i.id == "inj-1").model_copy(
@@ -98,5 +97,5 @@ if __name__ == "__main__":
     print("metrics:", last.metrics.model_dump())
     print(
         "final:",
-        {v.id: (v.play_id, v.step_id, v.status.value, round(v.battery_pct)) for v in last.vehicles},
+        {v.id: (v.role_id, v.step_id, v.status.value, round(v.battery_pct)) for v in last.vehicles},
     )

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import type { OntologyView, Operation, Play, VehicleSpec } from "../../contracts.gen";
+import type { OntologyView, Operation, Role, VehicleSpec } from "../../contracts.gen";
 import { fetchOntology } from "./fetchOntology";
 import { kindRows, reasonLine, reserveLines } from "./ontologyView";
 
 // Editor "온톨로지" (decision 0038): the kind hierarchy, each vehicle's verdict per action with the path the
-// server walked (GET /ontology runs the same inference as the play check) and why each reserve qualifies.
-export function OntologyPanel({ op, plays, vehicles }: { op: Operation; plays: Play[]; vehicles: VehicleSpec[] }) {
+// server walked (GET /ontology runs the same inference as the role check) and why each reserve qualifies.
+export function OntologyPanel({ op, roles, vehicles }: { op: Operation; roles: Role[]; vehicles: VehicleSpec[] }) {
   const [view, setView] = useState<OntologyView | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pick, setPick] = useState(vehicles[0]?.id ?? "");
@@ -58,7 +58,7 @@ export function OntologyPanel({ op, plays, vehicles }: { op: Operation; plays: P
           </li>
         ))}
       </ul>
-      {reserveLines(op, plays, view, vehicles).map((line) => (
+      {reserveLines(op, roles, view, vehicles).map((line) => (
         <div key={line} className="onto-reserve">예비 자격: {line}</div>
       ))}
     </div>

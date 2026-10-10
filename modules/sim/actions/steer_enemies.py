@@ -8,7 +8,7 @@ SPEC: modules/sim/SPEC.md#SIM-12
 import math
 from collections.abc import Sequence
 
-from contracts.models import ConditionKind, EnemySpec, GeoPoint, Play, Polygon, Step, Target
+from contracts.models import ConditionKind, EnemySpec, GeoPoint, Polygon, Role, Step, Target
 from modules.sim.actions.sea_aim import sea_aim
 from shared.geo import dist_m, enu_delta_m
 from shared.land import to_sea
@@ -53,7 +53,7 @@ def _steer(tg: Target, step: Step, speed: float, dt_ms: int, land: Sequence[Poly
 
 def steer_enemies(
     enemies: list[EnemySpec],
-    plays: dict[str, Play],
+    roles: dict[str, Role],
     targets: list[Target],
     t_ms: int,
     dt_ms: int,
@@ -62,15 +62,15 @@ def steer_enemies(
     speed = {e.id: e.speed_mps for e in enemies}
     out = []
     for tg in targets:
-        play = plays.get(tg.play_id or "")
-        if play is None or tg.neutralized_ms is not None:
+        role = roles.get(tg.role_id or "")
+        if role is None or tg.neutralized_ms is not None:
             out.append(tg)
             continue
-        step = next(s for s in play.steps if s.id == tg.step_id)
+        step = next(s for s in role.steps if s.id == tg.step_id)
         nxt = _next_step(step, tg, t_ms)
         if nxt:
             tg = tg.model_copy(update={"step_id": nxt, "waypoint_idx": 0, "step_since_ms": t_ms})
-            step = next(s for s in play.steps if s.id == nxt)
+            step = next(s for s in role.steps if s.id == nxt)
         sea = land if tg.kind in BOATS else ()
         out.append(_steer(tg, step, speed.get(tg.id, 0.0), dt_ms, sea))
     return out

@@ -1,15 +1,15 @@
 import { Handle, type Node, type NodeProps, Position } from "@xyflow/react";
-import type { Play, Step, ValidationIssue } from "../../contracts.gen";
+import type { Role, Step, ValidationIssue } from "../../contracts.gen";
 import { ACTION_LABEL, describeAction } from "./describe";
-import { exitText } from "./playGraph";
+import { exitText } from "./roleGraph";
 
 export type StepNodeData = {
   step: Step;
-  play: Play;
+  role: Role;
   issues: ValidationIssue[];
   fresh: boolean; // just added by "보고 카드 끼워 넣기"
-  playName: (id: string) => string | null;
-  onOpen: (playId: string) => void;
+  roleName: (id: string) => string | null;
+  onOpen: (roleId: string) => void;
   onInsertReport?: () => void;
 };
 export type StepNodeType = Node<StepNodeData, "step">;
@@ -17,8 +17,8 @@ export type StepNodeType = Node<StepNodeData, "step">;
 // One step as a graph card (Part3-10.1): 행동 / 보고 / 연결 sections; every exit row has its own handle on the
 // right edge so its edge leaves from that row. Buttons carry "nodrag" so clicking them never drags the card.
 export function StepNode({ data }: NodeProps<StepNodeType>) {
-  const { step, play, issues, fresh, playName, onOpen, onInsertReport } = data;
-  const stepName = (id: string) => play.steps.find((s) => s.id === id)?.name;
+  const { step, role, issues, fresh, roleName, onOpen, onInsertReport } = data;
+  const stepName = (id: string) => role.steps.find((s) => s.id === id)?.name;
   const unguarded = issues.some((i) => i.code === "missing_report_point");
   const exits = step.on ?? [];
   return (
@@ -27,7 +27,7 @@ export function StepNode({ data }: NodeProps<StepNodeType>) {
       {fresh && <span className="sn-badge">변경</span>}
       <div className="sn-head">
         <b>{step.name}</b>
-        {step.id === play.entry && <span className="sn-tag">시작</span>}
+        {step.id === role.entry && <span className="sn-tag">시작</span>}
         <code>{step.id}</code>
       </div>
       <div className="sn-sec">
@@ -41,11 +41,11 @@ export function StepNode({ data }: NodeProps<StepNodeType>) {
           {(step.report.choices ?? []).map((c) => (
             <div key={c.id} className="sn-choice">
               <span className="chip choice">{c.label}</span>
-              {Object.entries(c.play_by_vehicle ?? {}).map(([v, pid]) => (
+              {Object.entries(c.role_by_vehicle ?? {}).map(([v, pid]) => (
                 <div key={v} className="sn-target">
                   {v} →{" "}
-                  {playName(pid) ? (
-                    <button className="link nodrag" onClick={() => onOpen(pid)}>{playName(pid)}</button>
+                  {roleName(pid) ? (
+                    <button className="link nodrag" onClick={() => onOpen(pid)}>{roleName(pid)}</button>
                   ) : (
                     <span className="missing">{pid}</span>
                   )}

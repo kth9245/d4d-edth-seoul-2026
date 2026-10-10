@@ -3,7 +3,7 @@ import pytest
 from contracts.models import Scenario
 from modules.gateway.live import Live
 from modules.gateway.tests.test_live import ROOT, SCENARIO, FakeEngine, make
-from modules.gateway.tests.test_live_plays import PATROL_A
+from modules.gateway.tests.test_live_roles import PATROL_A
 
 DAY = Scenario.model_validate_json(
     (ROOT / "demo/scenarios/baengnyeong_24h.json").read_text(encoding="utf-8")
@@ -36,19 +36,19 @@ def test_activate_runs_the_other_operation_from_its_start_paused():
     assert [i.active for i in live.scenario_infos()] == [False, True]
 
 
-def test_a_saved_play_survives_going_to_another_operation_and_back():
+def test_a_saved_role_survives_going_to_another_operation_and_back():
     live, _ = make_two()
-    assert live.save_play(PATROL_A.model_copy(update={"name": "해안 순찰 A2"})).ok
+    assert live.save_role(PATROL_A.model_copy(update={"name": "해안 순찰 A2"})).ok
     live.activate("baengnyeong_24h")
     live.activate("baengnyeong_night")
-    assert next(p for p in live.scenario.plays if p.id == "patrol_a").name == "해안 순찰 A2"
+    assert next(p for p in live.scenario.roles if p.id == "patrol_a").name == "해안 순찰 A2"
 
 
-def test_activating_the_running_operation_again_keeps_its_saved_play():
+def test_activating_the_running_operation_again_keeps_its_saved_role():
     live, _ = make_two()
-    assert live.save_play(PATROL_A.model_copy(update={"name": "해안 순찰 A2"})).ok
+    assert live.save_role(PATROL_A.model_copy(update={"name": "해안 순찰 A2"})).ok
     assert live.activate("baengnyeong_night").status == "paused"
-    assert next(p for p in live.scenario.plays if p.id == "patrol_a").name == "해안 순찰 A2"
+    assert next(p for p in live.scenario.roles if p.id == "patrol_a").name == "해안 순찰 A2"
 
 
 def test_activate_an_unknown_id_raises_and_changes_nothing():

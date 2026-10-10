@@ -8,8 +8,8 @@ from contracts.models import Metrics, TickOutcome
 
 def _reached(vid: str, out: TickOutcome) -> bool:
     st = next(s for s in out.states if s.id == vid)
-    play = out.plays.get(st.play_id)
-    step = next((s for s in play.steps if s.id == st.step_id), None) if play else None
+    role = out.roles.get(st.role_id)
+    step = next((s for s in role.steps if s.id == st.step_id), None) if role else None
     kind = step.do.kind.value if step else None
     if kind in ("watch_target", "approach_target"):
         return any(vid in t.seen_by for t in out.targets)
@@ -27,7 +27,7 @@ def update_metrics(metrics: Metrics, outcome: TickOutcome) -> Metrics:
     by_plan = [
         c
         for c in outcome.commands
-        if c.provenance and c.provenance.source in ("play_step", "emergency")
+        if c.provenance and c.provenance.source in ("role_step", "emergency")
     ]
     m.manual_baseline_actions += len(outcome.new_reports) + len(by_plan)
     waiting = sum(1 for r in outcome.reports if r.choices and not r.resolved_ms)

@@ -7,11 +7,11 @@ const json = (body: unknown, status = 200) => Promise.resolve(new Response(JSON.
 describe("loadEditorData", () => {
   it("uses the gateway when all calls succeed", async () => {
     const op = { ...scenario.operation, id: "op-gw" };
-    const body: Record<string, unknown> = { "/operation": op, "/plays": [scenario.plays[0]], "/vehicles": scenario.vehicles,
+    const body: Record<string, unknown> = { "/operation": op, "/roles": [scenario.roles[0]], "/vehicles": scenario.vehicles,
       "/enemies": scenario.enemies, "/routes": [{ id: "square_300", name: "사각형", points: [], offsets: [] }] };
     const d = await loadEditorData((url) => json(body[url]));
     expect(d.operation.id).toBe("op-gw");
-    expect(d.plays).toHaveLength(1);
+    expect(d.roles).toHaveLength(1);
     expect(d.vehicles.map((v) => v.id)).toEqual(scenario.operation.vehicle_ids);
     expect(d.enemies.map((e) => e.id)).toEqual(["boat1", "fast1", "boat2", "boat3"]); // decision 0036
     expect(d.routes.map((r) => r.id)).toEqual(["square_300"]); // decision 0044
@@ -24,7 +24,7 @@ describe("loadEditorData", () => {
   it("fails on a non-2xx answer", async () => {
     await expect(loadEditorData(() => json({ detail: "x" }, 500))).rejects.toThrow("500");
   });
-  it("fails when a 200 JSON reply is not an operation and a play list", async () => {
+  it("fails when a 200 JSON reply is not an operation and a role list", async () => {
     await expect(loadEditorData((url) => json(url === "/operation" ? null : {}))).rejects.toThrow("shape");
   });
   it("fails when the dev server answers index.html", async () => {

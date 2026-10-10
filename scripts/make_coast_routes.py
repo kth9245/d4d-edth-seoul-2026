@@ -99,7 +99,7 @@ def build() -> dict:
         for v in night["vehicles"]
         if v["domain"] == "air"
     ]
-    plays = {p["id"]: p for p in night["plays"]}
+    roles = {p["id"]: p for p in night["roles"]}
     op = night["operation"] | {
         "name": "멸공",
         "purpose": "드론 4대가 북(A: d1·d3)·남(B: d2·d4) 해안을 짝끼리 교대로 늘 1대씩 순찰(결정 0037, 0041)",
@@ -109,18 +109,18 @@ def build() -> dict:
         "switches": [],
         "rotation": ["d1", "d2", "d3", "d4"],
         "rotation_pools": {"coast_a": ["d1", "d3"], "coast_b": ["d2", "d4"]},
-        "rotation_plays": ["coast_a", "coast_b"],
+        "rotation_roles": ["coast_a", "coast_b"],
     }
     out = {
         "id": "baengnyeong_24h",
         "operation": op,
         "vehicles": drones,
-        "plays": [
+        "roles": [
             patrol("coast_a", "해안 순찰 A · 북", a),
             patrol("coast_b", "해안 순찰 B · 남", b),
-            plays["standby"],
-            plays["go_home"],
-            plays["watch"],
+            roles["standby"],
+            roles["go_home"],
+            roles["watch"],
         ],  # fmt: skip
         "events": [],
         "enemies": [],

@@ -7,16 +7,16 @@ SPEC: modules/runtime/SPEC.md#RT-08
 from contracts.models import (
     Choice,
     Command,
-    Play,
     Provenance,
     Report,
+    Role,
     Step,
     Target,
     VehicleSpec,
     VehicleState,
     VehicleStatus,
 )
-from modules.play import expand_action
+from modules.role import expand_action
 from shared.geo import dist_m
 
 TARGET_ACTIONS = ("watch_target", "approach_target")
@@ -33,7 +33,7 @@ def _target(st: VehicleState, step: Step, targets: list[Target]) -> tuple[str | 
 
 
 def enter_step(
-    st: VehicleState, spec: VehicleSpec, play: Play, step: Step, targets: list[Target], t_ms: int
+    st: VehicleState, spec: VehicleSpec, role: Role, step: Step, targets: list[Target], t_ms: int
 ) -> tuple[VehicleState, Command | None, Report | None]:
     upd: dict = {"entered_step": True, "waypoint_idx": 0}
     params, rid = dict(step.do.params), f"rep-{st.id}-{t_ms}"
@@ -47,7 +47,7 @@ def enter_step(
             return st.model_copy(update={**upd, "pending_report_id": rid}), None, rep
         params = {k: v for k, v in params.items() if k != "target"} | {"target_id": tid}
     kind = expand_action(step.do, spec.domain)
-    prov = Provenance(source="play_step", play_id=play.id, step_id=step.id, issued_ms=t_ms)
+    prov = Provenance(source="role_step", role_id=role.id, step_id=step.id, issued_ms=t_ms)
     cmd = None if kind is None else Command(id=f"cmd-{st.id}-{t_ms}", vehicle_id=st.id,
                                             kind=kind, params=params, provenance=prov)  # fmt: skip
     if step.do.kind.value == "return_home":

@@ -73,8 +73,8 @@
       "default": null,
       "title": "From Enemy"
     },
-    "play_id": {
-      "title": "Play Id",
+    "role_id": {
+      "title": "Role Id",
       "type": "string"
     },
     "emit_start_offset_ms": {
@@ -95,7 +95,7 @@
     "kind",
     "speed_mps",
     "appear_offset_ms",
-    "play_id"
+    "role_id"
   ],
   "title": "EnemySpec",
   "type": "object"

@@ -21,7 +21,7 @@ def test_demo_routes(name):  # decision 0044
         assert bool(r.points) != bool(r.offsets), r.id  # one kind each
         assert all(point_in_polygon(p, sc.operation.zone) for p in r.points), r.id
     names = {r.name for r in sc.routes}
-    for p in sc.plays:  # every patrol card on the demo names a route from the list
+    for p in sc.roles:  # every patrol card on the demo names a route from the list
         for s in p.steps:
             if s.do.kind.value == "patrol_route" and not p.id.startswith("enemy"):
                 assert s.do.params.get("route_name") in names, (p.id, s.id)

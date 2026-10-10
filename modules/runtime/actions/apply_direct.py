@@ -17,8 +17,8 @@ def apply_direct(
         if s.id != direct.vehicle_id:
             return s
         keep = s.step_id is None  # already under direct control: keep the first resume point
-        play, step = (s.resume_play_id, s.resume_step_id) if keep else (s.play_id, s.step_id)
+        role, step = (s.resume_role_id, s.resume_step_id) if keep else (s.role_id, s.step_id)
         return s.model_copy(update={"step_id": None, "entered_step": True, "waypoint_idx": 0,
-                                    "resume_play_id": play, "resume_step_id": step})  # fmt: skip
+                                    "resume_role_id": role, "resume_step_id": step})  # fmt: skip
 
     return [mark(s) for s in states], cmd

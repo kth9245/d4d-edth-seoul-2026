@@ -22,9 +22,9 @@ def fake_app(**kw) -> tuple[TestClient, FakeEngine]:
     return TestClient(create_app(SCENARIO, engine=ns, period_s=0.01, **kw)), eng
 
 
-def test_plays_and_operation_come_from_the_scenario():
+def test_roles_and_operation_come_from_the_scenario():
     client, _ = fake_app()
-    assert "track_fast" in [p["id"] for p in client.get("/plays").json()]
+    assert "track_fast" in [p["id"] for p in client.get("/roles").json()]
     assert client.get("/operation").json()["id"] == "op1"
     assert client.get("/health").json() == {"ok": True}
 
@@ -38,12 +38,12 @@ def test_vehicles_come_from_the_scenario():
 
 
 def test_enemies_come_from_the_scenario():
-    # Part1-21: the editor's enemy section shows each enemy and the play it follows.
+    # Part1-21: the editor's enemy section shows each enemy and the role it follows.
     client, _ = fake_app()
     enemies = client.get("/enemies").json()
     assert [e["id"] for e in enemies] == ["boat1", "fast1", "boat2", "boat3"]  # decision 0036
-    plays = {p["id"] for p in client.get("/plays").json()}
-    assert all(e["play_id"] in plays for e in enemies)
+    roles = {p["id"] for p in client.get("/roles").json()}
+    assert all(e["role_id"] in roles for e in enemies)
 
 
 def test_watch_points_come_from_the_scenario():
@@ -133,29 +133,29 @@ def test_decision_reaches_tick_inputs():
 
 def test_switch_request_and_approve():
     client, _ = fake_app()
-    inj = client.post("/injections", json={"play_by_vehicle": {"d2": "track_fast"}}).json()
+    inj = client.post("/injections", json={"role_by_vehicle": {"d2": "track_fast"}}).json()
     assert inj["status"] == "pending"
     assert client.post(f"/injections/{inj['id']}/approve").json()["status"] == "approved"
 
 
-def test_plays_check_and_save():
-    from modules.gateway.tests.test_live_plays import PATROL_A, no_report_play
+def test_roles_check_and_save():
+    from modules.gateway.tests.test_live_roles import PATROL_A, no_report_role
 
     client, _ = fake_app()
-    bad = no_report_play().model_dump(mode="json")
-    assert client.post("/plays/check", json=bad).json()["ok"] is False
-    assert client.post("/plays", json=bad).json()["ok"] is False
+    bad = no_report_role().model_dump(mode="json")
+    assert client.post("/roles/check", json=bad).json()["ok"] is False
+    assert client.post("/roles", json=bad).json()["ok"] is False
     renamed = PATROL_A.model_copy(update={"name": "해안 순찰 A2"}).model_dump(mode="json")
-    names = lambda: [p["name"] for p in client.get("/plays").json()]  # noqa: E731
-    assert client.post("/plays/check", json=renamed).json()["ok"] is True
+    names = lambda: [p["name"] for p in client.get("/roles").json()]  # noqa: E731
+    assert client.post("/roles/check", json=renamed).json()["ok"] is True
     assert "해안 순찰 A2" not in names()  # check only, nothing saved
-    body = client.post("/plays", json=renamed).json()
+    body = client.post("/roles", json=renamed).json()
     assert (body["ok"], body["issues"]) == (True, [])
-    assert set(body["est_return_battery"]) == {"d1", "d3"}  # values belong to the play module
+    assert set(body["est_return_battery"]) == {"d1", "d3"}  # values belong to the role module
     assert "해안 순찰 A2" in names()
 
 
-def test_draft_returns_the_cached_ai_play_for_a_demo_sentence():
+def test_draft_returns_the_cached_ai_role_for_a_demo_sentence():
     import json
 
     sentences = {
@@ -163,17 +163,17 @@ def test_draft_returns_the_cached_ai_play_for_a_demo_sentence():
         for s in json.loads((ROOT / "demo/draft_sentences.json").read_text("utf-8"))
     }
     client, _ = fake_app()
-    play = client.post("/plays/draft", json={"text": sentences["no_report"]}).json()
-    assert (play["origin"], play["approved"]) == ("ai_draft", False)  # cache hit, no network
-    assert "approach_target" in [s["do"]["kind"] for s in play["steps"]]
+    role = client.post("/roles/draft", json={"text": sentences["no_report"]}).json()
+    assert (role["origin"], role["approved"]) == ("ai_draft", False)  # cache hit, no network
+    assert "approach_target" in [s["do"]["kind"] for s in role["steps"]]
 
 
 def test_draft_runs_off_the_event_loop(monkeypatch):
-    # draft_play may call the LLM for minutes on a cache miss; the WS loop must keep streaming meanwhile.
+    # draft_role may call the LLM for minutes on a cache miss; the WS loop must keep streaming meanwhile.
     import asyncio
 
     import modules.gateway.app as app_module
-    from modules.gateway.tests.test_live_plays import PATROL_A
+    from modules.gateway.tests.test_live_roles import PATROL_A
 
     seen = {}
 
@@ -186,9 +186,9 @@ def test_draft_runs_off_the_event_loop(monkeypatch):
         seen["args"] = (text, op.id)
         return PATROL_A
 
-    monkeypatch.setattr(app_module, "draft_play", fake_draft)
+    monkeypatch.setattr(app_module, "draft_role", fake_draft)
     client, _ = fake_app()
-    assert client.post("/plays/draft", json={"text": "순찰"}).json()["id"] == PATROL_A.id
+    assert client.post("/roles/draft", json={"text": "순찰"}).json()["id"] == PATROL_A.id
     assert seen == {"in_loop": False, "args": ("순찰", "op1")}
 
 
@@ -249,10 +249,10 @@ def test_ontology_view_from_the_scenario():  # decision 0038
 
 def test_check_shows_the_kind_path_when_d1_gets_a_strike_step():  # editor demo beat (0038)
     client, _ = fake_app()
-    patrol = next(p for p in client.get("/plays").json() if p["id"] == "patrol_a")
+    patrol = next(p for p in client.get("/roles").json() if p["id"] == "patrol_a")
     strike = {"kind": "strike_target", "params": {"target": "nearest"}}
     patrol["steps"].append({"id": "hit", "name": "타격", "do": strike})
-    chk = client.post("/plays/check", json=patrol).json()
+    chk = client.post("/roles/check", json=patrol).json()
     msgs = [i["message"] for i in chk["issues"] if i["code"] == "missing_capability"]
     assert "d1는 strike_target를 못 함: 정찰 드론 → 공중 기체 → 기체 어디에도 이 능력 없음" in msgs
 
@@ -268,12 +268,12 @@ def test_graph_unknown_focus_is_404():
     assert client.get("/graph?focus=nope").status_code == 404
 
 
-def test_delete_play_with_the_real_engine():  # decision 0050
+def test_delete_role_with_the_real_engine():  # decision 0050
     with TestClient(create_app(SCENARIO, period_s=0.01)) as client:
         pid = client.get("/operation").json()["assign"]["d1"]
-        left = client.delete(f"/plays/{pid}")
+        left = client.delete(f"/roles/{pid}")
         assert left.status_code == 200 and pid not in [p["id"] for p in left.json()]
-        assert pid not in [p["id"] for p in client.get("/plays").json()]
+        assert pid not in [p["id"] for p in client.get("/roles").json()]
         assert "d1" not in client.get("/operation").json()["assign"]
         assert client.post("/run/jump?offset_ms=60000").json()["status"] == "paused"
-        assert client.delete("/plays/nope").status_code == 404
+        assert client.delete("/roles/nope").status_code == 404

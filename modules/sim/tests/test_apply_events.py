@@ -27,7 +27,7 @@ BOAT = Target(id="boat1", kind="boat", pos=P, vel_east_mps=0, vel_north_mps=-1.0
 
 def _run(kind: str, params: dict, offset_ms: int = 60_000, t_ms: int | None = None, targets=()):
     ev = ScenarioEvent(offset_ms=offset_ms, kind=kind, params=params)
-    sc = Scenario(id="s", operation=OP, vehicles=[], plays=[], events=[ev])
+    sc = Scenario(id="s", operation=OP, vehicles=[], roles=[], events=[ev])
     t = START + offset_ms if t_ms is None else t_ms
     return apply_events(sc, [D1], list(targets), t, DT)
 
@@ -71,7 +71,7 @@ def test_vehicle_link_lost_marks_vehicle_lost():
 
 
 def test_targets_drift_by_velocity_every_tick():
-    sc = Scenario(id="s", operation=OP, vehicles=[], plays=[], events=[])
+    sc = Scenario(id="s", operation=OP, vehicles=[], roles=[], events=[])
     _, [tg] = apply_events(sc, [D1], [BOAT], START + 1000, 1000)  # 1 s at vn = -1 m/s
     assert dist_m(BOAT.pos, tg.pos) == pytest.approx(1.0, abs=0.01)
     assert tg.pos.lat < BOAT.pos.lat  # moved south

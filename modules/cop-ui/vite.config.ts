@@ -12,7 +12,7 @@ export default defineConfig({
     proxy: {
       "/ws": { target: GATEWAY.replace(/^http/, "ws"), ws: true },
       // contracts/API.md section 5 REST endpoints
-      "^/(operation|plays|vehicles|enemies|ontology|graph|run|decisions|direct|injections|scenarios|routes|watch_points)(/|\\?|$)": { target: GATEWAY },
+      "^/(operation|roles|vehicles|enemies|ontology|graph|run|decisions|direct|injections|scenarios|routes|watch_points)(/|\\?|$)": { target: GATEWAY },
     },
     // ?scene=s1..s6 reads contracts/examples and the AI draft box reads demo/draft_sentences.json,
     // both outside this package. In a worktree node_modules links to the main checkout, so the bundled

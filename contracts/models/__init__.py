@@ -1,7 +1,7 @@
 """Data contracts shared by all modules. Only the lead edits this package.
 
 Units: WGS84 degrees, meters, m/s, UTC epoch milliseconds (t_ms). Conventions: contracts/API.md.
-Import from here (`from contracts.models import Play`), never from the submodules.
+Import from here (`from contracts.models import Role`), never from the submodules.
 """
 
 import re
@@ -46,15 +46,15 @@ from .ontology import (
     VehicleCapabilities,
     VehicleKind,
 )
-from .play import (
+from .role import (
     Action,
     Choice,
     Condition,
     EmergencyRules,
     Exit,
-    Play,
-    PlayCheck,
     ReportSpec,
+    Role,
+    RoleCheck,
     Step,
     Switch,
     ValidationIssue,
@@ -73,8 +73,8 @@ from .world import (
 
 _MODELS: list[type[BaseModel]] = [
     GeoPoint, Polygon, VehicleSpec, VehicleState, Operation, EnemySpec, WatchPoint, RouteOffset, RouteDef,
-    Condition, Action, Exit, Choice, Switch, ReportSpec, Step, EmergencyRules, Play,
-    ValidationIssue, PlayCheck,
+    Condition, Action, Exit, Choice, Switch, ReportSpec, Step, EmergencyRules, Role,
+    ValidationIssue, RoleCheck,
     Provenance, Command, PassedCommand, Block,
     Target, Report, Decision, Assignment, Injection, DirectControl,
     Metrics, RunState, Frame, ScenarioEvent, Scenario, TickInputs, TickOutcome,

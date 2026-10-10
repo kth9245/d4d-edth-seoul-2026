@@ -1,0 +1,81 @@
+{
+ "id": "patrol_a",
+ "name": "해안 순찰 A",
+ "domains": [
+  "air"
+ ],
+ "steps": [
+  {
+   "id": "patrol",
+   "name": "경로 A 순찰",
+   "do": {
+    "kind": "patrol_route",
+    "params": {
+     "route": [
+      {
+       "lat": 37.98,
+       "lon": 124.66,
+       "alt_m": 0
+      },
+      {
+       "lat": 37.98,
+       "lon": 124.74,
+       "alt_m": 0
+      }
+     ],
+     "route_name": "순찰 A"
+    }
+   },
+   "on": [
+    {
+     "cond": {
+      "kind": "target_found",
+      "params": {}
+     },
+     "go_step": "report"
+    }
+   ],
+   "report": null,
+   "ui": {}
+  },
+  {
+   "id": "report",
+   "name": "발견·감시·보고",
+   "do": {
+    "kind": "watch_target",
+    "params": {
+     "target": "nearest",
+     "distance_m": 150
+    }
+   },
+   "on": [],
+   "report": {
+    "text": "미식별 선박 접근",
+    "choices": [
+     {
+      "id": "approach",
+      "label": "근접 확인",
+      "role_by_vehicle": {
+       "d1": "watch",
+       "usv": "approach",
+       "ugv": "landing"
+      },
+      "target_by_vehicle": {}
+     }
+    ],
+    "auto_choices": true
+   },
+   "ui": {}
+  }
+ ],
+ "entry": "patrol",
+ "emergency": {
+  "battery_low_pct": 30.0,
+  "link_lost_step": null,
+  "battery_low_step": null,
+  "operator_call_step": null
+ },
+ "origin": "human",
+ "approved": true,
+ "template": false
+}

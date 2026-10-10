@@ -1,7 +1,7 @@
 # safety — 하한선(명령 검사) 규칙 3개
 
 - 책임: 모든 `Command`에 규칙 3개(출처 없음, 작전 구역 밖, 배터리 부족)를 순서대로 적용해 `PassedCommand` 또는 `Block`(대안 포함)을 돌려준다. 예외 허가 없음(결정 0003). 설계는 `docs/research/09` 3.4.
-- 입력: Command·VehicleState·VehicleSpec·Operation·plays·injections / 출력: PassedCommand | Block.
+- 입력: Command·VehicleState·VehicleSpec·Operation·roles·injections / 출력: PassedCommand | Block.
 - 공개 API(`__init__.py`): `check_command`, `point_in_polygon`, `return_feasible`.
 - **`PassedCommand`는 이 모듈의 `check_command`만 만든다.** 다른 곳에서 생성하는 코드가 없음을 grep 테스트로 지킨다.
 - 원본: `knowledge/spikes/rolecall_engine_proto/port/modules/safety/`를 그대로 복사(SFT-01~03).

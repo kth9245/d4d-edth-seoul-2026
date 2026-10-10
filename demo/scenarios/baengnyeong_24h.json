@@ -73,7 +73,7 @@
    "d3",
    "d4"
   ],
-  "rotation_plays": [
+  "rotation_roles": [
    "coast_a",
    "coast_b"
   ],
@@ -154,7 +154,7 @@
    "kind": "recon_drone"
   }
  ],
- "plays": [
+ "roles": [
   {
    "id": "coast_a",
    "name": "해안 순찰 A · 북",

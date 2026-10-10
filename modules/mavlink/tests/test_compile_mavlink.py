@@ -7,27 +7,27 @@ import pytest
 
 from contracts.models import Scenario
 from modules.mavlink.actions.compile_mavlink import compile_mavlink
-from modules.play import load_play
+from modules.role import load_role
 
 ROOT = Path(__file__).resolve().parents[3]
 SC = Scenario.model_validate_json(
     (ROOT / "demo" / "scenarios" / "baengnyeong_night.json").read_text(encoding="utf-8")
 )
 SPECS = {v.id: v for v in SC.vehicles}
-PLAYS = {p.stem: load_play(p) for p in (ROOT / "demo" / "plays").glob("*.json")}
+ROLES = {p.stem: load_role(p) for p in (ROOT / "demo" / "roles").glob("*.json")}
 WAYPOINT, LOITER_UNLIM, RTL, DO_SET_MODE = 16, 17, 20, 176
 
 
-def run(play_id, assign):
+def run(role_id, assign):
     op = SC.operation.model_copy(update={"assign": assign})
-    return compile_mavlink(PLAYS[play_id], op, SPECS)
+    return compile_mavlink(ROLES[role_id], op, SPECS)
 
 
 def commands(plan):
     return [i["command"] for i in plan["mission"]["items"]]
 
 
-def test_only_vehicles_assigned_this_play_get_a_program():
+def test_only_vehicles_assigned_this_role_get_a_program():
     out = run("patrol_a", {"d1": "patrol_a", "d2": "standby", "d3": "patrol_a"})
     assert set(out) == {"d1", "d3"}
 
@@ -44,7 +44,7 @@ def test_patrol_plan_is_a_qgc_plan_of_route_waypoints():
 
 
 @pytest.mark.parametrize(
-    "play_id, vid, expected",
+    "role_id, vid, expected",
     [
         ("watch", "d2", [LOITER_UNLIM]),  # watch_target in the air: orbit
         ("go_home", "usv", [RTL]),
@@ -54,8 +54,8 @@ def test_patrol_plan_is_a_qgc_plan_of_route_waypoints():
         ("landing", "ugv", [WAYPOINT]),
     ],
 )
-def test_entry_step_action_maps_to_the_decision_0011_command(play_id, vid, expected):
-    plan, _ = run(play_id, {vid: play_id})[vid]
+def test_entry_step_action_maps_to_the_decision_0011_command(role_id, vid, expected):
+    plan, _ = run(role_id, {vid: role_id})[vid]
     assert commands(plan) == expected
 
 
@@ -70,16 +70,16 @@ def test_action_the_vehicle_cannot_do_gives_an_empty_mission():
     assert commands(plan) == [] and "'watch'" in script
 
 
-@pytest.mark.parametrize("play_id", sorted(PLAYS))
-def test_every_demo_play_compiles_to_a_valid_python_script(tmp_path, play_id):
-    play = PLAYS[play_id]
-    vid = next(v.id for v in SC.vehicles if v.domain in play.domains)
-    _, script = run(play_id, {vid: play_id})[vid]
-    path = tmp_path / f"{vid}_{play_id}.py"
+@pytest.mark.parametrize("role_id", sorted(ROLES))
+def test_every_demo_role_compiles_to_a_valid_python_script(tmp_path, role_id):
+    role = ROLES[role_id]
+    vid = next(v.id for v in SC.vehicles if v.domain in role.domains)
+    _, script = run(role_id, {vid: role_id})[vid]
+    path = tmp_path / f"{vid}_{role_id}.py"
     path.write_text(script, encoding="utf-8")
     py_compile.compile(str(path), doraise=True)
     assert "from pymavlink import mavutil" in script
-    assert all(repr(s.id) in script for s in play.steps) and f"ENTRY = {play.entry!r}" in script
+    assert all(repr(s.id) in script for s in role.steps) and f"ENTRY = {role.entry!r}" in script
 
 
 class _Done(Exception):
@@ -127,8 +127,8 @@ class _FakeLink:
         return self.events.pop(0)
 
 
-def _load_script(play_id, vid, signals, monkeypatch):
-    _, script = run(play_id, {vid: play_id})[vid]
+def _load_script(role_id, vid, signals, monkeypatch):
+    _, script = run(role_id, {vid: role_id})[vid]
     link = _FakeLink(signals)
     fake = types.ModuleType("pymavlink")
     fake.mavutil = types.SimpleNamespace(
@@ -136,15 +136,15 @@ def _load_script(play_id, vid, signals, monkeypatch):
         mavlink=types.SimpleNamespace(MAV_FRAME_GLOBAL_RELATIVE_ALT_INT=6),
     )
     monkeypatch.setitem(sys.modules, "pymavlink", fake)
-    monkeypatch.setattr(sys, "argv", [f"{vid}_{play_id}.py"])
-    ns = {"__name__": f"{vid}_{play_id}"}
-    exec(compile(script, f"{vid}_{play_id}.py", "exec"), ns)
+    monkeypatch.setattr(sys, "argv", [f"{vid}_{role_id}.py"])
+    ns = {"__name__": f"{vid}_{role_id}"}
+    exec(compile(script, f"{vid}_{role_id}.py", "exec"), ns)
     return ns
 
 
-def _run_script(play_id, vid, signals, monkeypatch, capsys):
+def _run_script(role_id, vid, signals, monkeypatch, capsys):
     """Runs the generated program until it ends or the signals run out; returns the steps it entered."""
-    ns = _load_script(play_id, vid, signals, monkeypatch)
+    ns = _load_script(role_id, vid, signals, monkeypatch)
     try:
         ns["main"]()
     except _Done:
@@ -153,7 +153,7 @@ def _run_script(play_id, vid, signals, monkeypatch, capsys):
     return [line.split(" step ")[1] for line in out.splitlines() if " step " in line], out
 
 
-def test_choice_that_leaves_the_reporter_in_its_play_takes_that_choice_exit(monkeypatch, capsys):
+def test_choice_that_leaves_the_reporter_in_its_role_takes_that_choice_exit(monkeypatch, capsys):
     # decision 0031: '수상정 인계' sends only usv away, so d2 takes report's operator_choice exit to patrol2
     signals = ["target_found", "choice:handoff", "target_found", "choice:keep"]
     steps, out = _run_script("patrol_b", "d2", signals, monkeypatch, capsys)
@@ -161,12 +161,12 @@ def test_choice_that_leaves_the_reporter_in_its_play_takes_that_choice_exit(monk
     assert "last step" in out
 
 
-def test_choice_that_moves_the_vehicle_names_the_play_it_moves_to(monkeypatch, capsys):
+def test_choice_that_moves_the_vehicle_names_the_role_it_moves_to(monkeypatch, capsys):
     steps, out = _run_script(
         "patrol_a", "d1", ["target_found", "choice:approach"], monkeypatch, capsys
     )
     assert steps == ["patrol", "report"]
-    assert "starts play watch" in out  # '근접 확인' sends d1 to watch
+    assert "starts role watch" in out  # '근접 확인' sends d1 to watch
 
 
 def test_operator_choice_exit_is_true_only_for_its_own_choice(monkeypatch):

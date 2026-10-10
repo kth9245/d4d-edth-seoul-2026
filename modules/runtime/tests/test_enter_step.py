@@ -2,8 +2,8 @@ from contracts.models import (
     Action,
     Choice,
     GeoPoint,
-    Play,
     ReportSpec,
+    Role,
     Step,
     Target,
     VehicleSpec,
@@ -21,7 +21,7 @@ def spec(domain: str = "air") -> VehicleSpec:
 
 def vs(**kw) -> VehicleState:
     return VehicleState(id="d1", t_ms=0, pos=HOME, heading_deg=0, battery_pct=90,
-                        status="active", play_id="p", step_id="s1", **kw)  # fmt: skip
+                        status="active", role_id="p", step_id="s1", **kw)  # fmt: skip
 
 
 def boat(tid: str, north_m: float, seen_by: tuple[str, ...] = ()) -> Target:
@@ -32,8 +32,8 @@ def boat(tid: str, north_m: float, seen_by: tuple[str, ...] = ()) -> Target:
 
 def run(do: Action, targets=(), report: ReportSpec | None = None, domain: str = "air", **kw):
     step = Step(id="s1", name="s1", do=do, report=report)
-    play = Play(id="p", name="p", domains=["air"], steps=[step], entry="s1", approved=True)
-    return enter_step(vs(**kw), spec(domain), play, step, list(targets), 7000)
+    role = Role(id="p", name="p", domains=["air"], steps=[step], entry="s1", approved=True)
+    return enter_step(vs(**kw), spec(domain), role, step, list(targets), 7000)
 
 
 def test_nearest_target_becomes_target_id_of_the_command():
@@ -42,7 +42,7 @@ def test_nearest_target_becomes_target_id_of_the_command():
     assert (st.target_id, st.entered_step, st.waypoint_idx) == ("near", True, 0)
     assert cmd.kind == "orbit" and cmd.params == {"distance_m": 150, "target_id": "near"}
     p = cmd.provenance
-    assert (p.source, p.play_id, p.step_id, p.issued_ms) == ("play_step", "p", "s1", 7000)
+    assert (p.source, p.role_id, p.step_id, p.issued_ms) == ("role_step", "p", "s1", 7000)
     assert cmd.id == "cmd-d1-7000" and rep is None
 
 
@@ -131,8 +131,8 @@ def test_card_basis_says_tracking_when_the_vehicle_has_not_seen_the_target():
 def test_a_relative_route_card_flies_its_shape_from_where_the_vehicle_is():  # decision 0044
     step = Step(id="s1", name="수색", do=Action(kind="patrol_route", params={
         "offsets": [{"north_m": 300, "east_m": 0}], "route_name": "sq"}))  # fmt: skip
-    play = Play(id="p", name="p", domains=["air"], entry="s1", approved=True, steps=[step])
+    role = Role(id="p", name="p", domains=["air"], entry="s1", approved=True, steps=[step])
     here = GeoPoint(lat=37.5, lon=126.5)
-    _, cmd, _ = enter_step(vs().model_copy(update={"pos": here}), spec(), play, step, [], 0)
+    _, cmd, _ = enter_step(vs().model_copy(update={"pos": here}), spec(), role, step, [], 0)
     assert cmd.kind == "follow_route"
     assert abs(cmd.params["route"][0]["lat"] - (here.lat + 300 / 111_195)) < 1e-4

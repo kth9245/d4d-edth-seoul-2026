@@ -16,7 +16,7 @@
    "heading_deg": 0.0,
    "battery_pct": 71.3,
    "status": "active",
-   "play_id": "watch",
+   "role_id": "watch",
    "step_id": "watch",
    "entered_step": true,
    "waypoint_idx": 0,
@@ -30,8 +30,8 @@
       "distance_m": 150
      },
      "provenance": {
-      "source": "play_step",
-      "play_id": "watch",
+      "source": "role_step",
+      "role_id": "watch",
       "step_id": "watch",
       "decision_id": null,
       "injection_id": null,
@@ -50,7 +50,7 @@
    "target_id": "boat1",
    "decision_id": null,
    "emergency": null,
-   "resume_play_id": null,
+   "resume_role_id": null,
    "resume_step_id": null
   },
   {
@@ -64,7 +64,7 @@
    "heading_deg": 0.0,
    "battery_pct": 100.0,
    "status": "active",
-   "play_id": "patrol_b",
+   "role_id": "patrol_b",
    "step_id": "patrol",
    "entered_step": true,
    "waypoint_idx": 0,
@@ -89,8 +89,8 @@
       "route_name": "북동 순찰"
      },
      "provenance": {
-      "source": "play_step",
-      "play_id": "patrol_b",
+      "source": "role_step",
+      "role_id": "patrol_b",
       "step_id": "patrol",
       "decision_id": null,
       "injection_id": null,
@@ -109,7 +109,7 @@
    "target_id": null,
    "decision_id": null,
    "emergency": null,
-   "resume_play_id": null,
+   "resume_role_id": null,
    "resume_step_id": null
   },
   {
@@ -123,7 +123,7 @@
    "heading_deg": 0.0,
    "battery_pct": 100.0,
    "status": "ready",
-   "play_id": "standby",
+   "role_id": "standby",
    "step_id": "wait",
    "entered_step": true,
    "waypoint_idx": 0,
@@ -132,7 +132,7 @@
    "target_id": null,
    "decision_id": null,
    "emergency": null,
-   "resume_play_id": null,
+   "resume_role_id": null,
    "resume_step_id": null
   },
   {
@@ -146,7 +146,7 @@
    "heading_deg": 0.0,
    "battery_pct": 98.4,
    "status": "active",
-   "play_id": "approach",
+   "role_id": "approach",
    "step_id": "approach",
    "entered_step": true,
    "waypoint_idx": 0,
@@ -160,8 +160,8 @@
       "distance_m": 200
      },
      "provenance": {
-      "source": "play_step",
-      "play_id": "approach",
+      "source": "role_step",
+      "role_id": "approach",
       "step_id": "approach",
       "decision_id": null,
       "injection_id": null,
@@ -180,7 +180,7 @@
    "target_id": "boat1",
    "decision_id": null,
    "emergency": null,
-   "resume_play_id": null,
+   "resume_role_id": null,
    "resume_step_id": null
   },
   {
@@ -194,7 +194,7 @@
    "heading_deg": 0.0,
    "battery_pct": 97.6,
    "status": "active",
-   "play_id": "landing",
+   "role_id": "landing",
    "step_id": "move",
    "entered_step": true,
    "waypoint_idx": 0,
@@ -211,8 +211,8 @@
       }
      },
      "provenance": {
-      "source": "play_step",
-      "play_id": "landing",
+      "source": "role_step",
+      "role_id": "landing",
       "step_id": "move",
       "decision_id": null,
       "injection_id": null,
@@ -231,7 +231,7 @@
    "target_id": null,
    "decision_id": null,
    "emergency": null,
-   "resume_play_id": null,
+   "resume_role_id": null,
    "resume_step_id": null
   },
   {
@@ -245,7 +245,7 @@
    "heading_deg": 0.0,
    "battery_pct": 100.0,
    "status": "ready",
-   "play_id": "standby",
+   "role_id": "standby",
    "step_id": "wait",
    "entered_step": true,
    "waypoint_idx": 0,
@@ -254,7 +254,7 @@
    "target_id": null,
    "decision_id": null,
    "emergency": null,
-   "resume_play_id": null,
+   "resume_role_id": null,
    "resume_step_id": null
   }
  ],
@@ -276,7 +276,7 @@
    ],
    "neutralized_ms": null,
    "reported_by": null,
-   "play_id": null,
+   "role_id": null,
    "step_id": null,
    "waypoint_idx": 0,
    "step_since_ms": null,
@@ -302,7 +302,7 @@
     {
      "id": "approach",
      "label": "근접 확인",
-     "play_by_vehicle": {
+     "role_by_vehicle": {
       "d1": "watch",
       "usv": "approach",
       "ugv": "landing"
@@ -317,31 +317,31 @@
  "assignments": [
   {
    "vehicle_id": "d1",
-   "play_id": "watch",
+   "role_id": "watch",
    "since_ms": 1791634290000,
    "reason": "결정 dec-1"
   },
   {
    "vehicle_id": "usv",
-   "play_id": "approach",
+   "role_id": "approach",
    "since_ms": 1791634290000,
    "reason": "결정 dec-1"
   },
   {
    "vehicle_id": "ugv",
-   "play_id": "landing",
+   "role_id": "landing",
    "since_ms": 1791634290000,
    "reason": "결정 dec-1"
   },
   {
    "vehicle_id": "d2",
-   "play_id": "patrol_b",
+   "role_id": "patrol_b",
    "since_ms": 1791634290000,
    "reason": "결정 dec-1"
   },
   {
    "vehicle_id": "d3",
-   "play_id": "standby",
+   "role_id": "standby",
    "since_ms": 1791633600000,
    "reason": "작전 배정"
   }
@@ -359,6 +359,6 @@
   "mission_success": null
  },
  "log": [
-  "[계산] 21:11 결정 dec-1 '근접 확인' → 기체 4대 플레이 전환"
+  "[계산] 21:11 결정 dec-1 '근접 확인' → 기체 4대 Role 전환"
  ]
 }

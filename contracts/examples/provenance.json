@@ -1,6 +1,6 @@
 {
- "source": "play_step",
- "play_id": "watch",
+ "source": "role_step",
+ "role_id": "watch",
  "step_id": "watch",
  "decision_id": null,
  "injection_id": null,

@@ -50,18 +50,18 @@
           "title": "Label",
           "type": "string"
         },
-        "play_by_vehicle": {
+        "role_by_vehicle": {
           "additionalProperties": {
             "type": "string"
           },
-          "title": "Play By Vehicle",
+          "title": "Role By Vehicle",
           "type": "object"
         }
       },
       "required": [
         "id",
         "label",
-        "play_by_vehicle"
+        "role_by_vehicle"
       ],
       "title": "Switch",
       "type": "object"
@@ -141,12 +141,12 @@
       "title": "Rotation",
       "type": "array"
     },
-    "rotation_plays": {
+    "rotation_roles": {
       "default": [],
       "items": {
         "type": "string"
       },
-      "title": "Rotation Plays",
+      "title": "Rotation Roles",
       "type": "array"
     },
     "rotation_pools": {

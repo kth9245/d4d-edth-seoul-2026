@@ -10,7 +10,7 @@ describe("sceneFrames", () => {
     expect(SCENES.s5.blocks[0].reason).toBe("outside_zone");
   });
   it("puts the blocks of patrolling d2 before the fast boat (strike-phase order)", () => {
-    expect(SCENES.s5.vehicles.find((v) => v.id === "d2")!.play_id).toBe("patrol_b");
+    expect(SCENES.s5.vehicles.find((v) => v.id === "d2")!.role_id).toBe("patrol_b");
     expect(SCENES.s6.t_ms).toBeLessThan(SCENES.s4.t_ms);
   });
   it("opens a strike approval card per tracker in s7 and neutralizes fast1 in s8", () => {

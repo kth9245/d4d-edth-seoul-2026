@@ -9,8 +9,8 @@ from contracts.models import (
     Injection,
     Operation,
     PassedCommand,
-    Play,
     Report,
+    Role,
     VehicleSpec,
     VehicleState,
 )
@@ -23,14 +23,14 @@ def run_checks(
     states: list[VehicleState],
     specs: dict[str, VehicleSpec],
     op: Operation,
-    plays: dict[str, Play],
+    roles: dict[str, Role],
     injections: list[Injection],
     t_ms: int,
 ) -> tuple[list[VehicleState], list[PassedCommand], list[Block], list[Report]]:
     passed, blocks, cards = [], [], []
     for cmd in cmds:
         st = next(s for s in states if s.id == cmd.vehicle_id).model_copy(update={"t_ms": t_ms})
-        res = check_command(cmd, st, specs[cmd.vehicle_id], op, plays, injections)
+        res = check_command(cmd, st, specs[cmd.vehicle_id], op, roles, injections)
         if isinstance(res, PassedCommand):
             passed.append(res)
             continue

@@ -15,14 +15,14 @@ class DirectIn(BaseModel):  # POST /direct
     target: GeoPoint
 
 
-class SwitchIn(BaseModel):  # POST /injections: a switch button id, or vehicles -> plays
+class SwitchIn(BaseModel):  # POST /injections: a switch button id, or vehicles -> roles
     switch_id: str | None = None
-    play_by_vehicle: dict[str, str] = {}
+    role_by_vehicle: dict[str, str] = {}
     target_by_vehicle: dict[str, str] = {}  # pointing at a target on the map (decision 0048)
     approve: bool = False  # the press is the approval, no pending card (decision 0049)
 
 
-class DraftIn(BaseModel):  # POST /plays/draft
+class DraftIn(BaseModel):  # POST /roles/draft
     text: str
 
 

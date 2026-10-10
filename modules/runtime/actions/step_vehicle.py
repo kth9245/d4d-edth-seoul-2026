@@ -8,8 +8,8 @@ from contracts.models import (
     Command,
     Condition,
     ConditionKind,
-    Play,
     Report,
+    Role,
     Target,
     VehicleSpec,
     VehicleState,
@@ -39,13 +39,13 @@ def _true(
         return st.battery_pct < float(cond.params.get("pct", 30))
     if cond.kind == ConditionKind.at_time:  # decision 0045: T+ from the operation start
         return started_ms is not None and t_ms - started_ms >= int(cond.params.get("offset_ms", 0))
-    return False  # time_elapsed·operator_choice·signal_received: 시연 플레이에서 안 씀
+    return False  # time_elapsed·operator_choice·signal_received: 시연 Role에서 안 씀
 
 
 def step_vehicle(
     st: VehicleState,
     spec: VehicleSpec,
-    play: Play | None,
+    role: Role | None,
     targets: list[Target],
     t_ms: int,
     started_ms: int | None = None,
@@ -53,15 +53,15 @@ def step_vehicle(
     if st.step_id is None and st.resume_step_id and st.waypoint_idx < 0:  # direct control arrived
         back = {"step_id": st.resume_step_id, "entered_step": False}
         return (
-            st.model_copy(update={**back, "resume_play_id": None, "resume_step_id": None}),
+            st.model_copy(update={**back, "resume_role_id": None, "resume_step_id": None}),
             None,
             None,
         )
-    step = next((s for s in play.steps if s.id == st.step_id), None) if play else None
+    step = next((s for s in role.steps if s.id == st.step_id), None) if role else None
     if step is None or st.status.value not in ("ready", "active") or st.pending_report_id:
         return st, None, None
     if not st.entered_step:
-        return enter_step(st, spec, play, step, targets, t_ms)
+        return enter_step(st, spec, role, step, targets, t_ms)
     tracking = step.do.kind.value in TARGET_ACTIONS
     for ex in step.on:
         if _true(ex.cond, st, targets, tracking, t_ms, started_ms):

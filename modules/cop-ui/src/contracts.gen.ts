@@ -38,7 +38,7 @@ export interface Command {
 
 export type CommandKind = "move" | "orbit" | "keep_distance" | "hold" | "follow_route" | "zigzag" | "return_home" | "relay" | "strike";
 
-export type CommandSource = "play_step" | "operator_decision" | "operator_direct" | "injected_plan" | "emergency";
+export type CommandSource = "role_step" | "operator_decision" | "operator_direct" | "injected_plan" | "emergency";
 
 export type EmergencyKind = "link_lost" | "battery_low" | "operator_call";
 
@@ -50,7 +50,7 @@ export interface PassedCommand {
 
 export interface Provenance {
   source: CommandSource;
-  play_id?: string | null;
+  role_id?: string | null;
   step_id?: string | null;
   decision_id?: string | null;
   injection_id?: string | null;
@@ -67,7 +67,7 @@ export interface VehicleState {
   heading_deg: number;
   battery_pct: number;
   status: VehicleStatus;
-  play_id?: string | null;
+  role_id?: string | null;
   step_id?: string | null;
   entered_step?: boolean;
   waypoint_idx?: number;
@@ -76,14 +76,14 @@ export interface VehicleState {
   target_id?: string | null;
   decision_id?: string | null;
   emergency?: EmergencyKind | null;
-  resume_play_id?: string | null;
+  resume_role_id?: string | null;
   resume_step_id?: string | null;
 }
 
 export interface Switch {
   id: string;
   label: string;
-  play_by_vehicle: Record<string, string>;
+  role_by_vehicle: Record<string, string>;
 }
 
 export interface Operation {
@@ -98,7 +98,7 @@ export interface Operation {
   reserve?: Record<string, string[]>;
   switches?: Switch[];
   rotation?: string[];
-  rotation_plays?: string[];
+  rotation_roles?: string[];
   rotation_pools?: Record<string, string[]>;
 }
 
@@ -111,7 +111,7 @@ export interface EnemySpec {
   appear_offset_ms: number;
   pos?: GeoPoint | null;
   from_enemy?: string | null;
-  play_id: string;
+  role_id: string;
   emit_start_offset_ms?: number | null;
 }
 
@@ -154,7 +154,7 @@ export interface Exit {
 export interface Choice {
   id: string;
   label: string;
-  play_by_vehicle?: Record<string, string>;
+  role_by_vehicle?: Record<string, string>;
   target_by_vehicle?: Record<string, string>;
 }
 
@@ -180,7 +180,7 @@ export interface EmergencyRules {
   operator_call_step?: string | null;
 }
 
-export interface Play {
+export interface Role {
   id: string;
   name: string;
   domains: Domain[];
@@ -198,7 +198,7 @@ export interface ValidationIssue {
   message: string;
 }
 
-export interface PlayCheck {
+export interface RoleCheck {
   ok: boolean;
   issues: ValidationIssue[];
   est_return_battery?: Record<string, number>;
@@ -226,7 +226,7 @@ export interface Target {
   seen_by?: string[];
   neutralized_ms?: number | null;
   reported_by?: string | null;
-  play_id?: string | null;
+  role_id?: string | null;
   step_id?: string | null;
   waypoint_idx?: number;
   step_since_ms?: number | null;
@@ -264,7 +264,7 @@ export interface Decision {
 
 export interface Assignment {
   vehicle_id: string;
-  play_id: string;
+  role_id: string;
   since_ms: number;
   reason: string;
 }
@@ -273,7 +273,7 @@ export interface Injection {
   id: string;
   t_ms: number;
   label: string;
-  play_by_vehicle: Record<string, string>;
+  role_by_vehicle: Record<string, string>;
   switch_id?: string | null;
   target_by_vehicle?: Record<string, string>;
   status?: "pending" | "approved" | "rejected";
@@ -345,7 +345,7 @@ export interface Scenario {
   id: string;
   operation: Operation;
   vehicles: VehicleSpec[];
-  plays: Play[];
+  roles: Role[];
   events?: ScenarioEvent[];
   enemies?: EnemySpec[];
   watch_points?: WatchPoint[];
@@ -373,7 +373,7 @@ export interface TickOutcome {
   assignments?: Assignment[];
   states?: VehicleState[];
   targets?: Target[];
-  plays?: Record<string, Play>;
+  roles?: Record<string, Role>;
 }
 
 export interface CapabilityReason {
@@ -425,7 +425,7 @@ export interface DirectIn {
 
 export interface SwitchIn {
   switch_id?: string | null;
-  play_by_vehicle?: Record<string, string>;
+  role_by_vehicle?: Record<string, string>;
   target_by_vehicle?: Record<string, string>;
   approve?: boolean;
 }

@@ -10,7 +10,7 @@ from contracts.models import (
     Injection,
     Operation,
     PassedCommand,
-    Play,
+    Role,
     VehicleSpec,
     VehicleState,
 )
@@ -21,12 +21,12 @@ from shared.geo import lerp, move_toward
 RULES = ["no_provenance", "outside_zone", "battery_insufficient"]
 
 
-def _no_provenance(cmd: Command, plays: dict[str, Play], injections: list[Injection]) -> bool:
+def _no_provenance(cmd: Command, roles: dict[str, Role], injections: list[Injection]) -> bool:
     p = cmd.provenance
     if p is None:
         return True
-    if p.source == "play_step":
-        return not plays[p.play_id].approved
+    if p.source == "role_step":
+        return not roles[p.role_id].approved
     if p.source == "injected_plan":
         return not any(i.id == p.injection_id and i.status == "approved" for i in injections)
     return False
@@ -37,7 +37,7 @@ def check_command(
     state: VehicleState,
     spec: VehicleSpec,
     op: Operation,
-    plays: dict[str, Play],
+    roles: dict[str, Role],
     injections: list[Injection],
 ) -> PassedCommand | Block:
     def block(reason: str, detail: str, alt: GeoPoint | None = None) -> Block:
@@ -45,7 +45,7 @@ def check_command(
         return Block(command_id=cmd.id, vehicle_id=cmd.vehicle_id, reason=reason, detail=detail,
                      alternative=cmd.model_copy(update=new) if alt else None, t_ms=state.t_ms)  # fmt: skip
 
-    if _no_provenance(cmd, plays, injections):
+    if _no_provenance(cmd, roles, injections):
         return block("no_provenance", "출처 없음")
     p = cmd.params
     dests = (

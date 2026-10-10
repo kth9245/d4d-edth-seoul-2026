@@ -16,7 +16,7 @@
   },
   "provenance": {
    "source": "operator_direct",
-   "play_id": null,
+   "role_id": null,
    "step_id": null,
    "decision_id": null,
    "injection_id": null,

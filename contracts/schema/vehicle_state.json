@@ -56,7 +56,7 @@
     },
     "CommandSource": {
       "enum": [
-        "play_step",
+        "role_step",
         "operator_decision",
         "operator_direct",
         "injected_plan",
@@ -127,7 +127,7 @@
         "source": {
           "$ref": "#/$defs/CommandSource"
         },
-        "play_id": {
+        "role_id": {
           "anyOf": [
             {
               "type": "string"
@@ -137,7 +137,7 @@
             }
           ],
           "default": null,
-          "title": "Play Id"
+          "title": "Role Id"
         },
         "step_id": {
           "anyOf": [
@@ -234,7 +234,7 @@
     "status": {
       "$ref": "#/$defs/VehicleStatus"
     },
-    "play_id": {
+    "role_id": {
       "anyOf": [
         {
           "type": "string"
@@ -244,7 +244,7 @@
         }
       ],
       "default": null,
-      "title": "Play Id"
+      "title": "Role Id"
     },
     "step_id": {
       "anyOf": [
@@ -326,7 +326,7 @@
       ],
       "default": null
     },
-    "resume_play_id": {
+    "resume_role_id": {
       "anyOf": [
         {
           "type": "string"
@@ -336,7 +336,7 @@
         }
       ],
       "default": null,
-      "title": "Resume Play Id"
+      "title": "Resume Role Id"
     },
     "resume_step_id": {
       "anyOf": [

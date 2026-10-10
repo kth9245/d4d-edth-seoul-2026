@@ -17,24 +17,24 @@ def test_vehicles_start_at_home_ready_at_operation_start():
     assert es.t_ms == START
 
 
-def test_play_id_from_operation_assign_and_step_is_play_entry():
+def test_role_id_from_operation_assign_and_step_is_role_entry():
     es = init_engine(SC)
-    entry = {p.id: p.entry for p in SC.plays}
+    entry = {p.id: p.entry for p in SC.roles}
     for s in es.states:
-        assert s.play_id == SC.operation.assign[s.id]
-        assert s.step_id == entry[s.play_id]
+        assert s.role_id == SC.operation.assign[s.id]
+        assert s.step_id == entry[s.role_id]
         assert s.entered_step is False
 
 
 def test_every_vehicle_gets_an_operation_assignment():
     es = init_engine(SC)
-    got = {(a.vehicle_id, a.play_id, a.since_ms, a.reason) for a in es.assignments}
+    got = {(a.vehicle_id, a.role_id, a.since_ms, a.reason) for a in es.assignments}
     assert got == {(v, p, START, "작전 배정") for v, p in SC.operation.assign.items()}
 
 
 def test_lookups_by_id_and_empty_logs():
     es = init_engine(SC)
     assert set(es.specs) == {v.id for v in SC.vehicles}
-    assert set(es.plays) == {p.id for p in SC.plays}
+    assert set(es.roles) == {p.id for p in SC.roles}
     assert es.scenario is SC
     assert (es.targets, es.reports, es.blocks, es.injections) == ([], [], [], [])

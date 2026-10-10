@@ -1,12 +1,12 @@
 import { useState } from "react";
 import sentences from "../../../../../demo/draft_sentences.json";
-import type { Play } from "../../contracts.gen";
+import type { Role } from "../../contracts.gen";
 import { postDraft } from "./draftRequests";
 
-// Top of the editor sidebar (Part3-13): a sentence → POST /plays/draft → the AI draft opens as an unsaved play.
+// Top of the editor sidebar (Part3-13): a sentence → POST /roles/draft → the AI draft opens as an unsaved role.
 // The example buttons fill the demo sentences exactly, since the cache only matches the same sentence; any
 // other sentence goes to the LLM (tens of seconds or more) or, offline, falls back to the standby template.
-export function DraftBox({ onDrafted }: { onDrafted: (play: Play) => void }) {
+export function DraftBox({ onDrafted }: { onDrafted: (role: Role) => void }) {
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<{ ok: boolean; text: string } | null>(null);
@@ -18,16 +18,16 @@ export function DraftBox({ onDrafted }: { onDrafted: (play: Play) => void }) {
     const r = await postDraft(text.trim());
     setBusy(false);
     if (!r.ok) return setNote({ ok: false, text: `초안 실패: ${r.error}` });
-    onDrafted(r.play);
+    onDrafted(r.role);
     const sec = ((performance.now() - t0) / 1000).toFixed(1);
-    setNote(r.play.origin === "ai_draft"
+    setNote(r.role.origin === "ai_draft"
       ? { ok: true, text: `AI 초안 도착 ${sec}s · 저장 전에 검토` }
       : { ok: false, text: "AI 응답 없음 · 대기 템플릿으로 대체" });
   };
 
   return (
     <section className="draftbox">
-      <textarea aria-label="AI 초안 문장" rows={3} value={text} placeholder="임무를 문장으로 적으면 AI가 플레이 초안을 만듭니다"
+      <textarea aria-label="AI 초안 문장" rows={3} value={text} placeholder="임무를 문장으로 적으면 AI가 Role 초안을 만듭니다"
         onChange={(e) => setText(e.target.value)} />
       <div className="examples">
         {sentences.map((s) => (

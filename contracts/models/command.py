@@ -9,7 +9,7 @@ from .enums import BlockReason, CommandKind, CommandSource
 
 class Provenance(BaseModel):
     source: CommandSource
-    play_id: str | None = None
+    role_id: str | None = None
     step_id: str | None = None
     decision_id: str | None = None
     injection_id: str | None = None

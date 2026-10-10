@@ -11,7 +11,7 @@ import "./run.css";
 
 const SPEEDS = [1, 5, 10, 30];
 
-// Under the map: run clock, play/pause, speed, "다음 사건" (pause, then jump) and reset (contracts/API.md §5).
+// Under the map: run clock, start/pause, speed, "다음 사건" (pause, then jump) and reset (contracts/API.md §5).
 // Buttons only send requests; what the bar shows comes from the next WS Frame (Frame.run).
 export function RunBar({ frame }: { frame: Frame | null }) {
   const [startedMs, setStartedMs] = useState<number | null>(null);
@@ -66,7 +66,7 @@ export function RunBar({ frame }: { frame: Frame | null }) {
   return (
     <div className="runbar">
       <span className="clock">T+{offset === null ? "--:--" : mmss(offset)}</span>
-      <button className="play" disabled={off} onClick={() => act(() => postRun(`/run/live?speed=${running ? 0 : speed}`))}>
+      <button className="run-toggle" disabled={off} onClick={() => act(() => postRun(`/run/live?speed=${running ? 0 : speed}`))}>
         {running ? "⏸ 일시정지" : "▶ 재생"}
       </button>
       <span className="speeds">

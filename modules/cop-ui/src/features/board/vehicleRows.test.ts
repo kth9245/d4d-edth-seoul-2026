@@ -11,7 +11,7 @@ const strikeCmd = { command: { id: "c", vehicle_id: "d2", kind: "strike" as cons
 describe("vehicleRows", () => {
   it("says what each vehicle does, its kind, battery and whether a card waits for it", () => {
     const f = mkFrame({
-      vehicles: [mkVehicle({ id: "d1", status: "active", play_id: "patrol_a", target_id: "boat1", battery_pct: 82.6 }),
+      vehicles: [mkVehicle({ id: "d1", status: "active", role_id: "patrol_a", target_id: "boat1", battery_pct: 82.6 }),
         mkVehicle({ id: "d3" })],
       reports: [mkReport({ id: "r", vehicle_id: "d1", choices: [{ id: "c", label: "근접 확인" }] })],
     });
@@ -23,9 +23,9 @@ describe("vehicleRows", () => {
 
   it("shows no target for a vehicle back at base, and marks a striking one and low battery", () => {
     const f = mkFrame({ vehicles: [
-      mkVehicle({ id: "d1", status: "maintenance", play_id: "go_home", target_id: "boat1", battery_pct: 20 }),
-      mkVehicle({ id: "d2", status: "active", play_id: "strike", target_id: "fast1", active: strikeCmd, battery_pct: 29 }),
-      mkVehicle({ id: "d4", status: "returning", play_id: "go_home" }),
+      mkVehicle({ id: "d1", status: "maintenance", role_id: "go_home", target_id: "boat1", battery_pct: 20 }),
+      mkVehicle({ id: "d2", status: "active", role_id: "strike", target_id: "fast1", active: strikeCmd, battery_pct: 29 }),
+      mkVehicle({ id: "d4", status: "returning", role_id: "go_home" }),
     ] });
     const rows = vehicleRows(f, NAMES, []);
     expect(rows.map((r) => [r.doing, r.target, r.striking, r.low])).toEqual([

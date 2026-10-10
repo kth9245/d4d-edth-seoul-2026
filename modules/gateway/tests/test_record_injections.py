@@ -2,7 +2,7 @@ from contracts.models import Injection, Report
 from modules.gateway.actions.record_injections import record_injections
 
 REQ = Injection(
-    id="inj-1", t_ms=1000, label="고속 보트 추적: d2", play_by_vehicle={"d2": "track_fast"}
+    id="inj-1", t_ms=1000, label="고속 보트 추적: d2", role_by_vehicle={"d2": "track_fast"}
 )
 
 
@@ -24,10 +24,10 @@ def test_approval_closes_the_card_and_is_returned():
 
 
 def test_pointing_approved_on_press_applies_without_a_card():
-    # decision 0049: the play menu was the preview, so the request arrives approved with no card before it
+    # decision 0049: the role menu was the preview, so the request arrives approved with no card before it
     other = Report(id="r9", t_ms=0, kind="target_detected", text="보트")
     point = Injection(id="inj-2", t_ms=1000, label="표적 감시: d3 → boat2", status="approved",
-                      play_by_vehicle={"d3": "watch"}, target_by_vehicle={"d3": "boat2"})  # fmt: skip
+                      role_by_vehicle={"d3": "watch"}, target_by_vehicle={"d3": "boat2"})  # fmt: skip
     injections, reports, cards, approved = record_injections([], [other], [point], 1000)
     assert approved == [point] and cards == [] and injections == [point]
     assert reports == [other]

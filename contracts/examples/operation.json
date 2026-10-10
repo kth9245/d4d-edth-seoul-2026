@@ -76,7 +76,7 @@
   {
    "id": "all_home",
    "label": "전 기체 귀환",
-   "play_by_vehicle": {
+   "role_by_vehicle": {
     "d1": "go_home",
     "d2": "go_home",
     "d3": "go_home",
@@ -88,7 +88,7 @@
   {
    "id": "track_fast",
    "label": "고속 보트 추적",
-   "play_by_vehicle": {
+   "role_by_vehicle": {
     "d2": "track_fast",
     "usv": "track_fast_sea"
    }
@@ -96,7 +96,7 @@
   {
    "id": "patrol_all",
    "label": "전 기체 순찰",
-   "play_by_vehicle": {
+   "role_by_vehicle": {
     "d1": "coast_a",
     "d2": "coast_b",
     "d3": "go_home",
@@ -110,7 +110,7 @@
   "d3",
   "d4"
  ],
- "rotation_plays": [
+ "rotation_roles": [
   "coast_a",
   "coast_b"
  ],

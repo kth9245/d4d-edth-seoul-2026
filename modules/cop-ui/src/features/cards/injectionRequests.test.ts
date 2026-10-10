@@ -33,8 +33,8 @@ describe("injection requests", () => {
 
   it("requests a partial switch for chosen vehicles", async () => {
     const f = stub(ok("inj-4"));
-    await postSwitch({ play_by_vehicle: { d2: "track_fast" } });
-    expect(JSON.parse(f.mock.calls[0][1]?.body as string)).toEqual({ play_by_vehicle: { d2: "track_fast" } });
+    await postSwitch({ role_by_vehicle: { d2: "track_fast" } });
+    expect(JSON.parse(f.mock.calls[0][1]?.body as string)).toEqual({ role_by_vehicle: { d2: "track_fast" } });
   });
 
   it("returns the server detail on failure", async () => {

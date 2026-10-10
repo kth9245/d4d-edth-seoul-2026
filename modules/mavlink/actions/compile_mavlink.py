@@ -1,19 +1,19 @@
-"""MAV-01 compile_mavlink: 플레이를 기체별 QGC .plan + pymavlink 스크립트로(결정 0011, 실제 전송 없음)
+"""MAV-01 compile_mavlink: Role을 기체별 QGC .plan + pymavlink 스크립트로(결정 0011, 실제 전송 없음)
 .plan은 entry step의 미션, 스크립트는 step 그래프 전체(틀: modules/mavlink/vehicle_script.py.txt).
 SPEC: modules/mavlink/SPEC.md#MAV-01
 """
 
 from pathlib import Path
 
-from contracts.models import CommandKind, Domain, Operation, Play, Step, VehicleSpec
-from modules.play import expand_action
+from contracts.models import CommandKind, Domain, Operation, Role, Step, VehicleSpec
+from modules.role import expand_action
 
 TEMPLATE = Path(__file__).resolve().parents[1] / "vehicle_script.py.txt"
 WAYPOINT, LOITER_UNLIM, RTL, DO_SET_MODE = 16, 17, 20, 176  # MAV_CMD
 FOLLOW = {Domain.air: 23, Domain.sea: 6, Domain.ground: 6}  # ArduPilot custom mode (Copter/Rover)
 ROVER_HOLD = 4
 MAV_TYPE = {Domain.air: 2, Domain.sea: 11, Domain.ground: 10}  # quadrotor / surface boat / rover
-AIR_ALT_M = 50  # plays store alt_m 0; drones need a flight altitude
+AIR_ALT_M = 50  # roles store alt_m 0; drones need a flight altitude
 K = CommandKind
 
 
@@ -56,21 +56,21 @@ def _plan(items: list[list[float]], spec: VehicleSpec) -> dict:
 
 
 def compile_mavlink(
-    play: Play, op: Operation, specs: dict[str, VehicleSpec]
+    role: Role, op: Operation, specs: dict[str, VehicleSpec]
 ) -> dict[str, tuple[dict, str]]:
     out = {}
-    for vid in (v for v, pid in op.assign.items() if pid == play.id):
+    for vid in (v for v, pid in op.assign.items() if pid == role.id):
         spec = specs[vid]
         steps = {
             s.id: {"items": _items(s, spec), "wait": bool(s.report and s.report.choices),
-                   "moves": {c.id: c.play_by_vehicle[vid] for c in (s.report.choices if s.report else [])
-                             if vid in c.play_by_vehicle},
+                   "moves": {c.id: c.role_by_vehicle[vid] for c in (s.report.choices if s.report else [])
+                             if vid in c.role_by_vehicle},
                    "exits": [[e.cond.kind.value, e.cond.params, e.go_step] for e in s.on]}
-            for s in play.steps
+            for s in role.steps
         }  # fmt: skip
-        fill = {"VEHICLE": vid, "PLAY": play.id, "ENTRY": play.entry, "STEPS": steps}
+        fill = {"VEHICLE": vid, "ROLE": role.id, "ENTRY": role.entry, "STEPS": steps}
         script = TEMPLATE.read_text(encoding="utf-8")
         for key, value in fill.items():
             script = script.replace("{" + key + "}", repr(value))
-        out[vid] = (_plan(steps[play.entry]["items"], spec), script)
+        out[vid] = (_plan(steps[role.entry]["items"], spec), script)
     return out

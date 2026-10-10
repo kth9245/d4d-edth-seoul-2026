@@ -41,7 +41,7 @@ function strikeBasis(frame: Frame, r: Report): string | undefined {
   if (!first || !dec) return undefined;
   const ids = strikers.map((v) => v.id);
   const choice = frame.reports.filter((c) => c.decision_id === dec).flatMap((c) => c.choices ?? [])
-    .find((ch) => sameSet(Object.keys(ch.play_by_vehicle ?? {}), ids));
+    .find((ch) => sameSet(Object.keys(ch.role_by_vehicle ?? {}), ids));
   const checks = first.checks.map((c) => CHECK_KO[c] ?? c).join("·");
   return `운용자 결정 ${dec}${choice ? ` '${choice.label}'` : ""} → ${ids.join("·")} 타격 · ${checks} 검사 통과`;
 }
@@ -68,7 +68,7 @@ function threatOf(t: Target | undefined): CardThreat | undefined {
 
 function fromReport(r: Report, frame: Frame): Card {
   const done = r.resolved_ms == null ? null : `처리됨 ${kstTime(r.resolved_ms)}`;
-  const choices = done ? [] : (r.choices ?? []).map((c) => ({ id: c.id, label: c.label, preview: switches(c.play_by_vehicle) }));
+  const choices = done ? [] : (r.choices ?? []).map((c) => ({ id: c.id, label: c.label, preview: switches(c.role_by_vehicle) }));
   const preview = r.kind === "target_neutralized" ? strikeBasis(frame, r) : undefined;
   const threat = r.kind === "target_detected" ? threatOf(frame.targets.find((t) => t.id === r.target_id)) : undefined;
   return { id: r.id, source: "report", kind: r.kind, vehicle: r.vehicle_id ?? null, t_ms: r.t_ms,
@@ -76,8 +76,8 @@ function fromReport(r: Report, frame: Frame): Card {
 }
 
 function fromInjection(i: Injection): Card {
-  return { id: i.id, source: "injection", kind: "injection", vehicle: Object.keys(i.play_by_vehicle).join("·") || null,
-    t_ms: i.t_ms, time: kstTime(i.t_ms), text: i.label, choices: [], preview: switches(i.play_by_vehicle),
+  return { id: i.id, source: "injection", kind: "injection", vehicle: Object.keys(i.role_by_vehicle).join("·") || null,
+    t_ms: i.t_ms, time: kstTime(i.t_ms), text: i.label, choices: [], preview: switches(i.role_by_vehicle),
     done: SETTLED[i.status ?? "pending"] ?? null };
 }
 

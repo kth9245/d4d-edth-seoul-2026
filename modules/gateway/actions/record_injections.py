@@ -13,7 +13,7 @@ def record_injections(
     cards, approved = [], []
     for inj in requests:
         if inj.status == "pending":
-            vid = next(iter(inj.play_by_vehicle), None)
+            vid = next(iter(inj.role_by_vehicle), None)
             cards.append(Report(id=f"rep-{vid}-{t_ms}-i", t_ms=t_ms, kind="injection_pending",
                                 vehicle_id=vid, text=f"전환 승인 대기: {inj.label}"))  # fmt: skip
         else:

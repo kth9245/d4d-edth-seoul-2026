@@ -8,18 +8,18 @@
       "title": "Label",
       "type": "string"
     },
-    "play_by_vehicle": {
+    "role_by_vehicle": {
       "additionalProperties": {
         "type": "string"
       },
-      "title": "Play By Vehicle",
+      "title": "Role By Vehicle",
       "type": "object"
     }
   },
   "required": [
     "id",
     "label",
-    "play_by_vehicle"
+    "role_by_vehicle"
   ],
   "title": "Switch",
   "type": "object"

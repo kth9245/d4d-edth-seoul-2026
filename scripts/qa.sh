@@ -3,7 +3,7 @@
 # and checks each step (scripts/qa/*.json). Needs scripts/dev.sh running (gateway 8000, UI 5173).
 #   scripts/qa.sh                      all checklists
 #   scripts/qa.sh scripts/qa/live.json one checklist
-# Changes the dev server's state: resets the run and saves two plays in its memory (gone when it restarts).
+# Changes the dev server's state: resets the run and saves two roles in its memory (gone when it restarts).
 # Output: logs/qa/qa.log and screenshots in logs/qa/. Exit 1 when any step fails.
 set -uo pipefail
 cd "$(git rev-parse --show-toplevel)"

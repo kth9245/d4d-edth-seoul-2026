@@ -10,8 +10,8 @@ from contracts.models import (
     Injection,
     Metrics,
     PassedCommand,
-    Play,
     Report,
+    Role,
     RunState,
     Scenario,
     Target,
@@ -25,7 +25,7 @@ class EngineState:
     t_ms: int
     scenario: Scenario
     specs: dict[str, VehicleSpec]
-    plays: dict[str, Play]
+    roles: dict[str, Role]
     states: list[VehicleState]
     targets: list[Target]
     reports: list[Report]

@@ -40,8 +40,8 @@
           "title": "Vehicle Id",
           "type": "string"
         },
-        "play_id": {
-          "title": "Play Id",
+        "role_id": {
+          "title": "Role Id",
           "type": "string"
         },
         "since_ms": {
@@ -55,7 +55,7 @@
       },
       "required": [
         "vehicle_id",
-        "play_id",
+        "role_id",
         "since_ms",
         "reason"
       ],
@@ -124,12 +124,12 @@
           "title": "Label",
           "type": "string"
         },
-        "play_by_vehicle": {
+        "role_by_vehicle": {
           "additionalProperties": {
             "type": "string"
           },
           "default": {},
-          "title": "Play By Vehicle",
+          "title": "Role By Vehicle",
           "type": "object"
         },
         "target_by_vehicle": {
@@ -204,7 +204,7 @@
     },
     "CommandSource": {
       "enum": [
-        "play_step",
+        "role_step",
         "operator_decision",
         "operator_direct",
         "injected_plan",
@@ -432,11 +432,11 @@
           "title": "Label",
           "type": "string"
         },
-        "play_by_vehicle": {
+        "role_by_vehicle": {
           "additionalProperties": {
             "type": "string"
           },
-          "title": "Play By Vehicle",
+          "title": "Role By Vehicle",
           "type": "object"
         },
         "switch_id": {
@@ -474,7 +474,7 @@
         "id",
         "t_ms",
         "label",
-        "play_by_vehicle"
+        "role_by_vehicle"
       ],
       "title": "Injection",
       "type": "object"
@@ -504,79 +504,12 @@
       "title": "PassedCommand",
       "type": "object"
     },
-    "Play": {
-      "properties": {
-        "id": {
-          "title": "Id",
-          "type": "string"
-        },
-        "name": {
-          "title": "Name",
-          "type": "string"
-        },
-        "domains": {
-          "items": {
-            "$ref": "#/$defs/Domain"
-          },
-          "title": "Domains",
-          "type": "array"
-        },
-        "steps": {
-          "items": {
-            "$ref": "#/$defs/Step"
-          },
-          "title": "Steps",
-          "type": "array"
-        },
-        "entry": {
-          "title": "Entry",
-          "type": "string"
-        },
-        "emergency": {
-          "$ref": "#/$defs/EmergencyRules",
-          "default": {
-            "battery_low_pct": 30.0,
-            "link_lost_step": null,
-            "battery_low_step": null,
-            "operator_call_step": null
-          }
-        },
-        "origin": {
-          "default": "human",
-          "enum": [
-            "human",
-            "ai_draft"
-          ],
-          "title": "Origin",
-          "type": "string"
-        },
-        "approved": {
-          "default": false,
-          "title": "Approved",
-          "type": "boolean"
-        },
-        "template": {
-          "default": false,
-          "title": "Template",
-          "type": "boolean"
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "domains",
-        "steps",
-        "entry"
-      ],
-      "title": "Play",
-      "type": "object"
-    },
     "Provenance": {
       "properties": {
         "source": {
           "$ref": "#/$defs/CommandSource"
         },
-        "play_id": {
+        "role_id": {
           "anyOf": [
             {
               "type": "string"
@@ -586,7 +519,7 @@
             }
           ],
           "default": null,
-          "title": "Play Id"
+          "title": "Role Id"
         },
         "step_id": {
           "anyOf": [
@@ -771,6 +704,73 @@
       "title": "ReportSpec",
       "type": "object"
     },
+    "Role": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "domains": {
+          "items": {
+            "$ref": "#/$defs/Domain"
+          },
+          "title": "Domains",
+          "type": "array"
+        },
+        "steps": {
+          "items": {
+            "$ref": "#/$defs/Step"
+          },
+          "title": "Steps",
+          "type": "array"
+        },
+        "entry": {
+          "title": "Entry",
+          "type": "string"
+        },
+        "emergency": {
+          "$ref": "#/$defs/EmergencyRules",
+          "default": {
+            "battery_low_pct": 30.0,
+            "link_lost_step": null,
+            "battery_low_step": null,
+            "operator_call_step": null
+          }
+        },
+        "origin": {
+          "default": "human",
+          "enum": [
+            "human",
+            "ai_draft"
+          ],
+          "title": "Origin",
+          "type": "string"
+        },
+        "approved": {
+          "default": false,
+          "title": "Approved",
+          "type": "boolean"
+        },
+        "template": {
+          "default": false,
+          "title": "Template",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "domains",
+        "steps",
+        "entry"
+      ],
+      "title": "Role",
+      "type": "object"
+    },
     "Step": {
       "properties": {
         "id": {
@@ -878,7 +878,7 @@
           "default": null,
           "title": "Reported By"
         },
-        "play_id": {
+        "role_id": {
           "anyOf": [
             {
               "type": "string"
@@ -888,7 +888,7 @@
             }
           ],
           "default": null,
-          "title": "Play Id"
+          "title": "Role Id"
         },
         "step_id": {
           "anyOf": [
@@ -1045,7 +1045,7 @@
         "status": {
           "$ref": "#/$defs/VehicleStatus"
         },
-        "play_id": {
+        "role_id": {
           "anyOf": [
             {
               "type": "string"
@@ -1055,7 +1055,7 @@
             }
           ],
           "default": null,
-          "title": "Play Id"
+          "title": "Role Id"
         },
         "step_id": {
           "anyOf": [
@@ -1137,7 +1137,7 @@
           ],
           "default": null
         },
-        "resume_play_id": {
+        "resume_role_id": {
           "anyOf": [
             {
               "type": "string"
@@ -1147,7 +1147,7 @@
             }
           ],
           "default": null,
-          "title": "Resume Play Id"
+          "title": "Resume Role Id"
         },
         "resume_step_id": {
           "anyOf": [
@@ -1258,12 +1258,12 @@
       "title": "Targets",
       "type": "array"
     },
-    "plays": {
+    "roles": {
       "additionalProperties": {
-        "$ref": "#/$defs/Play"
+        "$ref": "#/$defs/Role"
       },
       "default": {},
-      "title": "Plays",
+      "title": "Roles",
       "type": "object"
     }
   },

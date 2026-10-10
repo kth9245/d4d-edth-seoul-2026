@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from contracts.models import Decision, Frame, GeoPoint, Play, Scenario, TargetKind, TickInputs
+from contracts.models import Decision, Frame, GeoPoint, Role, Scenario, TargetKind, TickInputs
 from modules.gateway.engine import init_engine, tick
 from modules.sim import load_scenario_json
 from shared.geo import dist_m
@@ -9,7 +9,7 @@ from shared.land import inside
 
 ROOT = Path(__file__).resolve().parent.parent
 SCENARIO = ROOT / "demo" / "scenarios" / "baengnyeong_night.json"
-PLAYS = ROOT / "demo" / "plays"
+ROLES = ROOT / "demo" / "roles"
 
 
 def _load(path: Path):
@@ -19,18 +19,18 @@ def _load(path: Path):
 def test_scenario_validates_and_has_a_start_time():
     sc = Scenario.model_validate(_load(SCENARIO))
     assert sc.operation.started_ms is not None
-    assert set(sc.operation.assign.values()) <= {p.id for p in sc.plays}
+    assert set(sc.operation.assign.values()) <= {p.id for p in sc.roles}
 
 
-def test_play_files_match_the_scenario_plays():
+def test_role_files_match_the_scenario_roles():
     sc = Scenario.model_validate(_load(SCENARIO))
-    files = {p.stem: Play.model_validate(_load(p)) for p in PLAYS.glob("*.json")}
-    assert files == {p.id: p for p in sc.plays}
+    files = {p.stem: Role.model_validate(_load(p)) for p in ROLES.glob("*.json")}
+    assert files == {p.id: p for p in sc.roles}
 
 
 def test_fast_boat_tracking_lets_the_operator_pick_the_target():
     sc = Scenario.model_validate(_load(SCENARIO))
-    track = next(p for p in sc.plays if p.id == "track_fast")
+    track = next(p for p in sc.roles if p.id == "track_fast")
     assert track.steps[0].do.params["target"] == "operator"
 
 
@@ -88,19 +88,19 @@ def test_nothing_at_sea_crosses_the_island():
             f"{wet} on the island at T+{(frame.t_ms - sc.operation.started_ms) // 1000} s"
         )
     assert card is not None
-    assert next(v for v in frame.vehicles if v.id == "usv").play_id == "approach"
+    assert next(v for v in frame.vehicles if v.id == "usv").role_id == "approach"
     assert any(t.id == "fast1" for t in frame.targets)
 
 
 def test_patrol_all_switch_rotates_the_three_drones():  # decision 0037: "전 기체 순찰" button
     from contracts.models import Injection, TickInputs
     from modules.gateway.engine import init_engine, tick
-    from modules.play import check_operation
+    from modules.role import check_operation
 
     sc = load_scenario_json(str(SCENARIO))
     sw = next(s for s in sc.operation.switches if s.id == "patrol_all")
     assert sw.label == "전 기체 순찰"
-    assert sw.play_by_vehicle == {
+    assert sw.role_by_vehicle == {
         "d1": "coast_a",
         "d2": "coast_b",
         "d3": "go_home",
@@ -108,16 +108,16 @@ def test_patrol_all_switch_rotates_the_three_drones():  # decision 0037: "전 �
     }
     assert sc.operation.rotation == ["d1", "d2", "d3", "d4"]
     assert sc.operation.rotation_pools == {"coast_a": ["d1", "d3"], "coast_b": ["d2", "d4"]}
-    assert sc.operation.rotation_plays == ["coast_a", "coast_b"]
+    assert sc.operation.rotation_roles == ["coast_a", "coast_b"]
     specs = {v.id: v for v in sc.vehicles}
-    assert check_operation(sc.operation, {p.id: p for p in sc.plays}, specs).ok
+    assert check_operation(sc.operation, {p.id: p for p in sc.roles}, specs).ok
     es, t = init_engine(sc), sc.operation.started_ms
     inj = Injection(id="inj-1", t_ms=t + sc.tick_ms, label=sw.label,
-                    play_by_vehicle=sw.play_by_vehicle, switch_id=sw.id)  # fmt: skip
+                    role_by_vehicle=sw.role_by_vehicle, switch_id=sw.id)  # fmt: skip
     es, _ = tick(es, TickInputs(injections=[inj]))
     es, f = tick(es, TickInputs(injections=[inj.model_copy(update={"status": "approved"})]))
-    plays = {v.id: v.play_id for v in f.vehicles}
-    assert (plays["d1"], plays["d2"], plays["d3"], plays["d4"]) == (
+    roles = {v.id: v.role_id for v in f.vehicles}
+    assert (roles["d1"], roles["d2"], roles["d3"], roles["d4"]) == (
         "coast_a",
         "coast_b",
         "go_home",

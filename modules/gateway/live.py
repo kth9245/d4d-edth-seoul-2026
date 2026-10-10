@@ -18,15 +18,15 @@ from contracts.models import (
     Frame,
     Injection,
     Operation,
-    Play,
-    PlayCheck,
+    Role,
+    RoleCheck,
     RunState,
     Scenario,
     ScenarioInfo,
     SwitchIn,
     TickInputs,
 )
-from modules.gateway.actions.check_saved_play import check_saved_play
+from modules.gateway.actions.check_saved_role import check_saved_role
 
 
 class Live:
@@ -96,37 +96,37 @@ class Live:
         self.reset()
         return op
 
-    def check_play(self, play: Play) -> PlayCheck:
-        return check_saved_play(play, self.scenario)
+    def check_role(self, role: Role) -> RoleCheck:
+        return check_saved_role(role, self.scenario)
 
-    def save_play(self, play: Play) -> PlayCheck:
+    def save_role(self, role: Role) -> RoleCheck:
         """Saved (in memory, same id replaced in place) only when the check passes; then reset like
-        set_operation, so the next run start uses it. A failing play changes nothing."""
-        chk = self.check_play(play)
+        set_operation, so the next run start uses it. A failing role changes nothing."""
+        chk = self.check_role(role)
         if chk.ok:
-            plays = [play if p.id == play.id else p for p in self.scenario.plays]
-            if all(p.id != play.id for p in self.scenario.plays):
-                plays.append(play)
-            self.scenario = self.scenario.model_copy(update={"plays": plays})
+            roles = [role if p.id == role.id else p for p in self.scenario.roles]
+            if all(p.id != role.id for p in self.scenario.roles):
+                roles.append(role)
+            self.scenario = self.scenario.model_copy(update={"roles": roles})
             self.reset()
         return chk
 
-    def delete_play(self, play_id: str) -> list[Play]:
-        """Removed from the running operation (in memory) and reset like save_play (decision 0050).
-        Vehicles that started on it start with no play (the engine cannot start them on a missing one);
+    def delete_role(self, role_id: str) -> list[Role]:
+        """Removed from the running operation (in memory) and reset like save_role (decision 0050).
+        Vehicles that started on it start with no role (the engine cannot start them on a missing one);
         other uses (choices, switches, enemies) are not checked and stop the run when reached."""
-        if all(p.id != play_id for p in self.scenario.plays):
-            raise KeyError(play_id)  # 404, before anything changes
-        plays = [p for p in self.scenario.plays if p.id != play_id]
+        if all(p.id != role_id for p in self.scenario.roles):
+            raise KeyError(role_id)  # 404, before anything changes
+        roles = [p for p in self.scenario.roles if p.id != role_id]
         op = self.scenario.operation
-        assign = {v: p for v, p in op.assign.items() if p != play_id}
+        assign = {v: p for v, p in op.assign.items() if p != role_id}
         op = op.model_copy(update={"assign": assign})
-        self.scenario = self.scenario.model_copy(update={"plays": plays, "operation": op})
+        self.scenario = self.scenario.model_copy(update={"roles": roles, "operation": op})
         self.reset()
-        return plays
+        return roles
 
     def scenario_infos(self) -> list[ScenarioInfo]:
-        self.scenarios[self.scenario.id] = self.scenario  # saved plays and operation edits
+        self.scenarios[self.scenario.id] = self.scenario  # saved roles and operation edits
         return [
             ScenarioInfo(
                 id=s.id,
@@ -165,17 +165,17 @@ class Live:
         id_, t = self._next("inj")
         if body.switch_id:
             sw = next(s for s in self.scenario.operation.switches if s.id == body.switch_id)
-            label, pbv = sw.label, sw.play_by_vehicle
+            label, pbv = sw.label, sw.role_by_vehicle
         else:
-            names = {p.id: p.name for p in self.scenario.plays}
-            pbv = body.play_by_vehicle
+            names = {p.id: p.name for p in self.scenario.roles}
+            pbv = body.role_by_vehicle
             label = ", ".join(
                 f"{names[p]}: {v}"
                 + (f" → {body.target_by_vehicle[v]}" if v in body.target_by_vehicle else "")
                 for v, p in pbv.items()
             )
         # decisions 0048, 0049: a pointing request carries its targets and may be approved by the press itself
-        inj = Injection(id=id_, t_ms=t, label=label, play_by_vehicle=pbv, switch_id=body.switch_id,
+        inj = Injection(id=id_, t_ms=t, label=label, role_by_vehicle=pbv, switch_id=body.switch_id,
                         target_by_vehicle=body.target_by_vehicle,
                         status="approved" if body.approve else "pending")  # fmt: skip
         return self._queue(inj, self.inputs.injections)

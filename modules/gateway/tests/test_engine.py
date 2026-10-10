@@ -44,9 +44,9 @@ def test_one_decision_switches_four_vehicles():
     es, fr = tick(es, TickInputs(decisions=[dec]))
     for _ in range(5):
         es, fr = tick(es, TickInputs())
-    plays = {v.id: v.play_id for v in fr.vehicles}
+    roles = {v.id: v.role_id for v in fr.vehicles}
     want = {"d1": "watch", "usv": "approach", "ugv": "landing", "d2": "patrol_b"}
-    assert {k: plays[k] for k in want} == want
+    assert {k: roles[k] for k in want} == want
     assert any(a.reason == "결정 dec-1" for a in fr.assignments)
 
 
@@ -60,8 +60,8 @@ def test_fleet_choice_sends_a_standby_drone_to_watch_with_the_finder():  # decis
     for _ in range(5):
         es, fr = tick(es, TickInputs())
     by = {v.id: v for v in fr.vehicles}
-    assert (by["d3"].play_id, by["d3"].target_id) == ("watch", rep.target_id)
-    assert (by["d1"].play_id, by["d1"].step_id) == ("patrol_a", "report")  # still over the boat
+    assert (by["d3"].role_id, by["d3"].target_id) == ("watch", rep.target_id)
+    assert (by["d1"].role_id, by["d1"].step_id) == ("patrol_a", "report")  # still over the boat
 
 
 def test_strike_next_to_a_target_neutralizes_it_and_logs():
@@ -87,15 +87,15 @@ def test_strike_next_to_a_target_neutralizes_it_and_logs():
     assert fr.metrics.mission_success is True
 
 
-def test_enemy_appears_and_moves_by_its_play():
-    from contracts.models import Action, EnemySpec, Play, Step
+def test_enemy_appears_and_moves_by_its_role():
+    from contracts.models import Action, EnemySpec, Role, Step
 
     dest = {"lat": 37.985, "lon": 124.75, "alt_m": 0}
-    play = Play(id="enemy_x", name="x", domains=["sea"], entry="go", approved=True,
+    role = Role(id="enemy_x", name="x", domains=["sea"], entry="go", approved=True,
                 steps=[Step(id="go", name="go", do=Action(kind="move_to", params={"target": dest}))])  # fmt: skip
     enemy = EnemySpec(id="x", kind="boat", speed_mps=5, appear_offset_ms=SC.tick_ms,
-                      pos={"lat": 37.985, "lon": 124.70}, play_id="enemy_x")  # fmt: skip
-    sc = SC.model_copy(update={"enemies": [enemy], "plays": [*SC.plays, play]})
+                      pos={"lat": 37.985, "lon": 124.70}, role_id="enemy_x")  # fmt: skip
+    sc = SC.model_copy(update={"enemies": [enemy], "roles": [*SC.roles, role]})
     es = init_engine(sc)
     es, fr = tick(es, TickInputs())
     first = next(t for t in fr.targets if t.id == "x")

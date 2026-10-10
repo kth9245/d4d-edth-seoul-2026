@@ -1,50 +1,50 @@
-import type { Choice, Operation, Play } from "../../contracts.gen";
+import type { Choice, Operation, Role } from "../../contracts.gen";
 
-export type ColumnPlay = { play_id: string; play: Play | null; via: string | null };
-export type Column = { vehicle_id: string; reserve_for: string[]; plays: ColumnPlay[] };
+export type ColumnRole = { role_id: string; role: Role | null; via: string | null };
+export type Column = { vehicle_id: string; reserve_for: string[]; roles: ColumnRole[] };
 
-export function choicesOf(play: Play): Choice[] {
-  return play.steps.flatMap((s) => s.report?.choices ?? []);
+export function choicesOf(role: Role): Choice[] {
+  return role.steps.flatMap((s) => s.report?.choices ?? []);
 }
 
-// Plays the operation can reach: assigned plays, then every play a report choice points to (BFS, each once).
-export function reachablePlays(op: Operation, plays: Play[]): Play[] {
-  const byId = new Map(plays.map((p) => [p.id, p]));
+// Roles the operation can reach: assigned roles, then every role a report choice points to (BFS, each once).
+export function reachableRoles(op: Operation, roles: Role[]): Role[] {
+  const byId = new Map(roles.map((p) => [p.id, p]));
   const queue = Object.values(op.assign ?? {});
   const seen = new Set<string>();
-  const out: Play[] = [];
+  const out: Role[] = [];
   while (queue.length > 0) {
     const id = queue.shift()!;
     if (seen.has(id)) continue;
     seen.add(id);
-    const play = byId.get(id);
-    if (!play) continue;
-    out.push(play);
-    for (const c of choicesOf(play)) queue.push(...Object.values(c.play_by_vehicle ?? {}));
+    const role = byId.get(id);
+    if (!role) continue;
+    out.push(role);
+    for (const c of choicesOf(role)) queue.push(...Object.values(c.role_by_vehicle ?? {}));
   }
   return out;
 }
 
-// One column per vehicle: its start play, then plays reachable choices send it to. Switches stay out.
-export function vehicleColumns(op: Operation, plays: Play[]): Column[] {
-  const byId = new Map(plays.map((p) => [p.id, p]));
-  const reach = reachablePlays(op, plays);
+// One column per vehicle: its start role, then roles reachable choices send it to. Switches stay out.
+export function vehicleColumns(op: Operation, roles: Role[]): Column[] {
+  const byId = new Map(roles.map((p) => [p.id, p]));
+  const reach = reachableRoles(op, roles);
   return op.vehicle_ids.map((v) => {
-    const out: ColumnPlay[] = [];
+    const out: ColumnRole[] = [];
     const add = (id: string, via: string | null) => {
-      if (!out.some((c) => c.play_id === id)) out.push({ play_id: id, play: byId.get(id) ?? null, via });
+      if (!out.some((c) => c.role_id === id)) out.push({ role_id: id, role: byId.get(id) ?? null, via });
     };
     const start = op.assign?.[v];
     if (start) add(start, null);
     for (const p of reach) {
       for (const c of choicesOf(p)) {
-        const next = c.play_by_vehicle?.[v];
+        const next = c.role_by_vehicle?.[v];
         if (next) add(next, c.label);
       }
     }
     const reserve_for = Object.entries(op.reserve ?? {})
       .filter(([, ids]) => ids.includes(v))
       .map(([id]) => id);
-    return { vehicle_id: v, reserve_for, plays: out };
+    return { vehicle_id: v, reserve_for, roles: out };
   });
 }

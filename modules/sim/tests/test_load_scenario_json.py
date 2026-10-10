@@ -38,10 +38,10 @@ def test_missing_started_ms_raises(tmp_path):
         load_scenario_json(p)
 
 
-def test_assign_to_unknown_play_raises(tmp_path):
+def test_assign_to_unknown_role_raises(tmp_path):
     def point_to_nothing(d):
         vid = next(iter(d["operation"]["assign"]))
-        d["operation"]["assign"][vid] = "no-such-play"
+        d["operation"]["assign"][vid] = "no-such-role"
 
     with pytest.raises(ValueError, match="assign"):
         load_scenario_json(_write(tmp_path, point_to_nothing))

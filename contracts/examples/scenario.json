@@ -78,7 +78,7 @@
    {
     "id": "all_home",
     "label": "전 기체 귀환",
-    "play_by_vehicle": {
+    "role_by_vehicle": {
      "d1": "go_home",
      "d2": "go_home",
      "d3": "go_home",
@@ -90,7 +90,7 @@
    {
     "id": "track_fast",
     "label": "고속 보트 추적",
-    "play_by_vehicle": {
+    "role_by_vehicle": {
      "d2": "track_fast",
      "usv": "track_fast_sea"
     }
@@ -98,7 +98,7 @@
    {
     "id": "patrol_all",
     "label": "전 기체 순찰",
-    "play_by_vehicle": {
+    "role_by_vehicle": {
      "d1": "coast_a",
      "d2": "coast_b",
      "d3": "go_home",
@@ -112,7 +112,7 @@
    "d3",
    "d4"
   ],
-  "rotation_plays": [
+  "rotation_roles": [
    "coast_a",
    "coast_b"
   ],
@@ -237,7 +237,7 @@
    "rf_range_m": 0.0
   }
  ],
- "plays": [
+ "roles": [
   {
    "id": "standby",
    "name": "대기",
@@ -327,7 +327,7 @@
        {
         "id": "approach",
         "label": "근접 확인",
-        "play_by_vehicle": {
+        "role_by_vehicle": {
          "d1": "watch",
          "usv": "approach",
          "ugv": "landing"
@@ -541,7 +541,7 @@
        {
         "id": "handoff",
         "label": "수상정 인계",
-        "play_by_vehicle": {
+        "role_by_vehicle": {
          "usv": "approach"
         },
         "target_by_vehicle": {}
@@ -611,7 +611,7 @@
        {
         "id": "keep",
         "label": "감시 유지",
-        "play_by_vehicle": {},
+        "role_by_vehicle": {},
         "target_by_vehicle": {}
        }
       ],
@@ -691,7 +691,7 @@
        {
         "id": "strike_d2",
         "label": "이 기체로 타격",
-        "play_by_vehicle": {
+        "role_by_vehicle": {
          "d2": "strike"
         },
         "target_by_vehicle": {}
@@ -699,7 +699,7 @@
        {
         "id": "strike_both",
         "label": "함께 타격",
-        "play_by_vehicle": {
+        "role_by_vehicle": {
          "d2": "strike",
          "usv": "strike"
         },
@@ -800,7 +800,7 @@
        {
         "id": "strike_usv",
         "label": "이 기체로 타격",
-        "play_by_vehicle": {
+        "role_by_vehicle": {
          "usv": "strike"
         },
         "target_by_vehicle": {}
@@ -808,7 +808,7 @@
        {
         "id": "strike_both",
         "label": "함께 타격",
-        "play_by_vehicle": {
+        "role_by_vehicle": {
          "d2": "strike",
          "usv": "strike"
         },
@@ -1541,7 +1541,7 @@
     "alt_m": 0.0
    },
    "from_enemy": null,
-   "play_id": "enemy_boat1",
+   "role_id": "enemy_boat1",
    "emit_start_offset_ms": null
   },
   {
@@ -1551,7 +1551,7 @@
    "appear_offset_ms": 1380000,
    "pos": null,
    "from_enemy": "boat1",
-   "play_id": "enemy_fast1",
+   "role_id": "enemy_fast1",
    "emit_start_offset_ms": null
   },
   {
@@ -1565,7 +1565,7 @@
     "alt_m": 0.0
    },
    "from_enemy": null,
-   "play_id": "enemy_boat2",
+   "role_id": "enemy_boat2",
    "emit_start_offset_ms": 360000
   },
   {
@@ -1579,7 +1579,7 @@
     "alt_m": 0.0
    },
    "from_enemy": null,
-   "play_id": "enemy_boat3",
+   "role_id": "enemy_boat3",
    "emit_start_offset_ms": null
   }
  ],

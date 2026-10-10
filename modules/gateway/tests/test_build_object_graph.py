@@ -23,7 +23,7 @@ CHECKS = ["no_provenance", "outside_zone", "battery_insufficient"]
 
 
 def _cmd(cid, vid, kind, target=None, dec=None):
-    prov = Provenance(source="play_step", decision_id=dec, issued_ms=2000)
+    prov = Provenance(source="role_step", decision_id=dec, issued_ms=2000)
     params = {"target_id": target} if target else {}
     return Command(id=cid, vehicle_id=vid, kind=kind, params=params, provenance=prov)
 
@@ -35,7 +35,7 @@ def _target(tid, kind, **kw):
 
 def _world():
     choice = Choice(
-        id="strike_both", label="함께 타격", play_by_vehicle={"d2": "strike", "usv": "strike"}
+        id="strike_both", label="함께 타격", role_by_vehicle={"d2": "strike", "usv": "strike"}
     )
     rep = Report(id="rep-d2-1", t_ms=1500, kind="target_detected", vehicle_id="d2",
                  target_id="fast1", text="고속정 발견", choices=[choice])  # fmt: skip

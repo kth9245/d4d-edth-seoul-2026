@@ -12,11 +12,11 @@ const LOW_PCT = 35;
 
 // Left column (Part1-32): what each of our vehicles does now. A returning or parked vehicle keeps target_id in
 // the engine, so only a vehicle on a mission shows a target.
-export function vehicleRows(f: Frame, playNames: Record<string, string>, specs: VehicleSpec[]): VehicleRow[] {
+export function vehicleRows(f: Frame, roleNames: Record<string, string>, specs: VehicleSpec[]): VehicleRow[] {
   return f.vehicles.map((v) => {
     const spec = specs.find((s) => s.id === v.id);
     const doing = v.status === "returning" ? "귀환 중" : v.status === "maintenance" ? "기지 정비"
-      : v.play_id ? playNames[v.play_id] ?? v.play_id : "대기";
+      : v.role_id ? roleNames[v.role_id] ?? v.role_id : "대기";
     const onMission = v.status === "active";
     return {
       id: v.id, status: v.status, doing,

@@ -3,8 +3,8 @@ from contracts.models import (
     EnemySpec,
     GeoPoint,
     Operation,
-    Play,
     Polygon,
+    Role,
     Scenario,
     Step,
     Target,
@@ -14,16 +14,16 @@ from modules.sim.actions.update_emission import update_emission
 START = 1_791_633_600_000
 G = GeoPoint(lat=37.985, lon=124.70)
 ZONE = Polygon(points=[G, GeoPoint(lat=37.9, lon=124.7), GeoPoint(lat=37.9, lon=124.8)])
-PLAY = Play(id="p", name="p", domains=["sea"], entry="go", approved=True,
+ROLE = Role(id="p", name="p", domains=["sea"], entry="go", approved=True,
             steps=[Step(id="go", name="go", do=Action(kind="hold"))])  # fmt: skip
 
 
 def enemy(eid: str, appear: int, emit: int | None) -> EnemySpec:
     return EnemySpec(id=eid, kind="boat", speed_mps=1, appear_offset_ms=appear, pos=G,
-                     play_id="p", emit_start_offset_ms=emit)  # fmt: skip
+                     role_id="p", emit_start_offset_ms=emit)  # fmt: skip
 
 
-SC = Scenario(id="s", vehicles=[], plays=[PLAY],
+SC = Scenario(id="s", vehicles=[], roles=[ROLE],
               operation=Operation(id="op", name="op", area=ZONE, zone=ZONE, vehicle_ids=[],
                                   started_ms=START),
               enemies=[enemy("silent", 1000, None), enemy("now", 1000, 0), enemy("late", 1000, 60_000)])  # fmt: skip

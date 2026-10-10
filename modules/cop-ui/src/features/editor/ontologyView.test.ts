@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import demo from "../../../../../demo/scenarios/baengnyeong_night.json";
-import type { CapabilityReason, Ontology, OntologyView, Operation, Play, VehicleSpec } from "../../contracts.gen";
+import type { CapabilityReason, Ontology, OntologyView, Operation, Role, VehicleSpec } from "../../contracts.gen";
 import { kindRows, reasonLine, reserveLines } from "./ontologyView";
 
 const onto = demo.ontology as unknown as Ontology;
@@ -36,15 +36,15 @@ describe("reasonLine", () => {
 
 describe("reserveLines", () => {
   const op = { assign: { d1: "patrol_a" }, reserve: { d1: ["d3"] }, switches: [] } as unknown as Operation;
-  const plays = [{ id: "patrol_a", steps: [{ do: { kind: "hold" } }, { do: { kind: "patrol_route" } }] }] as unknown as Play[];
+  const roles = [{ id: "patrol_a", steps: [{ do: { kind: "hold" } }, { do: { kind: "patrol_route" } }] }] as unknown as Role[];
   const view = (allowed: string[]) => ({ ontology: onto, vehicles: [{ vehicle_id: "d3", kind: "recon_drone",
     reasons: allowed.map((a) => why({ action: a as CapabilityReason["action"], allowed: true, path: [] })) }] }) as OntologyView;
-  it("says the reserve can run every action of the plays it may take over", () => {
-    expect(reserveLines(op, plays, view(["hold", "patrol_route"]), vehicles))
-      .toEqual(["d3는 d1의 예비. d1의 플레이가 쓰는 행동 2개를 d3가 모두 할 수 있음(같은 정찰 드론)"]);
+  it("says the reserve can run every action of the roles it may take over", () => {
+    expect(reserveLines(op, roles, view(["hold", "patrol_route"]), vehicles))
+      .toEqual(["d3는 d1의 예비. d1의 Role이 쓰는 행동 2개를 d3가 모두 할 수 있음(같은 정찰 드론)"]);
   });
   it("names what the reserve cannot do", () => {
-    expect(reserveLines(op, plays, view(["hold"]), vehicles))
-      .toEqual(["d3는 d1의 예비. d1의 플레이가 쓰는 행동 중 patrol_route를 d3가 못 함"]);
+    expect(reserveLines(op, roles, view(["hold"]), vehicles))
+      .toEqual(["d3는 d1의 예비. d1의 Role이 쓰는 행동 중 patrol_route를 d3가 못 함"]);
   });
 });

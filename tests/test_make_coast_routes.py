@@ -20,7 +20,7 @@ def test_rerunning_the_24h_script_keeps_the_route_list_and_route_names():  # dec
     assert out["routes"] == committed["routes"]
     names = [
         s["do"]["params"].get("route_name")
-        for p in out["plays"]
+        for p in out["roles"]
         for s in p["steps"]
         if s["do"]["kind"] == "patrol_route"
     ]

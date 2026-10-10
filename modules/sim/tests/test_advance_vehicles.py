@@ -109,7 +109,7 @@ def test_only_sea_vehicles_go_round_the_island():
 def _charging(recharge_min: float, battery: float = 30) -> tuple[dict, VehicleState]:
     specs = {"d1": SPECS["d1"].model_copy(update={"recharge_min": recharge_min})}
     st = _state(status=VehicleStatus.maintenance).model_copy(
-        update={"battery_pct": battery, "play_id": "go_home", "step_id": "return"}
+        update={"battery_pct": battery, "role_id": "go_home", "step_id": "return"}
     )
     return specs, st
 
@@ -121,7 +121,7 @@ def test_maintenance_recharges_to_ready():  # decision 0037: battery swap 10 min
     assert st.status == VehicleStatus.maintenance and st.battery_pct == pytest.approx(70)
     for _ in range(3):
         [st] = advance_vehicles([st], specs, [], MIN, [])
-    assert (st.status, st.battery_pct, st.play_id, st.step_id) == (
+    assert (st.status, st.battery_pct, st.role_id, st.step_id) == (
         VehicleStatus.ready,
         100,
         None,

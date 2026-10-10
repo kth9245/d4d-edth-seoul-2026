@@ -7,31 +7,31 @@ step.report.auto_choices가 아닌 카드는 그대로 돌려준다.
 SPEC: modules/runtime/SPEC.md#RT-11
 """
 
-from contracts.models import Choice, Operation, Play, Report, VehicleState
+from contracts.models import Choice, Operation, Report, Role, VehicleState
 
-WATCH_PLAY = "watch"
-
-
-def _step(s: VehicleState, plays: dict[str, Play]):
-    play = plays.get(s.play_id or "")
-    return next((st for st in play.steps if st.id == s.step_id), None) if play else None
+WATCH_ROLE = "watch"
 
 
-def watching(s: VehicleState, plays: dict[str, Play]) -> bool:  # hovering over its target
-    step = _step(s, plays)
+def _step(s: VehicleState, roles: dict[str, Role]):
+    role = roles.get(s.role_id or "")
+    return next((st for st in role.steps if st.id == s.step_id), None) if role else None
+
+
+def watching(s: VehicleState, roles: dict[str, Role]) -> bool:  # hovering over its target
+    step = _step(s, roles)
     return bool(s.target_id and step and step.do.kind.value == "watch_target")
 
 
 def fleet_choices(
-    rep: Report, states: list[VehicleState], op: Operation, plays: dict[str, Play]
+    rep: Report, states: list[VehicleState], op: Operation, roles: dict[str, Role]
 ) -> Report:
     me = next((s for s in states if s.id == rep.vehicle_id), None)
-    step = _step(me, plays) if me else None
+    step = _step(me, roles) if me else None
     if not (step and step.report and step.report.auto_choices):
         return rep
-    coast = plays[me.play_id]
+    coast = roles[me.role_id]
     crew = [s for s in states if s.id in op.rotation]
-    hover = [s for s in crew if s.status.value == "active" and watching(s, plays)]
+    hover = [s for s in crew if s.status.value == "active" and watching(s, roles)]
     hover = [me, *(s for s in hover if s.id != me.id)] if me.target_id else hover
     busy = {s.id for s in hover}
     others = [
@@ -40,20 +40,20 @@ def fleet_choices(
         if s.id not in busy
         and s.pending_report_id
         is None  # decision 0046: its own card stays; apply_decision would close it
-        and s.play_id != coast.id
+        and s.role_id != coast.id
         and (
-            (s.status.value == "active" and s.play_id in op.rotation_plays)
+            (s.status.value == "active" and s.role_id in op.rotation_roles)
             or (s.status.value == "ready" and s.battery_pct >= 99.9)
         )
     ]
     take = [
         Choice(id=f"take_{x.id}", label=f"{x.id} → 발생 지역 순찰({coast.name})",
-               play_by_vehicle={x.id: coast.id})
+               role_by_vehicle={x.id: coast.id})
         for x in others
     ]  # fmt: skip
     join = [
         Choice(id=f"join_{x.id}_{y.id}", label=f"{x.id} → {y.id}와 함께 감시({y.target_id})",
-               play_by_vehicle={x.id: WATCH_PLAY}, target_by_vehicle={x.id: y.target_id})
+               role_by_vehicle={x.id: WATCH_ROLE}, target_by_vehicle={x.id: y.target_id})
         for x in others
         for y in hover
     ]  # fmt: skip

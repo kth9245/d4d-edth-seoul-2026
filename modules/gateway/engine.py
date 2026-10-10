@@ -43,26 +43,26 @@ log = get_logger("gateway.engine")
 
 
 def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
-    sc, dt, plays, specs = es.scenario, es.scenario.tick_ms, es.plays, es.specs
+    sc, dt, roles, specs = es.scenario, es.scenario.tick_ms, es.roles, es.specs
     t = es.t_ms + dt
     states, targets = apply_events(sc, es.states, es.targets, t, dt)  # 1
     targets = steer_enemies(
-        sc.enemies, plays, spawn_enemies(sc, targets, t, dt), t, dt, sc.land
+        sc.enemies, roles, spawn_enemies(sc, targets, t, dt), t, dt, sc.land
     )  # 1.5 (0032; boats round islands 0034)
     targets = update_emission(sc, targets, t)  # 1.6 (0039)
     targets = observe(states, specs, targets, t)  # 2
     targets = score_targets(states, specs, targets, sc.watch_points, dt)  # 2.5 (0039, 0040)
     reports, assigns = list(es.reports), list(es.assignments)  # 3 operator inputs
     for d in inputs.decisions:
-        before = {s.id: s.play_id for s in states}
-        states, reports = apply_decision(states, plays, d, reports)
+        before = {s.id: s.role_id for s in states}
+        states, reports = apply_decision(states, roles, d, reports)
         assigns = track_assignments(assigns, before, states, t, f"결정 {d.id}")
     injections, reports, new_reports, approved = record_injections(
         es.injections, reports, inputs.injections, t
     )
     for inj in approved:
-        before = {s.id: s.play_id for s in states}
-        states = apply_injection(states, plays, inj)
+        before = {s.id: s.role_id for s in states}
+        states = apply_injection(states, roles, inj)
         assigns = track_assignments(assigns, before, states, t, f"전환 {inj.id}")
     before_direct, cmds = {}, []
     for dc in inputs.direct:
@@ -70,29 +70,29 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
         states, cmd = apply_direct(states, dc, t)
         before_direct[cmd.id] = pre
         cmds.append(cmd)
-    states = apply_emergency(states, plays)  # 4
-    states, assigns = rotate_patrols(states, specs, sc.operation, plays, assigns, t)  # 4.5 (0037)
-    states, assigns = relieve_hover(states, specs, sc.operation, plays, assigns, t)  # 4.6
+    states = apply_emergency(states, roles)  # 4
+    states, assigns = rotate_patrols(states, specs, sc.operation, roles, assigns, t)  # 4.5 (0037)
+    states, assigns = relieve_hover(states, specs, sc.operation, roles, assigns, t)  # 4.6
     stepped = []
     for s in states:  # 5
         s, cmd, rep = step_vehicle(
-            s, specs[s.id], plays.get(s.play_id), targets, t, sc.operation.started_ms
+            s, specs[s.id], roles.get(s.role_id), targets, t, sc.operation.started_ms
         )  # 0045: at_time
         targets = mark_reported(targets, [rep] if rep else [])  # 5.1 decision 0036
         stepped.append(s)
         cmds += [cmd] if cmd else []
         new_reports += [rep] if rep else []
-    new_reports = [fleet_choices(r, stepped, sc.operation, plays) for r in new_reports]  # 5.2
+    new_reports = [fleet_choices(r, stepped, sc.operation, roles) for r in new_reports]  # 5.2
     reports = [
-        fleet_choices(r, stepped, sc.operation, plays)
+        fleet_choices(r, stepped, sc.operation, roles)
         if r.kind == "target_detected" and not r.resolved_ms
         else r
         for r in reports
     ]  # 5.3 open cards follow the fleet (decision 0046)
-    states, assigns, gap = apply_reserves(stepped, sc.operation, plays, assigns, t)  # 6
+    states, assigns, gap = apply_reserves(stepped, sc.operation, roles, assigns, t)  # 6
     new_reports += [gap] if gap else []
     states, passed, blocks, cards = run_checks(  # 7
-        cmds, before_direct, states, specs, sc.operation, plays, injections, t
+        cmds, before_direct, states, specs, sc.operation, roles, injections, t
     )
     states = advance(states, specs, passed, dt, targets, sc.land)  # 8 (sea round islands 0034)
     targets, hits = resolve_strikes(states, targets, t)  # 8.5 decision 0033
@@ -100,7 +100,7 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
     reports += new_reports
     outcome = TickOutcome(inputs=inputs, commands=cmds, passed=passed, blocks=blocks,
                           new_reports=new_reports, assignments=assigns, states=states,
-                          targets=targets, plays=plays, reports=reports)  # fmt: skip
+                          targets=targets, roles=roles, reports=reports)  # fmt: skip
     es = replace(es, t_ms=t, states=states, targets=targets, reports=reports, assignments=assigns,
                  blocks=es.blocks + blocks, injections=injections,
                  decisions=es.decisions + list(inputs.decisions), commands=es.commands + cmds,

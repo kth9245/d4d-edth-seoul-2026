@@ -26,17 +26,17 @@ aside { overflow-y: auto; padding: 12px; border-left: 1px solid #22304a; }
 .target.boat i { background: #fadb14; } .target.fast_boat i { background: #ff4d4f; }
 .target.unseen { opacity: 0.45; }
 
-/* Tabs and the play editor (Part3-10). With the tab header, .app is a column and the screen below it flexes. */
+/* Tabs and the role editor (Part3-10). With the tab header, .app is a column and the screen below it flexes. */
 .app { display: flex; flex-direction: column; height: 100%; }
 .app > .layout, .app > .editor { flex: 1; min-height: 0; height: auto; }
 .tabs { display: flex; gap: 4px; padding: 6px 12px; border-bottom: 1px solid #22304a; }
 .tabs a { color: #9fb0cc; text-decoration: none; padding: 4px 12px; border-radius: 6px; }
 .tabs a.on { background: #14213a; color: #fff; font-weight: 700; }
 .editor { display: grid; grid-template-columns: 220px 1fr; }
-.play-sidebar { overflow-y: auto; padding: 12px; border-right: 1px solid #22304a; }
-.play-sidebar .group { margin: 12px 0 4px; font-size: 12px; opacity: 0.7; }
-.play-sidebar .item { display: block; width: 100%; text-align: left; padding: 6px 8px; margin: 2px 0; border: 0; border-radius: 6px; background: none; color: inherit; cursor: pointer; }
-.play-sidebar .item.on { background: #1d3157; font-weight: 700; }
+.role-sidebar { overflow-y: auto; padding: 12px; border-right: 1px solid #22304a; }
+.role-sidebar .group { margin: 12px 0 4px; font-size: 12px; opacity: 0.7; }
+.role-sidebar .item { display: block; width: 100%; text-align: left; padding: 6px 8px; margin: 2px 0; border: 0; border-radius: 6px; background: none; color: inherit; cursor: pointer; }
+.role-sidebar .item.on { background: #1d3157; font-weight: 700; }
 .editor-main { overflow: auto; padding: 16px; }
 .workflow { max-width: 420px; }
 .workflow h2 small { font-size: 12px; opacity: 0.7; }
@@ -55,7 +55,7 @@ aside { overflow-y: auto; padding: 12px; border-left: 1px solid #22304a; }
 .ov-section { margin: 18px 0 8px; font-size: 12px; } .ov-section small { margin-left: 6px; font-weight: 400; }
 .enemy-meta { margin-bottom: 6px; font-size: 12px; line-height: 1.5; }
 .via { margin: 6px 0; font-size: 12px; opacity: 0.75; }
-.play-title { display: block; margin: 4px 0; font-weight: 700; }
+.role-title { display: block; margin: 4px 0; font-weight: 700; }
 .save-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; font-size: 13px; }
 /* Save result colors use theme.css tokens (Part1-9.2): pass = --friend, check failed = --hostile. */
 .save { padding: 4px 14px; border: 0; border-radius: var(--r); background: var(--friend); color: var(--on-friend); font-weight: 700; cursor: pointer; }
@@ -74,20 +74,20 @@ aside { overflow-y: auto; padding: 12px; border-left: 1px solid #22304a; }
 .draftbox button { padding: 6px 8px; font-size: 12px; text-align: left; cursor: pointer; }
 .draftbox button:disabled { cursor: default; }
 .draftbox .note { font-size: 11px; }
-/* "← 작전 개요" above a play's title: always back to the operation overview (Part1-33). */
+/* "← 작전 개요" above a role's title: always back to the operation overview (Part1-33). */
 .workflow .back { align-self: flex-start; margin-bottom: 6px; padding: 5px 10px; font-size: 12px; cursor: pointer; }
-/* New play menu at the top of the editor sidebar (Part3-13.1). */
-.newplay { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-.newplay .draftbox { margin-bottom: 0; }
-.newplay-toggle { padding: 8px 10px; font-size: 13px; text-align: center; cursor: pointer; }
-.newplay-pick { display: flex; flex-direction: column; gap: 6px; }
-.newplay-pick button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 9px 10px; text-align: left; cursor: pointer; }
-.newplay-pick small { font-size: 11px; }
-.newplay-manual { display: flex; flex-direction: column; gap: 6px; }
-.newplay-manual input, .newplay-manual select { padding: 7px 8px; font: inherit; font-size: 12px; }
-.newplay-manual .make { padding: 7px; cursor: pointer; }
-.newplay-back { padding: 2px 0; font-size: 11px; text-align: left; cursor: pointer; }
-/* Workflow graph (Part3-10.1): the play view fills the editor; cards are fixed width, sections stacked. */
+/* New role menu at the top of the editor sidebar (Part3-13.1). */
+.newrole { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.newrole .draftbox { margin-bottom: 0; }
+.newrole-toggle { padding: 8px 10px; font-size: 13px; text-align: center; cursor: pointer; }
+.newrole-pick { display: flex; flex-direction: column; gap: 6px; }
+.newrole-pick button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 9px 10px; text-align: left; cursor: pointer; }
+.newrole-pick small { font-size: 11px; }
+.newrole-manual { display: flex; flex-direction: column; gap: 6px; }
+.newrole-manual input, .newrole-manual select { padding: 7px 8px; font: inherit; font-size: 12px; }
+.newrole-manual .make { padding: 7px; cursor: pointer; }
+.newrole-back { padding: 2px 0; font-size: 11px; text-align: left; cursor: pointer; }
+/* Workflow graph (Part3-10.1): the role view fills the editor; cards are fixed width, sections stacked. */
 .editor-main:has(.workflow-graph) { display: flex; flex-direction: column; overflow: hidden; }
 .workflow:has(.workflow-graph) { display: flex; flex-direction: column; flex: 1; min-height: 0; max-width: none; }
 .workflow-graph { flex: 1; min-height: 420px; margin-top: 8px; }

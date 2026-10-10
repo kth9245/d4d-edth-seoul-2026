@@ -24,18 +24,18 @@ def day():
     return sc, frames
 
 
-def _patrolling(f, play):
-    return [v for v in f.vehicles if v.play_id == play and v.status.value == "active"]
+def _patrolling(f, role):
+    return [v for v in f.vehicles if v.role_id == role and v.status.value == "active"]
 
 
 def test_both_coasts_always_covered_for_24h(day):
     sc, frames = day
     gaps = [
-        ((f.t_ms - sc.operation.started_ms) // 1000, play)
+        ((f.t_ms - sc.operation.started_ms) // 1000, role)
         for f in frames
         if f.t_ms - sc.operation.started_ms >= WARMUP_S * 1000
-        for play in ("coast_a", "coast_b")
-        if not _patrolling(f, play)
+        for role in ("coast_a", "coast_b")
+        if not _patrolling(f, role)
     ]
     assert gaps == []
 

@@ -2,7 +2,7 @@
 
 The demo scenario JSON is the source (decision 0035): this module reads
 demo/scenarios/baengnyeong_night.json so the examples and the demo share one world. Change numbers and
-plays in that JSON (and demo/plays/), not here; gen_examples.py writes contracts/examples only.
+roles in that JSON (and demo/roles/), not here; gen_examples.py writes contracts/examples only.
 """
 
 from pathlib import Path
@@ -18,8 +18,8 @@ ZONE = OPERATION.zone
 START_MS = OPERATION.started_ms  # 2026-10-10 21:00 KST
 MIN = 60_000
 SPECS = {v.id: v for v in fill_vehicle_kinds(SCENARIO).vehicles}
-PLAYS = {p.id: p for p in SCENARIO.plays}
-LANDING = GeoPoint(**PLAYS["landing"].steps[0].do.params["target"])
+ROLES = {p.id: p for p in SCENARIO.roles}
+LANDING = GeoPoint(**ROLES["landing"].steps[0].do.params["target"])
 
 
 def gp(lat: float, lon: float) -> GeoPoint:

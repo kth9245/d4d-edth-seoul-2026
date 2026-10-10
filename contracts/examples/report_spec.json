@@ -4,7 +4,7 @@
   {
    "id": "approach",
    "label": "근접 확인",
-   "play_by_vehicle": {
+   "role_by_vehicle": {
     "d1": "watch",
     "usv": "approach",
     "ugv": "landing"

@@ -50,14 +50,14 @@ def test_example_scenario_is_the_demo_scenario():  # decision 0035: the demo JSO
 def test_examples_share_one_world():
     scenario = Scenario.model_validate(_load(EXAMPLES / "scenario.json"))
     vehicle_ids = {v.id for v in scenario.vehicles}
-    play_ids = {p.id for p in scenario.plays}
+    role_ids = {p.id for p in scenario.roles}
     assert set(scenario.operation.vehicle_ids) == vehicle_ids
     assert set(scenario.operation.assign) <= vehicle_ids
-    assert set(scenario.operation.assign.values()) <= play_ids
+    assert set(scenario.operation.assign.values()) <= role_ids
     for path in [EXAMPLES / "frame.json", *sorted((EXAMPLES / "frames").glob("*.json"))]:
         frame = Frame.model_validate(_load(path))
         assert {v.id for v in frame.vehicles} == vehicle_ids, path.name
-        assert {v.play_id for v in frame.vehicles if v.play_id} <= play_ids, path.name
+        assert {v.role_id for v in frame.vehicles if v.role_id} <= role_ids, path.name
 
 
 def test_polygon_needs_three_points():
@@ -117,7 +117,7 @@ def test_strike_and_enemy_fields_default_to_empty():
     assert st.decision_id is None
     tg = Target(id="b", kind="boat", pos=g, vel_east_mps=0, vel_north_mps=0,
                 first_seen_ms=0, last_seen_ms=0)  # fmt: skip
-    assert (tg.neutralized_ms, tg.play_id, tg.step_id, tg.waypoint_idx, tg.step_since_ms) == (
+    assert (tg.neutralized_ms, tg.role_id, tg.step_id, tg.waypoint_idx, tg.step_since_ms) == (
         None, None, None, 0, None,
     )  # fmt: skip
     sc = Scenario.model_validate(_load(EXAMPLES / "scenario.json"))  # the demo world (0035)
@@ -135,7 +135,7 @@ def test_target_reported_by_names_the_vehicle_that_raised_its_card():  # decisio
 
 def test_enemy_appears_at_a_point_or_from_another_enemy():
     e = EnemySpec(id="fast1", kind="fast_boat", speed_mps=6.3, appear_offset_ms=1_380_000,
-                  from_enemy="boat1", play_id="enemy_fast1")  # fmt: skip
+                  from_enemy="boat1", role_id="enemy_fast1")  # fmt: skip
     assert e.pos is None and e.from_enemy == "boat1"
 
 
@@ -153,11 +153,11 @@ def test_rotation_fields_default_to_no_rotation():
 
     op = json.loads((EXAMPLES / "operation.json").read_text(encoding="utf-8"))
     spec = json.loads((EXAMPLES / "vehicle_spec.json").read_text(encoding="utf-8"))
-    for k in ("rotation", "rotation_plays", "rotation_pools"):
+    for k in ("rotation", "rotation_roles", "rotation_pools"):
         op.pop(k, None)
     spec.pop("recharge_min", None)
     got = Operation.model_validate(op), VehicleSpec.model_validate(spec)
-    assert (got[0].rotation, got[0].rotation_plays, got[1].recharge_min) == ([], [], 0)
+    assert (got[0].rotation, got[0].rotation_roles, got[1].recharge_min) == ([], [], 0)
     assert got[0].rotation_pools == {}
 
 

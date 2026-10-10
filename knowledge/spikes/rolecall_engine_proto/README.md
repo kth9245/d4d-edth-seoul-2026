@@ -23,13 +23,13 @@
 | sensing | observe_targets(SNS-02) | 최동호 |
 | gateway | engine.py, engine_state.py, init_engine(GW-02), record_injections(03), run_checks(04), track_assignments(05), build_frame_v2(06), tick_log(07) | 최동호 |
 | safety | point_in_polygon(SFT-01), return_feasible(02), check_command(03) | 황승주 |
-| runtime | step_vehicle(RT-01), apply_reserves(02), apply_decision(03), update_metrics(04), apply_injection(05), apply_direct(06), apply_emergency(07), enter_step(08), switch_play(09) | 황승주 |
-| play | expand_action(PLY-07) | 황승주 |
+| runtime | step_vehicle(RT-01), apply_reserves(02), apply_decision(03), update_metrics(04), apply_injection(05), apply_direct(06), apply_emergency(07), enter_step(08), switch_role(09) | 황승주 |
+| role | expand_action(PLY-07) | 황승주 |
 
 거리·좌표 계산은 `shared/geo.py`(`dist_m`, `lerp`, `move_toward`, `offset_latlon`)를 쓴다.
 
 ## 결과 (2026-10-10 0시)
 
-10,500틱(200ms × 35분) 0.7초. 21:11 보트 출현 → 센서 계산으로 21:16 보고 카드 → 결정 한 번에 기체 4대 플레이 전환 → 21:19 드론 1 배터리 귀환, 예비 드론 3이 감시 플레이를 처음부터(결정 0022), 기체 공백 약 2분 43초 → 21:23 보트 분리, 전환 요청·승인, 운용자가 fast1 선택 → 21:31 직접 조종 구역 밖 차단, 대안 통과, 먼 지점 배터리 차단. 차단은 직접 조종 2건뿐.
+10,500틱(200ms × 35분) 0.7초. 21:11 보트 출현 → 센서 계산으로 21:16 보고 카드 → 결정 한 번에 기체 4대 Role 전환 → 21:19 드론 1 배터리 귀환, 예비 드론 3이 감시 Role을 처음부터(결정 0022), 기체 공백 약 2분 43초 → 21:23 보트 분리, 전환 요청·승인, 운용자가 fast1 선택 → 21:31 직접 조종 구역 밖 차단, 대안 통과, 먼 지점 배터리 차단. 차단은 직접 조종 2건뿐.
 
 옛 판에서 고친 것: 선회 명령에서 원 위로 순간 이동하던 것(이제 먼저 날아감), 기지 대기 중 배터리가 줄던 것, 예비가 귀환 step을 이어받던 것(결정 0022), step_vehicle 한 함수가 포맷 뒤 114줄이던 것(enter_step으로 나눔), 틱 루프 안의 계산(gateway 액션으로 뺌).

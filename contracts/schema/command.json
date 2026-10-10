@@ -17,7 +17,7 @@
     },
     "CommandSource": {
       "enum": [
-        "play_step",
+        "role_step",
         "operator_decision",
         "operator_direct",
         "injected_plan",
@@ -31,7 +31,7 @@
         "source": {
           "$ref": "#/$defs/CommandSource"
         },
-        "play_id": {
+        "role_id": {
           "anyOf": [
             {
               "type": "string"
@@ -41,7 +41,7 @@
             }
           ],
           "default": null,
-          "title": "Play Id"
+          "title": "Role Id"
         },
         "step_id": {
           "anyOf": [

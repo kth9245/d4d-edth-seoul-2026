@@ -6,8 +6,8 @@
           "title": "Vehicle Id",
           "type": "string"
         },
-        "play_id": {
-          "title": "Play Id",
+        "role_id": {
+          "title": "Role Id",
           "type": "string"
         },
         "since_ms": {
@@ -21,7 +21,7 @@
       },
       "required": [
         "vehicle_id",
-        "play_id",
+        "role_id",
         "since_ms",
         "reason"
       ],
@@ -90,12 +90,12 @@
           "title": "Label",
           "type": "string"
         },
-        "play_by_vehicle": {
+        "role_by_vehicle": {
           "additionalProperties": {
             "type": "string"
           },
           "default": {},
-          "title": "Play By Vehicle",
+          "title": "Role By Vehicle",
           "type": "object"
         },
         "target_by_vehicle": {
@@ -170,7 +170,7 @@
     },
     "CommandSource": {
       "enum": [
-        "play_step",
+        "role_step",
         "operator_decision",
         "operator_direct",
         "injected_plan",
@@ -225,11 +225,11 @@
           "title": "Label",
           "type": "string"
         },
-        "play_by_vehicle": {
+        "role_by_vehicle": {
           "additionalProperties": {
             "type": "string"
           },
-          "title": "Play By Vehicle",
+          "title": "Role By Vehicle",
           "type": "object"
         },
         "switch_id": {
@@ -267,7 +267,7 @@
         "id",
         "t_ms",
         "label",
-        "play_by_vehicle"
+        "role_by_vehicle"
       ],
       "title": "Injection",
       "type": "object"
@@ -355,7 +355,7 @@
         "source": {
           "$ref": "#/$defs/CommandSource"
         },
-        "play_id": {
+        "role_id": {
           "anyOf": [
             {
               "type": "string"
@@ -365,7 +365,7 @@
             }
           ],
           "default": null,
-          "title": "Play Id"
+          "title": "Role Id"
         },
         "step_id": {
           "anyOf": [
@@ -608,7 +608,7 @@
           "default": null,
           "title": "Reported By"
         },
-        "play_id": {
+        "role_id": {
           "anyOf": [
             {
               "type": "string"
@@ -618,7 +618,7 @@
             }
           ],
           "default": null,
-          "title": "Play Id"
+          "title": "Role Id"
         },
         "step_id": {
           "anyOf": [
@@ -745,7 +745,7 @@
         "status": {
           "$ref": "#/$defs/VehicleStatus"
         },
-        "play_id": {
+        "role_id": {
           "anyOf": [
             {
               "type": "string"
@@ -755,7 +755,7 @@
             }
           ],
           "default": null,
-          "title": "Play Id"
+          "title": "Role Id"
         },
         "step_id": {
           "anyOf": [
@@ -837,7 +837,7 @@
           ],
           "default": null
         },
-        "resume_play_id": {
+        "resume_role_id": {
           "anyOf": [
             {
               "type": "string"
@@ -847,7 +847,7 @@
             }
           ],
           "default": null,
-          "title": "Resume Play Id"
+          "title": "Resume Role Id"
         },
         "resume_step_id": {
           "anyOf": [

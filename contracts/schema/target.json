@@ -93,7 +93,7 @@
       "default": null,
       "title": "Reported By"
     },
-    "play_id": {
+    "role_id": {
       "anyOf": [
         {
           "type": "string"
@@ -103,7 +103,7 @@
         }
       ],
       "default": null,
-      "title": "Play Id"
+      "title": "Role Id"
     },
     "step_id": {
       "anyOf": [

@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT), str(ROOT / "scripts")]
 
 from example_scenes import BLK1, INJ, REP1, T1, T2, at, scenes  # noqa: E402
-from example_world import OPERATION, PLAYS, SCENARIO, SPECS, ZONE, gp  # noqa: E402
+from example_world import OPERATION, ROLES, SCENARIO, SPECS, ZONE, gp  # noqa: E402
 
 from contracts.models import (  # noqa: E402
     ALL_MODELS,
@@ -29,7 +29,7 @@ from contracts.models import (  # noqa: E402
     ObjectLink,
     ObjectNode,
     OntologyView,
-    PlayCheck,
+    RoleCheck,
     RouteDef,
     RouteOffset,
     ScenarioInfo,
@@ -47,7 +47,7 @@ LEGACY = {"detection", "track", "assessment", "response", "legacy_frame"}
 def examples() -> dict[str, object]:
     frames = scenes()
     s1, s2 = frames["s1_report_wait"], frames["s2_after_decision"]
-    watch = PLAYS["watch"].steps[0]
+    watch = ROLES["watch"].steps[0]
     decision = DecisionIn(report_id=REP1.id, choice_id="approach")
     issue = ValidationIssue(
         code="report_missing",
@@ -65,7 +65,7 @@ def examples() -> dict[str, object]:
         assignments=s2.assignments,
         states=s2.vehicles,
         targets=s2.targets,
-        plays=PLAYS,
+        roles=ROLES,
     )
     onto = SCENARIO.ontology  # decision 0038
     reason = CapabilityReason(action="strike_target", allowed=False,
@@ -100,7 +100,7 @@ def examples() -> dict[str, object]:
             speed_mps=1.0,
             appear_offset_ms=660_000,
             pos=gp(37.985, 124.70),
-            play_id="enemy_boat1",
+            role_id="enemy_boat1",
         ),  # fmt: skip
         "watch_point": WatchPoint(
             id="landing", name="상륙 예상 지점", pos=gp(37.978, 124.70), radius_m=2000
@@ -110,12 +110,12 @@ def examples() -> dict[str, object]:
         "exit": watch.on[0],
         "choice": REP1.choices[0],
         "switch": OPERATION.switches[0],
-        "report_spec": PLAYS["patrol_a"].steps[1].report,
+        "report_spec": ROLES["patrol_a"].steps[1].report,
         "step": watch,
-        "emergency_rules": PLAYS["watch"].emergency,
-        "play": PLAYS["patrol_a"],
+        "emergency_rules": ROLES["watch"].emergency,
+        "role": ROLES["patrol_a"],
         "validation_issue": issue,
-        "play_check": PlayCheck(ok=False, issues=[issue], est_return_battery={"d1": 41.0}),
+        "role_check": RoleCheck(ok=False, issues=[issue], est_return_battery={"d1": 41.0}),
         "provenance": s2.vehicles[0].active.command.provenance,
         "command": s2.vehicles[0].active.command,
         "passed_command": s2.vehicles[0].active,
@@ -135,7 +135,7 @@ def examples() -> dict[str, object]:
         "tick_outcome": outcome,
         "decision_in": decision,
         "direct_in": DirectIn(vehicle_id="d2", target=direct.target),
-        "switch_in": SwitchIn(play_by_vehicle={"d2": "track_fast"}),
+        "switch_in": SwitchIn(role_by_vehicle={"d2": "track_fast"}),
         "draft_in": DraftIn(text="고속 보트가 나타나면 가장 가까운 드론이 300m 거리에서 추적"),
         "accepted": Accepted(id="dec-1", t_ms=T1),
         "scenario_info": ScenarioInfo(

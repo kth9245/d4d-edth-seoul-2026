@@ -102,7 +102,7 @@ def test_direct_gets_a_server_id():
 
 def test_partial_switch_then_approve():
     live, eng = make()
-    inj = live.request_switch(SwitchIn(play_by_vehicle={"d2": "track_fast"}))
+    inj = live.request_switch(SwitchIn(role_by_vehicle={"d2": "track_fast"}))
     assert (inj.id, inj.status, inj.label) == ("inj-1", "pending", "고속 보트 추적: d2")
     live.jump(400)
     assert live.settle_injection("inj-1", approve=True).status == "approved"
@@ -114,7 +114,7 @@ def test_partial_switch_then_approve():
 def test_approve_before_the_request_ticked_waits_one_tick():
     # the engine opens the pending card in the request's tick and closes it in a later one
     live, eng = make()
-    live.request_switch(SwitchIn(play_by_vehicle={"d2": "track_fast"}))
+    live.request_switch(SwitchIn(role_by_vehicle={"d2": "track_fast"}))
     live.settle_injection("inj-1", approve=True)
     live.jump(600)
     assert [i.status for i in eng.seen[1].injections] == ["pending"]
@@ -125,15 +125,15 @@ def test_switch_button_uses_the_operation_switch():
     live, _ = make()
     inj = live.request_switch(SwitchIn(switch_id="all_home"))
     assert (inj.label, inj.switch_id) == ("전 기체 귀환", "all_home")
-    assert inj.play_by_vehicle["usv"] == "go_home"
+    assert inj.role_by_vehicle["usv"] == "go_home"
     assert live.settle_injection(inj.id, approve=False).status == "rejected"
 
 
 def test_pointing_request_is_approved_at_once_and_carries_the_target():
-    # decisions 0048, 0049: point d2 at boat1 with a play; the press is the approval, so no pending card
+    # decisions 0048, 0049: point d2 at boat1 with a role; the press is the approval, so no pending card
     live, eng = make()
     inj = live.request_switch(
-        SwitchIn(play_by_vehicle={"d2": "watch"}, target_by_vehicle={"d2": "boat1"}, approve=True)
+        SwitchIn(role_by_vehicle={"d2": "watch"}, target_by_vehicle={"d2": "boat1"}, approve=True)
     )
     assert (inj.status, inj.target_by_vehicle, inj.label) == (
         "approved",

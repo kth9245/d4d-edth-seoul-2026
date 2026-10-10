@@ -25,7 +25,7 @@ describe("directAims", () => {
     expect(directAims(withD1({ step_id: null, active: directMove(alt) }), null)).toEqual([{ label: "d1", ...alt }]);
   });
 
-  it("drops the cross once the vehicle is back on its play step (arrived)", () => {
+  it("drops the cross once the vehicle is back on its role step (arrived)", () => {
     expect(directAims(withD1({ step_id: "watch", active: directMove(alt) }), null)).toEqual([]);
   });
 

@@ -9,7 +9,7 @@
  "heading_deg": 0.0,
  "battery_pct": 71.3,
  "status": "active",
- "play_id": "watch",
+ "role_id": "watch",
  "step_id": "watch",
  "entered_step": true,
  "waypoint_idx": 0,
@@ -23,8 +23,8 @@
     "distance_m": 150
    },
    "provenance": {
-    "source": "play_step",
-    "play_id": "watch",
+    "source": "role_step",
+    "role_id": "watch",
     "step_id": "watch",
     "decision_id": null,
     "injection_id": null,
@@ -43,6 +43,6 @@
  "target_id": "boat1",
  "decision_id": null,
  "emergency": null,
- "resume_play_id": null,
+ "resume_role_id": null,
  "resume_step_id": null
 }

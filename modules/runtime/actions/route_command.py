@@ -5,7 +5,7 @@ SPEC: modules/runtime/SPEC.md#RT-13
 """
 
 from contracts.models import Action, CommandKind, Domain, GeoPoint
-from modules.play import expand_action
+from modules.role import expand_action
 from shared.geo import offset_latlon
 
 

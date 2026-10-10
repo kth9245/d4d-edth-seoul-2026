@@ -56,6 +56,6 @@ def test_two_strikers_in_one_tick_give_one_card():
 
 
 def test_vehicle_switched_away_without_a_decision_no_longer_strikes():
-    # switch_play clears decision_id; a still-active strike command must not neutralize anything
+    # switch_role clears decision_id; a still-active strike command must not neutralize anything
     targets, cards = resolve_strikes([_striker("d2", decision_id=None)], [_fast1(10)], T)
     assert targets[0].neutralized_ms is None and cards == []

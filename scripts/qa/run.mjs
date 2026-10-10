@@ -67,7 +67,7 @@ const setExpr = (proto, [sel, v], evt) => `(() => { const el = document.querySel
   Object.getOwnPropertyDescriptor(${proto}.prototype, "value").set.call(el, ${JSON.stringify(v)}); el.dispatchEvent(new Event("${evt}", { bubbles: true })); return "set " + el.value; })()`;
 // Overflow probe: the page must not scroll sideways and no panel may cut its content off.
 const LAYOUT = `(() => { const de = document.documentElement; const over = [];
-  for (const el of document.querySelectorAll("aside, .runbar, .tabs, .editor-main, .play-sidebar, .card, .switchpanel, .metrics"))
+  for (const el of document.querySelectorAll("aside, .runbar, .tabs, .editor-main, .role-sidebar, .card, .switchpanel, .metrics"))
     if (el.scrollWidth > el.clientWidth + 2 && getComputedStyle(el).overflowX !== "auto") over.push(el.className || el.tagName);
   return { viewport: innerWidth + "x" + innerHeight, pageOverflowX: de.scrollWidth > innerWidth + 1, clipped: [...new Set(over)].slice(0, 6) }; })()`;
 

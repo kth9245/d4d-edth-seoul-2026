@@ -3,11 +3,11 @@ order (docs/superpowers/specs/2026-10-10-strike-phase-design.md section 2): s1 s
 
 Positions and batteries follow the world's speeds and routes approximately; the real engine will differ
 by metres. They exist so the map and card screens can be built before the engine runs. s5/s6 times and
-points match modules/gateway/tests/test_demo_timeline.py. The strike plays (track_fast_sea, strike) are
+points match modules/gateway/tests/test_demo_timeline.py. The strike roles (track_fast_sea, strike) are
 only named here; their JSON is in the demo scenario (Part1-19).
 """
 
-from example_world import LANDING, MIN, PLAYS, SPECS, START_MS, gp
+from example_world import LANDING, MIN, ROLES, SPECS, START_MS, gp
 
 from contracts.models import (
     Assignment,
@@ -39,12 +39,12 @@ def at(m: int, s: int = 0) -> int:
     return START_MS + m * MIN + s * 1000
 
 
-def cmd(vid, kind, params, t, play=None, step=None, source="play_step", **prov) -> Command:
-    p = Provenance(source=source, play_id=play, step_id=step, issued_ms=t, **prov)
+def cmd(vid, kind, params, t, role=None, step=None, source="role_step", **prov) -> Command:
+    p = Provenance(source=source, role_id=role, step_id=step, issued_ms=t, **prov)
     return Command(id=f"cmd-{vid}-{t}", vehicle_id=vid, kind=kind, params=params, provenance=p)
 
 
-def vs(vid, t, pos, bat, status, play, step, active=None, **kw) -> VehicleState:
+def vs(vid, t, pos, bat, status, role, step, active=None, **kw) -> VehicleState:
     pc = (
         PassedCommand(command=active, checks=CHECKS, passed_ms=active.provenance.issued_ms)
         if active
@@ -57,7 +57,7 @@ def vs(vid, t, pos, bat, status, play, step, active=None, **kw) -> VehicleState:
         heading_deg=0,
         battery_pct=bat,
         status=status,
-        play_id=play,
+        role_id=role,
         step_id=step,
         entered_step=True,
         active=pc,
@@ -69,8 +69,8 @@ def standby(vid, t):
     return vs(vid, t, SPECS[vid].home, 100, "ready", "standby", "wait")
 
 
-def assign(vid, play, since, reason):
-    return Assignment(vehicle_id=vid, play_id=play, since_ms=since, reason=reason)
+def assign(vid, role, since, reason):
+    return Assignment(vehicle_id=vid, role_id=role, since_ms=since, reason=reason)
 
 
 def boat(t, lat, seen):
@@ -135,9 +135,9 @@ def pick(vid, t, decided, dec):
 def strike_card(vid, t, dist):
     # '타격 승인 요청' of step ask in track_fast / track_fast_sea: one card per tracker (decision 0033).
     choices = [
-        Choice(id=f"strike_{vid}", label="이 기체로 타격", play_by_vehicle={vid: "strike"}),
+        Choice(id=f"strike_{vid}", label="이 기체로 타격", role_by_vehicle={vid: "strike"}),
         Choice(
-            id="strike_both", label="함께 타격", play_by_vehicle={"d2": "strike", "usv": "strike"}
+            id="strike_both", label="함께 타격", role_by_vehicle={"d2": "strike", "usv": "strike"}
         ),
     ]
     return Report(
@@ -155,7 +155,7 @@ def strike_card(vid, t, dist):
 T1, T2, T3, T5, T6, T4 = at(11, 10), at(11, 30), at(19, 0), at(20, 0), at(20, 30), at(23, 30)
 T7, HIT, T8 = at(25, 40), at(26, 15), at(26, 30)
 START = [assign(v, p, START_MS, "작전 배정") for v, p in [("d1", "patrol_a"), ("d2", "standby"), ("d3", "standby"), ("usv", "standby"), ("ugv", "standby")]]
-REP1 = Report(id=f"rep-d1-{T1}", t_ms=T1, kind="target_detected", vehicle_id="d1", target_id="boat1", text="미식별 선박 접근", choices=PLAYS["patrol_a"].steps[1].report.choices)
+REP1 = Report(id=f"rep-d1-{T1}", t_ms=T1, kind="target_detected", vehicle_id="d1", target_id="boat1", text="미식별 선박 접근", choices=ROLES["patrol_a"].steps[1].report.choices)
 REP1_DONE = REP1.model_copy(update={"resolved_ms": T2, "decision_id": "dec-1"})
 REP2 = Report(id=f"rep-d3-{T3}", t_ms=T3, kind="vehicle_gap", vehicle_id="d3", text="d1 귀환, 예비 d3 투입: 감시 공백")
 REP2_DONE = REP2.model_copy(update={"resolved_ms": at(23, 0)})
@@ -169,7 +169,7 @@ BLK2 = Block(command_id=f"cmd-d2-{T6}", vehicle_id="d2", reason="battery_insuffi
 REP4 = Report(id=f"rep-d2-{T5}", t_ms=T5, kind="command_blocked", vehicle_id="d2", text="구역 밖 차단: d2 → 38.0500, 124.6600")
 REP5 = Report(id=f"rep-d2-{T6}", t_ms=T6, kind="command_blocked", vehicle_id="d2", text="배터리 차단: d2 → 37.9050, 124.8350")
 # s4: the operator presses '고속 보트 추적' (op.switches track_fast): d2 and the USV in one approval.
-INJ = Injection(id="inj-1", t_ms=at(23, 20), label="고속 보트 추적", play_by_vehicle={"d2": "track_fast", "usv": "track_fast_sea"}, switch_id="track_fast")
+INJ = Injection(id="inj-1", t_ms=at(23, 20), label="고속 보트 추적", role_by_vehicle={"d2": "track_fast", "usv": "track_fast_sea"}, switch_id="track_fast")
 REP3 = Report(id=f"rep-d2-{at(23, 20)}-i", t_ms=at(23, 20), kind="injection_pending", vehicle_id="d2", text="전환 승인 대기: 고속 보트 추적")
 AFTER_SWITCH = [AFTER_TAKEOVER[0], assign("usv", "track_fast_sea", at(24), "전환 inj-1"), AFTER_TAKEOVER[2], assign("d2", "track_fast", at(24), "전환 inj-1"), AFTER_TAKEOVER[4]]
 # s7/s8: a target pick per tracker, then a strike approval card each; '함께 타격' on d2's card.
@@ -182,7 +182,7 @@ HIT_CARD = Report(id=f"rep-d2-{HIT}", t_ms=HIT, kind="target_neutralized", vehic
 def scenes() -> dict[str, Frame]:
     ugv_go = cmd("ugv", "move", {"target": LANDING.model_dump()}, T2, "landing", "move")
     usv_go = cmd("usv", "keep_distance", {"target_id": "boat1", "distance_m": 200}, T2, "approach", "approach")
-    d2_patrol = cmd("d2", "follow_route", PLAYS["patrol_b"].steps[0].do.params, T2, "patrol_b", "patrol")
+    d2_patrol = cmd("d2", "follow_route", ROLES["patrol_b"].steps[0].do.params, T2, "patrol_b", "patrol")
     d3_watch = cmd("d3", "orbit", {"target_id": "boat1", "distance_m": 150}, T3, "watch", "watch")
     d2_alt = cmd("d2", "move", {"target": ALT1.model_dump()}, at(20, 5), source="operator_direct", operator_id="op1")
     d2_ask = cmd("d2", "orbit", {"target_id": "fast1", "distance_m": 300}, at(25), "track_fast", "ask")
@@ -201,7 +201,7 @@ def scenes() -> dict[str, Frame]:
                     vs("ugv", T2, gp(37.9551, 124.7199), 97.6, "active", "landing", "move", ugv_go)],
                [boat(T2, 37.98419, ["d1"])], [REP1_DONE], AFTER_DECISION,
                Metrics(operator_actions=1, decisions=1, manual_baseline_actions=7, open_reports_max=1, commands_sent=6),
-               ["[계산] 21:11 결정 dec-1 '근접 확인' → 기체 4대 플레이 전환"])
+               ["[계산] 21:11 결정 dec-1 '근접 확인' → 기체 4대 Role 전환"])
     s3 = frame(T3, [vs("d1", T3, gp(37.981, 124.701), 21.0, "returning", "watch", "return", cmd("d1", "return_home", {}, T3, "watch", "return")),
                     vs("d2", T3, gp(37.93, 124.72), 81.3, "active", "patrol_b", "patrol", d2_patrol, waypoint_idx=1),
                     vs("d3", T3, SPECS["d3"].home, 100, "active", "watch", "watch", d3_watch, target_id="boat1"),
@@ -223,7 +223,7 @@ def scenes() -> dict[str, Frame]:
     def ugv(t):
         return vs("ugv", t, LANDING, 95.4, "active", "landing", "move", ugv_go, waypoint_idx=-1)
 
-    d2_resume = {"resume_play_id": "patrol_b", "resume_step_id": "patrol"}
+    d2_resume = {"resume_role_id": "patrol_b", "resume_step_id": "patrol"}
     s5 = frame(T5, [d1(T5), vs("d2", T5, gp(37.93, 124.70), 79.0, "active", "patrol_b", "patrol", d2_patrol, waypoint_idx=1),
                     d3(T5, 37.9655), usv_boat1(T5, 37.9790), ugv(T5)],
                [boat(T5, 37.97675, ["usv"])], [REP1_DONE, REP2, REP4], AFTER_TAKEOVER,

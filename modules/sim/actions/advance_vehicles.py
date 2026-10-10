@@ -28,7 +28,7 @@ def _recharge(st: VehicleState, spec: VehicleSpec, dt_ms: int) -> VehicleState:
     pct = st.battery_pct + 100 / spec.recharge_min * dt_ms / 60000
     if pct < 100:
         return st.model_copy(update={"battery_pct": pct})
-    done = {"battery_pct": 100, "status": VehicleStatus.ready, "play_id": None, "step_id": None}
+    done = {"battery_pct": 100, "status": VehicleStatus.ready, "role_id": None, "step_id": None}
     return st.model_copy(update={**done, "active": None, "waypoint_idx": 0})
 
 

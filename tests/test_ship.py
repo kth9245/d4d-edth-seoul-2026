@@ -138,8 +138,8 @@ def test_ship_freeze_downgrades_test_failure_to_warning(tmp_path):
 
 def test_ship_allows_module_with_spec_only_and_no_tests(tmp_path):
     _, work = make_clone(tmp_path)
-    shutil.rmtree(work / "modules/play/tests")  # play has tests now; make it a spec-only module
-    spec = work / "modules/play/SPEC.md"
+    shutil.rmtree(work / "modules/role/tests")  # role has tests now; make it a spec-only module
+    spec = work / "modules/role/SPEC.md"
     spec.write_text(
         spec.read_text(encoding="utf-8") + "| PLY-99 | do_nothing | - | - | - | t | 예정 |\n",
         encoding="utf-8",

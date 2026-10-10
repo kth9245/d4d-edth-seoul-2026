@@ -11,15 +11,15 @@ SC0 = load_scenario_json("demo/scenarios/baengnyeong_night.json")
 OLD_START = SC0.operation.model_copy(update={
     "assign": {**SC0.operation.assign, "d1": "patrol_a", "d2": "patrol_b"},
     "reserve": {"d1": ["d3"]}})  # fmt: skip
-PLAYS = [
+ROLES = [
     p.model_copy(update={"steps": [
         s.model_copy(update={"report": s.report.model_copy(update={"auto_choices": True})})
         if s.report else s
         for s in p.steps]})
     if p.id in ("patrol_a", "patrol_b") else p
-    for p in SC0.plays
+    for p in SC0.roles
 ]  # fmt: skip
-SC = SC0.model_copy(update={"operation": OLD_START, "plays": PLAYS})
+SC = SC0.model_copy(update={"operation": OLD_START, "roles": ROLES})
 
 
 def _first_contact_card():

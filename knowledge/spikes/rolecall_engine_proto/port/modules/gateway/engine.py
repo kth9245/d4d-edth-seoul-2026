@@ -29,21 +29,21 @@ __all__ = ["EngineState", "init_engine", "tick"]
 
 
 def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
-    sc, dt, plays, specs = es.scenario, es.scenario.tick_ms, es.plays, es.specs
+    sc, dt, roles, specs = es.scenario, es.scenario.tick_ms, es.roles, es.specs
     t = es.t_ms + dt
     states, targets = apply_events(sc, es.states, es.targets, t, dt)  # 1
     targets = observe(states, specs, targets, t)  # 2
     reports, assigns = list(es.reports), list(es.assignments)  # 3 operator inputs
     for d in inputs.decisions:
-        before = {s.id: s.play_id for s in states}
-        states, reports = apply_decision(states, plays, d, reports)
+        before = {s.id: s.role_id for s in states}
+        states, reports = apply_decision(states, roles, d, reports)
         assigns = track_assignments(assigns, before, states, t, f"결정 {d.id}")
     injections, reports, new_reports, approved = record_injections(
         es.injections, reports, inputs.injections, t
     )
     for inj in approved:
-        before = {s.id: s.play_id for s in states}
-        states = apply_injection(states, plays, inj)
+        before = {s.id: s.role_id for s in states}
+        states = apply_injection(states, roles, inj)
         assigns = track_assignments(assigns, before, states, t, f"전환 {inj.id}")
     before_direct, cmds = {}, []
     for dc in inputs.direct:
@@ -51,24 +51,24 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
         states, cmd = apply_direct(states, dc, t)
         before_direct[cmd.id] = pre
         cmds.append(cmd)
-    states = apply_emergency(states, plays)  # 4
+    states = apply_emergency(states, roles)  # 4
     stepped = []
     for s in states:  # 5
-        s, cmd, rep = step_vehicle(s, specs[s.id], plays.get(s.play_id), targets, t)
+        s, cmd, rep = step_vehicle(s, specs[s.id], roles.get(s.role_id), targets, t)
         stepped.append(s)
         cmds += [cmd] if cmd else []
         new_reports += [rep] if rep else []
-    states, assigns, gap = apply_reserves(stepped, sc.operation, plays, assigns, t)  # 6
+    states, assigns, gap = apply_reserves(stepped, sc.operation, roles, assigns, t)  # 6
     new_reports += [gap] if gap else []
     states, passed, blocks, cards = run_checks(  # 7
-        cmds, before_direct, states, specs, sc.operation, plays, injections, t
+        cmds, before_direct, states, specs, sc.operation, roles, injections, t
     )
     states = advance(states, specs, passed, dt, targets)  # 8
     new_reports += cards
     reports += new_reports
     outcome = TickOutcome(inputs=inputs, commands=cmds, passed=passed, blocks=blocks,
                           new_reports=new_reports, assignments=assigns, states=states,
-                          targets=targets, plays=plays, reports=reports)  # fmt: skip
+                          targets=targets, roles=roles, reports=reports)  # fmt: skip
     es = replace(es, t_ms=t, states=states, targets=targets, reports=reports, assignments=assigns,
                  blocks=es.blocks + blocks, injections=injections,
                  metrics=update_metrics(es.metrics, outcome))  # 9  # fmt: skip

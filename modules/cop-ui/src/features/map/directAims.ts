@@ -4,7 +4,7 @@ export type Aim = { label: string; lat: number; lon: number };
 // The order the operator just sent, with the frame time it was sent at.
 export type PendingAim = Aim & { sentAt: number };
 
-// Direct-control crosses on the map. The frame is the truth: a vehicle off its play step that is executing an
+// Direct-control crosses on the map. The frame is the truth: a vehicle off its role step that is executing an
 // operator_direct move gets a cross at that move's target, so a blocked order never shows one, an alternative
 // moves it, and arrival (back on the step) drops it. The order just sent shows until a newer frame arrives,
 // because a paused run has not taken it yet.
