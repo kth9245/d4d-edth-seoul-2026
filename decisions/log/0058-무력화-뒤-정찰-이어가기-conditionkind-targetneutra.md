@@ -1,8 +1,8 @@
 ---
 id: 0058
 title: 무력화 뒤 정찰 이어가기: ConditionKind target_neutralized와 VehicleState 순찰 위치 기억(patrol_step_id, patrol_idx)
-status: 제안            # 제안 / 확정 / 폐기
-decided_by: null        # 확정 시 사람 이름
+status: 확정
+decided_by: 최동호
 date: 2026-10-10
 modules: [contracts, runtime, demo]
 supersedes: null
