@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 from contracts.models import Frame, Play, Scenario
+from shared.geo import dist_m
 
 ROOT = Path(__file__).resolve().parent.parent
 SCENARIO = ROOT / "demo" / "scenarios" / "baengnyeong_night.json"
@@ -34,6 +35,15 @@ def test_switch_scene_shows_the_target_select_card():
     s5 = Frame.model_validate(_load(ROOT / "contracts/examples/frames/s5_zone_block.json"))
     picks = [r for r in s5.reports if r.kind == "target_select"]
     assert picks and picks[0].decision_id == "dec-2"
+
+
+def test_vehicle_homes_are_apart_on_the_map():
+    # At the default map zoom one pixel is about 22-26 m; marker and label need about 18 px.
+    sc = Scenario.model_validate(_load(SCENARIO))
+    homes = [(s.id, s.home) for s in sc.vehicles]
+    for i, (a, pa) in enumerate(homes):
+        for b, pb in homes[i + 1 :]:
+            assert dist_m(pa, pb) >= 500, f"{a} and {b} homes are {dist_m(pa, pb):.0f} m apart"
 
 
 def test_split_event_makes_a_fast_boat():

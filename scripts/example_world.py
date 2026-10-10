@@ -48,9 +48,10 @@ def _spec(vid, name, domain, speed, endurance, sensor, home=HOME):
 SPECS = {
     s.id: s
     for s in [
+        # Drone pads 555 m apart north-south so their map markers do not overlap (decision Part1-9.1).
         _spec("d1", "드론1", "air", 15, 40, 800),
-        _spec("d2", "드론2", "air", 15, 40, 800),
-        _spec("d3", "드론3", "air", 15, 40, 800),
+        _spec("d2", "드론2", "air", 15, 40, 800, gp(37.955, 124.70)),
+        _spec("d3", "드론3", "air", 15, 40, 800, gp(37.945, 124.70)),
         _spec("usv", "수상정", "sea", 8, 720, 500, gp(37.94, 124.71)),
         _spec("ugv", "지상로봇", "ground", 5, 480, 300, gp(37.955, 124.72)),
     ]
