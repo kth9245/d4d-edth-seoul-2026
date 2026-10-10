@@ -15,6 +15,9 @@
 ### kth9245
 - **Part1-15** 3분 대본·BUILT_HERE·제출 설명
 
+### 황승주
+- **Part2-49** 멸공 적 3/7: runtime target_domain(공중·지상·해상) + 지상 로봇 watch_target 명령
+
 ### 누구나
 - **Part3-12.2** 카드 편집: 지도에서 좌표 찍기(이동 지점·순찰 경로) — gio 세션
 
