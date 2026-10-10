@@ -5,7 +5,7 @@
 마지막 기록 10/10 10:10 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- **Part2-10** runtime `step_vehicle` — 황승주, 10/10 10:10부터 · 하위 1/1 완료 · RT-01
+- (없음)
 
 ## 막힘
 - (없음)
@@ -63,6 +63,7 @@
 - 10/9 23:14 kth9245 · Part1-1 · 결정 0015·0016·0017·0018 참조(두 층 구조, contracts 세부, API 규약)
 
 ## 완료
+- **Part2-10** runtime `step_vehicle` — 황승주, 10/10 10:10 · 하위 1/1 완료 · RT-01
 - **Part2-11** runtime `assign_roles` — 황승주, 10/10 10:10 · RT-02
 - **Part2-14** runtime `apply_injection` — 황승주, 10/10 10:10 · RT-05
 - **Part2-12** runtime `apply_decision` — 황승주, 10/10 10:09 · 하위 1/1 완료 · RT-03
