@@ -320,10 +320,43 @@
        "distance_m": 150
       }
      },
-     "on": [],
+     "on": [
+      {
+       "cond": {
+        "kind": "operator_choice",
+        "params": {
+         "choice": "resume"
+        }
+       },
+       "go_step": "patrol"
+      }
+     ],
      "report": {
       "text": "미식별 거점 감지",
-      "choices": [],
+      "choices": [
+       {
+        "id": "resume",
+        "label": "이 거점은 두고 계속 정찰",
+        "role_by_vehicle": {},
+        "target_by_vehicle": {}
+       },
+       {
+        "id": "go_site_nw",
+        "label": "북서 해안 쪽으로 이동해 정찰",
+        "role_by_vehicle": {
+         "r1": "site_patrol_nw"
+        },
+        "target_by_vehicle": {}
+       },
+       {
+        "id": "go_site_s",
+        "label": "남쪽 해안 쪽으로 이동해 정찰",
+        "role_by_vehicle": {
+         "r1": "site_patrol_s"
+        },
+        "target_by_vehicle": {}
+       }
+      ],
       "auto_choices": true
      },
      "ui": {}
@@ -454,10 +487,43 @@
        "distance_m": 150
       }
      },
-     "on": [],
+     "on": [
+      {
+       "cond": {
+        "kind": "operator_choice",
+        "params": {
+         "choice": "resume"
+        }
+       },
+       "go_step": "patrol"
+      }
+     ],
      "report": {
       "text": "미식별 거점 감지",
-      "choices": [],
+      "choices": [
+       {
+        "id": "resume",
+        "label": "이 거점은 두고 계속 정찰",
+        "role_by_vehicle": {},
+        "target_by_vehicle": {}
+       },
+       {
+        "id": "go_site_ne",
+        "label": "북동 해안 쪽으로 이동해 정찰",
+        "role_by_vehicle": {
+         "r2": "site_patrol_ne"
+        },
+        "target_by_vehicle": {}
+       },
+       {
+        "id": "go_site_s",
+        "label": "남쪽 해안 쪽으로 이동해 정찰",
+        "role_by_vehicle": {
+         "r2": "site_patrol_s"
+        },
+        "target_by_vehicle": {}
+       }
+      ],
       "auto_choices": true
      },
      "ui": {}
@@ -583,10 +649,43 @@
        "distance_m": 150
       }
      },
-     "on": [],
+     "on": [
+      {
+       "cond": {
+        "kind": "operator_choice",
+        "params": {
+         "choice": "resume"
+        }
+       },
+       "go_step": "patrol"
+      }
+     ],
      "report": {
       "text": "미식별 거점 감지",
-      "choices": [],
+      "choices": [
+       {
+        "id": "resume",
+        "label": "이 거점은 두고 계속 정찰",
+        "role_by_vehicle": {},
+        "target_by_vehicle": {}
+       },
+       {
+        "id": "go_site_ne",
+        "label": "북동 해안 쪽으로 이동해 정찰",
+        "role_by_vehicle": {
+         "r3": "site_patrol_ne"
+        },
+        "target_by_vehicle": {}
+       },
+       {
+        "id": "go_site_nw",
+        "label": "북서 해안 쪽으로 이동해 정찰",
+        "role_by_vehicle": {
+         "r3": "site_patrol_nw"
+        },
+        "target_by_vehicle": {}
+       }
+      ],
       "auto_choices": true
      },
      "ui": {}

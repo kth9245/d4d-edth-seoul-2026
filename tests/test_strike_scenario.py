@@ -225,3 +225,58 @@ def test_the_north_east_patrol_starts_over_the_sea_so_it_does_not_cross_site_c(s
     assert not inside(GeoPoint(lat=first[0], lon=first[1]), sc.land)  # a waypoint on the sea
     site_c = next(e for e in sc.enemies if e.id == "site_c").pos
     assert dist_m(GeoPoint(lat=first[0], lon=first[1]), site_c) > 2000
+
+
+PATROL_OF = {"r1": "site_patrol_ne", "r2": "site_patrol_nw", "r3": "site_patrol_s"}
+ROUTE_OF = {"site_patrol_ne": "site_ne", "site_patrol_nw": "site_nw", "site_patrol_s": "site_s"}
+
+
+def test_every_patrol_card_lets_its_drone_leave_the_site_for_any_stretch(sc):
+    roles = {r.id: r for r in sc.roles}
+    for drone, role_id in PATROL_OF.items():
+        step = roles[role_id].steps[1]
+        choices = {c.id: c for c in step.report.choices}
+        others = [r for r in PATROL_OF.values() if r != role_id]
+        assert set(choices) == {"resume", *(f"go_{ROUTE_OF[o]}" for o in others)}, drone
+        assert choices["resume"].role_by_vehicle == {}, drone
+        for o in others:
+            assert choices[f"go_{ROUTE_OF[o]}"].role_by_vehicle == {drone: o}, drone
+        assert any(
+            e.cond.kind.value == "operator_choice"
+            and e.cond.params == {"choice": "resume"}
+            and e.go_step == "patrol"
+            for e in step.on
+        ), drone
+
+
+def _site_c_card(sc):
+    es = init_engine(sc)
+    es = _run_until(
+        es,
+        lambda e: any(r.kind == "target_detected" and r.target_id == "site_c" for r in e.reports),
+    )
+    return es, next(
+        r for r in es.reports if r.kind == "target_detected" and r.target_id == "site_c"
+    )
+
+
+@pytest.mark.parametrize(
+    "choice,role_id",
+    [
+        ("resume", "site_patrol_nw"),
+        ("go_site_ne", "site_patrol_ne"),
+        ("go_site_s", "site_patrol_s"),
+    ],
+)
+def test_leaving_a_site_frees_the_drone_and_its_card_does_not_come_back(sc, choice, role_id):
+    es, card = _site_c_card(sc)
+    assert card.vehicle_id == "r2"  # the north-west stretch meets site_c first
+    dec = Decision(id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=card.id, choice_id=choice)
+    es, _ = tick(es, TickInputs(decisions=[dec]))
+    for _ in range(180 * 1000 // sc.tick_ms):  # three minutes
+        es, _ = tick(es, TickInputs())
+    r2 = next(s for s in es.states if s.id == "r2")
+    assert (r2.role_id, r2.step_id) == (role_id, "patrol")
+    cards = [r for r in es.reports if r.kind == "target_detected" and r.target_id == "site_c"]
+    assert len(cards) == 1 and cards[0].resolved_ms  # answered, and not raised again
+    assert dist_m(r2.pos, _site(es, "site_c").pos) > 800  # out of its sensor range: it really left

@@ -94,11 +94,27 @@ def coast_patrols(day: dict) -> tuple[list[dict], list[dict]]:
         role = copy.deepcopy(base_role)
         role["id"], role["name"] = role_id, f"거점 탐색 순찰 · {name}"
         role["steps"][0]["do"]["params"] = {"route": points, "route_name": name}
+        # the drone that raises this card may leave the site: back to its own stretch, or to another stretch
+        drone = next(d for d, r in RECON.items() if r == role_id)
+        leave = [{"id": "resume", "label": "이 거점은 두고 계속 정찰", "role_by_vehicle": {},
+                  "target_by_vehicle": {}}]  # fmt: skip
+        leave += [
+            {"id": f"go_{rid}", "label": f"{nm} 쪽으로 이동해 정찰", "role_by_vehicle": {drone: rl},
+             "target_by_vehicle": {}}
+            for rl, rid, nm, _, _ in PATROLS
+            if rl != role_id
+        ]  # fmt: skip
         role["steps"][1]["report"] = {
             "text": "미식별 거점 감지",
-            "choices": [],
+            "choices": leave,
             "auto_choices": True,
         }
+        role["steps"][1]["on"] = [
+            {
+                "cond": {"kind": "operator_choice", "params": {"choice": "resume"}},
+                "go_step": "patrol",
+            }
+        ]  # decision 0031: the reporter not named in role_by_vehicle takes this exit
         roles.append(role)
         routes.append(route)
     return roles, routes
