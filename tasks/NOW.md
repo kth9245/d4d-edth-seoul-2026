@@ -6,7 +6,6 @@
 
 ## 진행중
 - **Part2-20** sim `load_scenario_json` — 최동호, 10/10 10:11부터 · SIM-04
-- **Part3-8** play `list_templates` — 황승주, 10/10 10:16부터 · PLY-08
 
 ## 막힘
 - (없음)
@@ -62,6 +61,7 @@
 - 10/9 23:14 kth9245 · Part1-1 · 결정 0015·0016·0017·0018 참조(두 층 구조, contracts 세부, API 규약)
 
 ## 완료
+- **Part3-8** play `list_templates` — 황승주, 10/10 10:16 · PLY-08
 - **Part2-10** runtime `step_vehicle` — 황승주, 10/10 10:10 · 하위 1/1 완료 · RT-01
 - **Part2-11** runtime `assign_roles` — 황승주, 10/10 10:10 · RT-02
 - **Part2-14** runtime `apply_injection` — 황승주, 10/10 10:10 · RT-05
