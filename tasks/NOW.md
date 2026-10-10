@@ -2,10 +2,10 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 10:53 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 10:54 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- **Part2-4** sim `advance_vehicles`(공개 API 이름 `advance`) — 최동호, 10/10 10:53부터 · SIM-08
+- (없음)
 
 ## 막힘
 - (없음)
@@ -54,6 +54,7 @@
 - 10/9 23:14 kth9245 · Part1-1 · 결정 0015·0016·0017·0018 참조(두 층 구조, contracts 세부, API 규약)
 
 ## 완료
+- **Part2-4** sim `advance_vehicles`(공개 API 이름 `advance`) — 최동호, 10/10 10:54 · SIM-08
 - **Part1-10** 상황판 카드 열 + 결정 버튼 — kth9245, 10/10 10:52
 - **Part2-3** sim `orbit_or_keep` — 최동호, 10/10 10:50 · SIM-07
 - **Part3-10** 편집기: 카드 열(읽기 전용) — kth9245, 10/10 10:48

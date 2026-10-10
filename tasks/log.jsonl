@@ -146,3 +146,4 @@
 {"at": "2026-10-10T10:52:41+09:00", "by": "kth9245", "op": "done", "id": "Part1-10", "take": false}
 {"at": "2026-10-10T10:52:43+09:00", "by": "kth9245", "op": "note", "id": "Part1-10", "text": "화면 쪽 완료(main 1ce69bf). 실제 gateway(스텁 엔진)에서 버튼 → POST /decisions 1회, Accepted dec-1, 카드 잠금 확인. 완료 기준의 '버튼 한 번에 기체가 움직임'은 engine.py(Part2-17)가 들어온 뒤 Part1-14 통합에서 확인. 스텁은 입력을 무시해서 카드가 처리되지 않고, reset 뒤에도 같은 보고·같은 시각이라 잠금이 안 풀림(실제 엔진에서는 보고가 사라져 풀림, pruneSent)"}
 {"at": "2026-10-10T10:53:46+09:00", "by": "최동호", "op": "start", "id": "Part2-4", "take": false, "from": null}
+{"at": "2026-10-10T10:54:59+09:00", "by": "최동호", "op": "done", "id": "Part2-4", "take": false}
