@@ -21,6 +21,9 @@
 - **Part3-14** 작전 설정 패널
 - **Part3-15.1** mavlink compile_mavlink · MAV-01 (리드, 결정 0025, 통합 2 뒤)
 
+### 황승주
+- **Part2-21** 타격 runtime: enter_step·apply_decision·switch_play (결정 id·승인 표적·카드 닫기)
+
 ### 최동호
 - **Part2-19** 시나리오 튜닝
 
