@@ -630,3 +630,4 @@
 {"at": "2026-10-11T04:44:03+09:00", "by": "황승주", "op": "add", "id": "Part2-72", "title": "비상 귀환: battery_low_step이 없는 Role은 배터리 기준 아래면 go_home(모든 작전에서 30% 비상 귀환이 동작하지 않던 문제)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-11T04:44:06+09:00", "by": "황승주", "op": "start", "id": "Part2-72", "take": false, "from": null}
 {"at": "2026-10-11T04:59:45+09:00", "by": "황승주", "op": "done", "id": "Part2-72", "take": false}
+{"at": "2026-10-11T05:08:34+09:00", "by": "황승주", "op": "add", "id": "Part2-73", "title": "모든 작전: 표적이 무력화되면 그 표적을 맡던 기체에 기지 복귀/현재 위치 대기 카드(거점 타격에서 타격기가 파괴된 거점 위에 계속 머물던 문제)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
