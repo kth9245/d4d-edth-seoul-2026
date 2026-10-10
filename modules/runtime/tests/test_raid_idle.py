@@ -67,3 +67,19 @@ def test_an_idle_vehicle_in_the_air_takes_the_enemy_it_sees():  # user 10/11: th
         == alone
     )
     assert auto_watch(states, [boat], SPECS, LAND, ROLES) == states  # night: untouched
+
+
+def test_a_returning_vehicle_taken_by_auto_watch_flies_again():  # brute force 10/11: it landed and lost its track
+    from contracts.models import VehicleStatus
+    from modules.runtime.actions.raid_idle import auto_watch
+
+    roles = RAID | {"watch": _role("watch", "air")}
+    boat = tg("boat1", "usv", SEA.pos, 10, seen=("d2",))
+    going = vs("d2", "go_home", "return").model_copy(update={"status": VehicleStatus.returning})
+    (d2,) = auto_watch([going], [boat], SPECS, LAND, roles)
+    assert (d2.role_id, d2.target_id, d2.status.value, d2.active) == (
+        "watch",
+        "boat1",
+        "active",
+        None,
+    )

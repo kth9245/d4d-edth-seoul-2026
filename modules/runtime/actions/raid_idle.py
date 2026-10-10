@@ -67,7 +67,7 @@ def auto_watch(states: list[VehicleState], targets: list[Target], specs: dict[st
                    and dom in ("air", target_domain(t, land))), None)  # fmt: skip
         if (tg and s.role_id in ("standby", "go_home") and s.status.value in ("active", "returning")
                 and s.target_id is None and s.battery_pct > 30):  # fmt: skip
-            s = switch_role(s, roles[TRACK_ROLE[dom]]).model_copy(update={"target_id": tg.id})
+            s = switch_role(s, roles[TRACK_ROLE[dom]]).model_copy(update={"target_id": tg.id, "status": type(s.status).active, "active": None})  # stop the trip home  # fmt: skip
             taken.add(tg.id)
         out.append(s)
     return out

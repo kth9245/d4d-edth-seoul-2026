@@ -73,14 +73,24 @@ def test_assign_and_roles_and_operation_checks(sc):
     assert sc.operation.assign == {"usv": "sea_patrol", "r1": "site_recon", "r2": "site_recon",
                                    "a1": "standby", "a2": "standby", "ugv": "standby"}  # fmt: skip
     ids = {r.id for r in sc.roles}
-    assert {"site_recon", "sea_patrol", "watch_landing", "strike", "standby", "go_home",
-            "site_hold", "enemy_usv_run", "enemy_hold"} <= ids
+    assert {
+        "site_recon",
+        "sea_patrol",
+        "watch_landing",
+        "strike",
+        "standby",
+        "go_home",
+        "site_hold",
+        "enemy_usv_run",
+        "enemy_hold",
+    } <= ids
     roles, specs = {r.id: r for r in sc.roles}, {v.id: v for v in sc.vehicles}
     assert check_operation(sc.operation, roles, specs).ok
 
 
 def test_the_json_is_what_the_script_builds():
     from scripts.make_assault_scenario import build
+
     on_disk = json.loads(PATH.read_text(encoding="utf-8"))
     assert build() == on_disk
 
@@ -108,8 +118,9 @@ def _site_state(es, want):
 
 
 def _site_card(es):
-    return next((r for r in es.reports
-                 if r.kind == "target_detected" and r.target_id == "site_rf"), None)
+    return next(
+        (r for r in es.reports if r.kind == "target_detected" and r.target_id == "site_rf"), None
+    )
 
 
 def test_rf_clue_comes_before_the_drone_sees_the_site(sc):
@@ -122,8 +133,12 @@ def test_operator_direct_sends_a_recon_drone_to_the_off_route_site(sc):
     es = init_engine(sc)
     es = _run_until(es, lambda e: _site_state(e, "rf_only"))
     site = _site(es).pos
-    dc = DirectControl(id="dir-1", vehicle_id="r1", t_ms=es.t_ms + sc.tick_ms,
-                       target=GeoPoint(lat=site.lat, lon=site.lon, alt_m=0.0))
+    dc = DirectControl(
+        id="dir-1",
+        vehicle_id="r1",
+        t_ms=es.t_ms + sc.tick_ms,
+        target=GeoPoint(lat=site.lat, lon=site.lon, alt_m=0.0),
+    )
     es, _ = tick(es, TickInputs(direct=[dc]))
     assert not es.blocks  # the direct order is inside the zone and battery-feasible
     es = _run_until(es, lambda e: _site(e) and "r1" in _site(e).seen_by)  # r1 reaches camera range
@@ -133,8 +148,12 @@ def test_site_is_identified_then_approved_then_neutralized(sc):
     es = init_engine(sc)
     es = _run_until(es, lambda e: _site_state(e, "rf_only"))
     site = _site(es).pos
-    dc = DirectControl(id="dir-1", vehicle_id="r1", t_ms=es.t_ms + sc.tick_ms,
-                       target=GeoPoint(lat=site.lat, lon=site.lon, alt_m=0.0))
+    dc = DirectControl(
+        id="dir-1",
+        vehicle_id="r1",
+        t_ms=es.t_ms + sc.tick_ms,
+        target=GeoPoint(lat=site.lat, lon=site.lon, alt_m=0.0),
+    )
     es, _ = tick(es, TickInputs(direct=[dc]))
     # the drone reaches the site, the patrol step raises the card, and identification climbs to identified
     es = _run_until(es, lambda e: _site_card(e) is not None and _site_state(e, "identified"))
@@ -159,8 +178,14 @@ def e_usv_down(es):
 
 
 def _sea_card(es):
-    return next((r for r in es.reports if r.kind == "target_detected"
-                 and r.target_id == "e_usv" and not r.resolved_ms), None)
+    return next(
+        (
+            r
+            for r in es.reports
+            if r.kind == "target_detected" and r.target_id == "e_usv" and not r.resolved_ms
+        ),
+        None,
+    )
 
 
 def test_enemy_usv_spawns_and_drops_two_ground_robots(sc):
@@ -179,8 +204,9 @@ def test_one_decision_moves_air_sea_and_ground_and_neutralizes_the_enemy_usv(sc)
     assert before["ugv"] == "standby"
     card = _sea_card(es)
     assert any(c.id == "strike_all_domains" for c in card.choices)
-    dec = Decision(id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=card.id,
-                   choice_id="strike_all_domains")
+    dec = Decision(
+        id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=card.id, choice_id="strike_all_domains"
+    )
     es, _ = tick(es, TickInputs(decisions=[dec]))
     moved = {s.id: s.role_id for s in es.states}
     assert moved["a1"] == "strike" and moved["a2"] == "strike" and moved["usv"] == "strike"
@@ -196,8 +222,9 @@ def test_mission_success_when_the_enemy_usv_is_down(sc):
     es = init_engine(sc)
     es = _run_until(es, lambda e: _sea_card(e) is not None, limit=25000)
     card = _sea_card(es)
-    dec = Decision(id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=card.id,
-                   choice_id="strike_all_domains")
+    dec = Decision(
+        id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=card.id, choice_id="strike_all_domains"
+    )
     es, _ = tick(es, TickInputs(decisions=[dec]))
     es = _run_until(es, e_usv_down, limit=25000)
     assert es.metrics.mission_success  # a target was neutralized
