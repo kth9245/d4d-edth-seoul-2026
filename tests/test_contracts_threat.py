@@ -50,3 +50,17 @@ def test_a_condition_can_wait_for_a_site_another_vehicle_reported():  # decision
     from contracts.models import ConditionKind
 
     assert ConditionKind("target_resighted") is ConditionKind.target_resighted
+
+
+def test_the_sensor_fields_default_to_off():  # decision 0069
+    from contracts.models import EnemySpec, GeoPoint, Target, VehicleSpec
+
+    home = GeoPoint(lat=37.9, lon=124.7)
+    v = VehicleSpec(id="r1", name="r1", domain="air", speed_mps=15, endurance_min=100,
+                    sensor_range_m=800, home=home)  # fmt: skip
+    assert (v.ir_range_m, v.acoustic_range_m) == (0, 0)
+    e = EnemySpec(id="s", kind="unknown", speed_mps=0, appear_offset_ms=1000, pos=home, role_id="r")
+    assert (e.heat, e.noise) == (False, False)
+    t = Target(id="s", kind="unknown", pos=home, vel_east_mps=0, vel_north_mps=0,
+               first_seen_ms=0, last_seen_ms=0)  # fmt: skip
+    assert (t.heat, t.noise, t.ir_detected, t.sound_detected) == (False, False, False, False)

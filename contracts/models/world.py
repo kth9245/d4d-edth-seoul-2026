@@ -30,6 +30,8 @@ class VehicleSpec(BaseModel):
     kind: str | None = None  # VehicleKind id in Scenario.ontology (decision 0038)
     kind_path: list[str] = []  # kind labels up to the root, filled by the scenario loader
     rf_range_m: float = 0  # RF receive range (decision 0039); 0 = cannot receive
+    ir_range_m: float = 0  # infrared receive range (decision 0069); 0 = cannot
+    acoustic_range_m: float = 0  # sound receive range (decision 0069); 0 = cannot
 
 
 class EnemySpec(BaseModel):  # decision 0032: an enemy follows its own role, no safety checks
@@ -43,6 +45,8 @@ class EnemySpec(BaseModel):  # decision 0032: an enemy follows its own role, no 
     emit_start_offset_ms: int | None = (
         None  # emits from this long after it appears; None = silent (0039)
     )
+    heat: bool = False  # gives off a heat signature (decision 0069)
+    noise: bool = False  # gives off noise (decision 0069)
 
 
 class WatchPoint(BaseModel):  # a place to guard; inside its radius adds to a target's threat (0039)

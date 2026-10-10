@@ -28,5 +28,7 @@
   "공중 기체",
   "기체"
  ],
- "rf_range_m": 2000.0
+ "rf_range_m": 2000.0,
+ "ir_range_m": 0.0,
+ "acoustic_range_m": 0.0
 }

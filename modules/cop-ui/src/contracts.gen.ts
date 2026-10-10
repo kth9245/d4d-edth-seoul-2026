@@ -26,6 +26,8 @@ export interface VehicleSpec {
   kind?: string | null;
   kind_path?: string[];
   rf_range_m?: number;
+  ir_range_m?: number;
+  acoustic_range_m?: number;
 }
 
 export interface Command {
@@ -115,6 +117,8 @@ export interface EnemySpec {
   from_enemy?: string | null;
   role_id: string;
   emit_start_offset_ms?: number | null;
+  heat?: boolean;
+  noise?: boolean;
 }
 
 export interface WatchPoint {
@@ -234,6 +238,10 @@ export interface Target {
   step_since_ms?: number | null;
   emitting?: boolean;
   rf_detected?: boolean;
+  heat?: boolean;
+  noise?: boolean;
+  ir_detected?: boolean;
+  sound_detected?: boolean;
   threat?: number;
   threat_reasons?: string[];
   threat_accum?: number;

@@ -247,6 +247,16 @@
           ],
           "default": null,
           "title": "Emit Start Offset Ms"
+        },
+        "heat": {
+          "default": false,
+          "title": "Heat",
+          "type": "boolean"
+        },
+        "noise": {
+          "default": false,
+          "title": "Noise",
+          "type": "boolean"
         }
       },
       "required": [
@@ -809,6 +819,16 @@
         "rf_range_m": {
           "default": 0,
           "title": "Rf Range M",
+          "type": "number"
+        },
+        "ir_range_m": {
+          "default": 0,
+          "title": "Ir Range M",
+          "type": "number"
+        },
+        "acoustic_range_m": {
+          "default": 0,
+          "title": "Acoustic Range M",
           "type": "number"
         }
       },

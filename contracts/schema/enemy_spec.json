@@ -91,6 +91,16 @@
       ],
       "default": null,
       "title": "Emit Start Offset Ms"
+    },
+    "heat": {
+      "default": false,
+      "title": "Heat",
+      "type": "boolean"
+    },
+    "noise": {
+      "default": false,
+      "title": "Noise",
+      "type": "boolean"
     }
   },
   "required": [

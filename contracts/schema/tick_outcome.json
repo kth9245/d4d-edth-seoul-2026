@@ -931,6 +931,26 @@
           "title": "Rf Detected",
           "type": "boolean"
         },
+        "heat": {
+          "default": false,
+          "title": "Heat",
+          "type": "boolean"
+        },
+        "noise": {
+          "default": false,
+          "title": "Noise",
+          "type": "boolean"
+        },
+        "ir_detected": {
+          "default": false,
+          "title": "Ir Detected",
+          "type": "boolean"
+        },
+        "sound_detected": {
+          "default": false,
+          "title": "Sound Detected",
+          "type": "boolean"
+        },
         "threat": {
           "default": 0,
           "title": "Threat",

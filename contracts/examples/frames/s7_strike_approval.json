@@ -305,6 +305,10 @@
    "step_since_ms": null,
    "emitting": false,
    "rf_detected": false,
+   "heat": false,
+   "noise": false,
+   "ir_detected": false,
+   "sound_detected": false,
    "threat": 50,
    "threat_reasons": [
     "kind_boat",
@@ -343,6 +347,10 @@
    "step_since_ms": null,
    "emitting": false,
    "rf_detected": true,
+   "heat": false,
+   "noise": false,
+   "ir_detected": false,
+   "sound_detected": false,
    "threat": 100,
    "threat_reasons": [
     "kind_fast_boat",

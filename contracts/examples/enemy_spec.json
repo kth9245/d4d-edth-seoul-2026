@@ -10,5 +10,7 @@
  },
  "from_enemy": null,
  "role_id": "enemy_boat1",
- "emit_start_offset_ms": null
+ "emit_start_offset_ms": null,
+ "heat": false,
+ "noise": false
 }
