@@ -7,8 +7,6 @@
 ## 진행중
 - **Part1-14** smoke 전환 + 통합 주관 — kth9245, 10/10 12:13부터
 - **Part2-19** 시나리오 튜닝 — 최동호, 10/10 12:02부터
-- **Part2-23** 타격 sim: advance 타격 분기·resolve_strikes 새 액션·update_metrics 작전 성공 — kth9245, 10/10 12:12부터
-- ⚠ kth9245 진행중 2개
 
 ## 막힘
 - (없음)
@@ -41,6 +39,7 @@
 - 10/10 11:19 kth9245 · Part1-12 · 사건 4를 화면만으로 끝내려고 Part1-12에 전환 요청 패널(작전 전체 전환 버튼 + 일부 전환: 기체·플레이 고르고 요청 → POST /injections)을 넣는다. 승인 대기 카드에 승인(주)·거부(보조) 버튼과 바뀌는 내용(d2→track_fast)을 붙인다. 리드 답 'ㄱㄱ'
 
 ## 완료
+- **Part2-23** 타격 sim: advance 타격 분기·resolve_strikes 새 액션·update_metrics 작전 성공 — kth9245, 10/10 12:13
 - **Part2-22** 타격 safety: 규칙 1에 타격 = 결정 id 필요 — kth9245, 10/10 12:12
 - **Part2-21** 타격 runtime: enter_step·apply_decision·switch_play (결정 id·승인 표적·카드 닫기) — kth9245, 10/10 12:11
 - **Part3-13.1** 새로 만들기 메뉴: AI로 생성 / 직접 생성 고르기 — kth9245, 10/10 12:11
