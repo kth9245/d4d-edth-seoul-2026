@@ -239,3 +239,4 @@
 {"at": "2026-10-10T12:14:33+09:00", "by": "kth9245", "op": "start", "id": "Part2-25", "take": false, "from": null}
 {"at": "2026-10-10T12:15:59+09:00", "by": "kth9245", "op": "done", "id": "Part2-25", "take": false}
 {"at": "2026-10-10T12:21:15+09:00", "by": "최동호", "op": "start", "id": "Part1-19", "take": false, "from": null}
+{"at": "2026-10-10T12:21:24+09:00", "by": "최동호", "op": "decide", "id": "Part1-19", "text": "Part1-19는 최동호가 맡는다(누구나 항목, 리드 허락). 구조(enemies·적 플레이·track_fast·track_fast_sea·strike·전환 버튼)와 숫자 맞추기(Part2-19)를 한 사람이 같이 한다."}
