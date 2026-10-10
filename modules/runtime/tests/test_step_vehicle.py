@@ -60,6 +60,20 @@ def test_target_found_and_arrived():
     assert step(vs(waypoint_idx=-1))[0].step_id == "home"
 
 
+def test_target_found_skips_boats_already_reported_while_patrolling():  # decision 0036
+    reported = boat(["d1"]).model_copy(update={"reported_by": "d2"})
+    other = boat(["d1"]).model_copy(update={"id": "boat2"})
+    assert step(vs(), [reported])[0].step_id == "patrol"
+    assert step(vs(), [reported, other])[0].step_id == "watch"
+
+
+def test_target_found_with_an_assigned_target_waits_for_that_target():  # tracking (0033)
+    reported = boat(["d1"]).model_copy(update={"reported_by": "d2"})
+    other = boat(["d1"]).model_copy(update={"id": "boat2"})
+    assert step(vs(target_id="boat1"), [reported])[0].step_id == "watch"
+    assert step(vs(target_id="boat1"), [other])[0].step_id == "patrol"
+
+
 def test_waits_while_a_decision_is_pending_or_not_ready_or_active():
     for st in (
         vs(waypoint_idx=-1, pending_report_id="r1"),

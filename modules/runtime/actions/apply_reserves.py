@@ -25,7 +25,9 @@ def apply_reserves(
         nxt = next((r for r in reserves if by[r].status in LIVE), None)
         if nxt is None:
             continue
-        by[nxt] = switch_play(by[nxt], plays[gone.play_id])
+        by[nxt] = switch_play(by[nxt], plays[gone.play_id]).model_copy(
+            update={"target_id": gone.target_id}  # decision 0036: keep watching the same boat
+        )
         new = Assignment(vehicle_id=nxt, play_id=gone.play_id, since_ms=t_ms, reason=reason)
         assignments = [a for a in assignments if a.vehicle_id != nxt] + [new]
         rep = Report(id=f"rep-{nxt}-{t_ms}", t_ms=t_ms, kind="vehicle_gap", vehicle_id=nxt,

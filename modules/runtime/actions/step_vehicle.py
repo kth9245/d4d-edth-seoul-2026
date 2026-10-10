@@ -18,8 +18,10 @@ from modules.runtime.actions.enter_step import enter_step
 
 
 def _true(cond: Condition, st: VehicleState, targets: list[Target]) -> bool:
-    if cond.kind == ConditionKind.target_found:
-        return any(st.id in tg.seen_by for tg in targets)
+    if cond.kind == ConditionKind.target_found:  # decision 0036: my target, else a new contact
+        if st.target_id:
+            return any(tg.id == st.target_id and st.id in tg.seen_by for tg in targets)
+        return any(st.id in tg.seen_by and tg.reported_by is None for tg in targets)
     if cond.kind == ConditionKind.arrived:
         return st.waypoint_idx < 0
     if cond.kind == ConditionKind.battery_below:

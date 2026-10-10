@@ -28,8 +28,9 @@ def _target(st: VehicleState, step: Step, targets: list[Target]) -> tuple[str | 
     want = step.do.params.get("target")
     if want == "operator":
         return st.target_id, st.target_id is None
-    if want == "nearest":
-        best = min(targets, key=lambda t: dist_m(st.pos, t.pos), default=None)
+    if want == "nearest":  # decision 0036: a boat nobody reported yet comes first
+        new = [t for t in targets if t.reported_by is None]
+        best = min(new or targets, key=lambda t: dist_m(st.pos, t.pos), default=None)
         return (best.id if best else None), False
     return want, False
 

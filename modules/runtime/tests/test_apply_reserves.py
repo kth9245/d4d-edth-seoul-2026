@@ -54,3 +54,9 @@ def test_nothing_while_the_vehicle_is_working_or_no_reserve_is_free():
     assert apply_reserves(working, OP, PLAYS, START, 1000) == (working, START, None)
     busy = [vs("d1", "lost", "watch", "w1"), vs("d3", "maintenance", "standby", "s1")]
     assert apply_reserves(busy, OP, PLAYS, START, 1000) == (busy, START, None)
+
+
+def test_reserve_keeps_watching_the_target_of_the_vehicle_it_replaces():  # decision 0036
+    gone = vs("d1", "returning", "watch", "w2").model_copy(update={"target_id": "boat2"})
+    out, _, _ = apply_reserves([gone, vs("d3", "active", "standby", "s1")], OP, PLAYS, START, 1000)
+    assert (out[1].play_id, out[1].target_id, out[1].decision_id) == ("watch", "boat2", None)

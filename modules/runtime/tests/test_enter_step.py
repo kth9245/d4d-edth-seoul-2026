@@ -46,6 +46,13 @@ def test_nearest_target_becomes_target_id_of_the_command():
     assert cmd.id == "cmd-d1-7000" and rep is None
 
 
+def test_nearest_prefers_a_boat_nobody_reported_yet():  # decision 0036
+    near = boat("near", 300, ("d1",)).model_copy(update={"reported_by": "d2"})
+    watch = Action(kind="watch_target", params={"target": "nearest"})
+    assert run(watch, [near, boat("new", 600, ("d1",))])[0].target_id == "new"
+    assert run(watch, [near])[0].target_id == "near"  # all reported: nearest of all
+
+
 def test_operator_target_asks_with_a_target_select_card():
     st, cmd, rep = run(Action(kind="watch_target", params={"target": "operator"}),
                        [boat("boat1", 500), boat("fast1", 900)])  # fmt: skip
