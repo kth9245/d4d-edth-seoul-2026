@@ -562,3 +562,4 @@
 {"at": "2026-10-11T00:32:05+09:00", "by": "kth9245", "op": "done", "id": "Part1-32.3", "take": false}
 {"at": "2026-10-11T00:33:05+09:00", "by": "황승주", "op": "done", "id": "Part2-64", "take": false}
 {"at": "2026-10-11T00:36:28+09:00", "by": "황승주", "op": "add", "id": "Part2-65", "title": "멸공 단계별 카드: 남은 사소한 문제 3개(제거된 적, 끼어들기, 발견 기체 대기)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
+{"at": "2026-10-11T00:36:32+09:00", "by": "황승주", "op": "start", "id": "Part2-65", "take": false, "from": null}
