@@ -150,3 +150,4 @@
 {"at": "2026-10-10T10:55:28+09:00", "by": "kth9245", "op": "start", "id": "Part1-13", "take": false, "from": null}
 {"at": "2026-10-10T10:56:47+09:00", "by": "최동호", "op": "start", "id": "Part2-5", "take": false, "from": null}
 {"at": "2026-10-10T10:57:33+09:00", "by": "kth9245", "op": "start", "id": "Part3-11", "take": false, "from": null}
+{"at": "2026-10-10T10:57:36+09:00", "by": "kth9245", "op": "decide", "id": "Part3-11", "text": "플레이 머리 버튼은 '저장' = POST /plays: 서버가 check_play로 검사해 통과하면 gateway 메모리(live.scenario.plays)에 저장하고 실행을 작전 시작 직전(일시정지)으로 되돌림(POST /operation과 같은 방식), 실패면 저장 안 함. 응답은 항상 PlayCheck. 파일에는 쓰지 않음(리허설 재현). 계약의 POST /plays/check(검사만)도 같이 만듦. 리드 답 '저장으로 할건데', '저장하고 오퍼레이션 시작을 해야 실행되는거 아님?'"}
