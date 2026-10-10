@@ -6,7 +6,9 @@
 
 ## 진행중
 - **Part2-19** 시나리오 튜닝 — 최동호, 10/10 12:02부터
+- **Part2-21** 타격 runtime: enter_step·apply_decision·switch_play (결정 id·승인 표적·카드 닫기) — kth9245, 10/10 12:10부터
 - **Part3-13.1** 새로 만들기 메뉴: AI로 생성 / 직접 생성 고르기 — kth9245, 10/10 12:09부터
+- ⚠ kth9245 진행중 2개
 
 ## 막힘
 - (없음)
@@ -19,7 +21,6 @@
 - **Part3-14** 작전 설정 패널
 
 ### 황승주
-- **Part2-21** 타격 runtime: enter_step·apply_decision·switch_play (결정 id·승인 표적·카드 닫기)
 - **Part2-22** 타격 safety: 규칙 1에 타격 = 결정 id 필요
 - **Part2-23** 타격 sim: advance 타격 분기·resolve_strikes 새 액션·update_metrics 작전 성공
 
