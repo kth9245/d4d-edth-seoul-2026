@@ -6,6 +6,7 @@
 
 ## 진행중
 - **Part2-19** 시나리오 튜닝 — 최동호, 10/10 12:02부터
+- **Part3-10.1** 워크플로우 그래프 보기(step 카드 + 조건 연결선, React Flow) — kth9245, 10/10 12:04부터
 
 ## 막힘
 - (없음)
@@ -31,7 +32,6 @@
 - **Part1-19** 타격: 시나리오·플레이 JSON (fast1 동쪽 해안 우회, track_fast 수정·track_fast_sea·strike, 고속 보트 추적 전환 버튼)
 - **Part1-20** 타격: 화면 (무력화 표적 X·결과 카드·작전 성공·예시 장면 s7·s8)
 - **Part1-21** 편집기 적 열 + GET /enemies (결정 0032, 읽기 전용)
-- **Part3-10.1** 워크플로우 그래프 보기(step 카드 + 조건 연결선, React Flow)
 
 ## 최근 결정
 - 10/10 11:57 kth9245 · Part1-19 · 구조만 쓴다(enemies·적 플레이·track_fast·track_fast_sea·strike·전환 버튼·capabilities). 숫자는 대략값, 맞추기는 Part2-19. 완료 기준을 check_operation 통과 + 틱 루프가 오류 없이 돌고 fast1이 나타나 움직임으로 낮춤(s7·s8 도달은 Part2-19). fast1은 spec 5절의 split_target(ve·vn)이 아니라 10.1의 enemy_fast1로 쓴다. 리드 답 'ㅇㅇ 이렇게 ㄱㄱ'
