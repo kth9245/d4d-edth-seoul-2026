@@ -2,10 +2,10 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 11:45 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 11:46 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- (없음)
+- **Part3-12** 편집기: 카드 편집 — kth9245, 10/10 11:46부터
 
 ## 막힘
 - (없음)
@@ -15,7 +15,6 @@
 ### kth9245
 - **Part1-14** smoke 전환 + 통합 주관
 - **Part1-15** 3분 대본·BUILT_HERE·제출 설명
-- **Part3-12** 편집기: 카드 편집
 - **Part3-13** 편집기: AI 초안 입력 칸
 - **Part3-14** 작전 설정 패널
 
