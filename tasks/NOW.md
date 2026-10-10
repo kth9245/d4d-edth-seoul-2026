@@ -6,7 +6,6 @@
 
 ## 진행중
 - **Part1-9** 지도: 위성 raster + 기체·표적·구역 — kth9245, 10/10 10:18부터
-- **Part2-1** sim `move_straight` — 최동호, 10/10 10:23부터 · SIM-05
 - **Part3-6** play `check_play` — 황승주, 10/10 10:20부터 · 하위 0/1 완료 · PLY-06
 - **Part3-10** 편집기: 카드 열(읽기 전용) — kth9245, 10/10 10:25부터
 - ⚠ kth9245 진행중 2개
@@ -59,6 +58,7 @@
 - 10/9 23:14 kth9245 · Part1-1 · 결정 0015·0016·0017·0018 참조(두 층 구조, contracts 세부, API 규약)
 
 ## 완료
+- **Part2-1** sim `move_straight` — 최동호, 10/10 10:25 · SIM-05
 - **Part2-20** sim `load_scenario_json` — 최동호, 10/10 10:22 · SIM-04
 - **Part3-5** play `check_zone` — 황승주, 10/10 10:20 · PLY-05
 - **Part3-4** play `check_return_battery` — 황승주, 10/10 10:19 · PLY-04

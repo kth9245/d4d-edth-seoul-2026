@@ -121,3 +121,4 @@
 {"at": "2026-10-10T10:22:30+09:00", "by": "최동호", "op": "done", "id": "Part2-20", "take": false}
 {"at": "2026-10-10T10:23:59+09:00", "by": "최동호", "op": "start", "id": "Part2-1", "take": false, "from": null}
 {"at": "2026-10-10T10:25:12+09:00", "by": "kth9245", "op": "start", "id": "Part3-10", "take": false, "from": null}
+{"at": "2026-10-10T10:25:20+09:00", "by": "최동호", "op": "done", "id": "Part2-1", "take": false}
