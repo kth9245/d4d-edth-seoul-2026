@@ -11,6 +11,7 @@ type Props = {
   enemies: EnemyRow[];
   playName: (id: string) => string | null;
   onOpen: (playId: string) => void;
+  onSimulate?: () => void; // decision 0042
 };
 
 type CardsProps = { playId: string; play: Play | null; playName: (id: string) => string | null; onOpen: (playId: string) => void };
@@ -31,10 +32,10 @@ function PlayCards({ playId, play, playName, onOpen }: CardsProps) {
 }
 
 // Friendly vehicle columns, then the enemies under them (Part1-21): what each enemy does comes from the scenario.
-export function OperationOverview({ op, vehicles, columns, enemies, playName, onOpen }: Props) {
+export function OperationOverview({ op, vehicles, columns, enemies, playName, onOpen, onSimulate }: Props) {
   return (
     <section className="overview">
-      <OperationPanel op={op} vehicles={vehicles} playName={playName} onOpen={onOpen} />
+      <OperationPanel op={op} vehicles={vehicles} playName={playName} onOpen={onOpen} onSimulate={onSimulate} />
       <h3 className="ov-section">아군</h3>
       <div className="columns friend-columns">
         {columns.map((col) => (

@@ -1,0 +1,20 @@
+[
+ {"viewport": [1366, 768]},
+ {"nav": "/?qa=ops#editor", "wait": 5000},
+ {"label": "O1 sidebar lists both demo operations, the night one running (decision 0042)", "eval": "[...document.querySelectorAll('.play-sidebar .item.op')].map(b => [b.innerText.trim(), b.classList.contains('active')])", "expect": [["백령도 야간 해안 경계", true], ["백령도 해안 순찰 24시간 교대(가상)", false]]},
+ {"label": "O1 simulate button next to the operation name", "eval": "document.querySelector('.op-title .simulate')?.innerText", "expect": "▶ 시뮬레이션"},
+ {"layout": "O1 layout editor with operations 1366x768"},
+ {"shot": "ops-editor-night.png"},
+ {"click": "백령도 해안 순찰 24시간 교대(가상)", "wait": 2500},
+ {"label": "O2 picking the 24h operation switches the overview and the running mark", "eval": "({ title: document.querySelector('.op-head h2')?.innerText, columns: document.querySelectorAll('.friend-columns .column').length, active: document.querySelector('.play-sidebar .item.op.active')?.innerText.trim() })", "expect": {"title": "백령도 해안 순찰 24시간 교대(가상)", "columns": 4, "active": "백령도 해안 순찰 24시간 교대(가상)"}},
+ {"shot": "ops-editor-24h.png"},
+ {"click": "▶ 시뮬레이션", "wait": 5000},
+ {"label": "O3 simulate opens the live tab paused at the start (24h ticks are 1 s, so the first Frame is T+0:01), no next-event stops", "eval": "({ hash: location.hash, vehicles: document.querySelectorAll('.mk.vehicle').length, play: document.querySelector('.runbar .play')?.innerText, clock: document.querySelector('.runbar .clock')?.innerText, next: document.querySelector('.runbar .next')?.innerText })", "expect": {"hash": "#live", "vehicles": 4, "play": "▶ 재생", "clock": "T+0:01", "next": "다음 사건 없음"}},
+ {"shot": "ops-live-24h.png"},
+ {"nav": "/?qa=ops#editor", "wait": 4000},
+ {"click": "백령도 야간 해안 경계", "wait": 2500},
+ {"label": "O4 back to the night operation", "eval": "document.querySelector('.op-head h2')?.innerText", "expect": "백령도 야간 해안 경계"},
+ {"click": "▶ 시뮬레이션", "wait": 5000},
+ {"label": "O4 night operation on the live tab with its next-event stops", "eval": "({ hash: location.hash, vehicles: document.querySelectorAll('.mk.vehicle').length, play: document.querySelector('.runbar .play')?.innerText, clock: document.querySelector('.runbar .clock')?.innerText, next: document.querySelector('.runbar .next')?.innerText })", "expect": {"hash": "#live", "vehicles": 6, "play": "▶ 재생", "clock": "T+0:00", "next": "다음 사건 ▸ 16:25 보고 카드"}},
+ {"shot": "ops-live-night.png"}
+]

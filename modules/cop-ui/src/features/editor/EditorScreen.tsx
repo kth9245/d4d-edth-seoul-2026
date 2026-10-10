@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Play } from "../../contracts.gen";
+import type { Play, ScenarioInfo } from "../../contracts.gen";
+import { fetchScenarios } from "../live/fetchScenarios";
+import { postRun } from "../run/runApi";
+import { activateScenario } from "./activateScenario";
 import type { SaveResult } from "./checkView";
 import { forSave } from "./draftRequests";
 import { groupPlays } from "./groupPlays";
@@ -29,8 +32,12 @@ export function EditorScreen() {
   // Part3-12: plays changed on screen but not saved yet, and the step each change added (to highlight it).
   const [edits, setEdits] = useState<Record<string, Play>>({});
   const [fresh, setFresh] = useState<Record<string, string>>({});
+  // Decision 0042: the operations to pick, and why a pick or "시뮬레이션" failed.
+  const [scenarios, setScenarios] = useState<ScenarioInfo[]>([]);
+  const [opError, setOpError] = useState<string | null>(null);
   useEffect(() => {
     loadEditorData().then(setData, (e: Error) => setLoadError(e.message));
+    fetchScenarios().then(setScenarios);
   }, []);
   const view = useMemo(
     () =>
@@ -89,11 +96,42 @@ export function EditorScreen() {
       },
     );
   };
+  // Picking another operation makes it the gateway's running one, paused at its start; the editor reads it
+  // again and drops what belonged to the old one (unsaved edits, check results, view history).
+  const pickScenario = (id: string) => {
+    setOpError(null);
+    activateScenario(id)
+      .then(() => Promise.all([loadEditorData(), fetchScenarios()]))
+      .then(
+        ([d, list]) => {
+          setData(d);
+          setScenarios(list);
+          setEdits({});
+          setResults({});
+          setFresh({});
+          setNav({ current: OVERVIEW, stack: [] });
+        },
+        (e) => {
+          console.warn("editor: operation switch failed", e);
+          setOpError(`작전을 바꾸지 못했습니다 (${String(e)})`);
+        },
+      );
+  };
+  // "▶ 시뮬레이션": the run goes back to the operation's start, paused, and the live tab opens (no auto play).
+  const simulate = () => {
+    setOpError(null);
+    postRun("/run/reset").then((r) => {
+      if (r.ok) location.hash = "#live";
+      else setOpError(`시뮬레이션을 열지 못했습니다 (${r.error})`);
+    });
+  };
   return (
     <div className="editor">
       <PlaySidebar groups={view.groups} selected={play ? play.id : selected === ONTOLOGY ? ONTOLOGY : OVERVIEW} showOverview onSelect={open}
-        top={<NewPlayMenu existingIds={data.plays.map((p) => p.id)} onCreated={created} />} />
+        top={<NewPlayMenu existingIds={data.plays.map((p) => p.id)} onCreated={created} />}
+        scenarios={scenarios} onPickScenario={pickScenario} />
       <main className="editor-main">
+        {opError && <div className="issue">⚠ {opError}</div>}
         {play ? (
           <PlayWorkflow
             key={play.id}
@@ -116,7 +154,7 @@ export function EditorScreen() {
         ) : selected === ONTOLOGY ? (
           <OntologyPanel op={data.operation} plays={data.plays} vehicles={data.vehicles} />
         ) : (
-          <OperationOverview op={data.operation} vehicles={data.vehicles} columns={view.columns} enemies={view.enemies} playName={playName} onOpen={open} />
+          <OperationOverview op={data.operation} vehicles={data.vehicles} columns={view.columns} enemies={view.enemies} playName={playName} onOpen={open} onSimulate={simulate} />
         )}
       </main>
     </div>

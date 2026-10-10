@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import type { Frame } from "../../contracts.gen";
 import { fetchOperation } from "../live/fetchOperation";
+import { fetchScenarios } from "../live/fetchScenarios";
 import { mmss } from "./mmss";
 import { RESET_WINDOW_MS, resetPress } from "./resetPress";
 import { jumpPaused, postRun, type RunResult } from "./runApi";
-import { nextStop } from "./runStops";
+import { nextStop, type RunStop } from "./runStops";
+import { stopsFor } from "./stopsFor";
 import "./run.css";
 
 const SPEEDS = [1, 5, 10, 30];
@@ -25,6 +27,15 @@ export function RunBar({ frame }: { frame: Frame | null }) {
       if (typeof op?.started_ms === "number") setStartedMs(op.started_ms);
     });
   }, [hasFrame, startedMs]);
+  // "다음 사건" stops of the running operation (decision 0042). Like startedMs, read again once a Frame
+  // arrives if the gateway was down when the screen opened.
+  const [stops, setStops] = useState<RunStop[] | null>(null);
+  useEffect(() => {
+    if (stops !== null) return;
+    fetchScenarios().then((list) => {
+      if (list.length) setStops(stopsFor(list.find((s) => s.active)?.id ?? null));
+    });
+  }, [hasFrame, stops]);
 
   const act = async (send: () => Promise<RunResult>) => {
     if (busy) return;
@@ -38,7 +49,7 @@ export function RunBar({ frame }: { frame: Frame | null }) {
   const running = frame?.run.status === "running";
   const speed = frame?.run.speed ?? 1; // kept while paused (decision 0026), so ▶ resumes at it
   const offset = frame && startedMs !== null ? frame.t_ms - startedMs : null;
-  const next = offset === null ? null : nextStop(offset);
+  const next = offset === null ? null : nextStop(offset, stops ?? []);
   const off = !frame || busy;
   useEffect(() => {
     if (armedAt === null) return;

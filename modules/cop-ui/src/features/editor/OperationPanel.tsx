@@ -2,11 +2,17 @@ import type { Operation, VehicleSpec } from "../../contracts.gen";
 import { MiniMap } from "../map/MiniMap";
 import { startText, switchRows, vehicleRows } from "./operationPanel";
 
-type Props = { op: Operation; vehicles: VehicleSpec[]; playName: (id: string) => string | null; onOpen: (playId: string) => void };
+type Props = {
+  op: Operation;
+  vehicles: VehicleSpec[];
+  playName: (id: string) => string | null;
+  onOpen: (playId: string) => void;
+  onSimulate?: () => void; // decision 0042: "▶ 시뮬레이션" next to the operation name
+};
 
 // Operation panel (Part3-14, display only): purpose and start, the zone with the vehicles at home, each vehicle's
 // first play and reserves, and what each whole-operation switch button does. Editing the operation is not here.
-export function OperationPanel({ op, vehicles, playName, onOpen }: Props) {
+export function OperationPanel({ op, vehicles, playName, onOpen, onSimulate }: Props) {
   const rows = vehicleRows(op, vehicles, playName);
   const switches = switchRows(op, playName);
   const playLink = (id: string, name: string | null) =>
@@ -14,7 +20,10 @@ export function OperationPanel({ op, vehicles, playName, onOpen }: Props) {
   return (
     <section className="op-panel" aria-label="작전 설정">
       <div className="op-head">
-        <h2>{op.name}</h2>
+        <div className="op-title">
+          <h2>{op.name}</h2>
+          {onSimulate && <button className="save simulate" onClick={onSimulate}>▶ 시뮬레이션</button>}
+        </div>
         <div className="op-meta">
           {op.purpose && <span>{op.purpose}</span>}
           <span>{startText(op.started_ms)}</span>

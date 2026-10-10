@@ -191,6 +191,9 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .play-sidebar .item { border-radius: var(--r); color: var(--text2); }
 .play-sidebar .item:hover { background: var(--s3); color: var(--text); }
 .play-sidebar .item.on { background: var(--s2); box-shadow: inset 2px 0 0 var(--live); color: var(--text); }
+.play-sidebar .item.op::before { content: "○ "; color: var(--dim); }
+.play-sidebar .item.op.active { color: var(--text); cursor: default; }
+.play-sidebar .item.op.active::before { content: "● "; color: var(--live); }
 .editor.load-error { display: block; padding: 24px; color: var(--hostile); font-size: 13px; }
 .editor-main h1, .editor-main h2 { font-weight: 700; letter-spacing: -0.01em; }
 .step-card { border: 1px solid var(--line); border-left: 2px solid var(--friend); border-radius: var(--r); background: var(--s2); }
