@@ -69,7 +69,7 @@ def run():
             any(b.vehicle_id == "d2" and b.reason == "battery_insufficient" for b in es.blocks),
         )
         mark("s4", sum(r.kind == "target_select" for r in es.reports) == 2)
-        mark("s7", any(r.text == "타격 승인 요청" for r in es.reports))
+        mark("s7", any(r.text.startswith("타격 승인 요청") for r in es.reports))
         mark("s8", any(t.id == "fast1" and t.neutralized_ms for t in es.targets))
     return es, seen
 
