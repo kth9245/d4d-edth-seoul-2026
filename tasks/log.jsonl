@@ -332,3 +332,4 @@
 {"at": "2026-10-10T15:21:10+09:00", "by": "황승주", "op": "start", "id": "Part2-30", "take": false, "from": null}
 {"at": "2026-10-10T15:25:11+09:00", "by": "황승주", "op": "done", "id": "Part2-30", "take": false}
 {"at": "2026-10-10T15:26:15+09:00", "by": "황승주", "op": "add", "id": "Part1-26", "title": "시연 시나리오 '전 기체 순찰' 버튼: d1·d2·d3 해안 순찰 교대 (결정 0037)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
+{"at": "2026-10-10T15:26:18+09:00", "by": "황승주", "op": "start", "id": "Part1-26", "take": false, "from": null}
