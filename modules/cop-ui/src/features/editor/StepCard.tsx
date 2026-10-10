@@ -1,5 +1,6 @@
-import type { Condition, Play, Step, ValidationIssue } from "../../contracts.gen";
-import { describeAction, describeCondition } from "./describe";
+import type { Play, Step, ValidationIssue } from "../../contracts.gen";
+import { describeAction } from "./describe";
+import { exitText } from "./playGraph";
 
 type Props = {
   step: Step;
@@ -10,12 +11,6 @@ type Props = {
   fresh?: boolean; // just added by "보고 카드 끼워 넣기"
   onInsertReport?: () => void;
 };
-
-// An operator_choice exit reads as the choice the operator presses on this step's report (decision 0031).
-function exitText(step: Step, cond: Condition): string {
-  const choice = cond.kind === "operator_choice" ? step.report?.choices?.find((c) => c.id === cond.params?.choice) : undefined;
-  return choice ? `'${choice.label}' 선택 시` : describeCondition(cond);
-}
 
 export function StepCard({ step, play, playName, onOpen, issues = [], fresh, onInsertReport }: Props) {
   const stepName = (id: string) => play.steps.find((s) => s.id === id)?.name;

@@ -187,6 +187,28 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .draftbox .note { color: var(--live); font-family: var(--font-mono); }
 .draftbox .note.warn { color: var(--warn); }
 .ai-badge { border: 1px solid rgba(245, 158, 11, 0.45); background: var(--warn-soft); color: var(--warn); font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.06em; }
+/* Workflow graph (Part3-10.1) */
+.workflow-graph { border: 1px solid var(--line); background: var(--bg); }
+.workflow-graph .react-flow { --xy-background-color: transparent; background: transparent; font-family: var(--font); }
+.step-node { border: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); color: var(--text); box-shadow: 0 0 0 1px #000; }
+.step-node.has-issues { border-color: var(--hostile); box-shadow: 0 0 18px rgba(239, 68, 68, 0.25); }
+.step-node.fresh { border-color: var(--live); box-shadow: 0 0 18px rgba(74, 222, 128, 0.25); }
+.step-node .sn-head { border-bottom: 1px solid var(--line); }
+.step-node .sn-head b { font-weight: 700; }
+.step-node .sn-head code { color: var(--dim); font-family: var(--font-mono); }
+.step-node .sn-tag { padding: 0 6px; border: 1px solid var(--live); color: var(--live); font-family: var(--font-mono); font-size: 10px; }
+.step-node .sn-sec + .sn-sec { border-top: 1px solid var(--line); }
+.step-node .sn-label { color: var(--muted); font-family: var(--font-mono); letter-spacing: 0.06em; }
+.step-node .chip { border: 1px solid rgba(128, 224, 255, 0.4); background: rgba(128, 224, 255, 0.08); color: var(--friend); font-family: var(--font); letter-spacing: 0; }
+.step-node .chip.choice { border-color: rgba(74, 222, 128, 0.45); background: var(--live-soft); color: var(--live); }
+.step-node .sn-text { color: var(--text2); }
+.step-node .sn-exit { color: var(--muted); }
+.step-node .sn-exit b { color: var(--text); font-weight: 600; }
+.step-node .sn-badge { border: 1px solid var(--warn); background: var(--warn); color: var(--bg); font-weight: 700; }
+.step-node .react-flow__handle { border: 2px solid var(--bg); background: var(--friend); }
+.step-node .react-flow__handle.sn-in { background: var(--muted); }
+.workflow-graph .react-flow__controls button { border-bottom: 1px solid var(--line); background: var(--s2); fill: var(--text2); }
+.workflow-graph .react-flow__controls button:hover { background: var(--s3); }
 .insert-report { border: 1px solid var(--text); border-radius: var(--r); background: var(--text); color: var(--bg); font-weight: 700; }
 .insert-report:hover { border-color: var(--live); background: var(--live); }
 .step-card.fresh { border-left-color: var(--live); background: linear-gradient(90deg, var(--live-soft), transparent 70%), var(--s2); }

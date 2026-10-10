@@ -43,3 +43,5 @@
 | UI-38 | saveErrorText | 저장 오류 문구 | 화면 문구 | 게이트웨이 응답 상태 코드 표시, 응답 없으면 서버 응답 없음 | 리드 | 완료 |
 | UI-39 | postDraft·forSave | 문장 / Play | {ok, play} \| 오류 / Play | POST /plays/draft, AI 초안은 저장 때 approved=true(검사 통과 + 사람이 저장 = 승인) | 리드 | 완료 |
 | UI-40 | DraftBox | — | AI 초안 칸 | 시연 문장 버튼(demo/draft_sentences.json) + 입력칸 → 초안이 미저장 플레이로 열림, 대기 템플릿 대체 알림 | 리드 | 완료 |
+| UI-41 | layoutSteps·stepEdges·exitText | Play | 카드 위치 / 연결선 / 조건 문구 | 시작 step 왼쪽부터 탈출 깊이로 열 배치(겹침 없음, 닿지 않는 step은 다음 열), 탈출마다 연결선(운용자 선택·오류 step 구분), 없는 step은 선 없음 | 리드 | 완료 |
+| UI-42 | PlayGraph·StepNode | Play, 검사 결과 | 그래프 화면 | React Flow 카드(행동·보고·연결 칸, 연결 줄마다 연결점, 변경 표시) + 점선 곡선 연결선과 조건 이름 | 리드 | 완료 |

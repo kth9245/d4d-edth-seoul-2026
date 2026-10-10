@@ -1,6 +1,6 @@
 import type { Action, ActionKind, Condition, ConditionKind, Domain } from "../../contracts.gen";
 
-const ACTION_LABEL: Record<ActionKind, string> = {
+export const ACTION_LABEL: Record<ActionKind, string> = {
   move_to: "이동",
   patrol_route: "순찰 경로",
   search_area: "구역 수색",

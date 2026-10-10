@@ -2,7 +2,7 @@ import type { Play } from "../../contracts.gen";
 import { batteryText, issuesByStep, saveErrorText, type SaveResult } from "./checkView";
 import { DOMAIN_LABEL } from "./describe";
 import type { Usage } from "./playUsage";
-import { StepCard } from "./StepCard";
+import { PlayGraph } from "./PlayGraph";
 
 type Props = {
   play: Play;
@@ -63,10 +63,8 @@ export function PlayWorkflow({ play, usage, playName, onOpen, result, onSave, ed
           ⚠ {i.message}
         </div>
       ))}
-      {play.steps.map((s) => (
-        <StepCard key={s.id} step={s} play={play} playName={playName} onOpen={onOpen} issues={view?.byStep[s.id]}
-          fresh={s.id === freshStep} onInsertReport={onInsertReport && (() => onInsertReport(s.id))} />
-      ))}
+      <PlayGraph play={play} issues={view?.byStep ?? {}} freshStep={freshStep} playName={playName} onOpen={onOpen}
+        onInsertReport={onInsertReport} />
     </section>
   );
 }
