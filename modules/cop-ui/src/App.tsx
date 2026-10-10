@@ -42,7 +42,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="tabs">
-        <span className="brand"><b>ROLECALL</b><small>BAENGNYEONG SECTOR</small></span>
+        <span className="brand"><b>ROLECALL</b></span>
         <a href="#editor" className={tab === "editor" ? "on" : ""}>편집기</a>
         <a href="#live" className={tab === "live" ? "on" : ""}>시뮬레이션</a>
         <a href="#ops" className={tab === "ops" ? "on" : ""}>실작전</a>

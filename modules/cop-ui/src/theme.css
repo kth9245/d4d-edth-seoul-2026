@@ -45,11 +45,10 @@ button { font-family: inherit; transition: background-color 200ms var(--ease), b
   background-size: 32px 32px;
 }
 
-/* Header: wordmark, sector, tabs */
+/* Header: wordmark, tabs */
 .tabs { align-items: stretch; gap: 0; padding: 0 20px; background-color: var(--bg); border-bottom: 1px solid var(--line); }
 .brand { display: flex; align-items: baseline; gap: 14px; margin-right: 36px; padding: 12px 0; }
 .brand b { font-family: var(--font-display); font-size: 19px; font-weight: 800; letter-spacing: 0.06em; color: var(--text); }
-.brand small { font-family: var(--font-mono); font-size: 10px; letter-spacing: var(--ls); color: var(--muted); }
 .tabs a { display: flex; align-items: center; padding: 0 16px; border-radius: 0; border-bottom: 2px solid transparent;
   color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
 .tabs a:hover { color: var(--text); }
