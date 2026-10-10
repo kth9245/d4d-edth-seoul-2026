@@ -487,3 +487,4 @@
 {"at": "2026-10-10T22:22:17+09:00", "by": "황승주", "op": "start", "id": "Part2-55", "take": false, "from": null}
 {"at": "2026-10-10T22:25:27+09:00", "by": "황승주", "op": "done", "id": "Part2-55", "take": false}
 {"at": "2026-10-10T22:28:47+09:00", "by": "kth9245", "op": "add", "id": "Part1-43", "title": "AI 초안 캐시 키를 문장·구역·지역으로(결정 0057): 새 작전·24시간 작전에서도 시연 문장 캐시 적중, 캐시 파일 이름 옮김", "parent": null, "assign": null, "slot": null, "spec": null}
+{"at": "2026-10-10T22:28:51+09:00", "by": "kth9245", "op": "add", "id": "Part1-44", "title": "상황판 작전 전환 Role 목록: 고른 기체 영역만, 적 Role 빼기(QA 발견 2)", "parent": null, "assign": null, "slot": null, "spec": null}
