@@ -14,12 +14,12 @@ from contracts.models import (
     VehicleSpec,
     VehicleState,
 )
-from modules.runtime.actions.enter_step import enter_step
+from modules.runtime.actions.enter_step import TARGET_ACTIONS, enter_step
 
 
-def _true(cond: Condition, st: VehicleState, targets: list[Target]) -> bool:
-    if cond.kind == ConditionKind.target_found:  # decision 0036: my target, else a new contact
-        if st.target_id:
+def _true(cond: Condition, st: VehicleState, targets: list[Target], tracking: bool) -> bool:
+    if cond.kind == ConditionKind.target_found:  # decision 0036: tracking my target, else new boat
+        if tracking:
             return any(tg.id == st.target_id and st.id in tg.seen_by for tg in targets)
         return any(st.id in tg.seen_by and tg.reported_by is None for tg in targets)
     if cond.kind == ConditionKind.arrived:
@@ -44,7 +44,8 @@ def step_vehicle(
         return st, None, None
     if not st.entered_step:
         return enter_step(st, spec, play, step, targets, t_ms)
+    tracking = step.do.kind.value in TARGET_ACTIONS
     for ex in step.on:
-        if _true(ex.cond, st, targets):
+        if _true(ex.cond, st, targets, tracking):
             return st.model_copy(update={"step_id": ex.go_step, "entered_step": False}), None, None
     return st, None, None
