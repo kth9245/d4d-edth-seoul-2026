@@ -5,7 +5,7 @@
 마지막 기록 10/10 10:02 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- (없음)
+- **Part3-7** play `expand_action` + 표 — 황승주, 10/10 10:02부터 · PLY-07
 
 ## 막힘
 - (없음)
@@ -46,7 +46,6 @@
 - **Part3-5** play `check_zone` · PLY-05
 - **Part3-6** play `check_play` · 하위 0/1 완료 · PLY-06
 - **Part3-6.1** play check_operation · PLY-11 (통합 2, PLY-03~05 뒤)
-- **Part3-7** play `expand_action` + 표 · PLY-07
 - **Part3-8** play `list_templates` · PLY-08
 - **Part3-9** play `draft_play` · PLY-09
 
