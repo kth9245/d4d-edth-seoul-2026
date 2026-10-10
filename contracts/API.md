@@ -57,6 +57,8 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | 4 | runtime | `apply_emergency(states, plays) -> states` |
 | 5 | runtime | 기체마다 `step_vehicle(state, specs[id], plays[state.play_id], targets, t_ms, started_ms=op.started_ms) -> (state, Command \| None, Report \| None)` |
 | 5.1 | gateway | 그 기체가 카드를 냈으면 바로 `mark_reported(targets, [report]) -> targets`: `target_detected` 카드의 표적에 `reported_by`(결정 0036). 다음 기체는 같은 틱에도 그 배를 새 접촉으로 보지 않는다 |
+| 5.2 | runtime | 새로 나온 `target_detected` 카드의 선택지를 `fleet_choices(report, states, op, plays) -> Report`로 만든다: 카드에 정해진 선택지가 있으면 그것을 앞에 두고 "발생 지역 순찰"·"함께 감시"를 덧붙인다(결정 0044, RT-11) |
+| 5.3 | runtime | 열려 있는(`resolved_ms` 없음) `target_detected` 카드의 선택지를 매 틱 `fleet_choices`로 다시 만든다. 자기 카드가 열린 드론은 후보에서 빠진다(결정 0044) |
 | 6 | runtime | `apply_reserves(states, op, plays, assignments, t_ms) -> (states, assignments, Report \| None)` |
 | 7 | safety | 명령마다 `check_command(cmd, state, spec, op, plays, injections) -> PassedCommand \| Block` |
 | 8 | sim | `advance(states, specs, passed, dt_ms, targets, land) -> states`(해상 기체는 섬을 돌아감, 결정 0034) |
