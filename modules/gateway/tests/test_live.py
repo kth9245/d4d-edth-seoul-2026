@@ -178,3 +178,16 @@ def test_log_cursor_restarts_after_reset():
     live.jump(1000)
     live.reset()
     assert live.frame_for(cur)[0].log == [f"t{START + 200}"]
+
+
+def test_fork_is_a_separate_run_from_this_moment_at_x1():  # decision 0068
+    live, _ = make()
+    live.jump(1000)
+    ops = live.fork()
+    assert ops.frame.t_ms == live.frame.t_ms
+    assert (ops.run.status, ops.run.speed) == ("running", 1)
+    assert live.run.status == "paused"
+    ops.period()
+    assert ops.frame.t_ms == live.frame.t_ms + 200
+    ops.direct(DirectIn(vehicle_id="d1", target=GeoPoint(lat=37.95, lon=124.7)))
+    assert live.inputs.direct == [] and len(ops.inputs.direct) == 1

@@ -318,3 +318,26 @@ def test_draft_hits_the_cache_on_a_new_and_the_24h_operation():  # decision 0062
         assert client.post("/roles/draft", json={"text": text}).json()["origin"] == "ai_draft"
         client.post("/scenarios/baengnyeong_24h/activate")
         assert client.post("/roles/draft", json={"text": text}).json()["origin"] == "ai_draft"
+
+
+def test_ops_ws_forks_the_simulation_and_takes_its_own_inputs():  # decision 0068
+    client, _ = fake_app()
+    start = client.get("/operation").json()["started_ms"]
+    with client:
+        client.post("/run/jump?offset_ms=1000")  # the simulation stays paused at +1000
+        with client.websocket_connect("/ws?run=ops") as ws:
+            a = Frame.model_validate(ws.receive_json())
+            b = Frame.model_validate(ws.receive_json())
+        assert a.run.status == "running" and b.t_ms > a.t_ms >= start + 1000
+        body = {"vehicle_id": "d1", "target": {"lat": 37.95, "lon": 124.7}}
+        assert client.post("/direct?run=ops", json=body).json()["id"] == "dir-1"
+        assert client.post("/direct", json=body).json()["id"] == "dir-1"  # each run numbers its own
+        with client.websocket_connect("/ws") as ws:
+            sim = Frame.model_validate(ws.receive_json())
+    assert (sim.run.status, sim.t_ms) == ("paused", start + 1000)
+
+
+def test_default_engine_forks_for_ops():  # decision 0068: the real EngineState deep-copies
+    with TestClient(create_app(SCENARIO, period_s=0.01)) as client:
+        with client.websocket_connect("/ws?run=ops") as ws:
+            assert Frame.model_validate(ws.receive_json()).run.status == "running"

@@ -6,6 +6,7 @@ Depends only on `init(scenario) -> state` and `tick(state, inputs) -> (state, Fr
 Other demo operations wait in `scenarios`; `activate` swaps the running one (decision 0042).
 """
 
+import copy
 from collections.abc import Callable, Sequence
 from typing import Any
 
@@ -85,6 +86,13 @@ class Live:
             self.run = RunState(status="running", speed=speed)
         self.frame = self.frame.model_copy(update={"run": self.run})
         return self.run
+
+    def fork(self) -> "Live":
+        """실작전 (decision 0068): a separate run from this moment, running at ×1. The engine functions are
+        shared; everything the run holds (state, queued inputs, log, operations) is copied."""
+        twin = copy.deepcopy(self, {id(self._init): self._init, id(self._tick): self._tick})
+        twin.set_speed(1)
+        return twin
 
     def jump(self, offset_ms: int) -> RunState:
         end = self.scenario.operation.started_ms + offset_ms

@@ -74,14 +74,21 @@ def create_app(
             log.exception("scenario %s skipped from the operation list: it does not load", p)
     live = Live(eng.load_scenario_json(path), eng.init_engine, eng.tick, catalog)
     log.info("scenario %s loaded; %d operations to pick", path, len(live.scenarios))
+    runs: dict[
+        str, Live
+    ] = {}  # decision 0068: "ops" is forked from live when the 실작전 screen connects
+
+    def pick(run: str) -> Live:
+        return runs.get(run, live)
 
     async def run_loop() -> None:
         while True:
-            try:
-                live.period()
-            except Exception:
-                log.exception("tick failed at t=%d; run paused", live.frame.t_ms)
-                live.set_speed(0)
+            for r in (live, *runs.values()):
+                try:
+                    r.period()
+                except Exception:
+                    log.exception("tick failed at t=%d; run paused", r.frame.t_ms)
+                    r.set_speed(0)
             await asyncio.sleep(period_s)
 
     @asynccontextmanager
@@ -173,15 +180,20 @@ def create_app(
         return ontology_view(live.scenario)
 
     @app.get("/graph")
-    async def graph(focus: str):  # decision 0038: objects linked to one object in this run
+    async def graph(
+        focus: str, run: str = "sim"
+    ):  # decision 0038: objects linked to one object in this run
         try:
-            return build_object_graph(live.state, focus)
+            return build_object_graph(pick(run).state, focus)
         except ValueError as e:
             raise HTTPException(404, str(e)) from e
 
     @app.get("/mavlink")
-    async def mavlink():  # decision 0064: commands that passed this run, as MAVLink message lines
-        return mavlink_lines(live.state.passed, live.state.specs)
+    async def mavlink(
+        run: str = "sim",
+    ):  # decision 0064: commands that passed this run, as MAVLink lines
+        r = pick(run)
+        return mavlink_lines(r.state.passed, r.state.specs)
 
     @app.get("/scenarios")
     async def scenarios():
@@ -221,31 +233,34 @@ def create_app(
         return live.jump(offset_ms)
 
     @app.post("/decisions")
-    async def decisions(body: DecisionIn):
-        acc = live.decide(body)
+    async def decisions(body: DecisionIn, run: str = "sim"):
+        acc = pick(run).decide(body)
         log.info("POST /decisions %s/%s -> %s", body.report_id, body.choice_id, acc.id)
         return acc
 
     @app.post("/direct")
-    async def direct(body: DirectIn):
-        acc = live.direct(body)
+    async def direct(body: DirectIn, run: str = "sim"):
+        acc = pick(run).direct(body)
         log.info("POST /direct %s -> %s %s", body.vehicle_id, body.target, acc.id)
         return acc
 
     @app.post("/injections")
-    async def injections(body: SwitchIn):
-        inj = live.request_switch(body)
+    async def injections(body: SwitchIn, run: str = "sim"):
+        inj = pick(run).request_switch(body)
         log.info("POST /injections %s -> %s %s", body.model_dump(), inj.id, inj.label)
         return inj
 
     @app.post("/injections/{inj_id}/{verdict}")
-    async def settle(inj_id: str, verdict: str):
+    async def settle(inj_id: str, verdict: str, run: str = "sim"):
         log.info("POST /injections/%s/%s", inj_id, verdict)
-        return live.settle_injection(inj_id, approve=verdict == "approve")
+        return pick(run).settle_injection(inj_id, approve=verdict == "approve")
 
     @app.websocket("/ws")
-    async def ws(websocket: WebSocket) -> None:
+    async def ws(websocket: WebSocket, run: str = "sim") -> None:
         await websocket.accept()
+        if run == "ops":  # decision 0068: 실작전 starts from the simulation's moment, at ×1
+            runs["ops"] = live.fork()
+            log.info("실작전 forked at t=%d", runs["ops"].frame.t_ms)
         closed = asyncio.Event()
 
         async def watch() -> None:
@@ -259,7 +274,7 @@ def create_app(
         cursor = None  # log lines already sent on this connection (Live.frame_for)
         try:
             while not closed.is_set():
-                frame, cursor = live.frame_for(cursor)
+                frame, cursor = pick(run).frame_for(cursor)
                 with contextlib.suppress(WebSocketDisconnect, RuntimeError):
                     await websocket.send_text(frame.model_dump_json())
                 await asyncio.sleep(period_s)
