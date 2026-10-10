@@ -390,3 +390,4 @@
 {"at": "2026-10-10T18:21:01+09:00", "by": "kth9245", "op": "add", "id": "Part1-32", "title": "상황판 개편: 결정 대기열(한 장 펼침)·아군/적 목록·배마다 탐지 상태(놓침·미탐)·기체 클릭→표적 지목→추적 플레이", "parent": null, "assign": null, "slot": null, "spec": null}
 {"at": "2026-10-10T18:21:07+09:00", "by": "kth9245", "op": "start", "id": "Part1-32", "take": false, "from": null}
 {"at": "2026-10-10T18:23:25+09:00", "by": "kth9245", "op": "add", "id": "Part1-33", "title": "편집기 플레이 화면 '뒤로'를 '← 작전 개요'로: 쌓인 화면 순서 대신 언제나 작전 개요로", "parent": null, "assign": null, "slot": null, "spec": null}
+{"at": "2026-10-10T18:23:32+09:00", "by": "kth9245", "op": "start", "id": "Part1-33", "take": false, "from": null}
