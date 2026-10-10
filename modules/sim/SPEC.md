@@ -11,4 +11,4 @@
 | SIM-06 | follow_route | VehicleState, VehicleSpec, PassedCommand(follow_route), dt_ms | VehicleState | 경로점 순회, 끝나면 처음으로 | 최동호 | 완료 |
 | SIM-07 | orbit_or_keep | VehicleState, VehicleSpec, PassedCommand(orbit·keep_distance), Target, dt_ms | VehicleState | orbit 반지름 유지, keep_distance 거리 유지. 밀리면 hold로 대체 | 최동호 | 완료 |
 | SIM-08 | advance_vehicles | states, specs, passed: list[PassedCommand], dt_ms, targets | states | 이번 틱 PassedCommand로 active 갱신, 없으면 active 계속 수행. 명령 없는 틱 테스트 | 최동호 | 완료 |
-| SIM-09 | apply_events | Scenario, states, targets, t_ms, dt_ms | (states, targets) | 사건 시각 = operation.started_ms + offset_ms(결정 0018). spawn_target·vehicle_battery_set·target_move·split_target·vehicle_link_lost 각 1테스트. params 키는 09 2.2 | 최동호 | 예정 |
+| SIM-09 | apply_events | Scenario, states, targets, t_ms, dt_ms | (states, targets) | 사건 시각 = operation.started_ms + offset_ms(결정 0018). spawn_target·vehicle_battery_set·target_move·split_target·vehicle_link_lost 각 1테스트. params 키는 09 2.2 | 최동호 | 완료 |
