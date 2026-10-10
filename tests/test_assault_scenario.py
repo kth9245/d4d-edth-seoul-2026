@@ -83,3 +83,66 @@ def test_the_json_is_what_the_script_builds():
     from scripts.make_assault_scenario import build
     on_disk = json.loads(PATH.read_text(encoding="utf-8"))
     assert build() == on_disk
+
+
+# ---- Act 1 acceptance: RF clue -> operator direct control -> identified -> approve -> neutralized ----
+from contracts.models import Decision, DirectControl, TickInputs  # noqa: E402
+from modules.gateway.engine import init_engine, tick  # noqa: E402
+
+
+def _run_until(es, pred, limit=12000):
+    for _ in range(limit):
+        if pred(es):
+            return es
+        es, _ = tick(es, TickInputs())
+    raise AssertionError("never happened")
+
+
+def _site(es):
+    return next((t for t in es.targets if t.id == "site_rf"), None)
+
+
+def _site_state(es, want):
+    s = _site(es)
+    return s is not None and s.ident_state == want
+
+
+def _site_card(es):
+    return next((r for r in es.reports
+                 if r.kind == "target_detected" and r.target_id == "site_rf"), None)
+
+
+def test_rf_clue_comes_before_the_drone_sees_the_site(sc):
+    es = init_engine(sc)
+    es = _run_until(es, lambda e: _site_state(e, "rf_only"))
+    assert _site_card(es) is None  # heard on RF, not yet scanned: no card, nothing to strike
+
+
+def test_operator_direct_sends_a_recon_drone_to_the_off_route_site(sc):
+    es = init_engine(sc)
+    es = _run_until(es, lambda e: _site_state(e, "rf_only"))
+    site = _site(es).pos
+    dc = DirectControl(id="dir-1", vehicle_id="r1", t_ms=es.t_ms + sc.tick_ms,
+                       target=GeoPoint(lat=site.lat, lon=site.lon, alt_m=0.0))
+    es, _ = tick(es, TickInputs(direct=[dc]))
+    assert not es.blocks  # the direct order is inside the zone and battery-feasible
+    es = _run_until(es, lambda e: _site(e) and "r1" in _site(e).seen_by)  # r1 reaches camera range
+
+
+def test_site_is_identified_then_approved_then_neutralized(sc):
+    es = init_engine(sc)
+    es = _run_until(es, lambda e: _site_state(e, "rf_only"))
+    site = _site(es).pos
+    dc = DirectControl(id="dir-1", vehicle_id="r1", t_ms=es.t_ms + sc.tick_ms,
+                       target=GeoPoint(lat=site.lat, lon=site.lon, alt_m=0.0))
+    es, _ = tick(es, TickInputs(direct=[dc]))
+    # the drone reaches the site, the patrol step raises the card, and identification climbs to identified
+    es = _run_until(es, lambda e: _site_card(e) is not None and _site_state(e, "identified"))
+    card = _site_card(es)
+    assert "식별: 식별됨" in card.text
+    assert {"strike_a1", "strike_a2"} <= {c.id for c in card.choices}  # armed drones offered
+    dec = Decision(id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=card.id, choice_id="strike_a1")
+    es, _ = tick(es, TickInputs(decisions=[dec]))
+    es = _run_until(es, lambda e: _site(e).neutralized_ms is not None, limit=15000)
+    assert any(r.kind == "target_neutralized" and r.target_id == "site_rf" for r in es.reports)
+    assert not es.blocks  # no safety rule (provenance, zone, battery) stopped the strike
