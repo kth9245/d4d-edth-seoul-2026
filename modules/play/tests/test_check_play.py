@@ -82,6 +82,10 @@ def test_rotation_play_skips_the_full_lap_battery_check():  # decision 0037
         json.loads((root / "demo" / "plays" / "coast_a.json").read_text("utf-8"))
     )
     specs = SPECS  # capabilities from the ontology (decision 0038)
+    specs = {
+        **specs,
+        "d1": specs["d1"].model_copy(update={"endurance_min": 50.0}),
+    }  # a lap must not fit
     op = Operation.model_validate(night["operation"]).model_copy(
         update={"assign": {"d1": "coast_a"}}
     )

@@ -82,8 +82,7 @@ def main() -> None:
     plain = ("kind", "kind_path")  # the 24h scenario has no ontology; same drones as the demo
     resolved = load_scenario_json(str(NIGHT)).vehicles  # capabilities filled from the ontology
     drones = [
-        {k: x for k, x in v.model_dump(mode="json").items() if k not in plain}
-        | {"recharge_min": 10}
+        {k: x for k, x in v.model_dump(mode="json").items() if k not in plain} | {"recharge_min": 5}
         for v in resolved
         if v.domain.value == "air"
     ]

@@ -129,14 +129,14 @@
    "name": "드론1",
    "domain": "air",
    "speed_mps": 15.0,
-   "endurance_min": 50.0,
+   "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "home": {
     "lat": 37.95,
     "lon": 124.7,
     "alt_m": 0.0
    },
-   "recharge_min": 10.0,
+   "recharge_min": 5.0,
    "rf_range_m": 2000.0,
    "kind": "recon_drone"
   },
@@ -145,14 +145,14 @@
    "name": "드론2",
    "domain": "air",
    "speed_mps": 15.0,
-   "endurance_min": 50.0,
+   "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "home": {
     "lat": 37.955,
     "lon": 124.7,
     "alt_m": 0.0
    },
-   "recharge_min": 10.0,
+   "recharge_min": 5.0,
    "rf_range_m": 2000.0,
    "kind": "armed_drone"
   },
@@ -161,14 +161,14 @@
    "name": "드론3",
    "domain": "air",
    "speed_mps": 15.0,
-   "endurance_min": 50.0,
+   "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "home": {
     "lat": 37.945,
     "lon": 124.7,
     "alt_m": 0.0
    },
-   "recharge_min": 10.0,
+   "recharge_min": 5.0,
    "rf_range_m": 2000.0,
    "kind": "recon_drone"
   },
@@ -177,14 +177,14 @@
    "name": "드론4",
    "domain": "air",
    "speed_mps": 15.0,
-   "endurance_min": 50.0,
+   "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "home": {
     "lat": 37.96,
     "lon": 124.7,
     "alt_m": 0.0
    },
-   "recharge_min": 10.0,
+   "recharge_min": 5.0,
    "rf_range_m": 2000.0,
    "kind": "recon_drone"
   },
@@ -1473,6 +1473,14 @@
    "params": {
     "id": "d1",
     "pct": 21
+   }
+  },
+  {
+   "offset_ms": 1170000,
+   "kind": "vehicle_battery_set",
+   "params": {
+    "id": "d2",
+    "pct": 48
    }
   }
  ],

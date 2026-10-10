@@ -94,7 +94,7 @@
    "name": "드론1",
    "domain": "air",
    "speed_mps": 15.0,
-   "endurance_min": 50.0,
+   "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "capabilities": [
     "move_to",
@@ -112,7 +112,7 @@
     "lon": 124.7,
     "alt_m": 0.0
    },
-   "recharge_min": 10,
+   "recharge_min": 5,
    "rf_range_m": 2000.0
   },
   {
@@ -120,7 +120,7 @@
    "name": "드론2",
    "domain": "air",
    "speed_mps": 15.0,
-   "endurance_min": 50.0,
+   "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "capabilities": [
     "move_to",
@@ -139,7 +139,7 @@
     "lon": 124.7,
     "alt_m": 0.0
    },
-   "recharge_min": 10,
+   "recharge_min": 5,
    "rf_range_m": 2000.0
   },
   {
@@ -147,7 +147,7 @@
    "name": "드론3",
    "domain": "air",
    "speed_mps": 15.0,
-   "endurance_min": 50.0,
+   "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "capabilities": [
     "move_to",
@@ -165,7 +165,7 @@
     "lon": 124.7,
     "alt_m": 0.0
    },
-   "recharge_min": 10,
+   "recharge_min": 5,
    "rf_range_m": 2000.0
   },
   {
@@ -173,7 +173,7 @@
    "name": "드론4",
    "domain": "air",
    "speed_mps": 15.0,
-   "endurance_min": 50.0,
+   "endurance_min": 100.0,
    "sensor_range_m": 800.0,
    "capabilities": [
     "move_to",
@@ -191,7 +191,7 @@
     "lon": 124.7,
     "alt_m": 0.0
    },
-   "recharge_min": 10,
+   "recharge_min": 5,
    "rf_range_m": 2000.0
   }
  ],
