@@ -26,6 +26,7 @@ class VehicleSpec(BaseModel):
     sensor_range_m: float
     capabilities: list[ActionKind]
     home: GeoPoint
+    recharge_min: float = 0  # battery swap/charge at home (decision 0037); 0 = no recharge
 
 
 class EnemySpec(BaseModel):  # decision 0032: an enemy follows its own play, no safety checks
@@ -69,3 +70,5 @@ class Operation(BaseModel):
     assign: dict[str, str] = {}  # vehicle id -> play id at start
     reserve: dict[str, list[str]] = {}  # vehicle id -> reserves in order (decision 0016)
     switches: list[Switch] = []
+    rotation: list[str] = []  # vehicles that relieve each other on patrol (decision 0037)
+    rotation_plays: list[str] = []  # patrol plays the rotation keeps covered

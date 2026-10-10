@@ -132,6 +132,22 @@
       },
       "title": "Switches",
       "type": "array"
+    },
+    "rotation": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Rotation",
+      "type": "array"
+    },
+    "rotation_plays": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Rotation Plays",
+      "type": "array"
     }
   },
   "required": [

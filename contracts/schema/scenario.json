@@ -316,6 +316,22 @@
           },
           "title": "Switches",
           "type": "array"
+        },
+        "rotation": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Rotation",
+          "type": "array"
+        },
+        "rotation_plays": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Rotation Plays",
+          "type": "array"
         }
       },
       "required": [
@@ -581,6 +597,11 @@
         },
         "home": {
           "$ref": "#/$defs/GeoPoint"
+        },
+        "recharge_min": {
+          "default": 0,
+          "title": "Recharge Min",
+          "type": "number"
         }
       },
       "required": [

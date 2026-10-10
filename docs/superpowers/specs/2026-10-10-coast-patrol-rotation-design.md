@@ -32,6 +32,7 @@
 |---|---|---|
 | `contracts/models/world.py` `VehicleSpec` | `recharge_min: float = 0` | 0이면 지금처럼 충전하지 않음 |
 | `contracts/models/world.py` `Operation` | `rotation: list[str] = []` | 교대 기체 목록. 비면 교대 없음(지금 동작) |
+| `contracts/models/world.py` `Operation` | `rotation_plays: list[str] = []` | 교대로 늘 지키는 순찰 플레이(시연 시나리오는 시작 배정이 순찰이 아니라 따로 적음, 구현 계획에서 추가) |
 
 - 기본값이 있으므로 기존 시나리오·예시·테스트는 그대로 통과한다. `gen_contracts.py`(TS)를 다시 돌린다.
 - `contracts/API.md`에 두 칸과 틱 순서(4.5 교대)를 적는다.

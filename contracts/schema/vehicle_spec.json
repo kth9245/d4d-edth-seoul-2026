@@ -82,6 +82,11 @@
     },
     "home": {
       "$ref": "#/$defs/GeoPoint"
+    },
+    "recharge_min": {
+      "default": 0,
+      "title": "Recharge Min",
+      "type": "number"
     }
   },
   "required": [

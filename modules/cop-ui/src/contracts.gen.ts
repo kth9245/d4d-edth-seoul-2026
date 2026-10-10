@@ -22,6 +22,7 @@ export interface VehicleSpec {
   sensor_range_m: number;
   capabilities: ActionKind[];
   home: GeoPoint;
+  recharge_min?: number;
 }
 
 export interface Command {
@@ -93,6 +94,8 @@ export interface Operation {
   assign?: Record<string, string>;
   reserve?: Record<string, string[]>;
   switches?: Switch[];
+  rotation?: string[];
+  rotation_plays?: string[];
 }
 
 export type TargetKind = "boat" | "fast_boat" | "person" | "unknown";

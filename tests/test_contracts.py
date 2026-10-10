@@ -146,3 +146,13 @@ def test_scenario_land_is_island_polygons_and_defaults_to_none():
     data = {k: v for k, v in sc.model_dump().items() if k != "land"}
     assert Scenario.model_validate(data).land == []
     assert Scenario.model_validate({**data, "land": [island.model_dump()]}).land == [island]
+
+
+def test_rotation_fields_default_to_no_rotation():
+    from contracts.models import Operation, VehicleSpec
+
+    op = Operation.model_validate_json((EXAMPLES / "operation.json").read_text(encoding="utf-8"))
+    spec = VehicleSpec.model_validate_json(
+        (EXAMPLES / "vehicle_spec.json").read_text(encoding="utf-8")
+    )
+    assert (op.rotation, op.rotation_plays, spec.recharge_min) == ([], [], 0)

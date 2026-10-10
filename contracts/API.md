@@ -110,3 +110,8 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 - 다시 만드는 명령은 `uv run python scripts/gen_examples.py`이다. 세계는 시연 시나리오 `demo/scenarios/baengnyeong_night.json`을 `scripts/example_world.py`가 읽은 것이고(결정 0035, 시나리오는 JSON을 손으로 고친다), 장면은 `scripts/example_scenes.py`에 있다. 위치는 손으로 계산한 근사값이다. `gen_examples.py`는 `demo/`를 쓰지 않는다.
 - 아직 없는 함수의 스텁은 이 예시를 돌려준다(09 4.5). 통합 2(00:00) 전에 걷어낸다.
 - 레거시 T1-3 모델(`Detection`·`Track`·`Assessment`·`Response`·`LegacyFrame`)은 지금 gateway·smoke가 쓰고 있다. 통합 1 뒤 smoke를 새 엔진으로 바꿀 때 뺀다(Part1-14).
+
+## 해안 순찰 교대(결정 0037)
+- `VehicleSpec.recharge_min`(0 = 충전 없음): 기지에서 `maintenance`인 동안 배터리가 `100/recharge_min`%/분씩 차고 100%면 `ready`.
+- `Operation.rotation`(교대 기체)·`rotation_plays`(늘 지키는 순찰 플레이): 비면 교대 없음.
+- 틱 순서 4.5: `apply_emergency`(4) 다음, `step_vehicle`(5) 전에 runtime `rotate_patrols`.
