@@ -484,3 +484,17 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .route-map-wrap { margin: 0; }
 .route-map { width: 100%; height: 380px; cursor: crosshair; }
 .route-map-wrap figcaption { color: var(--dim); font-size: 10px; }
+
+/* Relative route pad (Part1-40): the vehicle at the centre (friendly), the route in the system's green */
+.route-maker .rm-relative { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+.route-maker .rm-table { flex: 1; min-width: 300px; }
+.offset-pad-wrap { margin: 0; }
+.offset-pad-wrap figcaption { color: var(--dim); font-family: var(--font-mono); font-size: 10px; }
+.offset-pad { display: block; outline: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); cursor: crosshair; }
+.offset-pad .pad-grid line { stroke: var(--line); stroke-width: 1; }
+.offset-pad .pad-axis line { stroke: var(--line2); stroke-width: 1.5; }
+.offset-pad .pad-label { fill: var(--muted); font-size: 10px; }
+.offset-pad .pad-route { fill: none; stroke: var(--live); stroke-width: 2; }
+.offset-pad .pad-point circle { fill: var(--live); stroke: #000; stroke-width: 1; }
+.offset-pad .pad-point text { fill: var(--text); font-size: 11px; font-family: var(--font-mono); }
+.offset-pad .pad-origin { fill: var(--friend); stroke: #000; stroke-width: 1; }

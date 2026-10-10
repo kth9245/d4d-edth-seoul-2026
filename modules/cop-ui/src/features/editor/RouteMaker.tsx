@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { GeoPoint, Polygon, RouteDef } from "../../contracts.gen";
 import { RouteMap } from "../map/RouteMap";
 import { newRoute } from "./newRoute";
+import { OffsetPad } from "./OffsetPad";
 
 type Props = {
   zone: Polygon;
@@ -11,19 +12,19 @@ type Props = {
 };
 type Row = { north: string; east: string }; // typed text, read as metres on save
 
-// "＋ 경로 추가" window (decision 0054): a name, then a fixed route clicked on the map or a relative route
-// typed as north/east metres per point from where the vehicle is as the card starts.
+// "＋ 경로 추가" window (decision 0054): a name, then a fixed route clicked on the map or a relative route as
+// north/east metres per point from where the vehicle is as the card starts, drawn on a pad or typed (Part1-40).
 export function RouteMaker({ zone, existingIds, onSave, onCancel }: Props) {
   const [name, setName] = useState("");
   const [kind, setKind] = useState<"fixed" | "relative">("fixed");
   const [points, setPoints] = useState<GeoPoint[]>([]);
-  const [rows, setRows] = useState<Row[]>([{ north: "200", east: "0" }]);
+  const [rows, setRows] = useState<Row[]>([]);
   const [error, setError] = useState<string | null>(null);
   const count = kind === "fixed" ? points.length : rows.length;
   const setRow = (i: number, next: Partial<Row>) => setRows(rows.map((r, j) => (j === i ? { ...r, ...next } : r)));
+  const offsets = rows.map((r) => ({ north_m: Number(r.north) || 0, east_m: Number(r.east) || 0 }));
   const save = () => {
     setError(null);
-    const offsets = rows.map((r) => ({ north_m: Number(r.north) || 0, east_m: Number(r.east) || 0 }));
     onSave(newRoute(name, kind, points, offsets, existingIds)).catch((e) => setError(`경로를 저장하지 못했습니다 (${String(e)})`));
   };
   return (
@@ -50,21 +51,31 @@ export function RouteMaker({ zone, existingIds, onSave, onCancel }: Props) {
           </>
         ) : (
           <>
-            <p className="rm-hint">카드에 들어선 기체 위치에서 각 점까지의 거리(m)입니다. 남쪽·서쪽은 음수로 적습니다.</p>
-            <table className="rm-offsets">
-              <thead><tr><th>점</th><th>북쪽 m</th><th>동쪽 m</th><th /></tr></thead>
-              <tbody>
-                {rows.map((r, i) => (
-                  <tr key={i}>
-                    <td>{i + 1}</td>
-                    <td><input type="number" aria-label={`점 ${i + 1} 북쪽 m`} value={r.north} onChange={(e) => setRow(i, { north: e.target.value })} /></td>
-                    <td><input type="number" aria-label={`점 ${i + 1} 동쪽 m`} value={r.east} onChange={(e) => setRow(i, { east: e.target.value })} /></td>
-                    <td><button aria-label={`점 ${i + 1} 지우기`} disabled={rows.length === 1} onClick={() => setRows(rows.filter((_, j) => j !== i))}>×</button></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <button className="rm-add" onClick={() => setRows([...rows, { north: "0", east: "0" }])}>+ 점 추가</button>
+            <p className="rm-hint">가운데가 카드에 들어선 기체 위치입니다. 격자판을 누르거나 표에 거리(m)를 적습니다. 남쪽·서쪽은 음수입니다.</p>
+            <div className="rm-relative">
+              <OffsetPad offsets={offsets} onAdd={(o) => setRows((rs) => [...rs, { north: String(o.north_m), east: String(o.east_m) }])} />
+              <div className="rm-table">
+                <table className="rm-offsets">
+                  <thead><tr><th>점</th><th>북쪽 m</th><th>동쪽 m</th><th /></tr></thead>
+                  <tbody>
+                    {rows.map((r, i) => (
+                      <tr key={i}>
+                        <td>{i + 1}</td>
+                        <td><input type="number" aria-label={`점 ${i + 1} 북쪽 m`} value={r.north} onChange={(e) => setRow(i, { north: e.target.value })} /></td>
+                        <td><input type="number" aria-label={`점 ${i + 1} 동쪽 m`} value={r.east} onChange={(e) => setRow(i, { east: e.target.value })} /></td>
+                        <td><button aria-label={`점 ${i + 1} 지우기`} onClick={() => setRows(rows.filter((_, j) => j !== i))}>×</button></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {rows.length === 0 && <p className="rm-hint">아직 점이 없습니다.</p>}
+                <div className="rm-row">
+                  <button className="rm-add" onClick={() => setRows([...rows, { north: "0", east: "0" }])}>+ 점 추가</button>
+                  <button disabled={!rows.length} onClick={() => setRows(rows.slice(0, -1))}>마지막 점 지우기</button>
+                  <button disabled={!rows.length} onClick={() => setRows([])}>모두 지우기</button>
+                </div>
+              </div>
+            </div>
           </>
         )}
         <div className="rm-foot">
