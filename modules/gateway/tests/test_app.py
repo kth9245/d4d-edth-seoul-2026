@@ -60,6 +60,7 @@ def test_scenarios_lists_the_demo_operations_with_the_running_one_active():
     assert [(s["id"], s["active"]) for s in got] == [
         ("baengnyeong_night", True),
         ("baengnyeong_24h", False),
+        ("baengnyeong_strike", False),
     ]
 
 
@@ -70,7 +71,7 @@ def test_activate_switches_what_the_editor_endpoints_answer():
     day = sim.load_scenario_json(str(ROOT / "demo/scenarios/baengnyeong_24h.json"))
     assert client.get("/operation").json()["name"] == day.operation.name
     assert [v["id"] for v in client.get("/vehicles").json()] == [v.id for v in day.vehicles]
-    assert [s["active"] for s in client.get("/scenarios").json()] == [False, True]
+    assert [s["active"] for s in client.get("/scenarios").json()] == [False, True, False]
 
 
 def test_activate_an_unknown_scenario_is_404():

@@ -42,6 +42,7 @@ DEFAULT_SCENARIO = str(ROOT / "demo/scenarios/baengnyeong_night.json")
 DEMO_SCENARIOS = [
     DEFAULT_SCENARIO,
     str(ROOT / "demo/scenarios/baengnyeong_24h.json"),
+    str(ROOT / "demo/scenarios/baengnyeong_strike.json"),
 ]
 
 

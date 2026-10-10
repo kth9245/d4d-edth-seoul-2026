@@ -7,7 +7,7 @@ from contracts.models import Scenario
 from modules.safety import point_in_polygon
 
 ROOT = Path(__file__).resolve().parent.parent
-FILES = ["baengnyeong_night.json", "baengnyeong_24h.json"]
+FILES = ["baengnyeong_night.json", "baengnyeong_24h.json", "baengnyeong_strike.json"]
 RELATIVE = {"square_300", "zigzag_600", "orbit_200", "north_1km"}
 
 
