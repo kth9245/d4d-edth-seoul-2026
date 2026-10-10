@@ -337,6 +337,26 @@ def test_ops_ws_forks_the_simulation_and_takes_its_own_inputs():  # decision 006
     assert (sim.run.status, sim.t_ms) == ("paused", start + 1000)
 
 
+def test_ops_cards_and_switches_go_to_the_ops_run():  # decision 0068, review of task 3
+    client, _ = fake_app()
+    with client:
+        with client.websocket_connect("/ws?run=ops") as ws:
+            ws.receive_json()
+        dec = {"report_id": "rep-d1-1", "choice_id": "watch"}
+        assert client.post("/decisions?run=ops", json=dec).json()["id"] == "dec-1"
+        assert client.post("/decisions", json=dec).json()["id"] == "dec-1"
+        inj = client.post(
+            "/injections?run=ops", json={"role_by_vehicle": {"d2": "track_fast"}}
+        ).json()
+        assert inj["id"] == "inj-1"
+        assert (
+            client.post("/injections", json={"role_by_vehicle": {"d2": "track_fast"}}).json()["id"]
+            == "inj-1"
+        )
+        client.post("/injections/inj-1/approve")  # the simulation's own inj-1
+        assert client.post("/injections/inj-1/approve?run=ops").json()["status"] == "approved"
+
+
 def test_default_engine_forks_for_ops():  # decision 0068: the real EngineState deep-copies
     with TestClient(create_app(SCENARIO, period_s=0.01)) as client:
         with client.websocket_connect("/ws?run=ops") as ws:
