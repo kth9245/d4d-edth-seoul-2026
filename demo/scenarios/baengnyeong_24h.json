@@ -56,14 +56,18 @@
    "d1",
    "d2",
    "d3",
-   "d4"
+   "d4",
+   "usv",
+   "ugv"
   ],
   "started_ms": 1791633600000,
   "assign": {
    "d1": "coast_a",
    "d2": "coast_b",
    "d3": "standby",
-   "d4": "standby"
+   "d4": "standby",
+   "usv": "standby",
+   "ugv": "standby"
   },
   "reserve": {},
   "switches": [],
@@ -152,6 +156,38 @@
    "recharge_min": 5,
    "rf_range_m": 2000.0,
    "kind": "recon_drone"
+  },
+  {
+   "id": "usv",
+   "name": "수상정",
+   "domain": "sea",
+   "speed_mps": 8.0,
+   "endurance_min": 720.0,
+   "sensor_range_m": 500.0,
+   "home": {
+    "lat": 37.981,
+    "lon": 124.691,
+    "alt_m": 0.0
+   },
+   "recharge_min": 0.0,
+   "rf_range_m": 0.0,
+   "kind": "armed_usv"
+  },
+  {
+   "id": "ugv",
+   "name": "지상로봇",
+   "domain": "ground",
+   "speed_mps": 5.0,
+   "endurance_min": 480.0,
+   "sensor_range_m": 300.0,
+   "home": {
+    "lat": 37.955,
+    "lon": 124.72,
+    "alt_m": 0.0
+   },
+   "recharge_min": 0.0,
+   "rf_range_m": 0.0,
+   "kind": "ground_robot"
   }
  ],
  "roles": [

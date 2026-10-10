@@ -71,3 +71,11 @@ def test_the_24h_drones_get_the_night_capabilities_from_the_ontology():  # decis
     day = load_scenario_json(ROOT / "demo" / "scenarios" / "baengnyeong_24h.json")
     assert day.ontology is not None
     assert all(v.kind_path and v.capabilities == night[v.id].capabilities for v in day.vehicles)
+
+
+def test_the_24h_usv_and_ugv_stand_by_at_their_night_spots():  # user, 10/10
+    night = {v.id: v for v in load_scenario_json(DEMO).vehicles}
+    day = load_scenario_json(ROOT / "demo" / "scenarios" / "baengnyeong_24h.json")
+    by = {v.id: v for v in day.vehicles}
+    assert all(by[i].home == night[i].home and by[i].kind == night[i].kind for i in ("usv", "ugv"))
+    assert day.operation.assign["usv"] == day.operation.assign["ugv"] == "standby"

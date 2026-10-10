@@ -99,12 +99,22 @@ def build() -> dict:
         for v in night["vehicles"]
         if v["domain"] == "air"
     ]
+    ground_sea = [
+        v for v in night["vehicles"] if v["domain"] != "air"
+    ]  # usv, ugv at their night spots (user, 10/10)
     roles = {p["id"]: p for p in night["roles"]}
     op = night["operation"] | {
         "name": "멸공",
         "purpose": "드론 4대가 북(A: d1·d3)·남(B: d2·d4) 해안을 짝끼리 교대로 늘 1대씩 순찰(결정 0037, 0041)",
-        "vehicle_ids": [v["id"] for v in drones],
-        "assign": {"d1": "coast_a", "d2": "coast_b", "d3": "standby", "d4": "standby"},
+        "vehicle_ids": [v["id"] for v in drones + ground_sea],
+        "assign": {
+            "d1": "coast_a",
+            "d2": "coast_b",
+            "d3": "standby",
+            "d4": "standby",
+            "usv": "standby",
+            "ugv": "standby",
+        },
         "reserve": {},
         "switches": [],
         "rotation": ["d1", "d2", "d3", "d4"],
@@ -114,7 +124,7 @@ def build() -> dict:
     out = {
         "id": "baengnyeong_24h",
         "operation": op,
-        "vehicles": drones,
+        "vehicles": drones + ground_sea,
         "roles": [
             patrol("coast_a", "해안 순찰 A · 북", a),
             patrol("coast_b", "해안 순찰 B · 남", b),
