@@ -210,3 +210,4 @@
 {"at": "2026-10-10T11:51:23+09:00", "by": "kth9245", "op": "note", "id": "Part3-12", "text": "화면 클릭 경로(초안 저장→막힘→끼워 넣기→저장 통과)는 Part3-13에서 초안이 편집기 목록에 들어온 뒤 확인. 서버 검사로는 확인함(전 missing_report_point, 후 ok)"}
 {"at": "2026-10-10T11:52:48+09:00", "by": "kth9245", "op": "add", "id": "Part1-21", "title": "편집기 적 열 + GET /enemies (결정 0032, 읽기 전용)", "parent": null, "assign": null, "slot": null, "spec": null}
 {"at": "2026-10-10T11:52:51+09:00", "by": "kth9245", "op": "add", "id": "Part2-25", "title": "sim 적 진행(SIM-11, 결정 0032) + engine.py 호출", "parent": null, "assign": "최동호", "slot": null, "spec": null}
+{"at": "2026-10-10T11:54:58+09:00", "by": "kth9245", "op": "start", "id": "Part3-13", "take": false, "from": null}
