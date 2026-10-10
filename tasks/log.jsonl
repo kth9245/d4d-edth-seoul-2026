@@ -141,3 +141,4 @@
 {"at": "2026-10-10T10:48:41+09:00", "by": "kth9245", "op": "done", "id": "Part3-10", "take": false}
 {"at": "2026-10-10T10:48:59+09:00", "by": "kth9245", "op": "note", "id": "Part3-11", "text": "편집기 데이터는 loadEditorData(UI-15)가 GET /operation·/plays 실패 시 demo/scenarios 예시로 대체한다. 통합 2(00:00) 전에 이 대체를 걷어낼 것(09 4.5절). Part1-7이 main에 있으니 지금 걷어내도 됨"}
 {"at": "2026-10-10T10:49:13+09:00", "by": "최동호", "op": "start", "id": "Part2-3", "take": false, "from": null}
+{"at": "2026-10-10T10:49:40+09:00", "by": "kth9245", "op": "decide", "id": "Part1-13", "text": "다음 사건으로는 사건 시각 직후에서 일시정지한다: 먼저 /run/live?speed=0, 그다음 /run/jump(정지 시각 = 사건 추정 시각 + 몇 초). 카드가 떠 있는 정지 화면에서 설명을 시작한다. 리드 답 '사건 직후, 일시정지'"}
