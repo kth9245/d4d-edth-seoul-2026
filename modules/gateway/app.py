@@ -115,6 +115,10 @@ def create_app(
     async def vehicles():
         return live.scenario.vehicles
 
+    @app.get("/enemies")
+    async def enemies():
+        return live.scenario.enemies
+
     @app.post("/operation")
     async def post_operation(op: Operation):
         log.info("POST /operation %s", op.id)

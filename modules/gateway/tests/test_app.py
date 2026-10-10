@@ -36,6 +36,15 @@ def test_vehicles_come_from_the_scenario():
     assert {"domain", "home", "name"} <= set(vehicles[0])
 
 
+def test_enemies_come_from_the_scenario():
+    # Part1-21: the editor's enemy section shows each enemy and the play it follows.
+    client, _ = fake_app()
+    enemies = client.get("/enemies").json()
+    assert [e["id"] for e in enemies] == ["boat1", "fast1"]
+    plays = {p["id"] for p in client.get("/plays").json()}
+    assert all(e["play_id"] in plays for e in enemies)
+
+
 def test_run_live_then_ws_streams_running_frames():
     client, _ = fake_app()
     with client:
