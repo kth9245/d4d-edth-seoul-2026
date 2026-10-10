@@ -1,0 +1,23 @@
+[
+ {"viewport": [1366, 768]},
+ {"nav": "/?scene=s1#live", "wait": 5000},
+ {"layout": "S1 scene s1"},
+ {"label": "S1 cards", "eval": "document.querySelectorAll('.card').length", "expect": 1},
+ {"nav": "/?scene=s2#live", "wait": 5000},
+ {"layout": "S2 scene s2"},
+ {"label": "S2 cards", "eval": "document.querySelectorAll('.card').length", "expect": 1},
+ {"nav": "/?scene=s3#live", "wait": 5000},
+ {"layout": "S3 scene s3"},
+ {"label": "S3 cards", "eval": "document.querySelectorAll('.card').length", "expect": 2},
+ {"nav": "/?scene=s4#live", "wait": 5000},
+ {"layout": "S4 scene s4"},
+ {"label": "S4 pending card has approve/reject", "eval": "[...document.querySelectorAll('.card.pending button')].map(b => b.innerText)", "expect": ["승인", "거부"]},
+ {"nav": "/?scene=s5#live", "wait": 5000},
+ {"layout": "S5 scene s5"},
+ {"label": "S5 block card has the alternative button", "eval": "[...document.querySelectorAll('.card.block button')].map(b => b.innerText.split('\\n')[0])", "expect": ["대안 지점으로"]},
+ {"nav": "/?scene=s6#live", "wait": 5000},
+ {"layout": "S6 scene s6"},
+ {"label": "S6 two block cards", "eval": "document.querySelectorAll('.card.block').length", "expect": 2},
+ {"nav": "/?scene=s9#live", "wait": 4000},
+ {"label": "S9 unknown scene says so", "eval": "document.querySelector('.status')?.innerText", "match": "^없는 장면 S9 "}
+]
