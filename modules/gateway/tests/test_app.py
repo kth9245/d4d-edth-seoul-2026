@@ -82,6 +82,43 @@ def test_plays_check_and_save():
     assert "해안 순찰 A2" in names()
 
 
+def test_draft_returns_the_cached_ai_play_for_a_demo_sentence():
+    import json
+
+    sentences = {
+        s["id"]: s["text"]
+        for s in json.loads((ROOT / "demo/draft_sentences.json").read_text("utf-8"))
+    }
+    client, _ = fake_app()
+    play = client.post("/plays/draft", json={"text": sentences["no_report"]}).json()
+    assert (play["origin"], play["approved"]) == ("ai_draft", False)  # cache hit, no network
+    assert "approach_target" in [s["do"]["kind"] for s in play["steps"]]
+
+
+def test_draft_runs_off_the_event_loop(monkeypatch):
+    # draft_play may call the LLM for minutes on a cache miss; the WS loop must keep streaming meanwhile.
+    import asyncio
+
+    import modules.gateway.app as app_module
+    from modules.gateway.tests.test_live_plays import PATROL_A
+
+    seen = {}
+
+    def fake_draft(text, op):
+        try:
+            asyncio.get_running_loop()
+            seen["in_loop"] = True
+        except RuntimeError:
+            seen["in_loop"] = False
+        seen["args"] = (text, op.id)
+        return PATROL_A
+
+    monkeypatch.setattr(app_module, "draft_play", fake_draft)
+    client, _ = fake_app()
+    assert client.post("/plays/draft", json={"text": "순찰"}).json()["id"] == PATROL_A.id
+    assert seen == {"in_loop": False, "args": ("순찰", "op1")}
+
+
 def test_reset_pauses():
     client, _ = fake_app()
     client.post("/run/live?speed=5")

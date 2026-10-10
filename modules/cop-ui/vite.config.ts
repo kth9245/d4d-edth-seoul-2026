@@ -19,6 +19,7 @@ export default defineConfig({
     // font files live outside this package too.
     fs: {
       allow: [searchForWorkspaceRoot(process.cwd()), outside("../../contracts/examples"), outside("../../demo/scenarios"),
+        outside("../../demo/draft_sentences.json"),
         realpathSync(outside("./node_modules"))],
     },
   },

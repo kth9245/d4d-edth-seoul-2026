@@ -41,3 +41,5 @@
 | UI-36 | useDirectControl | — | 선택·목표·안내 줄 | 기체 클릭 선택, 지도 클릭 → POST /direct 뒤 해제, Esc·같은 기체 다시 누르면 취소, 기체 클릭은 지도 클릭으로 안 샘 | 리드 | 완료 |
 | UI-37 | insertReportStep | Play, 접근 step id | Play | 접근 앞에 hold + 선택지 하나 보고 step, 선택지의 operator_choice 탈출이 접근으로(결정 0031), 접근으로 가던 탈출은 보고로, 원본 안 바꿈 | 리드 | 완료 |
 | UI-38 | saveErrorText | 저장 오류 문구 | 화면 문구 | 게이트웨이 응답 상태 코드 표시, 응답 없으면 서버 응답 없음 | 리드 | 완료 |
+| UI-39 | postDraft·forSave | 문장 / Play | {ok, play} \| 오류 / Play | POST /plays/draft, AI 초안은 저장 때 approved=true(검사 통과 + 사람이 저장 = 승인) | 리드 | 완료 |
+| UI-40 | DraftBox | — | AI 초안 칸 | 시연 문장 버튼(demo/draft_sentences.json) + 입력칸 → 초안이 미저장 플레이로 열림, 대기 템플릿 대체 알림 | 리드 | 완료 |

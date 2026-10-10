@@ -61,3 +61,11 @@ aside { overflow-y: auto; padding: 12px; border-left: 1px solid #22304a; }
 /* "보고 카드 끼워 넣기" (Part3-12): the fix button on an unguarded approach card, the added card, the unsaved mark. */
 .insert-report { margin-top: 10px; padding: 7px 14px; cursor: pointer; }
 .edited { font-size: 12px; }
+/* AI draft box at the top of the editor sidebar and the "승인 전" badge (Part3-13). */
+.draftbox { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.draftbox textarea { width: 100%; box-sizing: border-box; padding: 8px; font: inherit; font-size: 12px; resize: vertical; }
+.draftbox .examples { display: flex; flex-direction: column; gap: 4px; }
+.draftbox button { padding: 6px 8px; font-size: 12px; text-align: left; cursor: pointer; }
+.draftbox button:disabled { cursor: default; }
+.draftbox .note { font-size: 11px; }
+.ai-badge { display: inline-block; margin-left: 10px; padding: 2px 8px; font-size: 11px; white-space: nowrap; vertical-align: middle; }

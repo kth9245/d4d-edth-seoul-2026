@@ -8,6 +8,7 @@ every `period_s`. Handlers are async so all state changes happen on the event lo
 import asyncio
 import contextlib
 import os
+import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 from types import SimpleNamespace
@@ -15,10 +16,11 @@ from types import SimpleNamespace
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 
-from contracts.models import DecisionIn, DirectIn, Operation, Play, SwitchIn
+from contracts.models import DecisionIn, DirectIn, DraftIn, Operation, Play, SwitchIn
 from modules import sim
 from modules.gateway import stub_engine
 from modules.gateway.live import Live
+from modules.play import draft_play
 from shared.log import get_logger, setup_logging
 
 log = get_logger("gateway")
@@ -89,6 +91,20 @@ def create_app(
         chk = live.save_play(play)  # saved and reset only when the check passes
         log.info("POST /plays %s ok=%s issues=%d", play.id, chk.ok, len(chk.issues))
         return chk
+
+    @app.post("/plays/draft")
+    async def draft(body: DraftIn):
+        # Cache first; a miss may call the LLM for minutes, so run it off the loop that streams /ws.
+        t0 = time.monotonic()
+        play = await asyncio.to_thread(draft_play, body.text, live.scenario.operation)
+        log.info(
+            "POST /plays/draft %r -> %s origin=%s %.1fs",
+            body.text[:40],
+            play.id,
+            play.origin,
+            time.monotonic() - t0,
+        )
+        return play
 
     @app.post("/plays/check")
     async def check_play(play: Play):

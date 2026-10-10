@@ -177,6 +177,16 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .step-card { border: 1px solid var(--line); border-left: 2px solid var(--friend); border-radius: var(--r); background: var(--s2); }
 .step-report { border: 1px solid var(--line); border-radius: var(--r); background: var(--s1); }
 .switch { border: 1px solid rgba(245, 158, 11, 0.4); border-radius: var(--r); background: var(--warn-soft); color: var(--warn); }
+.draftbox textarea { border: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); color: var(--text); }
+.draftbox textarea:focus { border-color: var(--live); outline: none; }
+.draftbox .examples button { border: 1px solid var(--line); border-radius: var(--r); background: transparent; color: var(--muted); font-family: var(--font-mono); font-size: 11px; }
+.draftbox .examples button:hover { border-color: var(--text); color: var(--text); }
+.draftbox .draft { border: 1px solid var(--text); border-radius: var(--r); background: var(--text); color: var(--bg); font-weight: 700; text-align: center; }
+.draftbox .draft:hover:not(:disabled) { border-color: var(--live); background: var(--live); }
+.draftbox .draft:disabled { border-color: var(--line2); background: var(--s3); color: var(--muted); }
+.draftbox .note { color: var(--live); font-family: var(--font-mono); }
+.draftbox .note.warn { color: var(--warn); }
+.ai-badge { border: 1px solid rgba(245, 158, 11, 0.45); background: var(--warn-soft); color: var(--warn); font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.06em; }
 .insert-report { border: 1px solid var(--text); border-radius: var(--r); background: var(--text); color: var(--bg); font-weight: 700; }
 .insert-report:hover { border-color: var(--live); background: var(--live); }
 .step-card.fresh { border-left-color: var(--live); background: linear-gradient(90deg, var(--live-soft), transparent 70%), var(--s2); }

@@ -40,6 +40,7 @@ export function PlayWorkflow({ play, usage, playName, onOpen, result, onSave, ed
     <section className="workflow">
       <h2>
         {play.name} <small>{play.domains.map((d) => DOMAIN_LABEL[d]).join("·") || "영역 없음"}</small>
+        {play.origin === "ai_draft" && !play.approved && <span className="ai-badge">AI 초안 · 승인 전</span>}
       </h2>
       <div className="usage">
         {usage.length === 0

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Play } from "../../contracts.gen";
 import type { SaveResult } from "./checkView";
+import { DraftBox } from "./DraftBox";
+import { forSave } from "./draftRequests";
 import { groupPlays } from "./groupPlays";
 import { insertReportStep } from "./insertReportStep";
 import { type EditorData, loadEditorData } from "./loadEditorData";
@@ -43,7 +45,16 @@ export function EditorScreen() {
     if (added) setFresh((all) => ({ ...all, [p.id]: added }));
     setResults((all) => without(all, p.id));
   };
-  const save = (p: Play) => {
+  // An AI draft arrives as an unsaved play in the list (or replaces one with the same id) and opens.
+  const drafted = (p: Play) => {
+    setData((d) => d && { ...d, plays: d.plays.some((x) => x.id === p.id) ? d.plays.map((x) => (x.id === p.id ? p : x)) : [...d.plays, p] });
+    setEdits((all) => ({ ...all, [p.id]: p }));
+    setFresh((all) => without(all, p.id));
+    setResults((all) => without(all, p.id));
+    setSelected(p.id);
+  };
+  const save = (edited: Play) => {
+    const p = forSave(edited);
     const put = (r: SaveResult) => setResults((all) => ({ ...all, [p.id]: r }));
     put({ state: "saving" });
     savePlay(p).then(
@@ -61,7 +72,8 @@ export function EditorScreen() {
   };
   return (
     <div className="editor">
-      <PlaySidebar groups={view.groups} selected={play ? play.id : OVERVIEW} source={data.source} showOverview onSelect={setSelected} />
+      <PlaySidebar groups={view.groups} selected={play ? play.id : OVERVIEW} source={data.source} showOverview onSelect={setSelected}
+        top={<DraftBox onDrafted={drafted} />} />
       <main className="editor-main">
         {play ? (
           <PlayWorkflow
