@@ -18,6 +18,32 @@
       "title": "Action",
       "type": "object"
     },
+    "ActionGroup": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "actions": {
+          "items": {
+            "$ref": "#/$defs/ActionKind"
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "actions"
+      ],
+      "title": "ActionGroup",
+      "type": "object"
+    },
     "ActionKind": {
       "enum": [
         "move_to",
@@ -260,6 +286,30 @@
         "lon"
       ],
       "title": "GeoPoint",
+      "type": "object"
+    },
+    "Ontology": {
+      "properties": {
+        "groups": {
+          "items": {
+            "$ref": "#/$defs/ActionGroup"
+          },
+          "title": "Groups",
+          "type": "array"
+        },
+        "kinds": {
+          "items": {
+            "$ref": "#/$defs/VehicleKind"
+          },
+          "title": "Kinds",
+          "type": "array"
+        }
+      },
+      "required": [
+        "groups",
+        "kinds"
+      ],
+      "title": "Ontology",
       "type": "object"
     },
     "Operation": {
@@ -575,6 +625,44 @@
       "title": "TargetKind",
       "type": "string"
     },
+    "VehicleKind": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "is_a": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Is A"
+        },
+        "provides": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Provides",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "title": "VehicleKind",
+      "type": "object"
+    },
     "VehicleSpec": {
       "properties": {
         "id": {
@@ -601,6 +689,7 @@
           "type": "number"
         },
         "capabilities": {
+          "default": [],
           "items": {
             "$ref": "#/$defs/ActionKind"
           },
@@ -615,6 +704,26 @@
           "title": "Recharge Min",
           "type": "number"
         },
+        "kind": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Kind"
+        },
+        "kind_path": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Kind Path",
+          "type": "array"
+        },
         "rf_range_m": {
           "default": 0,
           "title": "Rf Range M",
@@ -628,7 +737,6 @@
         "speed_mps",
         "endurance_min",
         "sensor_range_m",
-        "capabilities",
         "home"
       ],
       "title": "VehicleSpec",
@@ -715,6 +823,17 @@
       },
       "title": "Land",
       "type": "array"
+    },
+    "ontology": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Ontology"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "seed": {
       "default": 0,

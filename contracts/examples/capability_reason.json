@@ -1,0 +1,10 @@
+{
+ "action": "strike_target",
+ "allowed": false,
+ "path": [
+  "recon_drone",
+  "air_vehicle",
+  "vehicle"
+ ],
+ "via": null
+}

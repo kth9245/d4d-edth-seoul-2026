@@ -24,9 +24,11 @@ class VehicleSpec(BaseModel):
     speed_mps: float
     endurance_min: float
     sensor_range_m: float
-    capabilities: list[ActionKind]
+    capabilities: list[ActionKind] = []  # from Scenario.ontology when kind is set (decision 0038)
     home: GeoPoint
     recharge_min: float = 0  # battery swap/charge at home (decision 0037); 0 = no recharge
+    kind: str | None = None  # VehicleKind id in Scenario.ontology (decision 0038)
+    kind_path: list[str] = []  # kind labels up to the root, filled by the scenario loader
     rf_range_m: float = 0  # RF receive range (decision 0039); 0 = cannot receive
 
 

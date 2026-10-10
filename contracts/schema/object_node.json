@@ -1,0 +1,43 @@
+{
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "type": {
+      "enum": [
+        "vehicle",
+        "target",
+        "report",
+        "decision",
+        "command",
+        "block"
+      ],
+      "title": "Type",
+      "type": "string"
+    },
+    "label": {
+      "title": "Label",
+      "type": "string"
+    },
+    "t_ms": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "T Ms"
+    }
+  },
+  "required": [
+    "id",
+    "type",
+    "label"
+  ],
+  "title": "ObjectNode",
+  "type": "object"
+}

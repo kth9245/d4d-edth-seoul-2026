@@ -74,6 +74,7 @@
       "type": "number"
     },
     "capabilities": {
+      "default": [],
       "items": {
         "$ref": "#/$defs/ActionKind"
       },
@@ -88,6 +89,26 @@
       "title": "Recharge Min",
       "type": "number"
     },
+    "kind": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Kind"
+    },
+    "kind_path": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Kind Path",
+      "type": "array"
+    },
     "rf_range_m": {
       "default": 0,
       "title": "Rf Range M",
@@ -101,7 +122,6 @@
     "speed_mps",
     "endurance_min",
     "sensor_range_m",
-    "capabilities",
     "home"
   ],
   "title": "VehicleSpec",

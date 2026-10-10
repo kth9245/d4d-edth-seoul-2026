@@ -1,0 +1,106 @@
+{
+  "$defs": {
+    "ObjectLink": {
+      "properties": {
+        "src": {
+          "title": "Src",
+          "type": "string"
+        },
+        "dst": {
+          "title": "Dst",
+          "type": "string"
+        },
+        "rel": {
+          "enum": [
+            "reported",
+            "about",
+            "answers",
+            "from_decision",
+            "sent_to",
+            "aims_at",
+            "blocked"
+          ],
+          "title": "Rel",
+          "type": "string"
+        }
+      },
+      "required": [
+        "src",
+        "dst",
+        "rel"
+      ],
+      "title": "ObjectLink",
+      "type": "object"
+    },
+    "ObjectNode": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "vehicle",
+            "target",
+            "report",
+            "decision",
+            "command",
+            "block"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "t_ms": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "T Ms"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "label"
+      ],
+      "title": "ObjectNode",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "focus": {
+      "title": "Focus",
+      "type": "string"
+    },
+    "nodes": {
+      "items": {
+        "$ref": "#/$defs/ObjectNode"
+      },
+      "title": "Nodes",
+      "type": "array"
+    },
+    "links": {
+      "items": {
+        "$ref": "#/$defs/ObjectLink"
+      },
+      "title": "Links",
+      "type": "array"
+    }
+  },
+  "required": [
+    "focus",
+    "nodes",
+    "links"
+  ],
+  "title": "ObjectGraph",
+  "type": "object"
+}

@@ -13,6 +13,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | 오퍼레이션(작전) | 임무 틀(`zone`·`vehicle_ids`·`started_ms`) + 시작 플레이(`assign`) + 예비(`reserve`) + 전체 전환 버튼(`switches`) | `Operation`, `Switch` |
 | 시나리오 | 시연 묶음: 작전 + 기체 제원 + 플레이 목록 + 사건 대본 + 적 + 섬(육지) 다각형 `land`(결정 0034) | `Scenario` |
 | 적 | 대본에 적은 적 하나: 등장 시각(`appear_offset_ms`)·위치(`pos` 또는 `from_enemy`의 현재 위치)·속도 + 따르는 플레이. 행동은 `move_to`·`patrol_route`·`hold`, 조건은 `arrived`·`time_elapsed`(`params.sec`)만. runtime·safety를 거치지 않고 sim이 움직인다(결정 0032) | `EnemySpec`, `Scenario.enemies` |
+| 온톨로지 | 기체 종류의 is-a 계층(`kinds`, 상위 `is_a`)과 행동 묶음(`groups`). 종류가 더하는 능력(`provides`)을 하위 종류가 물려받는다. 기체는 `kind` 한 줄, `capabilities`·`kind_path`는 로더가 계산(결정 0038). 판정은 닫힌 세계(계층 어디에도 없으면 못 함) | `Ontology`, `Scenario.ontology`, `VehicleSpec.kind` |
 
 플레이는 다른 기체를 알지 못하지만, 선택지의 `play_by_vehicle`은 기체 id를 직접 적는다(결정 0016, 사람이 알고 고름).
 선택지가 보고한 기체를 `play_by_vehicle`에 넣지 않으면, 그 기체는 같은 플레이에서 지금 step의 탈출 `{cond: {kind: operator_choice, params: {choice: <선택지 id>}}, go_step}`으로 넘어간다. 그런 탈출이 없으면 보고 step에 머문다(결정 0031, 편집기 "보고 카드 끼워 넣기"가 이 모양을 넣는다).
@@ -65,10 +66,11 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 작전 시작(`/run/reset`) 상태: 모든 기체는 home 위치, `ready` 상태, `play_id = op.assign.get(id)`, `step_id`는 그 플레이의 `entry`, `entered_step=False`, `t_ms = op.started_ms`이고, 배정 사유는 "작전 배정"이다.
 
 **그 밖의 공개 API**
-- sim: `load_scenario_json(path) -> Scenario`. 레거시 `load_scenario`·`simulate`는 통합 1까지 그대로 둔다. `sea_aim(pos, goal, land) -> GeoPoint`(결정 0034): 해상 기체(domain sea)와 적 배(boat·fast_boat)는 직선이 `Scenario.land`를 지나면 섬 모서리(바다 쪽 100 m)를 돌아가고, 목표가 육지 안이면 해안에서 50 m 바다 점까지 간다.
+- sim: `load_scenario_json(path) -> Scenario`. 레거시 `load_scenario`·`simulate`는 통합 1까지 그대로 둔다. `sea_aim(pos, goal, land) -> GeoPoint`(결정 0034): 해상 기체(domain sea)와 적 배(boat·fast_boat)는 직선이 `Scenario.land`를 지나면 섬 모서리(바다 쪽 100 m)를 돌아가고, 목표가 육지 안이면 해안에서 50 m 바다 점까지 간다. 시나리오에 `ontology`가 있으면 `kind`가 있는 기체의 `capabilities`·`kind_path`를 계층에서 채운다(결정 0038).
 - safety: `point_in_polygon(p, poly) -> bool`, `return_feasible(state, spec, dest) -> (bool, GeoPoint | None)`
 - play: `load_play(path) -> Play`, `check_play(play, op, specs) -> PlayCheck`(플레이 하나만 본다: step 연결, 보고 지점, 작전 구역, 이 플레이를 assign·switches·reserve로 받는 기체의 영역·능력, 귀환 배터리. 다른 플레이를 받지 않으므로 선택지가 가리키는 플레이의 존재는 보지 않는다), `check_operation(op, plays, specs) -> PlayCheck`(작전 전체: assign·reserve·switches·보고 선택지가 만드는 (기체, 플레이) 쌍마다 check_play, 없는 플레이를 가리키면 `missing_play`. issue 메시지 앞에 `[플레이 id] `가 붙는다. 결정 0030), `expand_action(action, domain) -> CommandKind | None`, `list_templates() -> list[Play]`, `draft_play(text, op) -> Play`
 - mavlink(리드, 결정 0025): `compile_mavlink(play, op, specs) -> dict[기체 id, (plan dict, script str)]`. play는 `expand_action`만 공개 API로 쓴다
+- ontology(리드, 결정 0038): `kind_chain(kind, onto) -> list[VehicleKind]`, `explain_capability(kind, action, onto) -> CapabilityReason`, `infer_capabilities(kind, onto) -> list[ActionKind]`, `fill_vehicle_kinds(scenario) -> Scenario`, `ontology_view(scenario) -> OntologyView`
 - `PassedCommand`는 `safety.check_command`만 만든다.
 
 ## 4. 전환 세 경로 (결정 0015·0016)
@@ -89,6 +91,8 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 |---|---|---|
 | `GET /plays` · `POST /plays` | — · `Play` | `Play[]` · `PlayCheck` |
 | `GET /enemies` | — | `EnemySpec[]`(시나리오의 적, Part1-21) |
+| `GET /ontology` | — | `OntologyView`(계층 + 기체마다 행동 10개의 판정과 경로, 결정 0038). 시나리오에 온톨로지가 없으면 404 |
+| `GET /graph?focus=` | — | `ObjectGraph`(그 객체에서 링크를 따라 모은 객체. 기체와 focus가 아닌 표적은 더 펼치지 않음, 결정 0038). 없는 id는 404 |
 | `POST /plays/check` | `Play` | `PlayCheck` |
 | `POST /plays/draft` | `DraftIn{text}` | `Play`(origin=ai_draft, approved=false) |
 | `GET /operation` · `POST /operation` | — · `Operation` | `Operation` |

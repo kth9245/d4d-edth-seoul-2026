@@ -20,9 +20,11 @@ export interface VehicleSpec {
   speed_mps: number;
   endurance_min: number;
   sensor_range_m: number;
-  capabilities: ActionKind[];
+  capabilities?: ActionKind[];
   home: GeoPoint;
   recharge_min?: number;
+  kind?: string | null;
+  kind_path?: string[];
   rf_range_m?: number;
 }
 
@@ -302,6 +304,24 @@ export interface ScenarioEvent {
   params: Record<string, unknown>;
 }
 
+export interface ActionGroup {
+  id: string;
+  label: string;
+  actions: ActionKind[];
+}
+
+export interface Ontology {
+  groups: ActionGroup[];
+  kinds: VehicleKind[];
+}
+
+export interface VehicleKind {
+  id: string;
+  label: string;
+  is_a?: string | null;
+  provides?: string[];
+}
+
 export interface Scenario {
   id: string;
   operation: Operation;
@@ -311,6 +331,7 @@ export interface Scenario {
   enemies?: EnemySpec[];
   watch_points?: WatchPoint[];
   land?: Polygon[];
+  ontology?: Ontology | null;
   seed?: number;
   tick_ms?: number;
   speed?: number;
@@ -333,6 +354,43 @@ export interface TickOutcome {
   states?: VehicleState[];
   targets?: Target[];
   plays?: Record<string, Play>;
+}
+
+export interface CapabilityReason {
+  action: ActionKind;
+  allowed: boolean;
+  path: string[];
+  via?: string | null;
+}
+
+export interface VehicleCapabilities {
+  vehicle_id: string;
+  kind: string;
+  reasons: CapabilityReason[];
+}
+
+export interface OntologyView {
+  ontology: Ontology;
+  vehicles: VehicleCapabilities[];
+}
+
+export interface ObjectNode {
+  id: string;
+  type: "vehicle" | "target" | "report" | "decision" | "command" | "block";
+  label: string;
+  t_ms?: number | null;
+}
+
+export interface ObjectLink {
+  src: string;
+  dst: string;
+  rel: "reported" | "about" | "answers" | "from_decision" | "sent_to" | "aims_at" | "blocked";
+}
+
+export interface ObjectGraph {
+  focus: string;
+  nodes: ObjectNode[];
+  links: ObjectLink[];
 }
 
 export interface DecisionIn {

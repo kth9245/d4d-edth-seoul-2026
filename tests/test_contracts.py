@@ -158,3 +158,22 @@ def test_rotation_fields_default_to_no_rotation():
     spec.pop("recharge_min", None)
     got = Operation.model_validate(op), VehicleSpec.model_validate(spec)
     assert (got[0].rotation, got[0].rotation_plays, got[1].recharge_min) == ([], [], 0)
+
+
+def test_ontology_fields_default_to_none_and_the_demo_has_the_hierarchy():  # decision 0038
+    from contracts.models import ObjectGraph, Ontology, VehicleSpec
+
+    raw = _load(EXAMPLES / "vehicle_spec.json")
+    spec = VehicleSpec.model_validate(
+        {k: v for k, v in raw.items() if k not in ("kind", "kind_path", "capabilities")}
+    )
+    assert (spec.kind, spec.kind_path, spec.capabilities) == (None, [], [])
+    sc = Scenario.model_validate(_load(EXAMPLES / "scenario.json"))
+    assert isinstance(sc.ontology, Ontology)
+    assert {k.id: k.is_a for k in sc.ontology.kinds}["armed_drone"] == "air_vehicle"
+    assert {v.id: v.kind for v in sc.vehicles} == {
+        "d1": "recon_drone", "d2": "armed_drone", "d3": "recon_drone",
+        "usv": "armed_usv", "ugv": "ground_robot",
+    }  # fmt: skip
+    g = ObjectGraph.model_validate(_load(EXAMPLES / "object_graph.json"))
+    assert g.focus and g.nodes and g.links

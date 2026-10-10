@@ -19,16 +19,22 @@ from example_world import OPERATION, PLAYS, SCENARIO, SPECS, ZONE, gp  # noqa: E
 from contracts.models import (  # noqa: E402
     ALL_MODELS,
     Accepted,
+    CapabilityReason,
     DecisionIn,
     DirectControl,
     DirectIn,
     DraftIn,
     EnemySpec,
+    ObjectGraph,
+    ObjectLink,
+    ObjectNode,
+    OntologyView,
     PlayCheck,
     SwitchIn,
     TickInputs,
     TickOutcome,
     ValidationIssue,
+    VehicleCapabilities,
     WatchPoint,
 )
 
@@ -58,7 +64,28 @@ def examples() -> dict[str, object]:
         targets=s2.targets,
         plays=PLAYS,
     )
+    onto = SCENARIO.ontology  # decision 0038
+    reason = CapabilityReason(action="strike_target", allowed=False,
+                              path=["recon_drone", "air_vehicle", "vehicle"])  # fmt: skip
+    caps = VehicleCapabilities(vehicle_id="d1", kind="recon_drone", reasons=[reason])
+    dec_node = ObjectNode(
+        id="dec-1", type="decision", label=f"dec-1 '{REP1.choices[0].label}'", t_ms=T2
+    )
+    answers = ObjectLink(src="dec-1", dst=REP1.id, rel="answers")
+    graph = ObjectGraph(focus=REP1.target_id, nodes=[
+        ObjectNode(id=REP1.target_id, type="target", label=f"{REP1.target_id} · 보트"),
+        ObjectNode(id=REP1.id, type="report", label=REP1.text, t_ms=REP1.t_ms), dec_node,
+    ], links=[ObjectLink(src=REP1.id, dst=REP1.target_id, rel="about"), answers])  # fmt: skip
     return {
+        "action_group": onto.groups[0],
+        "vehicle_kind": onto.kinds[3],
+        "ontology": onto,
+        "capability_reason": reason,
+        "vehicle_capabilities": caps,
+        "ontology_view": OntologyView(ontology=onto, vehicles=[caps]),
+        "object_node": dec_node,
+        "object_link": answers,
+        "object_graph": graph,
         "geo_point": SPECS["d1"].home,
         "polygon": ZONE,
         "vehicle_spec": SPECS["d1"],

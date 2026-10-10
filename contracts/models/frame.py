@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from .command import Block, Command, PassedCommand
 from .enums import RunStatus
 from .events import Assignment, Decision, DirectControl, Injection, Report, Target
+from .ontology import Ontology
 from .play import Play
 from .world import EnemySpec, Operation, Polygon, VehicleSpec, VehicleState, WatchPoint
 
@@ -57,6 +58,7 @@ class Scenario(BaseModel):
     enemies: list[EnemySpec] = []  # decision 0032
     watch_points: list[WatchPoint] = []  # decision 0039: places to guard
     land: list[Polygon] = []  # decision 0034: islands that sea vehicles and enemy boats go round
+    ontology: Ontology | None = None  # decision 0038; None = hand-written capabilities
     seed: int = 0
     tick_ms: int = 200
     speed: float = 1.0

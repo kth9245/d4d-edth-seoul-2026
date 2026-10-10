@@ -1,0 +1,10 @@
+{
+ "id": "move",
+ "label": "이동",
+ "actions": [
+  "move_to",
+  "patrol_route",
+  "return_home",
+  "hold"
+ ]
+}

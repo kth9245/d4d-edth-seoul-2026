@@ -1,0 +1,8 @@
+{
+ "id": "armed_drone",
+ "label": "무장 드론",
+ "is_a": "air_vehicle",
+ "provides": [
+  "strike"
+ ]
+}

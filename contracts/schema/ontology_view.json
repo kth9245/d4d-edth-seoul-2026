@@ -1,0 +1,189 @@
+{
+  "$defs": {
+    "ActionGroup": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "actions": {
+          "items": {
+            "$ref": "#/$defs/ActionKind"
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "actions"
+      ],
+      "title": "ActionGroup",
+      "type": "object"
+    },
+    "ActionKind": {
+      "enum": [
+        "move_to",
+        "patrol_route",
+        "search_area",
+        "return_home",
+        "watch_target",
+        "watch_point",
+        "approach_target",
+        "relay_comms",
+        "hold",
+        "strike_target"
+      ],
+      "title": "ActionKind",
+      "type": "string"
+    },
+    "CapabilityReason": {
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/ActionKind"
+        },
+        "allowed": {
+          "title": "Allowed",
+          "type": "boolean"
+        },
+        "path": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Path",
+          "type": "array"
+        },
+        "via": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Via"
+        }
+      },
+      "required": [
+        "action",
+        "allowed",
+        "path"
+      ],
+      "title": "CapabilityReason",
+      "type": "object"
+    },
+    "Ontology": {
+      "properties": {
+        "groups": {
+          "items": {
+            "$ref": "#/$defs/ActionGroup"
+          },
+          "title": "Groups",
+          "type": "array"
+        },
+        "kinds": {
+          "items": {
+            "$ref": "#/$defs/VehicleKind"
+          },
+          "title": "Kinds",
+          "type": "array"
+        }
+      },
+      "required": [
+        "groups",
+        "kinds"
+      ],
+      "title": "Ontology",
+      "type": "object"
+    },
+    "VehicleCapabilities": {
+      "properties": {
+        "vehicle_id": {
+          "title": "Vehicle Id",
+          "type": "string"
+        },
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        },
+        "reasons": {
+          "items": {
+            "$ref": "#/$defs/CapabilityReason"
+          },
+          "title": "Reasons",
+          "type": "array"
+        }
+      },
+      "required": [
+        "vehicle_id",
+        "kind",
+        "reasons"
+      ],
+      "title": "VehicleCapabilities",
+      "type": "object"
+    },
+    "VehicleKind": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "is_a": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Is A"
+        },
+        "provides": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Provides",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "title": "VehicleKind",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "ontology": {
+      "$ref": "#/$defs/Ontology"
+    },
+    "vehicles": {
+      "items": {
+        "$ref": "#/$defs/VehicleCapabilities"
+      },
+      "title": "Vehicles",
+      "type": "array"
+    }
+  },
+  "required": [
+    "ontology",
+    "vehicles"
+  ],
+  "title": "OntologyView",
+  "type": "object"
+}

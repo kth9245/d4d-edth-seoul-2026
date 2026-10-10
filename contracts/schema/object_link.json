@@ -1,0 +1,32 @@
+{
+  "properties": {
+    "src": {
+      "title": "Src",
+      "type": "string"
+    },
+    "dst": {
+      "title": "Dst",
+      "type": "string"
+    },
+    "rel": {
+      "enum": [
+        "reported",
+        "about",
+        "answers",
+        "from_decision",
+        "sent_to",
+        "aims_at",
+        "blocked"
+      ],
+      "title": "Rel",
+      "type": "string"
+    }
+  },
+  "required": [
+    "src",
+    "dst",
+    "rel"
+  ],
+  "title": "ObjectLink",
+  "type": "object"
+}

@@ -1,0 +1,35 @@
+{
+ "focus": "boat1",
+ "nodes": [
+  {
+   "id": "boat1",
+   "type": "target",
+   "label": "boat1 · 보트",
+   "t_ms": null
+  },
+  {
+   "id": "rep-d1-1791634270000",
+   "type": "report",
+   "label": "미식별 선박 접근",
+   "t_ms": 1791634270000
+  },
+  {
+   "id": "dec-1",
+   "type": "decision",
+   "label": "dec-1 '근접 확인'",
+   "t_ms": 1791634290000
+  }
+ ],
+ "links": [
+  {
+   "src": "rep-d1-1791634270000",
+   "dst": "boat1",
+   "rel": "about"
+  },
+  {
+   "src": "dec-1",
+   "dst": "rep-d1-1791634270000",
+   "rel": "answers"
+  }
+ ]
+}

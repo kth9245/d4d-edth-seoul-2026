@@ -1,0 +1,38 @@
+{
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "label": {
+      "title": "Label",
+      "type": "string"
+    },
+    "is_a": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Is A"
+    },
+    "provides": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Provides",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "label"
+  ],
+  "title": "VehicleKind",
+  "type": "object"
+}

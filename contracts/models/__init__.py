@@ -35,6 +35,17 @@ from .legacy import (
     SensorType,
     Track,
 )
+from .ontology import (
+    ActionGroup,
+    CapabilityReason,
+    ObjectGraph,
+    ObjectLink,
+    ObjectNode,
+    Ontology,
+    OntologyView,
+    VehicleCapabilities,
+    VehicleKind,
+)
 from .play import (
     Action,
     Choice,
@@ -65,6 +76,8 @@ _MODELS: list[type[BaseModel]] = [
     Provenance, Command, PassedCommand, Block,
     Target, Report, Decision, Assignment, Injection, DirectControl,
     Metrics, RunState, Frame, ScenarioEvent, Scenario, TickInputs, TickOutcome,
+    ActionGroup, VehicleKind, Ontology, CapabilityReason, VehicleCapabilities, OntologyView,
+    ObjectNode, ObjectLink, ObjectGraph,
     DecisionIn, DirectIn, SwitchIn, DraftIn, Accepted,
     Detection, Track, Assessment, Response, LegacyFrame,
 ]  # fmt: skip
