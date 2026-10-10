@@ -4,7 +4,7 @@
 | id | 액션 | 입력 | 출력 | 완료 기준 | 담당 | 상태 |
 |---|---|---|---|---|---|---|
 | PLY-01 | load_play | path | Play | 템플릿 2개 로드, 잘못된 파일은 ValueError에 위치 | 황승주 | 완료 |
-| PLY-02 | check_links | Play | list[ValidationIssue] | 없는 step을 가리키는 go_step·entry, entry에서 닿을 수 없는 step | 황승주 | 예정 |
+| PLY-02 | check_links | Play | list[ValidationIssue] | 없는 step을 가리키는 go_step·entry, entry에서 닿을 수 없는 step | 황승주 | 완료 |
 | PLY-03 | check_report_points | Play | list[ValidationIssue] | target_found 탈출 뒤 choices 있는 report 없이 approach_target에 닿으면 오류 | 황승주 | 예정 |
 | PLY-04 | check_return_battery | Play, specs | (list[ValidationIssue], est_return_battery) | 역할별 경로 길이로 추정, 30% 미만이면 오류. safety.return_feasible 재사용 가능 | 황승주 | 예정 |
 | PLY-05 | check_zone | Play, Operation | list[ValidationIssue] | 경로점·목적지가 zone 밖이면 오류 (safety.point_in_polygon) | 황승주 | 예정 |
