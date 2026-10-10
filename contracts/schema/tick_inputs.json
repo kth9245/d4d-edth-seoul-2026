@@ -116,6 +116,14 @@
           "default": null,
           "title": "Switch Id"
         },
+        "target_by_vehicle": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "title": "Target By Vehicle",
+          "type": "object"
+        },
         "status": {
           "default": "pending",
           "enum": [

@@ -46,6 +46,13 @@ def test_enemies_come_from_the_scenario():
     assert all(e["play_id"] in plays for e in enemies)
 
 
+def test_watch_points_come_from_the_scenario():
+    # decision 0047: the live board tells approaching from fleeing by the expected landing point
+    client, _ = fake_app()
+    got = client.get("/watch_points").json()
+    assert [(w["id"], w["radius_m"]) for w in got] == [("landing", 2000.0)]
+
+
 def test_scenarios_lists_the_demo_operations_with_the_running_one_active():
     # decision 0042: the editor picks one of the demo operations
     client, _ = fake_app()

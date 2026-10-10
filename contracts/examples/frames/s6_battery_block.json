@@ -298,7 +298,10 @@
    "rf_detected": false,
    "threat": 0,
    "threat_reasons": [],
-   "threat_accum": 0
+   "threat_accum": 0,
+   "last_seen_pos": null,
+   "last_seen_vel_east_mps": 0.0,
+   "last_seen_vel_north_mps": 0.0
   }
  ],
  "reports": [

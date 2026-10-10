@@ -244,6 +244,14 @@
           "default": null,
           "title": "Switch Id"
         },
+        "target_by_vehicle": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "title": "Target By Vehicle",
+          "type": "object"
+        },
         "status": {
           "default": "pending",
           "enum": [
@@ -668,6 +676,27 @@
           "default": 0,
           "title": "Threat Accum",
           "type": "integer"
+        },
+        "last_seen_pos": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GeoPoint"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "last_seen_vel_east_mps": {
+          "default": 0,
+          "title": "Last Seen Vel East Mps",
+          "type": "number"
+        },
+        "last_seen_vel_north_mps": {
+          "default": 0,
+          "title": "Last Seen Vel North Mps",
+          "type": "number"
         }
       },
       "required": [

@@ -235,6 +235,9 @@ export interface Target {
   threat?: number;
   threat_reasons?: string[];
   threat_accum?: number;
+  last_seen_pos?: GeoPoint | null;
+  last_seen_vel_east_mps?: number;
+  last_seen_vel_north_mps?: number;
 }
 
 export type ReportKind = "target_detected" | "target_select" | "vehicle_gap" | "vehicle_lost" | "battery_low" | "injection_pending" | "command_blocked" | "target_neutralized";
@@ -272,6 +275,7 @@ export interface Injection {
   label: string;
   play_by_vehicle: Record<string, string>;
   switch_id?: string | null;
+  target_by_vehicle?: Record<string, string>;
   status?: "pending" | "approved" | "rejected";
 }
 
@@ -422,6 +426,8 @@ export interface DirectIn {
 export interface SwitchIn {
   switch_id?: string | null;
   play_by_vehicle?: Record<string, string>;
+  target_by_vehicle?: Record<string, string>;
+  approve?: boolean;
 }
 
 export interface DraftIn {

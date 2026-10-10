@@ -142,6 +142,10 @@ def create_app(
     async def enemies():
         return live.scenario.enemies
 
+    @app.get("/watch_points")
+    async def watch_points():  # decision 0047: approaching vs fleeing on the live board
+        return live.scenario.watch_points
+
     @app.get("/routes")
     async def routes():  # decision 0044: routes the editor offers for route-flying cards
         return live.scenario.routes

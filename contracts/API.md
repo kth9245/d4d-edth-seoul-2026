@@ -51,7 +51,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | 1 | sim | `apply_events(scenario, states, targets, t_ms, dt_ms) -> (states, targets)` |
 | 1.5 | sim | 적(결정 0032): `spawn_enemies(scenario, targets, t_ms, dt_ms) -> targets`, `steer_enemies(enemies, plays, targets, t_ms, dt_ms, land) -> targets`(배는 섬을 돌아감, 결정 0034) |
 | 1.6 | sim | `update_emission(scenario, targets, t_ms) -> targets`: 적이 `appear_offset_ms + emit_start_offset_ms`부터 `emitting`(결정 0039) |
-| 2 | sensing | `observe(states, specs, targets, t_ms) -> targets` |
+| 2 | sensing | `observe(states, specs, targets, t_ms) -> targets`. 본 틱에 `last_seen_pos`·`last_seen_vel_east_mps`·`last_seen_vel_north_mps`도 그때 값으로(놓친 표적은 화면이 마지막 위치와 그때 움직임으로 그림, 결정 0047) |
 | 2.5 | gateway | `score_targets(states, specs, targets, watch_points, tick_ms) -> targets`: sensing `score_target`으로 `threat`·`threat_reasons`·`rf_detected`·`threat_accum`을 씀. 종류는 `seen_by`가 비면 unknown(결정 0039·0040) |
 | 3 | runtime | 입력 적용: `apply_decision(states, plays, decision, reports) -> (states, reports)`, 승인된 것만 `apply_injection(states, plays, injection) -> states`, `apply_direct(states, direct, t_ms) -> (states, Command)` |
 | 4 | runtime | `apply_emergency(states, plays) -> states` |
@@ -84,6 +84,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | 보고 카드 선택지 | `POST /decisions` | 바로 적용한다. 누른 것이 운용자 결정이다(사건 2: 한 번에 기체 4대) |
 | 전체 전환 버튼 | `POST /injections {switch_id}` | `Injection(pending)`과 `injection_pending` 카드를 만들고, 승인 뒤 `apply_injection`으로 적용 |
 | 일부 전환 | `POST /injections {play_by_vehicle}` | 위와 같다(사건 4: 드론 2를 고속 보트 추적으로) |
+| 표적 지목 | `POST /injections {play_by_vehicle, target_by_vehicle, approve: true}` | 상황판에서 기체 → 표적 → 플레이를 누른 것. 메뉴가 미리 보기이고 누른 것이 승인이라 `Injection(approved)`로 기록하고 대기 카드 없이 다음 틱에 `apply_injection`이 플레이와 `target_id`를 바꾼다. 운용자 조작 1(결정 0048·0049) |
 
 어느 경로든 원래 플레이는 끝나고 자동 복귀는 없다. `resume_play_id`·`resume_step_id`는 직접 조종(`/direct`) 뒤 복귀에만 쓴다. 이어받기는 기체가 returning·lost·maintenance가 되면 `op.reserve[id]`의 첫 가용 기체가 그 기체의 플레이를 **첫 step(entry)부터** `entered_step=False`로 시작하는 것이다(결정 0022: 빠진 기체는 이미 귀환 step에 있으므로 현재 step을 이어받으면 예비도 귀환한다). 이때 배정 사유는 "예비 투입: <id> 대신"이고 `vehicle_gap` 카드가 생긴다.
 
@@ -96,6 +97,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | `GET /plays` · `POST /plays` | — · `Play` | `Play[]` · `PlayCheck` |
 | `DELETE /plays/{id}` | — | `Play[]`(남은 플레이. 실행 작전에서 지우고 작전 시작 직전 `paused`, 그 플레이로 시작하던 기체는 배정 없이 시작, 다른 쓰임은 검사하지 않음, 결정 0050). 없는 id 404 |
 | `GET /enemies` | — | `EnemySpec[]`(시나리오의 적, Part1-21) |
+| `GET /watch_points` | — | `WatchPoint[]`(시나리오의 기준점, 상황판이 놓친 표적의 접근·이탈을 가름, 결정 0047) |
 | `GET /routes` | — | `RouteDef[]`(실행 작전의 경로 목록, 결정 0044) |
 | `GET /ontology` | — | `OntologyView`(계층 + 기체마다 행동 10개의 판정과 경로, 결정 0038). 시나리오에 온톨로지가 없으면 404 |
 | `GET /graph?focus=` | — | `ObjectGraph`(그 객체에서 링크를 따라 모은 객체. 기체와 focus가 아닌 표적은 더 펼치지 않음, 결정 0038). 없는 id는 404 |
@@ -108,7 +110,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | `POST /run/live?speed=` · `POST /run/reset` · `POST /run/jump?offset_ms=` | — | `RunState` |
 | `POST /decisions` | `DecisionIn{report_id, choice_id}` | `Accepted{id, t_ms}` |
 | `POST /direct` | `DirectIn{vehicle_id, target}` | `Accepted` |
-| `POST /injections` | `SwitchIn{switch_id}` 또는 `SwitchIn{play_by_vehicle}` | `Injection`(pending) |
+| `POST /injections` | `SwitchIn{switch_id}` 또는 `SwitchIn{play_by_vehicle, target_by_vehicle?, approve?}` | `Injection`(pending, `approve`면 approved). 라벨은 "<플레이>: <기체>"이고 표적이 있으면 " → <표적>" |
 | `POST /injections/{id}/approve` · `.../reject` | — | `Injection` |
 | WS `/ws` | — | 0.2초마다 `Frame` 하나. 배속 n이면 틱 n개를 돌리고 마지막 Frame만 보낸다. 실행 상태는 `Frame.run{status, speed}` |
 

@@ -129,6 +129,21 @@ def test_switch_button_uses_the_operation_switch():
     assert live.settle_injection(inj.id, approve=False).status == "rejected"
 
 
+def test_pointing_request_is_approved_at_once_and_carries_the_target():
+    # decisions 0048, 0049: point d2 at boat1 with a play; the press is the approval, so no pending card
+    live, eng = make()
+    inj = live.request_switch(
+        SwitchIn(play_by_vehicle={"d2": "watch"}, target_by_vehicle={"d2": "boat1"}, approve=True)
+    )
+    assert (inj.status, inj.target_by_vehicle, inj.label) == (
+        "approved",
+        {"d2": "boat1"},
+        "표적 감시: d2 → boat1",
+    )
+    live.jump(400)
+    assert [(i.id, i.status) for i in eng.seen[1].injections] == [(inj.id, "approved")]
+
+
 def test_jump_runs_ticks_up_to_the_offset():
     live, _ = make()
     live.jump(16 * 60_000)

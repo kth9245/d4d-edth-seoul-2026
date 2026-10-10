@@ -298,7 +298,10 @@
     "kind_boat",
     "inside_watch_radius"
    ],
-   "threat_accum": 0
+   "threat_accum": 0,
+   "last_seen_pos": null,
+   "last_seen_vel_east_mps": 0.0,
+   "last_seen_vel_north_mps": 0.0
   },
   {
    "id": "fast1",
@@ -330,7 +333,10 @@
     "rf_emission",
     "speed"
    ],
-   "threat_accum": 0
+   "threat_accum": 0,
+   "last_seen_pos": null,
+   "last_seen_vel_east_mps": 0.0,
+   "last_seen_vel_north_mps": 0.0
   }
  ],
  "reports": [
@@ -607,6 +613,7 @@
     "usv": "track_fast_sea"
    },
    "switch_id": "track_fast",
+   "target_by_vehicle": {},
    "status": "approved"
   }
  ],

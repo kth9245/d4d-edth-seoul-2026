@@ -169,8 +169,15 @@ class Live:
         else:
             names = {p.id: p.name for p in self.scenario.plays}
             pbv = body.play_by_vehicle
-            label = ", ".join(f"{names[p]}: {v}" for v, p in pbv.items())
-        inj = Injection(id=id_, t_ms=t, label=label, play_by_vehicle=pbv, switch_id=body.switch_id)
+            label = ", ".join(
+                f"{names[p]}: {v}"
+                + (f" → {body.target_by_vehicle[v]}" if v in body.target_by_vehicle else "")
+                for v, p in pbv.items()
+            )
+        # decisions 0048, 0049: a pointing request carries its targets and may be approved by the press itself
+        inj = Injection(id=id_, t_ms=t, label=label, play_by_vehicle=pbv, switch_id=body.switch_id,
+                        target_by_vehicle=body.target_by_vehicle,
+                        status="approved" if body.approve else "pending")  # fmt: skip
         return self._queue(inj, self.inputs.injections)
 
     def settle_injection(self, inj_id: str, approve: bool) -> Injection:

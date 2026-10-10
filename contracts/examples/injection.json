@@ -7,5 +7,6 @@
   "usv": "track_fast_sea"
  },
  "switch_id": "track_fast",
+ "target_by_vehicle": {},
  "status": "pending"
 }

@@ -19,6 +19,19 @@
       "default": {},
       "title": "Play By Vehicle",
       "type": "object"
+    },
+    "target_by_vehicle": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "default": {},
+      "title": "Target By Vehicle",
+      "type": "object"
+    },
+    "approve": {
+      "default": false,
+      "title": "Approve",
+      "type": "boolean"
     }
   },
   "title": "SwitchIn",
