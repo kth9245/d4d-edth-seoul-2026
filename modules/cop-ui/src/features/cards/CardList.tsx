@@ -89,7 +89,10 @@ export function CardList({ frame }: { frame: Frame | null }) {
               </div>
             )}
             {!c.done && s?.state === "sent" && (
-              <div className="note">보냄 {s.id} · {paused ? "재생하면 반영" : "다음 틱에 반영"}</div>
+              <div className="note">
+                {/* A block never becomes "done", so say what was sent rather than when it will apply. */}
+                {c.source === "block" ? `대안 지점 보냄 ${s.id}` : `보냄 ${s.id} · ${paused ? "재생하면 반영" : "다음 틱에 반영"}`}
+              </div>
             )}
             {!c.done && s?.state === "error" && <div className="note error">보내기 실패: {s.error}</div>}
             {c.done && <div className="note">{c.done}</div>}

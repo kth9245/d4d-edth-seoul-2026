@@ -10,6 +10,10 @@ aside { overflow-y: auto; padding: 12px; border-left: 1px solid #22304a; }
 
 /* Map markers: the box is the symbol only, so MapLibre centers the symbol on the position; the label hangs right. */
 .mk { position: relative; width: 14px; height: 14px; }
+/* Vehicles are clickable (direct control) and sit on top; targets and the aim cross only show and let clicks
+   through, so a vehicle watching a target can still be selected and a click on a target aims at its spot. */
+.maplibregl-marker:has(> .mk.vehicle) { z-index: 3; }
+.maplibregl-marker:has(> .mk.target), .maplibregl-marker:has(> .mk.aim) { z-index: 2; pointer-events: none; }
 .mk i { display: block; width: 100%; height: 100%; box-sizing: border-box; border: 2px solid #fff; }
 .mk span { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); white-space: nowrap;
   font-size: 12px; font-weight: 700; color: #fff; text-shadow: 0 0 3px #000, 0 0 3px #000; }
