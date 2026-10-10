@@ -210,7 +210,7 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 통합 1에 필요한 항목(6절 번호): 리드 Part1-7·1-9·1-10·1-14, 엔진 Part2-1~2-13·2-17·2-18·2-20, 플레이 Part3-1·3-2·3-7. 12:00~18:00 배정은 6절 머리의 "통합 1 배정" 표(A/B/리드 각 5~6시간, 여유 0). 스파이크 코드를 옮기는 전제에서만 가능하다.
 
 **통합 2 (10/11 00:00)** — 화면 조작만으로.
-편집기에서 AI 초안 입력 → 검사 실패 카드(보고 지점 없음) → 카드 추가 → 저장 통과 → 상황판에서 실행 → 사건 1·2·3(귀환·이어받기·역할 공백 카드)·4(주입 승인 대기 → 승인)·6(구역 밖 차단·배터리 차단) → 지표 패널에 두 모드 나란히 → 3분 안에 리허설 1회.
+편집기에서 AI 초안 입력 → 검사 실패 카드(보고 지점 없음) → 카드 추가 → 저장 통과 → 상황판에서 실행 → 사건 1·2·3(귀환·이어받기·역할 공백 카드)·4(주입 승인 대기 → 승인)·6(구역 밖 차단·배터리 차단) → 사건 7·8(결정 0031: 타격 승인 카드 → '함께 타격' → fast1 무력화, 작전 성공) → 지표 패널에 두 모드 나란히 → 3분 안에 리허설 1회.
 
 **동결 (10/11 06:00)** — `KDTH_FREEZE=1`. 이후 데이터·문구·대본만.
 
@@ -324,6 +324,9 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | Part1-13 | 지표 패널 + 배속 + 다음 사건 | Frame.metrics → 운용자 조작 수 대 수동 기준 명령 수, `/run/live?speed=`, `/run/jump` | 3분 안에 사건 5개 재생 | Part1-10 | 2 |
 | Part1-14 | smoke 전환 + 통합 주관 | `smoke.py`를 백령도 시나리오로; 18:00·00:00 통합 슬라이스 확인 | 4절 두 슬라이스 통과 | Part1-7·1-9·1-10, Part2-4·2-5·2-6·2-9~2-13·2-17·2-18·2-20, Part3-1·3-7(통합 1 전부) | 1·2 |
 | Part1-15 | 3분 대본·BUILT_HERE·제출 설명 | — | 리허설 1회, 사전 준비분(스파이크·contracts) 명시 | 동결 | 뒤 |
+| Part1-18 | 타격 계약(결정 0031, `docs/superpowers/specs/2026-10-10-strike-phase-design.md` 3절) | `ActionKind.strike_target`, `CommandKind.strike`, `ReportKind.target_neutralized`, `VehicleState.decision_id`, `Target.neutralized_ms` + play 대응표 행 + `describe.ts` 이름표 + API.md → TS·예시 재생성 | 한 커밋으로 pytest·smoke·TS 검사 통과(대응표 테스트가 ActionKind 전부를 요구) | Part1-1 | 2(지금) |
+| Part1-19 | 타격 시나리오·플레이(spec 5절) | fast1 동쪽 해안 우회, 전환 버튼 '고속 보트 추적'(d2·usv), `track_fast` 수정·`track_fast_sea`·`strike`, 기체 capabilities | `check_operation` 통과, 틱 루프로 s7·s8까지 감 | Part1-18, Part2-21~23 | 2 |
+| Part1-20 | 타격 화면(spec 6절) | 무력화 표적 회색 X, 결과 카드, 작전 성공, 예시 장면 s7·s8 추가·s5·s6 수정 | s7·s8이 화면 조작만으로 남 | Part1-18 | 2 |
 
 ### Part 2 — 엔진 (sim, sensing, safety, runtime). 원본: `knowledge/spikes/rolecall_engine_proto/port/modules/` (저장소 `modules/`와 같은 경로·파일 하나 = SPEC 행 하나, 포맷 끝난 상태. 2026-10-10 devil-advocate 검토 뒤 재배치)
 
@@ -349,6 +352,10 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 | Part2-18 (구 Part1-8) | gateway `build_frame_v2`(GW-06, 새 이름) | EngineState, 이번 틱 log → Frame. `knowledge/spikes/rolecall_engine_proto/port/modules/gateway/actions/build_frame_v2.py` 복사 | 예시 JSON과 같은 모양, 직렬화 테스트. GW-01 `build_frame`(레거시)은 smoke가 쓰므로 통합 1까지 손대지 않는다 | Part1-1 | 1 |
 | Part2-19 | 시나리오 튜닝 | `baengnyeong_night.json`, 템플릿 2개 → 사건 2·3·6의 시각·경로·예비 드론 경로 길이 조정 | 틱 루프로 돌려 사건 1·2·3·6이 3분 대본 순서로 남, 예비 드론 경로가 귀환 배터리 안 | Part2-17, Part2-4·2-9·2-11 | 2 |
 | Part2-20 | sim `load_scenario_json` | 경로 → Scenario | JSON 읽어 `Scenario.model_validate`, 잘못된 값은 ValueError에 위치. `operation.started_ms`가 비거나 `assign`이 없는 플레이를 가리키면 ValueError(결정 0018). 레거시 `load_scenario`는 건드리지 않는다(3.5) | Part1-1 | 1 |
+| Part2-21 | 타격 runtime(spec 4.1): `switch_play`·`apply_decision`·`enter_step` 수정 | 결정이 옮긴 기체에 `decision_id`·카드 표적, 그 기체의 다른 승인 카드 닫기, 타격 명령 출처에 결정 id·params에 표적 위치 | spec 4.1 테스트 | Part1-18 | 2 |
+| Part2-22 | 타격 safety(spec 4.2): `check_command` 규칙 1 | strike인데 결정 id 없으면 `no_provenance` | 통과·차단·구역 밖 표적 테스트 | Part1-18 | 2 |
+| Part2-23 | 타격 sim(spec 4.3): `advance` strike 분기, 새 액션 `resolve_strikes`(SIM-10), `update_metrics` 작전 성공 | 100 m 안이면 무력화 + 결과 카드 | spec 4.3 테스트. sim은 최동호 모듈(시작 때 알림) | Part1-18 | 2 |
+| Part2-24 | 타격 gateway(spec 4.4): `engine.py`에 `resolve_strikes`, `tick_log` 두 줄 | 타격 통과·무력화 기록 줄 | 틱 루프로 s8 기록 줄이 나옴 | Part2-17, Part2-23 | 2 |
 
 통합 1까지 엔진 쪽 16개(Part2-1~2-13, 2-17, 2-18, 2-20). 스파이크 함수를 액션 파일로 옮기고 테스트를 붙이는 일이며, 6절 머리의 "통합 1 배정" 표대로 A(sim·sensing·틱 루프 8개)와 B(safety·runtime 7개 + play 3개)로 가른다. 12절 검사 1: 둘이 가르지 않고 한 사람이 13개를 하면 추정 합계 7.4시간으로 18:00을 넘긴다(19:30).
 
@@ -393,7 +400,9 @@ play (검사·펼치기·AI 초안)  ── 저장된 Play JSON ──→ runtim
 6. 편집기 카드 편집(읽기 전용 카드 + 저장 검사만)
 (배정 점수는 결정 0005로 처음부터 없음. 미리 보기 경로와 두 모드 재실행은 검토에서 설계 자체를 뺐으므로 여기 없음)
 
-끝까지 남기는 것: 결정 한 번에 세 역할 이동, 보고 카드, 이어받기와 역할 공백 카드, 주입 승인 대기, 구역 밖·배터리 차단, 지표 두 모드 나란히.
+타격(결정 0031)이 늦으면: 수상정 추적을 빼고 드론2 단독(선택지 '타격' 하나) → 결과 카드를 빼고 기록 줄만.
+
+끝까지 남기는 것: 결정 한 번에 세 역할 이동, 보고 카드, 이어받기와 역할 공백 카드, 주입 승인 대기, 구역 밖·배터리 차단, 타격 승인 카드 → 타격 → 무력화, 지표 두 모드 나란히.
 
 ---
 
