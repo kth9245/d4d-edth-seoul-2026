@@ -165,7 +165,9 @@ git commit -m "Part2-carrier: strike operation fleet is one stationary USV carry
 ```python
 def _identified_card_state(sc):
     es = init_engine(sc)
-    es = _run_until(es, lambda e: any(t.id == "site_a" and t.ident_state == "identified" for t in e.targets))
+    es = _run_until(
+        es, lambda e: any(t.id == "site_a" and t.ident_state == "identified" for t in e.targets)
+    )
     return es
 
 
@@ -177,7 +179,9 @@ def test_the_card_offers_exactly_the_three_attack_drones_and_not_the_usv(sc):
 
 def test_only_the_chosen_attack_drone_flies_to_the_site(sc):
     es = _identified_card_state(sc)
-    dec = Decision(id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=_card(es).id, choice_id="strike_a2")
+    dec = Decision(
+        id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=_card(es).id, choice_id="strike_a2"
+    )
     es, _ = tick(es, TickInputs(decisions=[dec]))
     es = _run_until(es, lambda e: _site(e).neutralized_ms is not None, limit=9000)
     states = {s.id: s for s in es.states}
