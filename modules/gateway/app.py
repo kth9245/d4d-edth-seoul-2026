@@ -144,10 +144,12 @@ def create_app(
                 closed.set()
 
         watcher = asyncio.create_task(watch())
+        cursor = None  # log lines already sent on this connection (Live.frame_for)
         try:
             while not closed.is_set():
+                frame, cursor = live.frame_for(cursor)
                 with contextlib.suppress(WebSocketDisconnect, RuntimeError):
-                    await websocket.send_text(live.frame.model_dump_json())
+                    await websocket.send_text(frame.model_dump_json())
                 await asyncio.sleep(period_s)
         finally:
             watcher.cancel()

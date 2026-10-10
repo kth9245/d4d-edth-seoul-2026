@@ -39,6 +39,17 @@ def test_run_live_then_ws_streams_running_frames():
     assert b.t_ms > a.t_ms
 
 
+def test_ws_log_lines_have_no_gaps_or_repeats_at_speed():
+    client, _ = fake_app()
+    start = client.get("/operation").json()["started_ms"]
+    with client:
+        client.post("/run/live?speed=4")
+        with client.websocket_connect("/ws") as ws:
+            lines = [x for _ in range(6) for x in ws.receive_json()["log"]]
+    ts = [int(x[1:]) for x in lines]
+    assert ts == list(range(start + 200, start + 200 * (len(ts) + 1), 200))
+
+
 def test_decision_reaches_tick_inputs():
     client, eng = fake_app()
     acc = client.post("/decisions", json={"report_id": "rep-d1-1", "choice_id": "watch"}).json()

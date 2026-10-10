@@ -33,7 +33,10 @@ class FakeEngine:
         self.seen.append(inputs)
         t = t_ms + 200
         empty = dict(vehicles=[], targets=[], reports=[], assignments=[], blocks=[], injections=[])
-        return t, Frame(t_ms=t, run=RunState(status="ended"), metrics=Metrics(), **empty)
+        frame = Frame(
+            t_ms=t, run=RunState(status="ended"), metrics=Metrics(), log=[f"t{t}"], **empty
+        )
+        return t, frame
 
 
 def make() -> tuple[Live, FakeEngine]:
@@ -99,13 +102,21 @@ def test_partial_switch_then_approve():
     live, eng = make()
     inj = live.request_switch(SwitchIn(play_by_vehicle={"d2": "track_fast"}))
     assert (inj.id, inj.status, inj.label) == ("inj-1", "pending", "고속 보트 추적: d2")
-    done = live.settle_injection("inj-1", approve=True)
-    assert done.status == "approved"
     live.jump(400)
-    assert [(i.id, i.status) for i in eng.seen[1].injections] == [
-        ("inj-1", "pending"),
-        ("inj-1", "approved"),
-    ]
+    assert live.settle_injection("inj-1", approve=True).status == "approved"
+    live.jump(600)
+    assert [(i.id, i.status) for i in eng.seen[1].injections] == [("inj-1", "pending")]
+    assert [(i.id, i.status) for i in eng.seen[2].injections] == [("inj-1", "approved")]
+
+
+def test_approve_before_the_request_ticked_waits_one_tick():
+    # the engine opens the pending card in the request's tick and closes it in a later one
+    live, eng = make()
+    live.request_switch(SwitchIn(play_by_vehicle={"d2": "track_fast"}))
+    live.settle_injection("inj-1", approve=True)
+    live.jump(600)
+    assert [i.status for i in eng.seen[1].injections] == ["pending"]
+    assert [i.status for i in eng.seen[2].injections] == ["approved"]
 
 
 def test_switch_button_uses_the_operation_switch():
@@ -130,3 +141,23 @@ def test_set_operation_replaces_it_and_resets():
     live.set_operation(op)
     assert live.scenario.operation.name == "새 작전"
     assert live.frame.t_ms == START + 200
+
+
+def test_log_lines_of_every_tick_reach_each_connection_once():
+    live, _ = make()
+    frame, cur = live.frame_for(None)
+    assert frame.log == [f"t{START + 200}"]  # a new connection gets the lines since reset
+    live.set_speed(3)
+    live.period()
+    frame, cur = live.frame_for(cur)
+    assert frame.log == [f"t{START + 400}", f"t{START + 600}", f"t{START + 800}"]
+    live.set_speed(0)
+    assert live.frame_for(cur)[0].log == []  # paused: nothing sent twice
+
+
+def test_log_cursor_restarts_after_reset():
+    live, _ = make()
+    _, cur = live.frame_for(None)
+    live.jump(1000)
+    live.reset()
+    assert live.frame_for(cur)[0].log == [f"t{START + 200}"]

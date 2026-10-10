@@ -37,15 +37,24 @@ class Live:
     def reset(self) -> RunState:
         self.state = self._init(self.scenario)
         self.run = RunState(status="paused", speed=self.scenario.speed)
-        self.inputs, self.injections = TickInputs(), {}
+        self.inputs, self.injections, self._later = TickInputs(), {}, []
         self._n, self._due = {"dec": 0, "dir": 0, "inj": 0}, 0.0
+        self.log: list[str] = []  # every log line since reset; connections read it by cursor
+        self.epoch = getattr(self, "epoch", 0) + 1
         self._step()  # a first Frame so the map shows the start positions
         return self.run
 
     def _step(self) -> None:
-        inputs, self.inputs = self.inputs, TickInputs()
+        inputs, self.inputs, self._later = self.inputs, TickInputs(injections=self._later), []
         self.state, frame = self._tick(self.state, inputs)
+        self.log += frame.log
         self.frame = frame.model_copy(update={"run": self.run})
+
+    def frame_for(self, cursor: tuple[int, int] | None) -> tuple[Frame, tuple[int, int]]:
+        """The last Frame with the log lines this connection has not seen yet (all ticks)."""
+        start = cursor[1] if cursor and cursor[0] == self.epoch else 0
+        frame = self.frame.model_copy(update={"log": self.log[start:]})
+        return frame, (self.epoch, len(self.log))
 
     def period(self) -> None:
         if self.run.status != "running":
@@ -98,13 +107,16 @@ class Live:
             pbv = body.play_by_vehicle
             label = ", ".join(f"{names[p]}: {v}" for v, p in pbv.items())
         inj = Injection(id=id_, t_ms=t, label=label, play_by_vehicle=pbv, switch_id=body.switch_id)
-        return self._queue(inj)
+        return self._queue(inj, self.inputs.injections)
 
     def settle_injection(self, inj_id: str, approve: bool) -> Injection:
         status = "approved" if approve else "rejected"
-        return self._queue(self.injections[inj_id].model_copy(update={"status": status}))
+        inj = self.injections[inj_id].model_copy(update={"status": status})
+        # the engine opens the pending card in the request's tick, so settle one tick later
+        waiting = any(i.id == inj_id for i in self.inputs.injections)
+        return self._queue(inj, self._later if waiting else self.inputs.injections)
 
-    def _queue(self, inj: Injection) -> Injection:
+    def _queue(self, inj: Injection, into: list[Injection]) -> Injection:
         self.injections[inj.id] = inj
-        self.inputs.injections.append(inj)
+        into.append(inj)
         return inj

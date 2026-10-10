@@ -86,7 +86,7 @@ import는 `from contracts.models import X`만. 바꾸는 사람은 리드뿐이�
 | `POST /injections/{id}/approve` · `.../reject` | — | `Injection` |
 | WS `/ws` | — | 0.2초마다 `Frame` 하나. 배속 n이면 틱 n개를 돌리고 마지막 Frame만 보낸다. 실행 상태는 `Frame.run{status, speed}` |
 
-`/run/live?speed=0`은 일시정지다. `status`는 `paused`가 되고 `speed`는 멈추기 전 배속을 그대로 둔다(결정 0026). `/run/reset` 뒤에는 `paused`이고, 빈 입력으로 틱 하나를 돌려 첫 Frame을 만든다. 서버는 `gateway`를 `uvicorn modules.gateway.app:create_app --factory`로 띄운다.
+`/run/live?speed=0`은 일시정지다. `status`는 `paused`가 되고 `speed`는 멈추기 전 배속을 그대로 둔다(결정 0026). `/run/reset` 뒤에는 `paused`이고, 빈 입력으로 틱 하나를 돌려 첫 Frame을 만든다. WS Frame의 `log`는 그 연결에 아직 보내지 않은 기록 줄 전부다(배속으로 돈 틱들의 줄을 모두 담고, 일시정지 중에는 빈 목록, 새 연결의 첫 Frame은 reset 뒤 전부). 전환 요청이 아직 틱에 들어가기 전에 승인·거부가 오면 서버가 그 판정을 한 틱 뒤에 넣는다. 서버는 `gateway`를 `uvicorn modules.gateway.app:create_app --factory`로 띄운다.
 
 오류 응답은 다음과 같다. 형식이 틀리면 400, 없는 id는 404, 상태 충돌(이미 처리된 보고, pending이 아닌 주입)은 409이고, 본문은 FastAPI 기본 `{"detail": "..."}`다.
 
