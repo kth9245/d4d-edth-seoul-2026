@@ -345,3 +345,4 @@
 {"at": "2026-10-10T15:44:34+09:00", "by": "kth9245", "op": "start", "id": "Part1-27", "take": false, "from": null}
 {"at": "2026-10-10T15:50:09+09:00", "by": "kth9245", "op": "note", "id": "Part1-27", "text": "화면 쪽 완료(4950d53). 엔진이 Target.threat·threat_reasons·rf_detected를 채우면 바로 보임. 남은 확인: 최동호 Part2-28(score_targets 틱 연결, 시나리오 rf_range_m·emit_start_offset_ms·watch_points) 뒤 실제 실행에서 카드가 뜬 뒤 무선 시작으로 카드가 맨 위로 올라가는지, 지도 RF 고리가 보이는지"}
 {"at": "2026-10-10T15:50:12+09:00", "by": "kth9245", "op": "done", "id": "Part1-27", "take": false}
+{"at": "2026-10-10T15:53:36+09:00", "by": "최동호", "op": "done", "id": "Part2-28", "take": false}
