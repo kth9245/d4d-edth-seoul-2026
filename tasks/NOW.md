@@ -2,10 +2,11 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 10:11 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 10:16 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part2-20** sim `load_scenario_json` — 최동호, 10/10 10:11부터 · SIM-04
+- **Part3-8** play `list_templates` — 황승주, 10/10 10:16부터 · PLY-08
 
 ## 막힘
 - (없음)
@@ -35,7 +36,6 @@
 - **Part3-5** play `check_zone` · PLY-05
 - **Part3-6** play `check_play` · 하위 0/1 완료 · PLY-06
 - **Part3-6.1** play check_operation · PLY-11 (통합 2, PLY-03~05 뒤)
-- **Part3-8** play `list_templates` · PLY-08
 - **Part3-9** play `draft_play` · PLY-09
 
 ### 최동호
