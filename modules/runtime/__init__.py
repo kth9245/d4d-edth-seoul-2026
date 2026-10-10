@@ -3,6 +3,7 @@ from modules.runtime.actions.apply_direct import apply_direct
 from modules.runtime.actions.apply_emergency import apply_emergency
 from modules.runtime.actions.apply_injection import apply_injection
 from modules.runtime.actions.apply_reserves import apply_reserves
+from modules.runtime.actions.step_vehicle import step_vehicle
 from modules.runtime.actions.update_metrics import update_metrics
 
 __all__ = [
@@ -11,5 +12,6 @@ __all__ = [
     "apply_emergency",
     "apply_injection",
     "apply_reserves",
+    "step_vehicle",
     "update_metrics",
 ]
