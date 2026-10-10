@@ -98,7 +98,7 @@ export function MapView({ frame, zone, tilesAvailable, direct = NO_DIRECT, board
       m.addLayer({ id: "zone-fill", type: "fill", source: "zone", paint: { "fill-color": "#80e0ff", "fill-opacity": 0.05 } });
       m.addLayer({ id: "zone-line", type: "line", source: "zone",
         paint: { "line-color": "#80e0ff", "line-opacity": 0.7, "line-width": 1.5, "line-dasharray": [4, 3] } });
-      // Each live vehicle's detection area (Part1-32.2): --friend, faint fill and a thin solid edge under the rest.
+      // Each vehicle's detection area while on a mission (Part1-32.2, 32.5): --friend, faint fill and a thin solid edge under the rest.
       m.addSource("sensor", { type: "geojson", data: EMPTY });
       m.addLayer({ id: "sensor-fill", type: "fill", source: "sensor", paint: { "fill-color": "#80e0ff", "fill-opacity": 0.07 } });
       m.addLayer({ id: "sensor-line", type: "line", source: "sensor",

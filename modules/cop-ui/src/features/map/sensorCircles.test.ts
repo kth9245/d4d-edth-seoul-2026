@@ -8,10 +8,10 @@ const spec = (id: string, domain: Domain, sensor_range_m: number) =>
 const SPECS = [spec("d1", "air", 800), spec("usv", "sea", 500), spec("ugv", "ground", 300)];
 
 describe("sensorCircles", () => {
-  it("rings each live vehicle (drone, boat, robot) at its sensor range around where it is now", () => {
+  it("rings each vehicle on a mission (drone, boat, robot) at its sensor range around where it is now", () => {
     const f = mkFrame({ vehicles: [
       mkVehicle({ id: "d1", pos: at(37.98, 124.69), status: "active" }),
-      mkVehicle({ id: "usv", pos: at(37.96, 124.72), status: "ready" }),
+      mkVehicle({ id: "usv", pos: at(37.96, 124.72), status: "active" }),
     ] });
     const fc = sensorCircles(f, SPECS);
     expect(fc.features.map((ft) => ft.properties)).toEqual([{ id: "d1", domain: "air" }, { id: "usv", domain: "sea" }]);
@@ -21,13 +21,14 @@ describe("sensorCircles", () => {
     expect(ring[16][1]).toBeCloseTo(37.96 + 500 / 111_320, 6);
   });
 
-  it("draws no ring where the engine does not detect: returning, lost or in maintenance (sensing LIVE)", () => {
+  it("draws no ring for a vehicle waiting at base, returning, lost or in maintenance (Part1-32.5)", () => {
     const f = mkFrame({ vehicles: [
-      mkVehicle({ id: "d1", status: "returning" }),
-      mkVehicle({ id: "usv", status: "lost" }),
-      mkVehicle({ id: "ugv", status: "maintenance" }),
+      mkVehicle({ id: "d1", status: "ready" }),
+      mkVehicle({ id: "usv", status: "returning" }),
+      mkVehicle({ id: "ugv", status: "lost" }),
+      mkVehicle({ id: "d2", status: "maintenance" }),
     ] });
-    expect(sensorCircles(f, SPECS).features).toEqual([]);
+    expect(sensorCircles(f, [...SPECS, spec("d2", "air", 800)]).features).toEqual([]);
   });
 
   it("draws nothing before the specs arrive", () => {
