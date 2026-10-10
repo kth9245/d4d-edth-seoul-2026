@@ -142,7 +142,7 @@ def build():
         "purpose": "정찰 드론이 RF 거점을 직접 조종으로 보고 식별·타격하고, 적 무인 수상정이 지상 로봇을 내리면 결정 한 번에 공격 드론·수상정이 타격하고 지상 로봇이 상륙 지점으로 이동해 관측한다(가상 상황).",
         "vehicle_ids": [v["id"] for v in vehicles],
         "assign": {"usv": "sea_patrol", "r1": "site_recon", "r2": "site_recon",
-                   "a1": "standby", "a2": "standby", "ugv": "watch_landing"},
+                   "a1": "standby", "a2": "standby", "ugv": "standby"},  # ugv idle until the B6 decision
         "reserve": {}, "switches": [], "rotation": [], "rotation_pools": {}, "rotation_roles": [],
     }  # fmt: skip
     enemies = [

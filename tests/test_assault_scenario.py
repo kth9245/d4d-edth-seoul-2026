@@ -71,7 +71,7 @@ def test_site_rf_is_inland_off_the_recon_route_but_in_rf_range(sc):
 def test_assign_and_roles_and_operation_checks(sc):
     assert sc.id == "baengnyeong_assault" and sc.operation.id == "op_assault"
     assert sc.operation.assign == {"usv": "sea_patrol", "r1": "site_recon", "r2": "site_recon",
-                                   "a1": "standby", "a2": "standby", "ugv": "watch_landing"}  # fmt: skip
+                                   "a1": "standby", "a2": "standby", "ugv": "standby"}  # fmt: skip
     ids = {r.id for r in sc.roles}
     assert {"site_recon", "sea_patrol", "watch_landing", "strike", "standby", "go_home",
             "site_hold", "enemy_usv_run", "enemy_hold"} <= ids
@@ -174,6 +174,9 @@ def test_enemy_usv_spawns_and_drops_two_ground_robots(sc):
 def test_one_decision_moves_air_sea_and_ground_and_neutralizes_the_enemy_usv(sc):
     es = init_engine(sc)
     es = _run_until(es, lambda e: _sea_card(e) is not None, limit=25000)
+    # before the decision the ground robot is idle (standby), so moving it witnesses a real transition
+    before = {s.id: s.role_id for s in es.states}
+    assert before["ugv"] == "standby"
     card = _sea_card(es)
     assert any(c.id == "strike_all_domains" for c in card.choices)
     dec = Decision(id="dec-1", t_ms=es.t_ms + sc.tick_ms, report_id=card.id,
@@ -181,7 +184,7 @@ def test_one_decision_moves_air_sea_and_ground_and_neutralizes_the_enemy_usv(sc)
     es, _ = tick(es, TickInputs(decisions=[dec]))
     moved = {s.id: s.role_id for s in es.states}
     assert moved["a1"] == "strike" and moved["a2"] == "strike" and moved["usv"] == "strike"
-    assert moved["ugv"] == "watch_landing"  # the ground robot moves on the same decision
+    assert moved["ugv"] == "watch_landing"  # ground: standby -> watch_landing on the same decision
     strikers = {s.id: s for s in es.states}
     for vid in ("a1", "a2", "usv"):  # the operator decision id rides each strike command
         assert strikers[vid].decision_id == "dec-1" and strikers[vid].target_id == "e_usv", vid

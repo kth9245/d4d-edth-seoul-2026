@@ -67,7 +67,7 @@
    "r2": "site_recon",
    "a1": "standby",
    "a2": "standby",
-   "ugv": "watch_landing"
+   "ugv": "standby"
   },
   "reserve": {},
   "switches": [],
