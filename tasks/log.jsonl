@@ -472,3 +472,4 @@
 {"at": "2026-10-10T21:40:39+09:00", "by": "황승주", "op": "add", "id": "Part2-51", "title": "멸공 적 5/7: runtime 동적 선택지(이탈 순찰·적기 N 집중 순찰·usv/ugv 추적·대기), 중복 집중 순찰 무시", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T21:40:42+09:00", "by": "황승주", "op": "start", "id": "Part2-51", "take": false, "from": null}
 {"at": "2026-10-10T21:46:55+09:00", "by": "황승주", "op": "done", "id": "Part2-51", "take": false}
+{"at": "2026-10-10T21:47:09+09:00", "by": "황승주", "op": "add", "id": "Part2-52", "title": "멸공 적 6/7: 시나리오 적 4기(자폭 드론·적 USV·UGV 2), focus_orbit·track_sea·track_ground, 지상 로봇 감시 능력", "parent": null, "assign": "황승주", "slot": null, "spec": null}
