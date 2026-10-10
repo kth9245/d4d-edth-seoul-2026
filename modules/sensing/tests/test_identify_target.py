@@ -45,3 +45,13 @@ def test_losing_it_resets_the_duration_and_fades_the_scan():
 def test_after_forty_seconds_only_the_rf_clue_is_left():
     r = identify_target(True, 0, 40_000, 0, TICK)
     assert (r.state, r.confidence, r.reasons) == ("rf_only", 25, ["rf_emission"])
+
+
+def test_a_gap_shorter_than_a_second_does_not_reset_the_sustained_time():
+    r = identify_target(True, 0, 200, 5000, TICK)  # lost one tick right at the threshold
+    assert (r.state, r.confidence, r.observed_ms) == ("identified", 70, 5000)
+
+
+def test_a_gap_of_a_second_or_more_resets_it():
+    r = identify_target(True, 0, 3000, 5000, TICK)
+    assert (r.state, r.confidence, r.observed_ms) == ("identifying", 62, 0)  # rf 25 + scan 37

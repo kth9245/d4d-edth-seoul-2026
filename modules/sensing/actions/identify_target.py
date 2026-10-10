@@ -9,6 +9,7 @@ RF_PTS, SCAN_PTS, MULTI_PTS, SUSTAINED_MAX_PTS = 25, 40, 15, 20
 SCAN_DECAY_PER_S = 1  # the scan evidence fades one point per second after the target was lost
 SUSTAINED_PER_S = 1  # unbroken observation: one point per second, up to SUSTAINED_MAX_PTS
 IDENTIFIED_AT = 70
+GRACE_MS = 1000  # a gap shorter than this keeps the sustained time, so one missed tick does not flip the state
 
 
 class Ident(NamedTuple):
@@ -22,7 +23,10 @@ def identify_target(
     rf_detected: bool, seen_count: int, age_ms: int | None, observed_ms: int, tick_ms: int
 ) -> Ident:
     seen = seen_count > 0
-    observed = observed_ms + tick_ms if seen else 0  # a gap resets it
+    brief_gap = not seen and age_ms is not None and age_ms < GRACE_MS
+    observed = (
+        observed_ms + tick_ms if seen else (observed_ms if brief_gap else 0)
+    )  # a longer gap resets it
     never_scanned = age_ms is None and not seen
     lost_s = 0 if seen else (age_ms or 0) // 1000
     scan = 0 if never_scanned else max(0, SCAN_PTS - lost_s * SCAN_DECAY_PER_S)

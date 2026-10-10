@@ -44,3 +44,23 @@ def test_the_tick_loop_opens_strike_choices_only_after_identification():
             i for i in ids if i.startswith("strike_")
         )
     assert before == set() and {"strike_d2", "strike_usv"} <= after
+
+
+def test_a_click_on_a_strike_choice_that_just_vanished_does_not_stop_the_loop():
+    from contracts.models import Decision
+
+    sc = load_scenario_json("demo/scenarios/baengnyeong_strike.json")
+    night = load_scenario_json("demo/scenarios/baengnyeong_night.json")
+    sc = sc.model_copy(
+        update={"roles": [*sc.roles, next(r for r in night.roles if r.id == "strike")]}
+    )
+    es = init_engine(sc)
+    while not any(r.kind == "target_detected" and r.target_id == "site_a" for r in es.reports):
+        es, _ = tick(es, TickInputs())
+    card = next(r for r in es.reports if r.kind == "target_detected" and r.target_id == "site_a")
+    assert "strike_ghost" not in [c.id for c in card.choices]  # what a vanished choice looks like
+    stale = Decision(id="dec-1", t_ms=es.t_ms + 200, report_id=card.id, choice_id="strike_ghost")
+    es, _ = tick(es, TickInputs(decisions=[stale]))  # used to raise StopIteration
+    assert not next(
+        r for r in es.reports if r.id == card.id
+    ).resolved_ms  # ignored, card still open

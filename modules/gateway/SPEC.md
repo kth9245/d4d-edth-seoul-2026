@@ -16,5 +16,6 @@
 | GW-09 | mark_reported | targets, new_reports | list[Target] | target_detected 카드의 표적에 reported_by = 카드 기체, 이미 적힌 표적·다른 카드 종류는 그대로 (결정 0036) | kth9245 | 완료 |
 | GW-10 | score_targets | states, specs, targets, watch_points, tick_ms | targets | threat·threat_reasons·rf_detected·threat_accum을 채움. seen_by가 비면 종류 unknown, 무력화된 표적은 그대로 (결정 0039·0040) | 최동호 | 완료 |
 | GW-11 | build_object_graph | EngineState, focus | ObjectGraph | fast1에서 카드→결정→타격 명령→기체, 다른 표적을 겨눈 명령은 안 나옴, 차단은 명령에 붙음, 없는 focus는 ValueError (결정 0038) | kth9245 | 완료 |
-| GW-12 | identify_targets | targets, t_ms, tick_ms | targets | unknown 종류·미무력화 표적마다 sensing identify_target을 불러 ident_state·ident_confidence·ident_reasons·ident_observed_ms를 쓴다(결정 0056). 다른 표적은 그대로 | 최동호 | 진행중 |
-| GW-13 | refresh_strike_cards | reports, states, specs, targets, roles | reports | 열린 unknown 표적 발견 카드의 문구 끝에 식별 줄(상태·신뢰도·이유)을 붙이고, 식별됨이면 타격 가능 기체마다 타격 승인 선택지를 더한다(strike_<id>, 둘 이상이면 strike_all). 식별 전이면 타격 선택지를 모두 뺀다(결정 0056) | 최동호 | 진행중 |
+| GW-12 | identify_targets | targets, t_ms, tick_ms | targets | unknown 종류·미무력화 표적마다 sensing identify_target을 불러 ident_state·ident_confidence·ident_reasons·ident_observed_ms를 쓴다(결정 0056). 다른 표적은 그대로 | 최동호 | 완료 |
+| GW-13 | refresh_strike_cards | reports, states, specs, targets, roles | reports | 열린 unknown 표적 발견 카드의 문구 끝에 식별 줄(상태·신뢰도·이유)을 붙이고, 식별됨이면 타격 가능 기체마다 타격 승인 선택지를 더한다(strike_<id>, 둘 이상이면 strike_all). 식별 전이면 타격 선택지를 모두 뺀다(결정 0056) | 최동호 | 완료 |
+| GW-14 | decision_applicable | reports, Decision | bool | 결정이 가리키는 카드가 있고 그 카드에 그 선택지가 있으면 True. 선택지가 방금 사라졌으면(식별 잃음·기체가 다른 카드 보유) False라서 엔진이 그 결정을 건너뛰고 실행이 멈추지 않는다(검토 지적, 결정 0056) | 최동호 | 완료 |

@@ -7,6 +7,7 @@ from dataclasses import replace
 
 from contracts.models import Frame, TickInputs, TickOutcome
 from modules.gateway.actions.build_frame_v2 import build_frame_v2
+from modules.gateway.actions.decision_applicable import decision_applicable
 from modules.gateway.actions.identify_targets import identify_targets
 from modules.gateway.actions.init_engine import init_engine
 from modules.gateway.actions.mark_reported import mark_reported
@@ -60,6 +61,11 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
     )  # 2.7 stage 2: identification of unknown-kind sites (0056)
     reports, assigns = list(es.reports), list(es.assignments)  # 3 operator inputs
     for d in inputs.decisions:
+        if not decision_applicable(
+            reports, d
+        ):  # its choice just vanished: skip, do not stop the run
+            log.warning("decision %s skipped: %s has no choice %s", d.id, d.report_id, d.choice_id)
+            continue
         before = {s.id: s.role_id for s in states}
         states, reports = apply_decision(states, roles, d, reports)
         assigns = track_assignments(assigns, before, states, t, f"결정 {d.id}")
