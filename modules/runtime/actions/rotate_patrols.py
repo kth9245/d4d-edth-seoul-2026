@@ -5,17 +5,17 @@ SPEC: modules/runtime/SPEC.md#RT-10
 
 import re
 
-from contracts.models import Assignment, GeoPoint, Operation, Play, VehicleSpec, VehicleState
+from contracts.models import Assignment, GeoPoint, Operation, Role, VehicleSpec, VehicleState
 from modules.runtime.actions.relief_due import FLOOR, _back, relief_due
-from modules.runtime.actions.switch_play import switch_play
+from modules.runtime.actions.switch_role import switch_role
 from shared.geo import dist_m
 
 MEET_M = 500.0  # handover m; FLOOR and START live in relief_due
 OUT = re.compile(r"교대 출발: (\S+) → (\S+) @(\d+)")
 
 
-def _point(play: Play, m: int) -> GeoPoint:  # route point m of the patrol (it wraps)
-    route = play.steps[0].do.params["route"]
+def _point(role: Role, m: int) -> GeoPoint:  # route point m of the patrol (it wraps)
+    route = role.steps[0].do.params["route"]
     return GeoPoint(**route[m % len(route)])
 
 
@@ -23,58 +23,58 @@ def rotate_patrols(
     states: list[VehicleState],
     specs: dict[str, VehicleSpec],
     op: Operation,
-    plays: dict[str, Play],
+    roles: dict[str, Role],
     assignments: list[Assignment],
     t_ms: int,
 ) -> tuple[list[VehicleState], list[Assignment]]:
-    if not op.rotation or not op.rotation_plays:
+    if not op.rotation or not op.rotation_roles:
         return states, assignments
     by, asg = {s.id: s for s in states}, list(assignments)
 
-    def note(vid: str, play: str, reason: str) -> None:
+    def note(vid: str, role: str, reason: str) -> None:
         asg[:] = [a for a in asg if a.vehicle_id != vid]
-        asg.append(Assignment(vehicle_id=vid, play_id=play, since_ms=t_ms, reason=reason))
+        asg.append(Assignment(vehicle_id=vid, role_id=role, since_ms=t_ms, reason=reason))
 
     pairs = {m[2]: (m[1], int(m[3])) for a in asg if (m := OUT.fullmatch(a.reason))}  # S: (R, m)
-    on = [v for v in op.rotation if by[v].status.value == "active" and by[v].play_id in op.rotation_plays]  # fmt: skip
+    on = [v for v in op.rotation if by[v].status.value == "active" and by[v].role_id in op.rotation_roles]  # fmt: skip
     for v in on:  # floor first: a patrol never trades its return battery for coverage
         if by[v].battery_pct - _back(by[v], specs[v]) <= FLOOR:
-            by[v] = switch_play(by[v], plays["go_home"])
+            by[v] = switch_role(by[v], roles["go_home"])
             note(v, "go_home", f"교대 귀환(하한선): {v}")
     for s, (r, m) in pairs.items():
-        if by[s].play_id != by[r].play_id:  # relief or patrol left the play: drop the pair
+        if by[s].role_id != by[r].role_id:  # relief or patrol left the role: drop the pair
             asg[:] = [a for a in asg if not (a.vehicle_id == r and OUT.fullmatch(a.reason))]
-        elif dist_m(by[r].pos, _point(plays[by[r].play_id], m)) <= MEET_M:  # relief on the coast
-            by[s] = switch_play(by[s], plays["go_home"])
-            note(r, by[r].play_id, f"교대 완료: {r} ← {s}")
+        elif dist_m(by[r].pos, _point(roles[by[r].role_id], m)) <= MEET_M:  # relief on the coast
+            by[s] = switch_role(by[s], roles["go_home"])
+            note(r, by[r].role_id, f"교대 완료: {r} ← {s}")
             note(s, "go_home", f"교대 귀환: {s}")
         else:  # the patrol keeps patrolling; the relief flies to route point m
             by[r] = by[r].model_copy(update={"waypoint_idx": m})
 
-    def free(after: str | None, play: str) -> str | None:  # first charged idle drone of the pool
-        pool = op.rotation_pools.get(play) or op.rotation
+    def free(after: str | None, role: str) -> str | None:  # first charged idle drone of the pool
+        pool = op.rotation_pools.get(role) or op.rotation
         k = pool.index(after) + 1 if after in pool else 0
         order = pool[k:] + pool[:k]
         ok = [w for w in order if by[w].status.value == "ready" and by[w].battery_pct >= 99.9]
-        return next((w for w in ok if by[w].play_id not in op.rotation_plays), None)
+        return next((w for w in ok if by[w].role_id not in op.rotation_roles), None)
 
     busy = set(pairs) | {r for r, _ in pairs.values()}
-    for v in (v for v in on if v not in busy and by[v].play_id in op.rotation_plays):
+    for v in (v for v in on if v not in busy and by[v].role_id in op.rotation_roles):
         st, spec = by[v], specs[v]
-        alone = sum(by[w].play_id == st.play_id for w in on) == 1 and st.step_id == plays[st.play_id].entry  # fmt: skip
-        if alone and (r := free(v, st.play_id)):
+        alone = sum(by[w].role_id == st.role_id for w in on) == 1 and st.step_id == roles[st.role_id].entry  # fmt: skip
+        if alone and (r := free(v, st.role_id)):
             m = max(st.waypoint_idx, 0)
-            fly = dist_m(by[r].pos, _point(plays[st.play_id], m)) / specs[r].speed_mps / 60  # fmt: skip
+            fly = dist_m(by[r].pos, _point(roles[st.role_id], m)) / specs[r].speed_mps / 60  # fmt: skip
             if relief_due(st, spec, fly):
-                by[r] = switch_play(by[r], plays[st.play_id])
-                note(r, st.play_id, f"교대 출발: {r} → {v} @{m}")
+                by[r] = switch_role(by[r], roles[st.role_id])
+                note(r, st.role_id, f"교대 출발: {r} → {v} @{m}")
 
     def held(p: str) -> bool:
-        return any(by[w].play_id == p and by[w].status.value in ("ready", "active") for w in op.rotation)  # fmt: skip
+        return any(by[w].role_id == p and by[w].status.value in ("ready", "active") for w in op.rotation)  # fmt: skip
 
-    engaged = any(held(p) for p in op.rotation_plays)  # rotation runs once a patrol is out
-    for p in op.rotation_plays:  # a coast nobody holds (a patrol went home at the floor)
+    engaged = any(held(p) for p in op.rotation_roles)  # rotation runs once a patrol is out
+    for p in op.rotation_roles:  # a coast nobody holds (a patrol went home at the floor)
         if engaged and not held(p) and (r := free(None, p)):
-            by[r] = switch_play(by[r], plays[p])
+            by[r] = switch_role(by[r], roles[p])
             note(r, p, f"교대 투입(빈 순찰): {r} → {p}")
     return [by[s.id] for s in states], asg

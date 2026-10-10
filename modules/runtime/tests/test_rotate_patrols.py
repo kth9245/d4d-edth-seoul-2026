@@ -83,9 +83,9 @@ def test_a_far_relief_starts_early_enough_to_meet_before_the_floor():  # user, 1
     # d1 has 55%: above the 35% threshold, 16.6% over the floor. A relief 6 km south of base needs about
     # 15.6 min (17.3%) to point 2, more than that margin, so it leaves now; one at base (9.4 min) waits.
     by, asg = run(fleet(d1_battery=55, d3_north=-6000))
-    assert by["d3"].play_id == "coast_a" and [a.reason for a in asg] == ["교대 출발: d3 → d1 @2"]
+    assert by["d3"].role_id == "coast_a" and [a.reason for a in asg] == ["교대 출발: d3 → d1 @2"]
     by, asg = run(fleet(d1_battery=55))
-    assert by["d3"].play_id == "standby" and asg == []
+    assert by["d3"].role_id == "standby" and asg == []
 
 
 def test_outgoing_keeps_patrolling_while_the_relief_flies_to_point_m():  # never stops (user)
