@@ -67,3 +67,4 @@
 | 10/10 19:51 | 전체 | Part1-36 play→role 이름 변경(결정 0052): 계약 Role·RoleCheck, REST /roles, JSON 키 role_id·role_by_vehicle·rotation_roles, 모듈 modules/role, 데이터 demo/roles, 화면 표기 Role. 변환 스크립트 scripts/rename_play_role.py(팀원은 rebase 뒤 실행), AI 초안 캐시는 새 해시로 옮겨 인터넷 없이 그대로 | kth9245 |
 | 10/10 20:05 | cop-ui | Part1-38 Role 화면의 삭제 버튼을 저장 버튼과 같은 크기로(여백·굵기), 화면 점검이 두 버튼 크기를 비교 | kth9245 |
 | 10/10 20:15 | runtime | 교대 SPARE 5→10%: 100사이클(82시간) 하한선 위 최소 여유 1.3%→7.2%, 하한선 귀환·해안 공백 0(사용자) | 황승주 |
+| 10/10 20:25 | runtime | 교대 SPARE 10→7%(B안): 100사이클(83시간) 하한선 위 최소 여유 4.4%, 북·남 교대 106:100(10%일 때 116:100), 하한선 귀환·해안 공백 0(사용자) | 황승주 |

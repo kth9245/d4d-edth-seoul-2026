@@ -8,7 +8,7 @@ from shared.geo import dist_m
 
 FLOOR = 31.0  # floor 30% + 1 tick slack
 START = 35.0  # relief threshold %
-SPARE = 10.0  # % spare over the relief flight (user, 10/10: 5% left 1.3% over the floor at worst)
+SPARE = 7.0  # % spare over the relief flight (user, 10/10: 5% left 1.3% over the floor, 10% relieved the north coast 16% more often)
 
 
 def _back(st: VehicleState, spec: VehicleSpec) -> float:  # battery % to fly home from here

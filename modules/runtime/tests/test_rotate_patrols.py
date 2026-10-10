@@ -81,8 +81,8 @@ def test_no_relief_before_the_threshold():
 
 def test_a_far_relief_starts_early_enough_to_meet_before_the_floor():  # user, 10/10: no floor return
     # d1 has 62%: above the 35% threshold, 23.6% over the floor. A relief 6 km south of base needs about
-    # 15.6 min (17.3% + 10% spare) to point 2, more than that margin, so it leaves now; one at base
-    # (9.4 min: 10.4% + 10%) waits.
+    # 15.6 min (17.3% + 7% spare) to point 2, more than that margin, so it leaves now; one at base
+    # (9.4 min: 10.4% + 7%) waits.
     by, asg = run(fleet(d1_battery=62, d3_north=-6000))
     assert by["d3"].role_id == "coast_a" and [a.reason for a in asg] == ["교대 출발: d3 → d1 @2"]
     by, asg = run(fleet(d1_battery=62))
