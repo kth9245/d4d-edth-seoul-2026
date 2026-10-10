@@ -5,7 +5,6 @@
 마지막 기록 10/10 13:18 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
-- **Part1-14** smoke 전환 + 통합 주관 — kth9245, 10/10 12:13부터 · 하위 4/4 완료
 - **Part1-19** 타격: 시나리오·플레이 JSON (fast1 동쪽 해안 우회, track_fast 수정·track_fast_sea·strike, 고속 보트 추적 전환 버튼) — 최동호, 10/10 12:21부터
 - **Part2-19** 시나리오 튜닝 — 최동호, 10/10 12:02부터 · 하위 0/1 완료
 - ⚠ 최동호 진행중 2개
@@ -38,6 +37,7 @@
 - 10/10 11:57 kth9245 · Part1-19 · 구조만 쓴다(enemies·적 플레이·track_fast·track_fast_sea·strike·전환 버튼·capabilities). 숫자는 대략값, 맞추기는 Part2-19. 완료 기준을 check_operation 통과 + 틱 루프가 오류 없이 돌고 fast1이 나타나 움직임으로 낮춤(s7·s8 도달은 Part2-19). fast1은 spec 5절의 split_target(ve·vn)이 아니라 10.1의 enemy_fast1로 쓴다. 리드 답 'ㅇㅇ 이렇게 ㄱㄱ'
 
 ## 완료
+- **Part1-14** smoke 전환 + 통합 주관 — kth9245, 10/10 13:18 · 하위 4/4 완료
 - **Part3-12.1** 카드 편집 패널: 이름·행동(좌표 제외)·연결·보고·카드 추가/삭제 — kth9245, 10/10 13:08
 - **Part1-14.4** 통합 2 전 스텁 제거: gateway stub_engine 대체 경로, 편집기 예시 데이터 — kth9245, 10/10 12:49
 - **Part1-14.3** QA 수정: 직접 조종 십자를 서버 상태로(차단이면 없음, 대안이면 이동), 표적 이름표 위로 — kth9245, 10/10 12:43
