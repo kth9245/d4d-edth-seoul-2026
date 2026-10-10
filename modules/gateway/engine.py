@@ -11,6 +11,7 @@ from modules.gateway.actions.identify_targets import identify_targets
 from modules.gateway.actions.init_engine import init_engine
 from modules.gateway.actions.mark_reported import mark_reported
 from modules.gateway.actions.record_injections import record_injections
+from modules.gateway.actions.refresh_strike_cards import refresh_strike_cards
 from modules.gateway.actions.run_checks import run_checks
 from modules.gateway.actions.score_targets import score_targets
 from modules.gateway.actions.tick_log import tick_log
@@ -109,6 +110,7 @@ def tick(es: EngineState, inputs: TickInputs) -> tuple[EngineState, Frame]:
     targets, hits = resolve_strikes(states, targets, t)  # 8.5 decision 0033
     new_reports += cards + hits
     reports += new_reports
+    reports = refresh_strike_cards(reports, states, specs, targets, roles)  # 8.6 stage 2 (0056)
     outcome = TickOutcome(inputs=inputs, commands=cmds, passed=passed, blocks=blocks,
                           new_reports=new_reports, assignments=assigns, states=states,
                           targets=targets, roles=roles, reports=reports)  # fmt: skip

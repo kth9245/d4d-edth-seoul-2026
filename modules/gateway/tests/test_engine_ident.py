@@ -23,3 +23,24 @@ def test_the_night_operation_never_gets_identification_fields():
 def test_the_strike_operation_identifies_site_a_through_the_tick_loop():
     seen = _states("demo/scenarios/baengnyeong_strike.json", "site_a", 2400)  # 8 minutes
     assert {"rf_only", "identified"} <= seen
+
+
+def test_the_tick_loop_opens_strike_choices_only_after_identification():
+    sc = load_scenario_json("demo/scenarios/baengnyeong_strike.json")
+    night = load_scenario_json("demo/scenarios/baengnyeong_night.json")
+    strike = next(r for r in night.roles if r.id == "strike")
+    sc = sc.model_copy(update={"roles": [*sc.roles, strike]})  # Task 5 puts it in the JSON
+    es, before, after = init_engine(sc), set(), set()
+    for _ in range(2400):
+        es, _ = tick(es, TickInputs())
+        site = next((t for t in es.targets if t.id == "site_a"), None)
+        card = next(
+            (r for r in es.reports if r.kind == "target_detected" and r.target_id == "site_a"), None
+        )
+        if site is None or card is None or card.resolved_ms:
+            continue
+        ids = {c.id for c in card.choices}
+        (after if site.ident_state == "identified" else before).update(
+            i for i in ids if i.startswith("strike_")
+        )
+    assert before == set() and {"strike_d2", "strike_usv"} <= after
