@@ -177,6 +177,8 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 .step-card { border: 1px solid var(--line); border-left: 2px solid var(--friend); border-radius: var(--r); background: var(--s2); }
 .step-report { border: 1px solid var(--line); border-radius: var(--r); background: var(--s1); }
 .switch { border: 1px solid rgba(245, 158, 11, 0.4); border-radius: var(--r); background: var(--warn-soft); color: var(--warn); }
+.workflow .back { border: 1px solid var(--line2); border-radius: var(--r); background: transparent; color: var(--text2); font-family: var(--font-mono); }
+.workflow .back:hover { border-color: var(--text); color: var(--text); }
 .newplay-toggle { border: 1px solid var(--text); border-radius: var(--r); background: var(--text); color: var(--bg); font-weight: 700; }
 .newplay-toggle:hover { border-color: var(--live); background: var(--live); }
 .newplay-toggle.on { border-color: var(--line2); background: transparent; color: var(--muted); }

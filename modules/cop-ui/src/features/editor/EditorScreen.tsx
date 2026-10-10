@@ -12,10 +12,15 @@ import { playUsage } from "./playUsage";
 import { PlayWorkflow } from "./PlayWorkflow";
 import { savePlay } from "./savePlay";
 import { vehicleColumns } from "./vehicleColumns";
+import { backFrom, openView, type ViewHistory } from "./viewHistory";
 
 export function EditorScreen() {
   const [data, setData] = useState<EditorData | null>(null);
-  const [selected, setSelected] = useState<string>(OVERVIEW);
+  // Which view is open and the ones opened before it, so "뒤로" returns along the same path (sidebar, play links).
+  const [nav, setNav] = useState<ViewHistory>({ current: OVERVIEW, stack: [] });
+  const selected = nav.current;
+  const open = (id: string) => setNav((h) => openView(h, id));
+  const back = () => setNav((h) => backFrom(h, OVERVIEW));
   const [results, setResults] = useState<Record<string, SaveResult>>({});
   // Part3-12: plays changed on screen but not saved yet, and the step each change added (to highlight it).
   const [edits, setEdits] = useState<Record<string, Play>>({});
@@ -35,6 +40,8 @@ export function EditorScreen() {
   );
   if (!data || !view) return <div className="editor">불러오는 중…</div>;
   const playName = (id: string) => view.byId.get(id)?.name ?? null;
+  const prev = nav.stack[nav.stack.length - 1] ?? OVERVIEW;
+  const backLabel = prev === OVERVIEW ? "작전 개요" : (playName(prev) ?? prev);
   const play = edits[selected] ?? view.byId.get(selected);
   // Results are kept per play id so they survive switching plays. An edit drops the old result (its issues
   // no longer match the cards); a save that passes puts the edited play into the list.
@@ -51,7 +58,7 @@ export function EditorScreen() {
     setEdits((all) => ({ ...all, [p.id]: p }));
     setFresh((all) => without(all, p.id));
     setResults((all) => without(all, p.id));
-    setSelected(p.id);
+    open(p.id);
   };
   const save = (edited: Play) => {
     const p = forSave(edited);
@@ -72,7 +79,7 @@ export function EditorScreen() {
   };
   return (
     <div className="editor">
-      <PlaySidebar groups={view.groups} selected={play ? play.id : OVERVIEW} source={data.source} showOverview onSelect={setSelected}
+      <PlaySidebar groups={view.groups} selected={play ? play.id : OVERVIEW} source={data.source} showOverview onSelect={open}
         top={<NewPlayMenu existingIds={data.plays.map((p) => p.id)} onCreated={created} />} />
       <main className="editor-main">
         {play ? (
@@ -80,7 +87,9 @@ export function EditorScreen() {
             play={play}
             usage={view.usage[play.id] ?? []}
             playName={playName}
-            onOpen={setSelected}
+            onOpen={open}
+            onBack={back}
+            backLabel={backLabel}
             result={results[play.id]}
             onSave={() => save(play)}
             edited={!!edits[play.id]}
@@ -88,7 +97,7 @@ export function EditorScreen() {
             onInsertReport={(stepId) => insertReport(play, stepId)}
           />
         ) : (
-          <OperationOverview op={data.operation} columns={view.columns} playName={playName} onOpen={setSelected} />
+          <OperationOverview op={data.operation} columns={view.columns} playName={playName} onOpen={open} />
         )}
       </main>
     </div>

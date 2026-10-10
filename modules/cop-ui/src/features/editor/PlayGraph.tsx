@@ -1,11 +1,12 @@
-import { Background, BackgroundVariant, Controls, type Edge, MarkerType, ReactFlow } from "@xyflow/react";
+import { Background, BackgroundVariant, Controls, type Edge, MarkerType, ReactFlow, type ReactFlowInstance } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import type { Play, ValidationIssue } from "../../contracts.gen";
 import { type EdgeKind, layoutSteps, stepEdges } from "./playGraph";
 import { StepNode, type StepNodeType } from "./StepNode";
 
 const nodeTypes = { step: StepNode };
+const FIT = { padding: 0.15, maxZoom: 1 };
 // Edge colors follow theme.css (--live, --hostile, --line2); SVG attributes cannot read CSS variables.
 const STROKE: Record<EdgeKind, string> = { normal: "#8e8e93", choice: "#4ade80", issue: "#ef4444" };
 
@@ -21,6 +22,16 @@ type Props = {
 // Steps on a canvas, left to right from the entry, joined by one dashed edge per exit labelled by its condition.
 // The layout is computed (not saved); the canvas is rebuilt when the play or its check result changes.
 export function PlayGraph({ play, issues, freshStep, playName, onOpen, onInsertReport }: Props) {
+  // React Flow fits the view only when it mounts; refit whenever the box changes size (window resize, sidebar).
+  const box = useRef<HTMLDivElement>(null);
+  const flow = useRef<ReactFlowInstance<StepNodeType, Edge> | null>(null);
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => flow.current?.fitView(FIT));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   const { nodes, edges, key } = useMemo(() => {
     const pos = layoutSteps(play);
     const nodes: StepNodeType[] = play.steps.map((step) => ({
@@ -43,9 +54,9 @@ export function PlayGraph({ play, issues, freshStep, playName, onOpen, onInsertR
   }, [play, issues, freshStep, playName, onOpen, onInsertReport]);
 
   return (
-    <div className="workflow-graph">
+    <div className="workflow-graph" ref={box}>
       <ReactFlow key={key} defaultNodes={nodes} defaultEdges={edges} nodeTypes={nodeTypes} colorMode="dark"
-        fitView fitViewOptions={{ padding: 0.15, maxZoom: 1 }} minZoom={0.3} nodesConnectable={false}
+        fitView fitViewOptions={FIT} minZoom={0.3} nodesConnectable={false} onInit={(i) => (flow.current = i)}
         edgesFocusable={false} proOptions={{ hideAttribution: true }}>
         <Background variant={BackgroundVariant.Lines} gap={32} color="#ffffff0a" />
         <Controls showInteractive={false} />
