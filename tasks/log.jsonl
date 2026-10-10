@@ -275,3 +275,4 @@
 {"at": "2026-10-10T13:41:58+09:00", "by": "kth9245", "op": "done", "id": "Part3-14", "take": false}
 {"at": "2026-10-10T13:42:01+09:00", "by": "황승주", "op": "add", "id": "Part2-26", "title": "runtime enter_step 카드 근거 표시(탐지 기체·표적·거리, 투명성 SAT 2단계)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
 {"at": "2026-10-10T13:42:04+09:00", "by": "황승주", "op": "start", "id": "Part2-26", "take": false, "from": null}
+{"at": "2026-10-10T13:42:53+09:00", "by": "황승주", "op": "done", "id": "Part2-26", "take": false}
