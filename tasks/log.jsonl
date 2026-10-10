@@ -211,3 +211,4 @@
 {"at": "2026-10-10T11:52:48+09:00", "by": "kth9245", "op": "add", "id": "Part1-21", "title": "편집기 적 열 + GET /enemies (결정 0032, 읽기 전용)", "parent": null, "assign": null, "slot": null, "spec": null}
 {"at": "2026-10-10T11:52:51+09:00", "by": "kth9245", "op": "add", "id": "Part2-25", "title": "sim 적 진행(SIM-11, 결정 0032) + engine.py 호출", "parent": null, "assign": "최동호", "slot": null, "spec": null}
 {"at": "2026-10-10T11:54:58+09:00", "by": "kth9245", "op": "start", "id": "Part3-13", "take": false, "from": null}
+{"at": "2026-10-10T11:55:04+09:00", "by": "kth9245", "op": "decide", "id": "Part3-13", "text": "POST /plays/draft는 draft_play를 별도 스레드에서 돌려 WS를 멈추지 않는다. 편집기 AI 초안 칸은 demo/draft_sentences.json 문장 버튼(캐시와 같은 출처)과 입력칸. 초안은 목록에 '아직 저장 안 됨'으로, 'AI 초안 · 승인 전' 표시. 저장 시 approved=true로 보낸다(검사 통과 + 사람이 저장 = 승인, safety가 approved=false 플레이 명령을 막음). origin이 ai_draft가 아니면 대기 템플릿 대체를 알림. 리드 답 'ㄱㄱ'"}

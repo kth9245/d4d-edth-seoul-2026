@@ -2,7 +2,7 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 11:54 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 11:55 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part3-13** 편집기: AI 초안 입력 칸 — kth9245, 10/10 11:54부터
@@ -34,6 +34,7 @@
 - **Part1-21** 편집기 적 열 + GET /enemies (결정 0032, 읽기 전용)
 
 ## 최근 결정
+- 10/10 11:55 kth9245 · Part3-13 · POST /plays/draft는 draft_play를 별도 스레드에서 돌려 WS를 멈추지 않는다. 편집기 AI 초안 칸은 demo/draft_sentences.json 문장 버튼(캐시와 같은 출처)과 입력칸. 초안은 목록에 '아직 저장 안 됨'으로, 'AI 초안 · 승인 전' 표시. 저장 시 approved=true로 보낸다(검사 통과 + 사람이 저장 = 승인, safety가 approved=false 플레이 명령을 막음). origin이 ai_draft가 아니면 대기 템플릿 대체를 알림. 리드 답 'ㄱㄱ'
 - 10/10 11:46 kth9245 · Part3-12 · 결정 0031 참조(보고 선택지가 보고한 기체를 다른 플레이로 안 보내면 같은 플레이의 operator_choice 탈출로 이어짐, runtime apply_decision 수정은 이 세션이 하고 황승주에게 알림)
 - 10/10 11:45 황승주 · Part3-15.1 · compile_mavlink(play, op, specs: dict[id, VehicleSpec]): op.assign에서 이 플레이를 받는 기체마다 (plan, script). .plan = entry step 미션(QGC Plan, ArduPilot, MAV_TYPE 2/11/10, 드론 고도 50 m), 스크립트 = step 그래프 전체(pymavlink, 틀 modules/mavlink/vehicle_script.py.txt). 대응: move/follow_route/zigzag→WAYPOINT 16, return_home→RTL 20, keep_distance→DO_SET_MODE 176 FOLLOW(Copter 23·Rover 6), 지상 hold→DO_SET_MODE HOLD 4, orbit/hold/relay→LOITER_UNLIM 17(좌표 없으면 0,0=현재 위치), expand_action None→빈 미션. 지상 신호는 STATUSTEXT target_found/signal/choice:<id>
 - 10/10 11:37 kth9245 · Part1-11 · 직접 조종은 기체 클릭(선택, 초록 링·안내 줄·십자 커서) → 지도 클릭 → POST /direct, 보낸 뒤 선택 해제, Esc나 같은 기체 다시 누르면 취소. 차단 카드에 대안 지점이 있으면 '대안 지점으로' → 같은 기체로 대안 좌표 POST /direct. 막힘 판단은 서버(safety)만. 리드 답 'ㄱㄱ'
@@ -43,7 +44,6 @@
 - 10/10 11:02 kth9245 · Part1-9.2 · 색·글꼴은 src/theme.css 토큰 한 곳에서 정하고 기존 CSS는 배치만 맡는다. 지도 출처는 EOX 문구만 작고 흐린 한 줄(MapLibre 표시·흰 상자 제거, 라이선스상 완전 삭제 불가). 기호는 소속 색(아군 시안·미식별 노랑·적대 빨강), 기체 상태는 모양으로. 훈련 표시 띠는 넣지 않음. 리드 답 '작고 흐린 한 줄', '소속 색 + 상태는 모양', '빼기'
 - 10/10 10:57 kth9245 · Part3-11 · 예시 데이터 대체 경로(UI-15)는 통합 2 직전까지 둠. 리드 답 '통합 2 직전까지 둠'
 - 10/10 10:57 kth9245 · Part3-11 · 플레이 머리 버튼은 '저장' = POST /plays: 서버가 check_play로 검사해 통과하면 gateway 메모리(live.scenario.plays)에 저장하고 실행을 작전 시작 직전(일시정지)으로 되돌림(POST /operation과 같은 방식), 실패면 저장 안 함. 응답은 항상 PlayCheck. 파일에는 쓰지 않음(리허설 재현). 계약의 POST /plays/check(검사만)도 같이 만듦. 리드 답 '저장으로 할건데', '저장하고 오퍼레이션 시작을 해야 실행되는거 아님?'
-- 10/10 10:49 kth9245 · Part1-13 · 다음 사건으로는 사건 시각 직후에서 일시정지한다: 먼저 /run/live?speed=0, 그다음 /run/jump(정지 시각 = 사건 추정 시각 + 몇 초). 카드가 떠 있는 정지 화면에서 설명을 시작한다. 리드 답 '사건 직후, 일시정지'
 
 ## 완료
 - **Part3-12** 편집기: 카드 편집 — kth9245, 10/10 11:51
