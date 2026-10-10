@@ -415,3 +415,4 @@
 {"at": "2026-10-10T19:37:29+09:00", "by": "황승주", "op": "start", "id": "Part2-38", "take": false, "from": null}
 {"at": "2026-10-10T19:40:09+09:00", "by": "황승주", "op": "done", "id": "Part2-38", "take": false}
 {"at": "2026-10-10T19:42:11+09:00", "by": "황승주", "op": "add", "id": "Part2-39", "title": "멸공 기지 정사각형 600 m로(2.4 km의 1/4)", "parent": null, "assign": "황승주", "slot": null, "spec": null}
+{"at": "2026-10-10T19:42:14+09:00", "by": "황승주", "op": "start", "id": "Part2-39", "take": false, "from": null}
