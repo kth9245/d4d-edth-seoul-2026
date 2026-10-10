@@ -1,7 +1,7 @@
 [
  {"viewport": [1366, 768]},
  {"nav": "/?qa=ops#editor", "wait": 5000},
- {"label": "O1 sidebar lists the demo operations, the night one running (decision 0042)", "eval": "[...document.querySelectorAll('.role-sidebar .item.op')].map(b => [b.innerText.trim(), b.classList.contains('active')])", "expect": [["백령도 야간 해안 경계", true], ["멸공", false], ["해안 거점 무력화", false]]},
+ {"label": "O1 sidebar lists the demo operations, the night one running (decision 0042)", "eval": "[...document.querySelectorAll('.role-sidebar .item.op')].map(b => [b.innerText.trim(), b.classList.contains('active')])", "expect": [["백령도 야간 해안 경계", true], ["멸공", false], ["해안 거점 무력화", false], ["해안 거점·무인장비 무력화(가상)", false]]},
  {"label": "O1 simulate button next to the operation name", "eval": "document.querySelector('.op-title .simulate')?.innerText", "expect": "▶ 시뮬레이션"},
  {"layout": "O1 layout editor with operations 1366x768"},
  {"shot": "ops-editor-night.png"},
