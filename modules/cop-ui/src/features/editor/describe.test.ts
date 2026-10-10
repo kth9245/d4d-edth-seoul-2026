@@ -2,9 +2,15 @@ import { describe, expect, it } from "vitest";
 import { describeAction, describeCondition } from "./describe";
 
 describe("describeAction", () => {
+  it("names the route, whether it repeats and whether it is relative", () => {
+    expect(describeAction({ kind: "patrol_route", params: { route: [], route_name: "해안 A(북)" } })).toBe("경로 비행 · 해안 A(북) · 반복");
+    expect(describeAction({ kind: "move_to", params: { offsets: [{ north_m: 1, east_m: 0 }], route_name: "북쪽으로 1km" } }))
+      .toBe("경로 비행 · 북쪽으로 1km · 한 번 · 기체 위치 기준");
+    expect(describeCondition({ kind: "at_time", params: { offset_ms: 90_000 } })).toBe("T+1:30");
+  });
   it("counts route points", () => {
     const route = [{ lat: 37.98, lon: 124.66 }, { lat: 37.98, lon: 124.74 }];
-    expect(describeAction({ kind: "patrol_route", params: { route } })).toBe("순찰 경로 2점");
+    expect(describeAction({ kind: "patrol_route", params: { route } })).toBe("경로 비행 · 경로 2곳 · 반복");
   });
   it("names the target rule and distance", () => {
     expect(describeAction({ kind: "watch_target", params: { target: "nearest", distance_m: 150 } }))
@@ -14,7 +20,7 @@ describe("describeAction", () => {
   });
   it("prints a GeoPoint destination", () => {
     expect(describeAction({ kind: "move_to", params: { target: { lat: 37.975, lon: 124.7, alt_m: 0 } } }))
-      .toBe("이동 · 37.975, 124.700");
+      .toBe("경로 비행 · 37.975, 124.700 · 한 번");
   });
   it("is just the label without params", () => {
     expect(describeAction({ kind: "hold" })).toBe("대기");

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { Play } from "../../contracts.gen";
-import { addChoice, addStepAfter, defaultCondition, removeChoice, removeStep, setActionKind, updateStep, zoneCentre } from "./editStep";
+import type { Play, RouteDef } from "../../contracts.gen";
+import { addChoice, addStepAfter, applyRoute, defaultCondition, removeChoice, removeStep, routeChoice, setActionKind, setLoop, updateStep, zoneCentre } from "./editStep";
 
 const play: Play = {
   id: "p", name: "순찰", domains: ["air"], entry: "patrol", origin: "human", approved: true, template: false,
@@ -109,5 +109,41 @@ describe("report choices", () => {
 describe("zoneCentre", () => {
   it("averages the zone's points", () => {
     expect(zoneCentre({ points: [{ lat: 0, lon: 0 }, { lat: 2, lon: 0 }, { lat: 2, lon: 4 }, { lat: 0, lon: 4 }] })).toEqual({ lat: 1, lon: 2 });
+  });
+});
+
+const SQUARE: RouteDef = { id: "square_300", name: "사각형 수색 300m", points: [], offsets: [{ north_m: 300, east_m: 0 }] };
+const NORTH: RouteDef = { id: "base_to_north", name: "기지 → 북쪽 해역", points: [{ lat: 37.97, lon: 124.7, alt_m: 0 }], offsets: [] };
+const routePlay: Play = { id: "r", name: "r", domains: ["air"], entry: "a", approved: true, steps: [
+  { id: "a", name: "a", do: { kind: "move_to", params: { target: { lat: 37.9, lon: 124.7, alt_m: 0 } } }, on: [] },
+] };
+
+describe("route flying", () => {
+  it("copies a relative route into the card and keeps the kind", () => {
+    const s = step(applyRoute(routePlay, "a", SQUARE), "a");
+    expect(s.do).toEqual({ kind: "move_to", params: { offsets: SQUARE.offsets, route_name: "사각형 수색 300m" } });
+  });
+  it("copies a fixed route's points as the route", () => {
+    expect(step(applyRoute(routePlay, "a", NORTH), "a").do.params).toEqual({ route: NORTH.points, route_name: "기지 → 북쪽 해역" });
+  });
+  it("turns looping on and off without touching the route", () => {
+    const named = applyRoute(routePlay, "a", NORTH);
+    const loop = step(setLoop(named, "a", true), "a").do;
+    expect(loop).toEqual({ kind: "patrol_route", params: { route: NORTH.points, route_name: "기지 → 북쪽 해역" } });
+    expect(step(setLoop(setLoop(named, "a", true), "a", false), "a").do.kind).toBe("move_to");
+  });
+  it("makes a one-point route when a point move starts looping", () => {
+    expect(step(setLoop(routePlay, "a", true), "a").do.params).toEqual({ route: [{ lat: 37.9, lon: 124.7, alt_m: 0 }] });
+  });
+  it("drops route values when the card leaves route flying", () => {
+    const p = applyRoute(routePlay, "a", SQUARE);
+    expect(step(setActionKind(p, "a", "hold"), "a").do.params).toEqual({});
+  });
+  it("finds the listed route by name and keeps an unnamed route as the current value", () => {
+    expect(routeChoice({ offsets: SQUARE.offsets, route_name: "사각형 수색 300m" }, [NORTH, SQUARE])).toBe("square_300");
+    expect(routeChoice({ route: [NORTH.points![0], NORTH.points![0]] }, [NORTH, SQUARE])).toBe("");
+  });
+  it("defaults a T+ condition to one minute", () => {
+    expect(defaultCondition("at_time", routePlay.steps[0])).toEqual({ kind: "at_time", params: { offset_ms: 60000 } });
   });
 });
