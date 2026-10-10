@@ -2,11 +2,10 @@
 
 # 지금 작업판
 
-마지막 기록 10/10 11:37 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
+마지막 기록 10/10 11:38 KST · 상세(입력·출력·완료 기준)는 docs/research/09 6절 · 기록은 `uv run python scripts/task.py`로만
 
 ## 진행중
 - **Part1-11** 직접 조종 + 차단 카드 대안 버튼 — kth9245, 10/10 11:37부터
-- **Part2-17** gateway `engine.py` 틱 루프 — 최동호, 10/10 11:32부터 · 하위 5/5 완료
 
 ## 막힘
 - (없음)
@@ -49,6 +48,7 @@
 - 10/10 10:38 kth9245 · Part1-7 · 리뷰 반영: WS Frame.log는 연결마다 안 보낸 줄 전부(배속 중 유실·일시정지 중 중복 없음), 요청이 아직 틱 전이면 승인·거부를 한 틱 뒤로(엔진 GW-03이 카드를 못 닫던 문제). 스파이크 엔진으로 35분 대본 결과 동일 확인
 
 ## 완료
+- **Part2-17** gateway `engine.py` 틱 루프 — 최동호, 10/10 11:38 · 하위 5/5 완료
 - **Part2-18** gateway `build_frame` 재작성 — 최동호, 10/10 11:30
 - **Part1-12** 주입 승인 카드 — kth9245, 10/10 11:28
 - **Part2-17.1** gateway init_engine · GW-02 (묶음 A, engine_state.py 먼저) — 최동호, 10/10 11:23
