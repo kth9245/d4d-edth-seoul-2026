@@ -4,6 +4,8 @@ The island outline (Scenario.land, decision 0034) is pushed 400 m out to sea, th
 between points and split at its west and east ends into the north coast (A) and the south coast (B).
 Each route runs end to end and back, so follow_route's wrap to the first point never crosses the island.
 The JSON is the source afterwards (decision 0035); rerun only to rebuild the routes.
+The editor's route list (decision 0044) comes from the night scenario's `routes`, with the coast routes
+replaced by the ones built here, and the coast cards carry their route names.
 Usage: uv run python scripts/make_coast_routes.py
 """
 
@@ -63,8 +65,12 @@ def coast_routes(land, home: GeoPoint) -> tuple[list[dict], list[dict]]:
     return thin(north), thin(south)
 
 
+COAST_NAMES = {"coast_a": "해안 A(북)", "coast_b": "해안 B(남)"}  # route names (decision 0044)
+
+
 def patrol(pid: str, name: str, route: list[dict]) -> dict:
-    step = {"id": "patrol", "name": "해안 순찰", "do": {"kind": "patrol_route", "params": {"route": route}},
+    params = {"route": route, "route_name": COAST_NAMES[pid]}
+    step = {"id": "patrol", "name": "해안 순찰", "do": {"kind": "patrol_route", "params": params},
             "on": [{"cond": {"kind": "target_found", "params": {}}, "go_step": "report"}],
             "report": None, "ui": {}}  # fmt: skip
     found = {"id": "report", "name": "발견·감시·보고",
@@ -75,7 +81,7 @@ def patrol(pid: str, name: str, route: list[dict]) -> dict:
             "origin": "human", "approved": True, "template": False}  # fmt: skip
 
 
-def main() -> None:
+def build() -> dict:
     night = json.loads(NIGHT.read_text(encoding="utf-8"))
     sc = Scenario.model_validate(night)
     a, b = coast_routes(sc.land, sc.vehicles[0].home)
@@ -111,14 +117,29 @@ def main() -> None:
         ],  # fmt: skip
         "events": [],
         "enemies": [],
+        "routes": [
+            {"id": "coast_a", "name": COAST_NAMES["coast_a"], "points": a},
+            {"id": "coast_b", "name": COAST_NAMES["coast_b"], "points": b},
+            *(
+                r
+                for r in night["routes"]
+                if r["id"] not in ("patrol_a", "patrol_b", "coast_a", "coast_b")
+            ),
+        ],  # decision 0044: the night list without the night-only patrols
         "land": night["land"],
         "seed": 0,
         "tick_ms": 1000,
         "speed": 1.0,
     }
     Scenario.model_validate(out)
+    return out
+
+
+def main() -> None:
+    out = build()
     OUT.write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    print(f"{OUT.name}: coast_a {len(a)} points, coast_b {len(b)} points")
+    coast = {r["id"]: len(r.get("points", [])) for r in out["routes"]}
+    print(f"{OUT.name}: coast_a {coast['coast_a']} points, coast_b {coast['coast_b']} points")
 
 
 if __name__ == "__main__":
