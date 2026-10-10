@@ -447,3 +447,17 @@ aside { background-color: var(--s1); border-left: 1px solid var(--line); padding
 /* Start role per vehicle on the overview (decision 0053): same look as the other editor selects, one width */
 .op-vehicles select.start-role { width: 100%; max-width: 220px; padding: 4px 6px; border: 1px solid var(--line2); border-radius: var(--r); background: var(--s2); color: var(--text); font-family: var(--font); }
 .op-vehicles select.start-role:hover, .op-vehicles select.start-role:focus { border-color: var(--live); outline: none; }
+
+/* Map targets (Part1-32, decision 0047): color = risk tone, lost = dashed ring at the last seen spot, never = faded
+   dotted. Labels keep their sides (target above, vehicle battery right, Part2-38). */
+.target.lo i { background: var(--unknown); }
+.target.mid i { background: var(--warn); box-shadow: 0 0 10px rgba(245, 158, 11, 0.55); }
+.target.hi i { background: var(--hostile); box-shadow: 0 0 12px rgba(239, 68, 68, 0.65); }
+.target.lost { opacity: 0.9; }
+.target.lost i { background: transparent; border: 2px dashed var(--text2); box-shadow: none; }
+.target.lost.hi i { border-color: var(--hostile); }
+.target.lost.mid i { border-color: var(--warn); }
+.target.lost span { border-style: dashed; }
+.target.never { opacity: 0.45; }
+.target.never i { background: none; border: 1.5px dotted var(--text2); box-shadow: none; }
+.target.never span { border-style: dotted; color: var(--text2); }

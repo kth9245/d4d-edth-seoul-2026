@@ -64,4 +64,5 @@
 .board .fold summary b { margin-left: auto; }
 .board .fold > :not(summary) { margin: 0 14px 12px; }
 .board .fold.hist { max-height: 220px; overflow-y: auto; }
-.board .hist-row { display: flex; gap: 8px; padding: 3px 14px; }
+.board .hist-row { display: flex; gap: 8px; align-items: flex-start; padding: 3px 14px; }
+.board .hist-row .graph-open { flex: none; white-space: nowrap; }

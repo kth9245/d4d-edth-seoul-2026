@@ -9,7 +9,7 @@
 | UI-04 | AlertList | LegacyFrame | 목록 | — | 리드 | 폐기(Part1-9, 카드 열은 Part1-10) |
 | UI-05 | basemapStyle | tilesAvailable | Style | 타일 있으면 백령도 EOX raster z8~14(받은 범위만 요청, 출처 표기, 야간 밝기), 없으면 배경만 | 리드 | 완료 |
 | UI-06 | zoneGeoJSON | Polygon \| null | FeatureCollection | 닫힌 [lon, lat] 고리 하나, 구역 없으면 빈 묶음 | 리드 | 완료 |
-| UI-07 | frameMarkers | Frame | {vehicles, targets} | 기체마다 위치·상태, 표적마다 위치·종류·seen, 무력화 표적은 neutralized와 이름표 "<id> · 무력화"(지도에 회색 X, 기체 위, Part1-20) | 리드 | 완료 |
+| UI-07 | frameMarkers | Frame | {vehicles, targets} | 기체마다 위치·상태, 표적마다 위치·종류·seen, 무력화 표적은 neutralized와 이름표 "<id> · 무력화"(지도에 회색 X, 기체 위, Part1-20), 표적 위치·이름표는 탐지 상태(놓침은 마지막 위치·경과·방향, 미탐은 흐리게, 위험도 숫자와 색, Part1-32) | 리드 | 완료 |
 | UI-08 | parseFrame | ws 메시지 문자열 | Frame \| null | 깨진 메시지·옛 LegacyFrame은 null | 리드 | 완료 |
 | UI-09 | fetchZone | — | Polygon \| null | GET /operation의 zone, 404·실패면 null(구역 없이 그림) | 리드 | 완료 |
 | UI-10 | sceneFrames | contracts/examples/frames | SCENES s1~s8, SCENE_ZONE | 개발 서버 `?scene=s1`~`s8` 전용(타격 단계 순서 s1 s2 s3 s5 s6 s4 s7 s8), 시연 빌드에 없음 | 리드 | 완료 |

@@ -48,9 +48,12 @@ export function syncVehicles(map: MapLibreMap, store: MarkerStore, items: Vehicl
   sync(map, store, items, (v) => `mk vehicle ${v.status} batt-${v.battery}${v.id === selected ? " selected" : ""}`, onClick);
 }
 
-export function syncTargets(map: MapLibreMap, store: MarkerStore, items: TargetMarker[]): void {
+// Target classes carry what our side knows (track: seen, rf, lost, never, gone) and the risk tone (Part1-32).
+// onClick is for pointing (decision 0048); targets only take clicks while a vehicle is selected (theme.css).
+export function syncTargets(map: MapLibreMap, store: MarkerStore, items: TargetMarker[], onClick?: (id: string) => void): void {
   sync(map, store, items,
-    (t) => `mk target ${t.kind}${t.seen ? "" : " unseen"}${t.neutralized ? " neutralized" : ""}${t.rf ? " rf" : ""}`);
+    (t) => `mk target ${t.kind} ${t.track} ${t.tone}${t.seen ? "" : " unseen"}${t.neutralized ? " neutralized" : ""}${t.rf ? " rf" : ""}`,
+    onClick);
 }
 
 // Where direct-control orders are heading (a cross per vehicle), so the operator sees the order land.

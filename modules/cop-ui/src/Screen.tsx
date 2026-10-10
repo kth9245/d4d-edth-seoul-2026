@@ -44,7 +44,7 @@ export function Screen({ frame, zone, status, ok }:
           onVehicle={direct.onVehicleClick} onTarget={() => {}} />
       ) : <aside className="roster" />}
       <div className="map-col">
-        {tiles === null ? <div className="map" /> : <MapView frame={frame} zone={zone} tilesAvailable={tiles} direct={direct} />}
+        {tiles === null ? <div className="map" /> : <MapView frame={frame} zone={zone} tilesAvailable={tiles} direct={direct} board={board} watch={data.watch} />}
         {direct.hint && <div className={direct.selected ? "direct-hint on" : "direct-hint"}>{direct.hint}</div>}
         <RunBar frame={frame} />
         {graph && <ObjectGraphView focus={graph} onClose={() => setGraph(null)} />}

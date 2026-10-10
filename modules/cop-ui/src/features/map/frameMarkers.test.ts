@@ -29,8 +29,22 @@ describe("frameMarkers", () => {
   it("makes one marker per target, seen when some vehicle sees it", () => {
     const { targets } = frameMarkers(s1 as Frame);
     expect(targets).toEqual([
-      { id: "boat1", kind: "boat", lon: 124.7, lat: 37.98437, seen: true, neutralized: false, rf: false, label: "boat1" },
+      { id: "boat1", kind: "boat", lon: 124.7, lat: 37.98437, seen: true, neutralized: false, rf: false, label: "boat1",
+        track: "seen", tone: "lo" },
     ]);
+  });
+
+  it("draws a target where our side knows it and says its risk, lost time and direction (decision 0047)", () => {
+    const f = s1 as Frame;
+    const t = { ...f.targets[0], threat: 72, seen_by: [], first_seen_ms: f.t_ms - 60_000, last_seen_ms: f.t_ms - 20_000 };
+    const tracks = { boat1: { k: "lost" as const, pos: { lat: 37.98, lon: 124.71 }, agoMs: 20_000, dir: "away" as const, speed: 6.3 } };
+    expect(frameMarkers({ ...f, targets: [t] }, tracks).targets[0]).toMatchObject({
+      lon: 124.71, lat: 37.98, track: "lost", tone: "hi", label: "boat1 0.72 · 놓침 0:20 · 이탈(도주) 추정",
+    });
+    const never = { boat1: { k: "never" as const, pos: t.pos } };
+    expect(frameMarkers({ ...f, targets: [t] }, never).targets[0]).toMatchObject({ track: "never", label: "boat1 · 미탐" });
+    const seen = { boat1: { k: "seen" as const, pos: t.pos } };
+    expect(frameMarkers({ ...f, targets: [{ ...t, seen_by: ["d1"], rf_detected: true }] }, seen).targets[0].label).toBe("boat1 0.72 · RF");
   });
 
   it("marks a target whose emission our vehicles picked up with RF, never by the truth emitting (decision 0040)", () => {

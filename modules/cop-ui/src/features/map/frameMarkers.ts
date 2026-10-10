@@ -1,4 +1,6 @@
 import type { Frame, TargetKind, VehicleStatus } from "../../contracts.gen";
+import type { Track, TrackKind } from "../board/trackState";
+import { mmss } from "../run/mmss";
 
 export type BatteryLevel = "ok" | "mid" | "low";
 export interface VehicleMarker {
@@ -15,24 +17,37 @@ function batteryLabel(id: string, pct: number): { battery: BatteryLevel; label: 
 }
 export interface TargetMarker {
   id: string; kind: TargetKind; lon: number; lat: number; seen: boolean; neutralized: boolean; rf: boolean; label: string;
+  track: TrackKind; tone: "hi" | "mid" | "lo";
 }
+
+const DIR_KO = { still: "정지", approach: "접근 추정", away: "이탈(도주) 추정" } as const;
+const tone = (r: number) => (r >= 0.7 ? "hi" : r >= 0.4 ? "mid" : "lo");
 
 // Frame → what the map draws as HTML markers (offline there are no glyphs, so labels cannot be map layers).
 // A struck target (neutralized_ms, decision 0033) stays on the map as a grey X named "무력화" (Part1-20).
 // A target whose emission our vehicles picked up (rf_detected) says "RF" and gets a ring; emitting is the
-// simulator's truth and never reaches the screen (decision 0040).
-export function frameMarkers(frame: Frame): { vehicles: VehicleMarker[]; targets: TargetMarker[] } {
+// simulator's truth and never reaches the screen (decision 0040). With tracks (Part1-32, decision 0047) a target
+// sits where our side knows it (a lost one at its last seen spot), says its risk, and a never-detected one says
+// "미탐" without a risk.
+export function frameMarkers(frame: Frame, tracks: Record<string, Track> = {}):
+  { vehicles: VehicleMarker[]; targets: TargetMarker[] } {
   return {
     vehicles: frame.vehicles.map((v) => ({
       id: v.id, lon: v.pos.lon, lat: v.pos.lat, status: v.status, ...batteryLabel(v.id, v.battery_pct),
     })),
     targets: frame.targets.map((t) => {
+      const tr = tracks[t.id];
       const neutralized = t.neutralized_ms != null;
+      const seen = (t.seen_by ?? []).length > 0;
+      const k: TrackKind = tr?.k ?? (neutralized ? "gone" : seen ? "seen" : "never");
       const rf = !neutralized && t.rf_detected === true;
-      return {
-        id: t.id, kind: t.kind, lon: t.pos.lon, lat: t.pos.lat, seen: (t.seen_by ?? []).length > 0,
-        neutralized, rf, label: neutralized ? `${t.id} · 무력화` : rf ? `${t.id} · RF` : t.id,
-      };
+      const r = (t.threat ?? 0) / 100;
+      const score = r > 0 ? ` ${r.toFixed(2)}` : "";
+      const label = neutralized ? `${t.id} · 무력화` : tr && k === "never" ? `${t.id} · 미탐`
+        : tr && k === "lost" ? `${t.id}${score} · 놓침 ${mmss(tr.agoMs ?? 0)} · ${DIR_KO[tr.dir ?? "still"]}`
+        : `${t.id}${score}${rf ? " · RF" : ""}`;
+      const pos = tr?.pos ?? t.pos;
+      return { id: t.id, kind: t.kind, lon: pos.lon, lat: pos.lat, seen, neutralized, rf, label, track: k, tone: tone(r) };
     }),
   };
 }
