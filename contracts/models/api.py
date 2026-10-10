@@ -31,6 +31,13 @@ class Accepted(BaseModel):  # reply to an operator input; it applies on the next
     t_ms: int
 
 
+class NewOperationIn(
+    BaseModel
+):  # POST /scenarios: an empty operation on the running one's map (decision 0053)
+    name: str
+    purpose: str = ""
+
+
 class ScenarioInfo(BaseModel):  # GET /scenarios: an operation the gateway can run (decision 0042)
     id: str  # Scenario.id
     name: str  # Operation.name

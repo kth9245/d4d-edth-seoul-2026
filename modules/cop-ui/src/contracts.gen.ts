@@ -446,6 +446,11 @@ export interface ScenarioInfo {
   active?: boolean;
 }
 
+export interface NewOperationIn {
+  name: string;
+  purpose?: string;
+}
+
 export type SensorType = "rf" | "eoir" | "radar";
 
 export interface Detection {

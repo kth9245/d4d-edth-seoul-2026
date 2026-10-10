@@ -277,3 +277,14 @@ def test_delete_role_with_the_real_engine():  # decision 0050
         assert "d1" not in client.get("/operation").json()["assign"]
         assert client.post("/run/jump?offset_ms=60000").json()["status"] == "paused"
         assert client.delete("/roles/nope").status_code == 404
+
+
+def test_post_scenarios_creates_a_new_operation_to_give_start_roles():  # decision 0053
+    with TestClient(create_app(SCENARIO, period_s=0.01)) as client:
+        infos = client.post("/scenarios", json={"name": "QA 작전", "purpose": ""}).json()
+        assert infos[-1] == {"id": "new_op_1", "name": "QA 작전", "purpose": "", "active": True}
+        op = client.get("/operation").json()
+        assert op["assign"] == {}
+        op["assign"] = {"d1": "go_home"}
+        assert client.post("/operation", json=op).status_code == 200
+        assert client.post("/run/jump?offset_ms=60000").json()["status"] == "paused"

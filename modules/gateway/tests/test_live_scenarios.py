@@ -72,3 +72,33 @@ def test_the_running_scenario_wins_over_a_catalog_entry_with_its_id():
     eng = FakeEngine()
     live = Live(backup, eng.init, eng.tick, [SCENARIO, DAY])
     assert [i.name for i in live.scenario_infos()] == ["백업", DAY.operation.name]
+
+
+def test_create_operation_runs_an_empty_one_on_the_same_map_paused():  # decision 0053
+    live, _ = make_two()
+    live.set_speed(5)
+    live.create_operation("QA 작전", "새 목적")
+    sc, op = live.scenario, live.scenario.operation
+    assert (sc.id, op.id, op.name, op.purpose) == ("new_op_1", "new_op_1", "QA 작전", "새 목적")
+    assert (op.assign, op.reserve, op.switches, op.rotation, op.rotation_roles) == (
+        {},
+        {},
+        [],
+        [],
+        [],
+    )
+    assert (
+        op.vehicle_ids == [v.id for v in SCENARIO.vehicles] and op.zone == SCENARIO.operation.zone
+    )
+    assert (sc.enemies, sc.events) == ([], [])
+    enemy_roles = {e.role_id for e in SCENARIO.enemies}
+    assert [r.id for r in sc.roles] == [r.id for r in SCENARIO.roles if r.id not in enemy_roles]
+    assert (sc.vehicles, sc.routes, sc.land) == (SCENARIO.vehicles, SCENARIO.routes, SCENARIO.land)
+    assert live.run.status == "paused"
+    assert [(i.id, i.active) for i in live.scenario_infos()] == [
+        ("baengnyeong_night", False),
+        ("baengnyeong_24h", False),
+        ("new_op_1", True),
+    ]
+    live.create_operation("둘째", "")
+    assert live.scenario.id == "new_op_2"

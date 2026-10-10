@@ -1,0 +1,18 @@
+{
+  "properties": {
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "purpose": {
+      "default": "",
+      "title": "Purpose",
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "title": "NewOperationIn",
+  "type": "object"
+}

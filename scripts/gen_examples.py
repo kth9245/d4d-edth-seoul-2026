@@ -25,6 +25,7 @@ from contracts.models import (  # noqa: E402
     DirectIn,
     DraftIn,
     EnemySpec,
+    NewOperationIn,
     ObjectGraph,
     ObjectLink,
     ObjectNode,
@@ -138,6 +139,9 @@ def examples() -> dict[str, object]:
         "switch_in": SwitchIn(role_by_vehicle={"d2": "track_fast"}),
         "draft_in": DraftIn(text="고속 보트가 나타나면 가장 가까운 드론이 300m 거리에서 추적"),
         "accepted": Accepted(id="dec-1", t_ms=T1),
+        "new_operation_in": NewOperationIn(
+            name="북쪽 해안 시험 작전", purpose="드론 시작 Role을 새로 배정"
+        ),
         "scenario_info": ScenarioInfo(
             id=SCENARIO.id, name=OPERATION.name, purpose=OPERATION.purpose, active=True
         ),

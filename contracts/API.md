@@ -107,6 +107,7 @@ Role은 다른 기체를 알지 못하지만, 선택지의 `role_by_vehicle`은 
 | `GET /vehicles` | — | `VehicleSpec[]`(시나리오의 기체 제원·출발 위치, Part3-14 작전 패널) |
 | `GET /scenarios` | — | `ScenarioInfo[]`(gateway가 켤 때 읽은 시연 작전, 실행 작전은 `active`, 결정 0042) |
 | `POST /scenarios/{id}/activate` | — | `RunState`(그 작전을 실행 작전으로, 작전 시작 직전 `paused`). 없는 id 404 |
+| `POST /scenarios` | `NewOperationIn{name, purpose}` | `ScenarioInfo[]`(실행 작전과 같은 지도·기체·Role 목록·경로·온톨로지로 빈 작전 `new_op_<n>`을 만들어 실행 작전으로, 작전 시작 직전 `paused`. 시작 배정·예비·전환 버튼·교대·적·대본 사건은 비우고 적의 Role은 빼며, gateway 메모리에만 있음, 결정 0053). 시작 Role은 `POST /operation`으로 바꾼다 |
 | `POST /run/live?speed=` · `POST /run/reset` · `POST /run/jump?offset_ms=` | — | `RunState` |
 | `POST /decisions` | `DecisionIn{report_id, choice_id}` | `Accepted{id, t_ms}` |
 | `POST /direct` | `DirectIn{vehicle_id, target}` | `Accepted` |

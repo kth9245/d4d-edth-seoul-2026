@@ -17,7 +17,15 @@ from types import SimpleNamespace
 from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 
-from contracts.models import DecisionIn, DirectIn, DraftIn, Operation, Role, SwitchIn
+from contracts.models import (
+    DecisionIn,
+    DirectIn,
+    DraftIn,
+    NewOperationIn,
+    Operation,
+    Role,
+    SwitchIn,
+)
 from modules import sim
 from modules.gateway.actions.build_object_graph import build_object_graph
 from modules.gateway.live import Live
@@ -165,6 +173,12 @@ def create_app(
 
     @app.get("/scenarios")
     async def scenarios():
+        return live.scenario_infos()
+
+    @app.post("/scenarios")
+    async def new_operation(body: NewOperationIn):  # decision 0053: runs the new one, paused
+        sc = live.create_operation(body.name, body.purpose)
+        log.info("POST /scenarios %r -> %s", body.name, sc.id)
         return live.scenario_infos()
 
     @app.post("/scenarios/{scenario_id}/activate")

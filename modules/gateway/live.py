@@ -137,6 +137,38 @@ class Live:
             for s in self.scenarios.values()
         ]
 
+    def create_operation(self, name: str, purpose: str) -> Scenario:
+        """A new operation on the running one's map, vehicles, roles, routes and ontology with no start roles,
+        reserves, switches, rotation, enemies or script events; it runs from its start, paused (decision 0053).
+        The enemies' roles stay behind with their enemies. In memory only, like saved roles."""
+        self.scenarios[self.scenario.id] = self.scenario
+        n = 1
+        while f"new_op_{n}" in self.scenarios:
+            n += 1
+        sid, sc = f"new_op_{n}", self.scenario
+        enemy_roles = {e.role_id for e in sc.enemies}
+        op = sc.operation.model_copy(
+            update={
+                "id": sid,
+                "name": name,
+                "purpose": purpose,
+                "vehicle_ids": [v.id for v in sc.vehicles],
+                "assign": {},
+                "reserve": {},
+                "switches": [],
+                "rotation": [],
+                "rotation_roles": [],
+                "rotation_pools": {},
+            }
+        )
+        roles = [r for r in sc.roles if r.id not in enemy_roles]
+        self.scenario = sc.model_copy(
+            update={"id": sid, "operation": op, "roles": roles, "enemies": [], "events": []}
+        )
+        self.scenarios[sid] = self.scenario
+        self.reset()
+        return self.scenario
+
     def activate(self, scenario_id: str) -> RunState:
         """Run another operation from its start, paused. The one left keeps what was saved to it."""
         if scenario_id not in self.scenarios:
