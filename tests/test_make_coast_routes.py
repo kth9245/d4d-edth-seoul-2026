@@ -74,3 +74,23 @@ def test_the_24h_operation_is_named_for_its_mission():  # Part1-15.2, lead 10/11
     out = _script().build()
     committed = json.loads((ROOT / "demo/scenarios/baengnyeong_24h.json").read_text("utf-8"))
     assert out["operation"]["name"] == committed["operation"]["name"] == "24시간 침투 대응"
+
+
+def test_the_enemy_ugv2_scout_route_never_leaves_the_island():  # user 10/11: a ugv tracker stopped "at sea"
+    from contracts.models import GeoPoint
+    from modules.sim import load_scenario_json
+    from shared.geo import dist_m
+    from shared.land import inside
+
+    sc = load_scenario_json(str(ROOT / "demo/scenarios/baengnyeong_24h.json"))
+    role = next(r for r in sc.roles if r.id == "enemy_e_ugv2")
+    route = [GeoPoint(**p) for p in role.steps[0].do.params["route"]]
+    for a, b in zip(
+        route, route[1:] + route[:1], strict=True
+    ):  # the loop closes back to the first point
+        n = max(1, int(dist_m(a, b) // 20))
+        for k in range(
+            n + 1
+        ):  # every 20 m: a coarse check let a long leg cut 90 m out over the north bay
+            q = GeoPoint(lat=a.lat + (b.lat - a.lat) * k / n, lon=a.lon + (b.lon - a.lon) * k / n)
+            assert inside(q, sc.land), (a, b, k)

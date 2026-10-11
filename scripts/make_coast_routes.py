@@ -138,8 +138,11 @@ def _ours(rid: str, name: str, dom: str, do: dict) -> dict:
 
 
 def _on_land(a: GeoPoint, b: GeoPoint, land) -> bool:  # a straight leg that never leaves the island
-    return all(inside(GeoPoint(lat=a.lat + (b.lat - a.lat) * k / 10, lon=a.lon + (b.lon - a.lon) * k / 10), land)
-               for k in range(11))  # fmt: skip
+    n = max(
+        1, int(dist_m(a, b) // 20)
+    )  # every 20 m: 11 samples let a long leg cut 90 m out over a bay (user 10/11)
+    return all(inside(GeoPoint(lat=a.lat + (b.lat - a.lat) * k / n, lon=a.lon + (b.lon - a.lon) * k / n), land)
+               for k in range(n + 1))  # fmt: skip
 
 
 def scout_route(land, landing: GeoPoint) -> list[dict]:
@@ -160,11 +163,19 @@ def scout_route(land, landing: GeoPoint) -> list[dict]:
     ring = ring[::-1] if area > 0 else ring  # shoelace > 0 is counter-clockwise
     k = min(range(len(ring)), key=lambda i: dist_m(ring[i], landing))
     ring = ring[k:] + ring[:k]
+
+    def ok(
+        i: int, j: int
+    ) -> bool:  # on land, and not a pocket of the outline no straight leg leaves (user 10/11)
+        return _on_land(ring[i], ring[j], land) and (
+            j == len(ring) - 1
+            or any(_on_land(ring[j], ring[m], land) for m in range(j + 1, len(ring)))
+        )
+
     keep, i = [ring[0]], 0
     while i < len(ring) - 1:
-        j = next((j for j in range(i + 1, len(ring)) if _on_land(ring[i], ring[j], land)), i + 1)
-        while (j + 1 < len(ring) and dist_m(ring[i], ring[j + 1]) <= SPACING_M
-               and _on_land(ring[i], ring[j + 1], land)):  # fmt: skip
+        j = next((j for j in range(i + 1, len(ring)) if ok(i, j)), i + 1)
+        while j + 1 < len(ring) and dist_m(ring[i], ring[j + 1]) <= SPACING_M and ok(i, j + 1):
             j += 1  # skip points a straight leg cannot reach, then go up to 900 m along the outline
         i = j
         keep.append(ring[i])
